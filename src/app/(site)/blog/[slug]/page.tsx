@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import BlogTemplate from "@/lib/templates/blog/BlogTemplate";
+import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
 
 async function loadBlog(slug: string) {
   const blog = await prisma.blog.findUnique({
@@ -26,10 +27,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const blog = await loadBlog(slug);
   if (!blog) return {};
-  return {
-    title: blog.seoMeta?.metaTitle ?? blog.title,
-    description: blog.seoMeta?.metaDescription ?? undefined,
-  };
+  return buildSeoMetadata({
+    seoMeta: blog.seoMeta,
+    fallbackTitle: blog.title,
+    fallbackDescription: excerptFromHtml(blog.content),
+    path: `/blog/${blog.slug}`,
+  });
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

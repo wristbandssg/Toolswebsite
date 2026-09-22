@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { isRateLimited } from "@/lib/rate-limit";
 
 /**
  * Admin authentication (Section 18: Security). Credentials login against the
@@ -26,6 +27,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
+
+        // Slow down brute-force/credential-stuffing attempts against the
+        // admin login: at most 5 tries per email per 15 minutes.
+        if (isRateLimited(`login:${email.toLowerCase()}`, 5, 15 * 60 * 1000)) {
+          return null;
+        }
 
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return null;

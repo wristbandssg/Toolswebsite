@@ -42,6 +42,12 @@ async function resolveCategoryId(categoryId?: string | null, newCategoryName?: s
 }
 
 export async function GET() {
+  // Admin-only: this returns every Blog regardless of status (including
+  // drafts), so it must not be reachable without a session.
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
+  }
   const blogs = await prisma.blog.findMany({
     orderBy: { updatedAt: "desc" },
     include: { category: true, toolRelations: true },

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
 
   const tool = await prisma.tool.findUnique({ where: { slug } });
   if (!tool || tool.status !== "published") {
-    return NextResponse.json({ error: "Tool পাওয়া যায়নি" }, { status: 404 });
+    return NextResponse.json({ error: "Tool not found" }, { status: 404 });
   }
 
   const fields: CalcInputField[] = JSON.parse(tool.calcInputs);
@@ -34,6 +34,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     if (err instanceof CalculationError) {
       return NextResponse.json({ error: err.message }, { status: 422 });
     }
-    return NextResponse.json({ error: "হিসাব করতে সমস্যা হয়েছে।" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong while calculating." }, { status: 500 });
   }
 }

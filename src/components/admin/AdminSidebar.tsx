@@ -17,6 +17,8 @@ const NAV_ITEMS = [
   { href: "/admin/ai-planner", label: "AI Content Planner" },
   { href: "/admin/seo", label: "SEO Management" },
   { href: "/admin/internal-linking", label: "Internal Linking" },
+  { href: "/admin/calendar", label: "Content Calendar" },
+  { href: "/admin/search-console", label: "Search Console" },
   { href: "/admin/media", label: "Media Library" },
   { href: "/admin/settings", label: "Website Settings" },
 ];

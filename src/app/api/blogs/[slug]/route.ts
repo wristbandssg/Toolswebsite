@@ -24,6 +24,12 @@ async function resolveCategoryId(categoryId?: string | null, newCategoryName?: s
 }
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  // Admin-only: returns the blog regardless of status — the public site
+  // reads published posts straight from Prisma with its own status filter.
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
+  }
   const { slug } = await params;
   const blog = await prisma.blog.findUnique({
     where: { slug },

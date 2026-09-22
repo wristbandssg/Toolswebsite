@@ -9,6 +9,11 @@ import { auth } from "@/lib/auth";
 // can swap this for real cloud storage without changing the Media model.
 const MAX_BYTES = 4 * 1024 * 1024; // 4MB
 
+// Raster formats only — SVG is deliberately excluded even though it starts
+// with "image/", since an SVG can carry embedded <script>/event-handler
+// content (Section 18: Security).
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
@@ -20,8 +25,11 @@ export async function POST(req: NextRequest) {
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
-  if (!file.type.startsWith("image/")) {
-    return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
+  if (!ALLOWED_TYPES.has(file.type)) {
+    return NextResponse.json(
+      { error: "Only JPEG, PNG, WebP, or GIF images are allowed" },
+      { status: 400 }
+    );
   }
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ error: "Image must be smaller than 4MB" }, { status: 400 });

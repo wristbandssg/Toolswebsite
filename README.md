@@ -1,59 +1,85 @@
-# Calc Platform — Phase 0-3 (MVP)
+# Calc Platform
 
-AI-Powered Calculator & Blog Platform এর Architecture Plan অনুযায়ী তৈরি প্রথম ধাপ।
-বিস্তারিত Plan Doc-এ পুরো Roadmap ও Design দেখুন।
+AI-Powered Calculator & Blog Platform — Next.js 16 (App Router) + TypeScript + Tailwind CSS,
+Prisma on MongoDB Atlas, deployed on Render.
 
-## যা এখন কাজ করে (validated end-to-end)
+## What's built (Phases 0–11)
 
-- Next.js 16 (App Router) + TypeScript + Tailwind CSS
-- Prisma + **MongoDB (Atlas)** — schema পুরো Database Design অনুযায়ী (`prisma/schema.prisma`)
-- Admin Login (NextAuth, email+password, bcrypt) — `/admin/login`
-- Admin Dashboard shell — ১৩টা Section-এর Sidebar
-- **Calculator Tool Builder** — Basic Info, Template Select, Input Fields, Formula, Result,
-  Content (Instructions/Examples/FAQ) — সব একটা ফর্মে (`/admin/tools/new`, `/admin/tools/[slug]`)
-- **৫টা Tool Template** — সব কাজ করছে, Dashboard থেকে Select করা যায়
-- Expression-based Calculation Engine (mathjs) — Formula Server-side Evaluate হয়, Client-এ Expose হয় না
-- Public Tool Page (`/tools/[slug]`) — Template Registry থেকে সঠিক Template Render করে
+- Admin login (NextAuth, email + password, bcrypt), rate-limited against brute force
+- Calculator Tool Builder — 5 templates, server-side formula evaluation, FAQ/instructions/examples
+- Blog Management — categories, tool↔blog and blog↔blog relations, image upload, rich text editor
+- Page Builder — section-based editor (heading/paragraph/image/button/spacer/calculator embed), 2 templates
+- Header / Footer / Mega Menu Builder — data-driven site navigation, no redeploy needed to change it
+- SEO Management — per-page meta title/description/canonical/og:image/robots, sitemap.xml, robots.txt
+- AI Content Planner — rule-based topic suggestions per tool, two-gate approval (approve/reject → generate draft)
+- Internal Linking suggestions — scans published content for link opportunities, approve/reject
+- Content Calendar — monthly view of scheduled/published posts, backlog of approved-but-unscheduled topics
+- Google Search Console integration — optional, see setup below
+- Security/performance hardening — see below
 
-## এখনো বাকি (Roadmap অনুযায়ী)
+## Running locally (needs MongoDB Atlas)
 
-Media Library upload UI, Blog Management, Page Builder, Header/Footer/Mega Menu Builder,
-SEO Management, AI Content Planner, Internal Linking, Content Calendar, GSC Integration —
-এগুলো পরের Phase-এ (দেখুন প্ল্যান ডকুমেন্টের Section ২০)।
-
-## চালানোর নিয়ম (MongoDB Atlas লাগবে)
-
-প্রথমে [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)-এ একটা Free Cluster বানিয়ে
-Connection String নিন (Database Access-এ একটা User বানান, Network Access-এ
-`0.0.0.0/0` Allow করুন যাতে Render থেকে Connect করা যায়)।
+Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), add a Database
+User, and under Network Access allow `0.0.0.0/0` (required for Render — or any host — to connect).
 
 ```bash
 npm install
-cp .env.example .env      # DATABASE_URL-এ আপনার আসল mongodb+srv://... বসান
-npm run db:push           # Schema টা MongoDB-তে Sync করবে (Mongo-তে "migrate" নেই)
-npm run db:seed           # Admin User + Sample Tool তৈরি করবে
+cp .env.example .env      # fill in your real DATABASE_URL
+npm run db:push           # syncs the schema to MongoDB (Mongo has no "migrate")
+npm run db:seed           # creates an admin user + one sample tool
 npm run dev
 ```
 
 - Site: http://localhost:3000
 - Admin: http://localhost:3000/admin/login
   - Email: `admin@example.com`
-  - Password: `ChangeMe123!` (Production-এ অবশ্যই পরিবর্তন করুন)
-- Sample Tools: `/tools/percentage-calculator`, `/tools/bmi-calculator`
+  - Password: `ChangeMe123!` — **change this immediately in production**, see the checklist below
+- Sample tool: `/tools/percentage-calculator`
 
-## MongoDB নিয়ে বিশেষ কিছু কথা
+## About MongoDB + Prisma here
 
-- Relational Database-এর মতো এখানে `npx prisma migrate dev` কাজ করে না। Schema
-  পরিবর্তন করলে প্রতিবার `npm run db:push` চালাতে হবে।
-- `npm run build`-এ তাই `prisma migrate deploy` নেই, শুধু `prisma generate && next build`।
-  তাই Build Step-এ Live Database Connection লাগে না — এটা Render-এর মতো Host-এ Deploy
-  করার সময় গুরুত্বপূর্ণ।
-- Admin Dashboard-এর সব Page (`/admin/*`) ইচ্ছা করেই "Force Dynamic" রাখা হয়েছে
-  (`(dashboard)/layout.tsx`), যাতে Build-এর সময় Prisma Query চালিয়ে Static Page
-  বানানোর চেষ্টা না করে — Auth-gated Page-এ Static করার দরকারও নেই।
+- There's no `prisma migrate dev` with the Mongo provider — run `npm run db:push` after any
+  schema change.
+- `npm run build` only runs `prisma generate && next build` (no `migrate deploy`), so the build
+  step never needs a live database connection — important for hosts like Render where the build
+  environment may not be able to reach Atlas.
+- Nearly every admin and public content page is `export const dynamic = "force-dynamic"` for the
+  same reason: static prerendering would need a live DB connection at build time.
 
-## নতুন Tool Template যোগ করা
+## Launch checklist
 
-`src/lib/templates/tool/` ফোল্ডারে নতুন Component File বানান, তারপর
-`src/lib/templates/registry.ts`-এ `TOOL_TEMPLATES`-এ একটা Entry যোগ করুন — অন্য কোনো
-Tool-এর Code পরিবর্তন করা লাগবে না।
+Before going live (or handing this off), work through this list:
+
+1. **Change the default admin password.** `ChangeMe123!` is public in this repo's seed script —
+   log in and change it, or create a new admin user and delete the seeded one.
+2. **Environment variables on Render** (Settings → Environment):
+   - `DATABASE_URL` — the bare MongoDB connection string, no `DATABASE_URL="..."` wrapper pasted in
+   - `NEXTAUTH_SECRET` — a real random value (`openssl rand -base64 32`), not the command itself
+   - `NEXTAUTH_URL` — your real production URL (`https://your-app.onrender.com` or a custom domain)
+     — sitemap.xml, canonical URLs, and the Search Console OAuth redirect all depend on this being
+     correct
+   - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — optional, only for Search Console (see below)
+3. **MongoDB Atlas → Network Access** must allow `0.0.0.0/0`, or Render can't reach the database.
+4. **Render free tier notes** — the instance spins down after 15 minutes idle (first request after
+   that is slow), and free tier has no shell/SSH access, so schema changes need `db:push` run from
+   somewhere that can reach the database (locally, pointed at the production `DATABASE_URL`).
+5. **Search Console** (optional) — see `/admin/search-console` in the admin dashboard for the
+   one-time Google Cloud Console setup steps. Until `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` are
+   set, that page just shows "not connected" and nothing else is affected.
+6. **Back up your data.** MongoDB Atlas free tier doesn't include automated backups — export a
+   snapshot periodically (Atlas UI → Collections → Export, or `mongodump`) if the content here
+   matters.
+
+## Security/performance hardening (Phase 11)
+
+- Every admin-data API route (`/api/tools`, `/api/blogs`, `/api/pages`, and their `[slug]`
+  variants) requires a logged-in session on GET as well as on writes — none of them leak
+  draft/unpublished content to anonymous requests.
+- Image uploads are restricted to JPEG/PNG/WebP/GIF (SVG is excluded — it can carry embedded
+  script content) and capped at 4MB.
+- The admin login is rate-limited (5 attempts per email per 15 minutes) against brute-force/
+  credential-stuffing.
+- Security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`,
+  `Permissions-Policy`, `Strict-Transport-Security`) are set on every response; the
+  `X-Powered-By` header is disabled.
+- `/api/health` is a fast, database-free endpoint for uptime monitoring.

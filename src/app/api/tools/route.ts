@@ -19,7 +19,7 @@ const toolCreateSchema = z.object({
   slug: z
     .string()
     .min(1)
-    .regex(/^[a-z0-9-]+$/, "Slug-এ শুধু ছোট হাতের অক্ষর, সংখ্যা ও হাইফেন ব্যবহার করুন"),
+    .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   title: z.string().min(1),
   description: z.string().optional(),
   templateKey: z.string().default("tool-template-1"),
@@ -42,6 +42,12 @@ const toolCreateSchema = z.object({
 });
 
 export async function GET() {
+  // Admin-only: this returns every Tool regardless of status (including
+  // drafts), so it must not be reachable without a session.
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
+  }
   const tools = await prisma.tool.findMany({
     orderBy: { updatedAt: "desc" },
     include: { category: true },
@@ -52,14 +58,14 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
-    return NextResponse.json({ error: "Login প্রয়োজন" }, { status: 401 });
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
 
   const body = await req.json();
   const parsed = toolCreateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Form Validation ব্যর্থ", details: parsed.error.flatten() },
+      { error: "Form validation failed", details: parsed.error.flatten() },
       { status: 400 }
     );
   }
@@ -67,7 +73,7 @@ export async function POST(req: NextRequest) {
 
   const existing = await prisma.tool.findUnique({ where: { slug: data.slug } });
   if (existing) {
-    return NextResponse.json({ error: "এই Slug ইতিমধ্যে ব্যবহৃত হয়েছে" }, { status: 409 });
+    return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
   }
 
   const tool = await prisma.tool.create({

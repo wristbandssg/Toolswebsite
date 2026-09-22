@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getToolTemplate } from "@/lib/templates/registry";
 import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
+import { buildSeoMetadata } from "@/lib/seo";
 
 async function loadTool(slug: string) {
   const tool = await prisma.tool.findUnique({
@@ -25,10 +26,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const tool = await loadTool(slug);
   if (!tool) return {};
-  return {
-    title: tool.seoMeta?.metaTitle ?? tool.title,
-    description: tool.seoMeta?.metaDescription ?? tool.description ?? undefined,
-  };
+  return buildSeoMetadata({
+    seoMeta: tool.seoMeta,
+    fallbackTitle: tool.title,
+    fallbackDescription: tool.description,
+    path: `/tools/${tool.slug}`,
+  });
 }
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {

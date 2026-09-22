@@ -1,11 +1,20 @@
-export default function SettingsPage() {
+import { getSiteGeneralSettings } from "@/lib/site-config";
+import SiteSettingsForm from "@/components/admin/SiteSettingsForm";
+
+export const dynamic = "force-dynamic";
+
+export default async function SettingsPage() {
+  const settings = await getSiteGeneralSettings();
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Website Settings</h1>
-      <div className="mt-6 rounded-2xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500 dark:border-gray-700">
-        এই Section-টা Development Roadmap-এর <strong>Phase 1</strong>-এ তৈরি হবে।
-        <br />
-        বিস্তারিত Plan Architecture Doc-এ দেখুন।
+      <p className="mt-1 text-sm text-gray-500">
+        Site name, logo, and default description — used across the header, footer, and page
+        metadata.
+      </p>
+      <div className="mt-6">
+        <SiteSettingsForm initial={settings} />
       </div>
     </div>
   );
