@@ -1,45 +1,94 @@
 import Link from "next/link";
 import type { BlogTemplateProps } from "./types";
 import TableOfContents from "@/components/TableOfContents";
-import { extractTableOfContents } from "@/lib/toc";
+import { extractTableOfContents, estimateReadingMinutes } from "@/lib/toc";
+
+// A small fixed palette so an author's initials-avatar color stays the same
+// every time their name appears (no photo field on the User model yet).
+const AVATAR_COLORS = [
+  "bg-rose-500",
+  "bg-amber-500",
+  "bg-emerald-500",
+  "bg-sky-500",
+  "bg-violet-500",
+  "bg-fuchsia-500",
+];
+
+function avatarColorFor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+function initialsFor(name: string) {
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
+}
 
 /**
  * The single Blog Template — every blog post uses this same layout; only
- * content differs. Layout checked against a live reference site
- * (nextstair.com/alternatives/surfshark-alternatives): title/meta full
- * width up top, then a two-column body — a sticky, scroll-spy Table of
- * Contents on the left (auto-built from the post's own H2/H3 headings)
- * and the article in the main column. The sidebar is skipped entirely
- * for short posts with no headings.
+ * content differs. Header section checked against a live reference site
+ * (nextstair.com/alternatives/surfshark-alternatives): a category label,
+ * then the title, then the post's short description, then an author row
+ * (avatar, name, updated date, reading time) — all as one header block,
+ * full width. Below that is a separate section: a two-column body with a
+ * sticky, scroll-spy Table of Contents on the left (auto-built from the
+ * post's own H2/H3 headings) and the article in the main column. The
+ * sidebar is skipped entirely for short posts with no headings.
  */
 export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogTemplateProps) {
   const { html: contentHtml, headings } = extractTableOfContents(blog.content);
+  const readingMinutes = estimateReadingMinutes(blog.content);
+  const authorName = blog.authorName ?? "Editorial Team";
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <nav className="mb-4 text-sm text-gray-500">
-        <Link href="/">Home</Link> / <Link href="/blog">Blog</Link> / {blog.title}
-      </nav>
+      {/* Header section: category, title, short description, author/meta row */}
+      <header>
+        {blog.categoryName ? (
+          <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">
+            {blog.categorySlug ? (
+              <Link href={`/blog/category/${blog.categorySlug}`} className="hover:underline">
+                {blog.categoryName}
+              </Link>
+            ) : (
+              blog.categoryName
+            )}
+          </p>
+        ) : null}
 
-      {blog.featuredImage ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={blog.featuredImage}
-          alt={blog.title}
-          className="mb-6 aspect-video w-full rounded-xl object-cover"
-        />
-      ) : null}
+        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">{blog.title}</h1>
 
-      <h1 className="text-3xl font-bold">{blog.title}</h1>
-      <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-        {blog.authorName ? <span>{blog.authorName}</span> : null}
-        {blog.publishedAt ? <span>· {new Date(blog.publishedAt).toLocaleDateString()}</span> : null}
-        {blog.tags.map((tag) => (
-          <span key={tag} className="rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-800">
-            {tag}
+        {blog.excerpt ? (
+          <p className="mt-3 max-w-3xl text-lg text-gray-500">{blog.excerpt}</p>
+        ) : null}
+
+        <div className="mt-5 flex items-center gap-3 border-b border-gray-100 pb-5 dark:border-gray-800">
+          <span
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ${avatarColorFor(authorName)}`}
+          >
+            {initialsFor(authorName)}
           </span>
-        ))}
-      </div>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500">
+            <span>
+              By <span className="font-medium text-gray-700 dark:text-gray-300">{authorName}</span>
+            </span>
+            <span className="text-gray-300 dark:text-gray-700">·</span>
+            <span>Updated {new Date(blog.updatedAt).toLocaleDateString()}</span>
+            <span className="text-gray-300 dark:text-gray-700">·</span>
+            <span>{readingMinutes} min read</span>
+          </div>
+        </div>
+
+        {blog.featuredImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={blog.featuredImage}
+            alt={blog.title}
+            className="mt-6 aspect-video w-full rounded-xl object-cover"
+          />
+        ) : null}
+      </header>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
         <TableOfContents headings={headings} />

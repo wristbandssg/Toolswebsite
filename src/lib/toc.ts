@@ -72,3 +72,10 @@ export function extractTableOfContents(html: string): {
 
   return { html: outputHtml, headings };
 }
+
+/** Standard ~200-words-per-minute estimate, rounded up, minimum 1 minute. */
+export function estimateReadingMinutes(html: string): number {
+  const text = stripTags(html);
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(wordCount / 200));
+}

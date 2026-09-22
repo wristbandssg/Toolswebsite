@@ -52,11 +52,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       blog={{
         slug: blog.slug,
         title: blog.title,
+        excerpt: blog.excerpt,
         featuredImage: blog.featuredImage,
         content: blog.content,
         tags: JSON.parse(blog.tags) as string[],
         publishedAt: blog.publishedAt ? blog.publishedAt.toISOString() : null,
+        updatedAt: blog.updatedAt.toISOString(),
         authorName: blog.author?.name,
+        categoryName: blog.category?.name,
+        categorySlug: blog.category?.slug,
       }}
       relatedTools={blog.toolRelations.map((r) => ({ slug: r.tool.slug, title: r.tool.title }))}
       relatedBlogs={blog.relatedFrom.map((r) => ({
