@@ -9,6 +9,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
     include: {
       toolRelations: true,
       relatedFrom: true,
+      seoMeta: true,
     },
   });
   if (!blog) notFound();
@@ -38,6 +39,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
           tools={tools}
           otherBlogs={otherBlogs}
           initial={{
+            id: blog.id,
             slug: blog.slug,
             title: blog.title,
             excerpt: blog.excerpt ?? "",
@@ -50,6 +52,14 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
             newCategoryName: "",
             toolIds: blog.toolRelations.map((r) => r.toolId),
             relatedBlogIds: blog.relatedFrom.map((r) => r.relatedBlogId),
+            seo: {
+              metaTitle: blog.seoMeta?.metaTitle ?? "",
+              metaDescription: blog.seoMeta?.metaDescription ?? "",
+              canonicalUrl: blog.seoMeta?.canonicalUrl ?? "",
+              ogImage: blog.seoMeta?.ogImage ?? "",
+              robotsIndex: blog.seoMeta?.robotsIndex ?? true,
+              schemaType: blog.seoMeta?.schemaType ?? "",
+            },
           }}
         />
       </div>

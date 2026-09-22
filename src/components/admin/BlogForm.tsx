@@ -4,7 +4,26 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
 
+export interface BlogSeoValues {
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  ogImage: string;
+  robotsIndex: boolean;
+  schemaType: string;
+}
+
+const EMPTY_SEO: BlogSeoValues = {
+  metaTitle: "",
+  metaDescription: "",
+  canonicalUrl: "",
+  ogImage: "",
+  robotsIndex: true,
+  schemaType: "",
+};
+
 export interface BlogFormValues {
+  id: string; // Mongo ObjectId — empty until the post is first created
   slug: string;
   title: string;
   excerpt: string;
@@ -17,9 +36,11 @@ export interface BlogFormValues {
   newCategoryName: string;
   toolIds: string[];
   relatedBlogIds: string[];
+  seo: BlogSeoValues;
 }
 
 const EMPTY: BlogFormValues = {
+  id: "",
   slug: "",
   title: "",
   excerpt: "",
@@ -32,6 +53,7 @@ const EMPTY: BlogFormValues = {
   newCategoryName: "",
   toolIds: [],
   relatedBlogIds: [],
+  seo: EMPTY_SEO,
 };
 
 function slugify(text: string) {
@@ -65,6 +87,10 @@ export default function BlogForm({
 
   function update<K extends keyof BlogFormValues>(key: K, val: BlogFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
+  }
+
+  function updateSeo<K extends keyof BlogSeoValues>(key: K, val: BlogSeoValues[K]) {
+    setValues((v) => ({ ...v, seo: { ...v.seo, [key]: val } }));
   }
 
   function toggleId(key: "toolIds" | "relatedBlogIds", id: string) {
@@ -128,6 +154,21 @@ export default function BlogForm({
         setError(data.error ?? "Could not save the post.");
         return;
       }
+
+      const blogId = data.blog?.id as string | undefined;
+      if (blogId) {
+        try {
+          await fetch(`/api/seo/blog/${blogId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values.seo),
+          });
+        } catch {
+          // The post itself saved fine — don't block navigation over the SEO
+          // sidecar write failing.
+        }
+      }
+
       router.push("/admin/blogs");
       router.refresh();
     } catch {
@@ -191,6 +232,80 @@ export default function BlogForm({
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="mb-4 font-semibold">Content</h2>
             <RichTextEditor value={values.content} onChange={(html) => update("content", html)} />
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-1 font-semibold">SEO</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Controls how this post appears in Google search results and when it&apos;s shared on
+              social media. Leave a field blank to fall back to the post&apos;s own title/content.
+            </p>
+            <div className="space-y-4">
+              <label className="block text-sm">
+                <span className="font-medium">Meta Title</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  placeholder={values.title || "Falls back to the post title"}
+                  value={values.seo.metaTitle}
+                  onChange={(e) => updateSeo("metaTitle", e.target.value)}
+                  maxLength={70}
+                />
+                <span className="mt-1 block text-xs text-gray-400">
+                  {values.seo.metaTitle.length}/70 characters.
+                </span>
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium">Meta Description</span>
+                <textarea
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  rows={3}
+                  placeholder={values.excerpt || "Falls back to the post's short description"}
+                  value={values.seo.metaDescription}
+                  onChange={(e) => updateSeo("metaDescription", e.target.value)}
+                  maxLength={160}
+                />
+                <span className="mt-1 block text-xs text-gray-400">
+                  {values.seo.metaDescription.length}/160 characters.
+                </span>
+              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="font-medium">Canonical URL</span>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                    placeholder="Leave blank to use this post's own URL"
+                    value={values.seo.canonicalUrl}
+                    onChange={(e) => updateSeo("canonicalUrl", e.target.value)}
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="font-medium">Schema.org Type</span>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                    placeholder="e.g. Article (optional)"
+                    value={values.seo.schemaType}
+                    onChange={(e) => updateSeo("schemaType", e.target.value)}
+                  />
+                </label>
+              </div>
+              <label className="block text-sm">
+                <span className="font-medium">Social Share Image (og:image)</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  placeholder="https://... (defaults to the featured image)"
+                  value={values.seo.ogImage}
+                  onChange={(e) => updateSeo("ogImage", e.target.value)}
+                />
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={values.seo.robotsIndex}
+                  onChange={(e) => updateSeo("robotsIndex", e.target.checked)}
+                />
+                <span>Allow search engines to index this post</span>
+              </label>
+            </div>
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
+import TiptapImage from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
@@ -14,6 +14,31 @@ import { Table } from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
+import {
+  Bold as BoldIcon,
+  Italic as ItalicIcon,
+  Underline as UnderlineIcon,
+  Strikethrough,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Baseline,
+  Highlighter,
+  List as ListIcon,
+  ListOrdered,
+  Quote,
+  Code2,
+  Minus,
+  Link2,
+  Image as ImageIcon,
+  Table2,
+  Smile,
+  Undo2,
+  Redo2,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 const TEXT_COLORS = [
   "#111827",
@@ -46,6 +71,17 @@ const EMOJIS = [
   "🔥", "🎉", "📌", "📝", "💰", "📊", "🚀", "⚠️",
 ];
 
+// Editor content and generated pages both style list/table markup the same
+// way (see the equivalent classes on the public BlogTemplate), applied here
+// directly rather than relying only on the `prose` plugin cascade — belt
+// and suspenders, so lists and tables always look right in the editor even
+// if typography styling doesn't reach this element for some reason.
+const CONTENT_STYLE_CLASSES =
+  "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:my-1 " +
+  "[&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-gray-300 [&_td]:px-2 [&_td]:py-1 " +
+  "[&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-50 [&_th]:px-2 [&_th]:py-1 " +
+  "dark:[&_td]:border-gray-600 dark:[&_th]:border-gray-600 dark:[&_th]:bg-gray-900";
+
 function ToolbarButton({
   onClick,
   active,
@@ -67,7 +103,7 @@ function ToolbarButton({
       disabled={disabled}
       onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
-      className={`rounded px-2 py-1 text-sm font-medium disabled:opacity-40 ${
+      className={`flex h-8 w-8 items-center justify-center rounded disabled:opacity-40 ${
         active
           ? "bg-indigo-600 text-white"
           : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -108,7 +144,7 @@ function Popover({
         aria-label={label}
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => setOpen((v) => !v)}
-        className="rounded px-2 py-1 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+        className="flex h-8 w-8 items-center justify-center rounded text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
       >
         {trigger}
       </button>
@@ -144,7 +180,7 @@ function FormatSelect({ editor }: { editor: Editor }) {
       value={value}
       onChange={(e) => apply(e.target.value)}
       aria-label="Paragraph style"
-      className="rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-800"
+      className="h-8 rounded border border-gray-300 bg-white px-2 text-sm dark:border-gray-700 dark:bg-gray-800"
     >
       <option value="p">Paragraph</option>
       <option value="h2">Heading 2</option>
@@ -153,6 +189,8 @@ function FormatSelect({ editor }: { editor: Editor }) {
     </select>
   );
 }
+
+const ICON = 16;
 
 function Toolbar({
   editor,
@@ -186,28 +224,28 @@ function Toolbar({
         active={editor.isActive("bold")}
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
-        B
+        <BoldIcon size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Italic"
         active={editor.isActive("italic")}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
-        <span className="italic">I</span>
+        <ItalicIcon size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Underline"
         active={editor.isActive("underline")}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
       >
-        <span className="underline">U</span>
+        <UnderlineIcon size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Strikethrough"
         active={editor.isActive("strike")}
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
-        <span className="line-through">S</span>
+        <Strikethrough size={ICON} />
       </ToolbarButton>
 
       <span className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
@@ -217,33 +255,33 @@ function Toolbar({
         active={editor.isActive({ textAlign: "left" })}
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
       >
-        ⯇
+        <AlignLeft size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Align Center"
         active={editor.isActive({ textAlign: "center" })}
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
       >
-        ☰
+        <AlignCenter size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Align Right"
         active={editor.isActive({ textAlign: "right" })}
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
       >
-        ⯈
+        <AlignRight size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Justify"
         active={editor.isActive({ textAlign: "justify" })}
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
       >
-        ≡
+        <AlignJustify size={ICON} />
       </ToolbarButton>
 
       <span className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
 
-      <Popover label="Text Color" trigger={<span className="font-bold text-red-600">A</span>}>
+      <Popover label="Text Color" trigger={<Baseline size={ICON} />}>
         {(close) => (
           <div className="grid grid-cols-5 gap-1">
             {TEXT_COLORS.map((c) => (
@@ -276,10 +314,7 @@ function Toolbar({
         )}
       </Popover>
 
-      <Popover
-        label="Highlight"
-        trigger={<span className="rounded bg-yellow-200 px-1 text-gray-800">H</span>}
-      >
+      <Popover label="Highlight" trigger={<Highlighter size={ICON} />}>
         {(close) => (
           <div className="grid grid-cols-4 gap-1">
             {HIGHLIGHT_COLORS.map((c) => (
@@ -319,43 +354,43 @@ function Toolbar({
         active={editor.isActive("bulletList")}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
-        • List
+        <ListIcon size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Numbered List"
         active={editor.isActive("orderedList")}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       >
-        1. List
+        <ListOrdered size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Quote"
         active={editor.isActive("blockquote")}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       >
-        &quot;
+        <Quote size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Code Block"
         active={editor.isActive("codeBlock")}
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
       >
-        {"</>"}
+        <Code2 size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Horizontal Rule"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
       >
-        ―
+        <Minus size={ICON} />
       </ToolbarButton>
 
       <span className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
 
       <ToolbarButton label="Link" active={editor.isActive("link")} onClick={setLink}>
-        Link
+        <Link2 size={ICON} />
       </ToolbarButton>
       <ToolbarButton label="Insert Image" onClick={onUploadImage}>
-        Image
+        <ImageIcon size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Insert Table"
@@ -363,10 +398,10 @@ function Toolbar({
           editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
         }
       >
-        Table
+        <Table2 size={ICON} />
       </ToolbarButton>
 
-      <Popover label="Insert Emoji" trigger={<span>🙂</span>}>
+      <Popover label="Insert Emoji" trigger={<Smile size={ICON} />}>
         {(close) => (
           <div className="grid max-w-[220px] grid-cols-8 gap-1">
             {EMOJIS.map((e) => (
@@ -394,20 +429,20 @@ function Toolbar({
         disabled={!editor.can().undo()}
         onClick={() => editor.chain().focus().undo().run()}
       >
-        ↺
+        <Undo2 size={ICON} />
       </ToolbarButton>
       <ToolbarButton
         label="Redo"
         disabled={!editor.can().redo()}
         onClick={() => editor.chain().focus().redo().run()}
       >
-        ↻
+        <Redo2 size={ICON} />
       </ToolbarButton>
 
       <span className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
 
-      <ToolbarButton label="Preview" active={previewOpen} onClick={onTogglePreview}>
-        {previewOpen ? "Editing" : "Preview"}
+      <ToolbarButton label={previewOpen ? "Back to Editing" : "Preview"} active={previewOpen} onClick={onTogglePreview}>
+        {previewOpen ? <EyeOff size={ICON} /> : <Eye size={ICON} />}
       </ToolbarButton>
     </div>
   );
@@ -438,14 +473,16 @@ export default function RichTextEditor({
       TableRow,
       TableHeader,
       TableCell,
-      Image.configure({ HTMLAttributes: { class: "rounded-lg" } }),
+      TiptapImage.configure({ HTMLAttributes: { class: "rounded-lg" } }),
       Link.configure({ openOnClick: false, autolink: true }),
     ],
     content: value,
     editorProps: {
       attributes: {
-        class:
-          "prose max-w-none dark:prose-invert min-h-[240px] px-3 py-2 focus:outline-none",
+        // A fixed max-height + internal scroll so a long post (3000-5000+
+        // words) scrolls inside the editor box itself instead of growing
+        // the whole admin page taller and taller.
+        class: `prose max-w-none dark:prose-invert min-h-[360px] max-h-[60vh] overflow-y-auto px-3 py-2 focus:outline-none ${CONTENT_STYLE_CLASSES}`,
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -488,7 +525,7 @@ export default function RichTextEditor({
 
   if (!editor) {
     return (
-      <div className="min-h-[280px] rounded-lg border border-gray-300 dark:border-gray-700" />
+      <div className="min-h-[360px] rounded-lg border border-gray-300 dark:border-gray-700" />
     );
   }
 
@@ -502,13 +539,11 @@ export default function RichTextEditor({
       />
       {previewOpen ? (
         <div
-          className="prose max-w-none px-3 py-2 dark:prose-invert [&_table]:w-full [&_td]:border [&_td]:border-gray-300 [&_td]:px-2 [&_td]:py-1 [&_th]:border [&_th]:border-gray-300 [&_th]:px-2 [&_th]:py-1 dark:[&_td]:border-gray-600 dark:[&_th]:border-gray-600"
+          className={`prose max-h-[60vh] max-w-none overflow-y-auto px-3 py-2 dark:prose-invert ${CONTENT_STYLE_CLASSES}`}
           dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
         />
       ) : (
-        <div className="[&_.ProseMirror_table]:w-full [&_.ProseMirror_td]:border [&_.ProseMirror_td]:border-gray-300 [&_.ProseMirror_td]:px-2 [&_.ProseMirror_td]:py-1 [&_.ProseMirror_th]:border [&_.ProseMirror_th]:border-gray-300 [&_.ProseMirror_th]:bg-gray-50 [&_.ProseMirror_th]:px-2 [&_.ProseMirror_th]:py-1 dark:[&_.ProseMirror_td]:border-gray-600 dark:[&_.ProseMirror_th]:border-gray-600 dark:[&_.ProseMirror_th]:bg-gray-900">
-          <EditorContent editor={editor} />
-        </div>
+        <EditorContent editor={editor} />
       )}
     </div>
   );

@@ -19,24 +19,30 @@ export default async function BlogListPage() {
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         {blogs.map((blog) => (
-          <Link
+          <div
             key={blog.id}
-            href={`/blog/${blog.slug}`}
             className="rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 dark:border-gray-800"
           >
             {blog.category ? (
-              <span className="text-xs font-medium text-indigo-600">{blog.category.name}</span>
+              <Link
+                href={`/blog/category/${blog.category.slug}`}
+                className="text-xs font-medium text-indigo-600 hover:underline"
+              >
+                {blog.category.name}
+              </Link>
             ) : null}
-            <h2 className="mt-1 text-lg font-semibold">{blog.title}</h2>
-            {blog.excerpt ? (
-              <p className="mt-1 line-clamp-2 text-sm text-gray-500">{blog.excerpt}</p>
-            ) : null}
-            {blog.publishedAt ? (
-              <p className="mt-2 text-sm text-gray-500">
-                {blog.publishedAt.toLocaleDateString()}
-              </p>
-            ) : null}
-          </Link>
+            <Link href={`/blog/${blog.slug}`} className="block">
+              <h2 className="mt-1 text-lg font-semibold">{blog.title}</h2>
+              {blog.excerpt ? (
+                <p className="mt-1 line-clamp-2 text-sm text-gray-500">{blog.excerpt}</p>
+              ) : null}
+              {blog.publishedAt ? (
+                <p className="mt-2 text-sm text-gray-500">
+                  {blog.publishedAt.toLocaleDateString()}
+                </p>
+              ) : null}
+            </Link>
+          </div>
         ))}
         {blogs.length === 0 ? (
           <p className="text-gray-400">এখনো কোনো Blog Post Publish হয়নি।</p>
