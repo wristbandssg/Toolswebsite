@@ -91,49 +91,51 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
     <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
       <ReadingProgressBar />
 
-      {/* Header section: category, title, short description, author/meta row */}
+      {/* Header section: category, title, short description, author/meta row —
+          all set on a colored hero panel so the post opens with real visual
+          impact instead of sitting on plain white. */}
       <header>
-        {blog.categoryName ? (
-          blog.categorySlug ? (
-            <Link
-              href={`/blog/category/${blog.categorySlug}`}
-              className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-700 ring-1 ring-inset ring-indigo-200 transition-colors hover:bg-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20 dark:hover:bg-indigo-500/20"
+        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 px-6 py-8 shadow-lg shadow-indigo-600/20 sm:px-10 sm:py-12">
+          {blog.categoryName ? (
+            blog.categorySlug ? (
+              <Link
+                href={`/blog/category/${blog.categorySlug}`}
+                className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-inset ring-white/30 transition-colors hover:bg-white/25"
+              >
+                {blog.categoryName}
+              </Link>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-inset ring-white/30">
+                {blog.categoryName}
+              </span>
+            )
+          ) : null}
+
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+            {blog.title}
+          </h1>
+
+          {blog.excerpt ? (
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-indigo-100 sm:text-lg">
+              {blog.excerpt}
+            </p>
+          ) : null}
+
+          <div className="mt-6 flex items-center gap-3 border-t border-white/20 pt-6">
+            <span
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm ring-2 ring-white/40 ${avatarColorFor(authorName)}`}
             >
-              {blog.categoryName}
-            </Link>
-          ) : (
-            <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-700 ring-1 ring-inset ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20">
-              {blog.categoryName}
+              {initialsFor(authorName)}
             </span>
-          )
-        ) : null}
-
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
-          {blog.title}
-        </h1>
-
-        {blog.excerpt ? (
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-700 dark:text-gray-300 sm:text-lg">
-            {blog.excerpt}
-          </p>
-        ) : null}
-
-        <div className="mt-6 flex items-center gap-3 border-b border-gray-200 pb-6 dark:border-gray-800">
-          <span
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm ring-2 ring-white dark:ring-gray-950 ${avatarColorFor(authorName)}`}
-          >
-            {initialsFor(authorName)}
-          </span>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
-            <span>
-              By <span className="font-semibold text-gray-900 dark:text-gray-100">{authorName}</span>
-            </span>
-            <span className="text-gray-300 dark:text-gray-700">·</span>
-            <span>Updated {new Date(blog.updatedAt).toLocaleDateString()}</span>
-            <span className="text-gray-300 dark:text-gray-700">·</span>
-            <span className="font-medium text-indigo-600 dark:text-indigo-400">
-              {readingMinutes} min read
-            </span>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-indigo-100">
+              <span>
+                By <span className="font-semibold text-white">{authorName}</span>
+              </span>
+              <span className="text-white/30">·</span>
+              <span>Updated {new Date(blog.updatedAt).toLocaleDateString()}</span>
+              <span className="text-white/30">·</span>
+              <span className="font-medium text-amber-300">{readingMinutes} min read</span>
+            </div>
           </div>
         </div>
 
