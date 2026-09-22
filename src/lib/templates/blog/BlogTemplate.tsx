@@ -70,6 +70,10 @@ function RelatedPostRow({
  */
 export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogTemplateProps) {
   const { html: contentHtml, headings } = extractTableOfContents(blog.content);
+  // The sidebar TOC only lists top-level (H2) sections — H3s still get
+  // anchor ids in the content above, but keeping them out of the list
+  // keeps it short and scannable rather than a deep, nested outline.
+  const tocHeadings = headings.filter((h) => h.level === 2);
   const readingMinutes = estimateReadingMinutes(blog.content);
   const authorName = blog.authorName ?? "Editorial Team";
 
@@ -158,7 +162,7 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
               relatedCard ? "xl:grid-cols-[220px_1fr_280px]" : "xl:grid-cols-[220px_1fr]"
             }`}
           >
-            <TableOfContents headings={headings} />
+            <TableOfContents headings={tocHeadings} />
 
           {/* Its own white card — set apart from the TOC card next to it and
               from the shaded panel behind both, instead of blending into either. */}

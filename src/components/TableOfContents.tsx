@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import type { TocHeading } from "@/lib/toc";
 
 /**
- * Sticky, scroll-spy Table of Contents for a blog post's own H2/H3
- * headings. Stays fixed in the left column while the reader scrolls
- * through the article, and highlights whichever section is currently in
- * view — same interaction as the reference site this was checked against
- * (nextstair.com/alternatives/surfshark-alternatives) before building.
- * Hidden below the `lg` breakpoint, same as the reference.
+ * Sticky, scroll-spy Table of Contents. Only lists a post's top-level (H2)
+ * sections — sub-headings (H3) are deliberately left out of the caller's
+ * `headings` prop so the list stays short and scannable, matching a demo
+ * site the user pointed to (plain list, top-level sections only, no box
+ * around it). Stays fixed in the left column while the reader scrolls, and
+ * highlights whichever section is currently in view. Hidden below `lg`.
  */
 export default function TableOfContents({ headings }: { headings: TocHeading[] }) {
   const [activeId, setActiveId] = useState<string | null>(headings[0]?.id ?? null);
@@ -47,9 +47,9 @@ export default function TableOfContents({ headings }: { headings: TocHeading[] }
 
   return (
     <aside className="hidden lg:block">
-      {/* Its own white card — set apart from the article card next to it and
-          from the shaded panel behind both, instead of blending into either. */}
-      <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      {/* Plain — no card, no border, no background. Sits directly on the
+          page like the demo, not boxed in. */}
+      <div className="sticky top-6">
         <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">
           Table of Contents
         </p>
@@ -60,9 +60,7 @@ export default function TableOfContents({ headings }: { headings: TocHeading[] }
               <a
                 key={h.id}
                 href={`#${h.id}`}
-                className={`-ml-0.5 block border-l-2 py-1.5 text-[13px] leading-snug transition-all ${
-                  h.level === 3 ? "pl-7" : "pl-4"
-                } ${
+                className={`-ml-0.5 block border-l-2 py-1.5 pl-4 text-[13px] leading-snug transition-all ${
                   active
                     ? "border-indigo-600 font-semibold text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
                     : "border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
