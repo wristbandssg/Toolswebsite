@@ -88,14 +88,14 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
     ) : null;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
+    <>
       <ReadingProgressBar />
 
       {/* Header section: category, title, short description, author/meta row —
-          all set on a colored hero panel so the post opens with real visual
-          impact instead of sitting on plain white. */}
-      <header>
-        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 px-6 py-8 shadow-lg shadow-indigo-600/20 sm:px-10 sm:py-12">
+          on a full-bleed colored hero band (edge-to-edge, not boxed in with
+          white margins around it) so the post opens with real visual impact. */}
+      <div className="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 dark:from-indigo-800 dark:via-blue-800 dark:to-indigo-900">
+        <header className="mx-auto max-w-5xl px-4 py-10 sm:py-14">
           {blog.categoryName ? (
             blog.categorySlug ? (
               <Link
@@ -137,23 +137,24 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
               <span className="font-medium text-amber-300">{readingMinutes} min read</span>
             </div>
           </div>
-        </div>
+        </header>
+      </div>
 
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
         {blog.featuredImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={blog.featuredImage}
             alt={blog.title}
-            className="mt-8 aspect-video w-full rounded-2xl object-cover shadow-lg ring-1 ring-gray-900/5"
+            className="aspect-video w-full rounded-2xl object-cover shadow-lg ring-1 ring-gray-900/5"
           />
         ) : null}
-      </header>
 
-      {/* Body section: a softly-shaded panel holding the TOC, article and
-          "More Articles" sidebar, visually set apart from the header above. */}
-      <div className="mt-10 rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_280px]">
-          <TableOfContents headings={headings} />
+        {/* Body section: a softly-shaded panel holding the TOC, article and
+            "More Articles" sidebar, visually set apart from the hero above. */}
+        <div className="mt-10 rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_280px]">
+            <TableOfContents headings={headings} />
 
           <article className="min-w-0">
             <div
@@ -189,8 +190,9 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
               <div className="sticky top-6">{relatedCard}</div>
             </aside>
           ) : null}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
