@@ -47,7 +47,9 @@ export default function TableOfContents({ headings }: { headings: TocHeading[] }
 
   return (
     <aside className="hidden lg:block">
-      <div className="sticky top-6">
+      {/* Its own white card — set apart from the article card next to it and
+          from the shaded panel behind both, instead of blending into either. */}
+      <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">
           Table of Contents
         </p>

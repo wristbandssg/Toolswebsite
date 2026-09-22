@@ -160,7 +160,9 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
           >
             <TableOfContents headings={headings} />
 
-          <article className="min-w-0">
+          {/* Its own white card — set apart from the TOC card next to it and
+              from the shaded panel behind both, instead of blending into either. */}
+          <article className="min-w-0 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-8">
             <div
               className="prose max-w-none dark:prose-invert prose-headings:scroll-mt-24 prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-gray-50 prose-p:leading-relaxed prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-a:font-medium prose-a:text-indigo-600 prose-a:no-underline prose-a:underline-offset-2 hover:prose-a:underline dark:prose-a:text-indigo-400 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-blockquote:border-l-4 prose-blockquote:border-indigo-300 prose-blockquote:font-medium prose-blockquote:not-italic prose-blockquote:text-gray-700 dark:prose-blockquote:border-indigo-700 dark:prose-blockquote:text-gray-300 prose-code:rounded prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-code:text-indigo-600 prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-gray-800 dark:prose-code:text-indigo-400 prose-img:rounded-2xl prose-img:shadow-md prose-li:text-gray-800 dark:prose-li:text-gray-300"
               dangerouslySetInnerHTML={{ __html: contentHtml }}
