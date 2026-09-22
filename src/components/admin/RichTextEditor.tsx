@@ -190,6 +190,14 @@ function FormatSelect({ editor }: { editor: Editor }) {
   );
 }
 
+/** Turns "my-blog-cover_v2.jpg" into a readable default Alt Text: "My blog cover v2". */
+function filenameToAltText(filename: string) {
+  const withoutExtension = filename.replace(/\.[a-z0-9]+$/i, "");
+  const spaced = withoutExtension.replace(/[-_]+/g, " ").trim();
+  if (!spaced) return "";
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
 const ICON = 16;
 
 function Toolbar({
@@ -515,7 +523,15 @@ export default function RichTextEditor({
           window.alert(data.error ?? "Upload failed.");
           return;
         }
-        editor.chain().focus().setImage({ src: data.media.url, alt: file.name }).run();
+        // Ask for a proper Alt Text (used for accessibility and image SEO)
+        // instead of silently using the raw uploaded filename.
+        const suggestedAlt = filenameToAltText(file.name);
+        const alt = window.prompt("Alt Text (describes the image for SEO)", suggestedAlt);
+        editor
+          .chain()
+          .focus()
+          .setImage({ src: data.media.url, alt: alt === null ? suggestedAlt : alt })
+          .run();
       } catch {
         window.alert("Network error while uploading the image.");
       }

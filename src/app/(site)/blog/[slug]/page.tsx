@@ -28,7 +28,14 @@ export async function generateMetadata({
   const blog = await loadBlog(slug);
   if (!blog) return {};
   return buildSeoMetadata({
-    seoMeta: blog.seoMeta,
+    seoMeta: {
+      ...blog.seoMeta,
+      // The Social Share Image field was removed from the admin Blog form
+      // to keep it simple — this is its promised fallback: reuse the post's
+      // own Featured Image for social share previews when no override was
+      // set on the dedicated SEO settings page.
+      ogImage: blog.seoMeta?.ogImage || blog.featuredImage,
+    },
     fallbackTitle: blog.title,
     fallbackDescription: blog.excerpt || excerptFromHtml(blog.content),
     path: `/blog/${blog.slug}`,

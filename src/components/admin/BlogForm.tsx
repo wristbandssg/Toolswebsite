@@ -221,10 +221,6 @@ export default function BlogForm({
                   value={values.excerpt}
                   onChange={(e) => update("excerpt", e.target.value)}
                 />
-                <span className="mt-1 block text-xs text-gray-400">
-                  {values.excerpt.length}/300 characters. Optional — falls back to an excerpt of
-                  the post content if left blank.
-                </span>
               </label>
             </div>
           </section>
@@ -235,11 +231,7 @@ export default function BlogForm({
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="mb-1 font-semibold">SEO</h2>
-            <p className="mb-4 text-sm text-gray-500">
-              Controls how this post appears in Google search results and when it&apos;s shared on
-              social media. Leave a field blank to fall back to the post&apos;s own title/content.
-            </p>
+            <h2 className="mb-4 font-semibold">SEO</h2>
             <div className="space-y-4">
               <label className="block text-sm">
                 <span className="font-medium">Meta Title</span>
@@ -250,9 +242,6 @@ export default function BlogForm({
                   onChange={(e) => updateSeo("metaTitle", e.target.value)}
                   maxLength={70}
                 />
-                <span className="mt-1 block text-xs text-gray-400">
-                  {values.seo.metaTitle.length}/70 characters.
-                </span>
               </label>
               <label className="block text-sm">
                 <span className="font-medium">Meta Description</span>
@@ -264,9 +253,6 @@ export default function BlogForm({
                   onChange={(e) => updateSeo("metaDescription", e.target.value)}
                   maxLength={160}
                 />
-                <span className="mt-1 block text-xs text-gray-400">
-                  {values.seo.metaDescription.length}/160 characters.
-                </span>
               </label>
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block text-sm">
@@ -288,23 +274,6 @@ export default function BlogForm({
                   />
                 </label>
               </div>
-              <label className="block text-sm">
-                <span className="font-medium">Social Share Image (og:image)</span>
-                <input
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                  placeholder="https://... (defaults to the featured image)"
-                  value={values.seo.ogImage}
-                  onChange={(e) => updateSeo("ogImage", e.target.value)}
-                />
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={values.seo.robotsIndex}
-                  onChange={(e) => updateSeo("robotsIndex", e.target.checked)}
-                />
-                <span>Allow search engines to index this post</span>
-              </label>
             </div>
           </section>
 
@@ -398,9 +367,6 @@ export default function BlogForm({
                   value={values.publishedAt}
                   onChange={(e) => update("publishedAt", e.target.value)}
                 />
-                <span className="mt-1 block text-xs text-gray-400">
-                  Leave blank when publishing to use today&apos;s date.
-                </span>
               </label>
               <button
                 type="submit"
@@ -489,16 +455,6 @@ export default function BlogForm({
                 />
               </label>
             </div>
-          </section>
-
-          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="mb-4 font-semibold">Tags</h2>
-            <input
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
-              placeholder="finance, budgeting, tips (comma-separated)"
-              value={values.tags}
-              onChange={(e) => update("tags", e.target.value)}
-            />
           </section>
         </div>
       </div>
