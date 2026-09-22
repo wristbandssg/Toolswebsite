@@ -13,5 +13,10 @@ export interface BlogTemplateProps {
     categorySlug?: string | null;
   };
   relatedTools: { slug: string; title: string }[];
-  relatedBlogs: { slug: string; title: string }[];
+  relatedBlogs: {
+    slug: string;
+    title: string;
+    publishedAt: string | null;
+    categoryName?: string | null;
+  }[];
 }

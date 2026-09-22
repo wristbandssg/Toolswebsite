@@ -25,24 +25,69 @@ function initialsFor(name: string) {
   return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
+/** One entry in the "More Articles" sidebar card. */
+function RelatedPostRow({
+  blog,
+}: {
+  blog: { slug: string; title: string; publishedAt: string | null; categoryName?: string | null };
+}) {
+  return (
+    <a
+      href={`/blog/${blog.slug}`}
+      className="block px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60"
+    >
+      {blog.categoryName ? (
+        <p className="text-[11px] font-bold uppercase tracking-wide text-rose-600 dark:text-rose-400">
+          {blog.categoryName}
+        </p>
+      ) : null}
+      <p className="mt-0.5 text-sm font-semibold leading-snug text-gray-900 dark:text-gray-100">
+        {blog.title}
+      </p>
+      {blog.publishedAt ? (
+        <p className="mt-0.5 text-xs text-gray-400">
+          {new Date(blog.publishedAt).toLocaleDateString()}
+        </p>
+      ) : null}
+    </a>
+  );
+}
+
 /**
  * The single Blog Template — every blog post uses this same layout; only
  * content differs. Header section checked against a live reference site
  * (nextstair.com/alternatives/surfshark-alternatives): a category label,
  * then the title, then the post's short description, then an author row
  * (avatar, name, updated date, reading time) — all as one header block,
- * full width. Below that is a separate section: a two-column body with a
+ * full width. Below that is a distinct, softly-shaded body section: a
  * sticky, scroll-spy Table of Contents on the left (auto-built from the
- * post's own H2/H3 headings) and the article in the main column. The
- * sidebar is skipped entirely for short posts with no headings.
+ * post's own H2/H3 headings), the article in the middle, and — on wide
+ * screens — a "More Articles" card on the right, mirroring the reference's
+ * layout. Every panel collapses gracefully on narrower screens: the TOC
+ * hides below `lg`, the sidebar card drops beneath the article below `xl`
+ * instead of being squeezed into a cramped third column.
  */
 export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogTemplateProps) {
   const { html: contentHtml, headings } = extractTableOfContents(blog.content);
   const readingMinutes = estimateReadingMinutes(blog.content);
   const authorName = blog.authorName ?? "Editorial Team";
 
+  const relatedCard =
+    relatedBlogs.length > 0 ? (
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+        <div className="bg-gradient-to-r from-amber-500 to-orange-400 px-4 py-2.5">
+          <p className="text-xs font-bold uppercase tracking-wide text-white">More Articles</p>
+        </div>
+        <div className="divide-y divide-gray-100 dark:divide-gray-800">
+          {relatedBlogs.map((b) => (
+            <RelatedPostRow key={b.slug} blog={b} />
+          ))}
+        </div>
+      </div>
+    ) : null;
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
       {/* Header section: category, title, short description, author/meta row */}
       <header>
         {blog.categoryName ? (
@@ -57,15 +102,17 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
           </p>
         ) : null}
 
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">{blog.title}</h1>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]">
+          {blog.title}
+        </h1>
 
         {blog.excerpt ? (
-          <p className="mt-3 max-w-3xl text-lg text-gray-500">{blog.excerpt}</p>
+          <p className="mt-3 max-w-3xl text-base text-gray-500 sm:text-lg">{blog.excerpt}</p>
         ) : null}
 
         <div className="mt-5 flex items-center gap-3 border-b border-gray-100 pb-5 dark:border-gray-800">
           <span
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ${avatarColorFor(authorName)}`}
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ${avatarColorFor(authorName)}`}
           >
             {initialsFor(authorName)}
           </span>
@@ -90,48 +137,47 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
         ) : null}
       </header>
 
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
-        <TableOfContents headings={headings} />
+      {/* Body section: a softly-shaded panel holding the TOC, article and
+          "More Articles" sidebar, visually set apart from the header above. */}
+      <div className="mt-8 rounded-2xl bg-gray-50 p-4 dark:bg-gray-900/40 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_280px]">
+          <TableOfContents headings={headings} />
 
-        <article className="min-w-0">
-          <div
-            className="prose max-w-none dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: contentHtml }}
-          />
+          <article className="min-w-0">
+            <div
+              className="prose max-w-none dark:prose-invert prose-headings:scroll-mt-24"
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
+            />
 
-          {relatedTools.length > 0 ? (
-            <section className="mt-10 border-t border-gray-200 pt-6 dark:border-gray-800">
-              <h2 className="mb-2 text-lg font-semibold">সম্পর্কিত Calculator</h2>
-              <ul className="flex flex-wrap gap-2">
-                {relatedTools.map((t) => (
-                  <li key={t.slug}>
-                    <a
-                      href={`/tools/${t.slug}`}
-                      className="rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
-                    >
-                      {t.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            {relatedTools.length > 0 ? (
+              <section className="mt-10 border-t border-gray-200 pt-6 dark:border-gray-800">
+                <h2 className="mb-2 text-lg font-semibold">সম্পর্কিত Calculator</h2>
+                <ul className="flex flex-wrap gap-2">
+                  {relatedTools.map((t) => (
+                    <li key={t.slug}>
+                      <a
+                        href={`/tools/${t.slug}`}
+                        className="rounded-full border border-gray-300 bg-white px-3 py-1 text-sm transition-colors hover:border-indigo-300 hover:text-indigo-600 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-700"
+                      >
+                        {t.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {/* Below `xl` the sidebar card has no room of its own, so it
+                drops in here instead of being squeezed into the grid. */}
+            {relatedCard ? <div className="mt-10 xl:hidden">{relatedCard}</div> : null}
+          </article>
+
+          {relatedCard ? (
+            <aside className="hidden xl:block">
+              <div className="sticky top-6">{relatedCard}</div>
+            </aside>
           ) : null}
-
-          {relatedBlogs.length > 0 ? (
-            <section className="mt-6">
-              <h2 className="mb-2 text-lg font-semibold">আরও পড়ুন</h2>
-              <ul className="space-y-2">
-                {relatedBlogs.map((b) => (
-                  <li key={b.slug}>
-                    <a href={`/blog/${b.slug}`} className="text-indigo-600 hover:underline">
-                      {b.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-        </article>
+        </div>
       </div>
     </div>
   );

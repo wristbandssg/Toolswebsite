@@ -12,7 +12,7 @@ async function loadBlog(slug: string) {
       author: true,
       seoMeta: true,
       toolRelations: { include: { tool: true } },
-      relatedFrom: { include: { relatedBlog: true } },
+      relatedFrom: { include: { relatedBlog: { include: { category: true } } } },
     },
   });
   if (!blog || blog.status !== "published") return null;
@@ -63,10 +63,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         categorySlug: blog.category?.slug,
       }}
       relatedTools={blog.toolRelations.map((r) => ({ slug: r.tool.slug, title: r.tool.title }))}
-      relatedBlogs={blog.relatedFrom.map((r) => ({
-        slug: r.relatedBlog.slug,
-        title: r.relatedBlog.title,
-      }))}
+      relatedBlogs={blog.relatedFrom
+        // A related post picked while it was still a draft shouldn't show
+        // up as a dead link once it's live — the public post page 404s on
+        // anything that isn't published.
+        .filter((r) => r.relatedBlog.status === "published")
+        .map((r) => ({
+          slug: r.relatedBlog.slug,
+          title: r.relatedBlog.title,
+          publishedAt: r.relatedBlog.publishedAt ? r.relatedBlog.publishedAt.toISOString() : null,
+          categoryName: r.relatedBlog.category?.name,
+        }))}
     />
   );
 }

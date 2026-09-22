@@ -48,22 +48,22 @@ export default function TableOfContents({ headings }: { headings: TocHeading[] }
   return (
     <aside className="hidden lg:block">
       <div className="sticky top-6">
-        <p className="mb-4 text-sm font-bold text-gray-900 dark:text-gray-100">
+        <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">
           Table of Contents
         </p>
-        <nav className="space-y-px">
+        <nav className="relative space-y-0.5 border-l-2 border-gray-200 dark:border-gray-800">
           {headings.map((h) => {
             const active = h.id === activeId;
             return (
               <a
                 key={h.id}
                 href={`#${h.id}`}
-                className={`block border-l-2 py-1.5 text-[13px] leading-snug transition-colors ${
-                  h.level === 3 ? "pl-5" : "pl-3"
+                className={`-ml-0.5 block border-l-2 py-1.5 text-[13px] leading-snug transition-all ${
+                  h.level === 3 ? "pl-7" : "pl-4"
                 } ${
                   active
                     ? "border-indigo-600 font-semibold text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200"
+                    : "border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
                 }`}
               >
                 {h.text}
