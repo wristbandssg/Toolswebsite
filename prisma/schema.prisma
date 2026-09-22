@@ -1,0 +1,360 @@
+// ---------------------------------------------------------------------------
+// Prisma schema for the AI-Powered Calculator & Blog Platform
+// Mirrors the "Database Schema Design" section of the architecture plan doc.
+// Provider: MongoDB (Atlas). Notes vs. a relational DB:
+//   - every model's primary key is `id String @id @default(auto()) @map("_id") @db.ObjectId`
+//   - every foreign-key scalar field is typed `String @db.ObjectId`
+//   - MongoDB does NOT support composite `@id`s, so the old pivot tables
+//     (ToolBlogRelation, BlogRelatedBlog) now have their own ObjectId `id`
+//     plus a `@@unique([...])` compound index instead of `@@id([...])`
+//   - there is no `prisma migrate` for Mongo — run `npx prisma db push`
+//     to sync the schema to the database (see README)
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentStatus {
+  draft
+  in_review
+  published
+  needs_update
+}
+
+enum UserRole {
+  admin
+  editor
+  author
+}
+
+enum CalcType {
+  expression
+  custom
+}
+
+enum TopicStatus {
+  suggested
+  approved
+  rejected
+  generated
+  published
+}
+
+enum LinkStatus {
+  suggested
+  approved
+  rejected
+}
+
+enum RedirectType {
+  permanent // 301
+  temporary // 302
+}
+
+// ---------------------------------------------------------------------------
+// Users / Auth
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(editor)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  blogs Blog[] @relation("BlogAuthor")
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Calculator Tools
+// ---------------------------------------------------------------------------
+
+model ToolCategory {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  slug String @unique
+
+  // "3-way" category page config (added per user request):
+  //   1) which of the 3 category page templates this category uses
+  //   2) which of the 3 tool-list view styles (grid / list / card-description)
+  templateKey String   @default("category-template-1")
+  viewStyle   String   @default("grid") // grid | list | card-description
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tools Tool[]
+
+  @@map("tool_categories")
+}
+
+model Tool {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String        @unique
+  title       String
+  description String?
+  templateKey String        @default("tool-template-1")
+  status      ContentStatus @default(draft)
+
+  categoryId String?       @db.ObjectId
+  category   ToolCategory? @relation(fields: [categoryId], references: [id])
+
+  // Calculation logic
+  calcType    CalcType @default(expression)
+  calcFormula String? // e.g. "(part / whole) * 100"
+  calcInputs  String // JSON: [{ key, label, type, unit, required, default, min, max }]
+  calcResult  String? // JSON: { label, unit, format }
+
+  // Content
+  instructions String? // rich text / markdown
+  examples     String? // rich text / markdown
+  faq          String? // JSON: [{ question, answer }]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  seoMeta       SeoMeta?
+  blogRelations ToolBlogRelation[]
+  linkSourceOf  InternalLinkSuggestion[] @relation("LinkSourceTool")
+  linkTargetOf  InternalLinkSuggestion[] @relation("LinkTargetTool")
+  contentPlans  AiContentPlan[]
+
+  @@map("tools")
+}
+
+// ---------------------------------------------------------------------------
+// Blog
+// ---------------------------------------------------------------------------
+
+model BlogCategory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  blogs Blog[]
+
+  @@map("blog_categories")
+}
+
+model Blog {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug          String        @unique
+  title         String
+  featuredImage String?
+  content       String // rich text HTML/JSON from the editor
+  tags          String // JSON string[]
+  status        ContentStatus @default(draft)
+  publishedAt   DateTime?
+
+  categoryId String?       @db.ObjectId
+  category   BlogCategory? @relation(fields: [categoryId], references: [id])
+
+  authorId String? @db.ObjectId
+  author   User?   @relation("BlogAuthor", fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  seoMeta       SeoMeta?
+  toolRelations ToolBlogRelation[]
+  relatedFrom   BlogRelatedBlog[]        @relation("BlogFrom")
+  relatedTo     BlogRelatedBlog[]        @relation("BlogTo")
+  linkSourceOf  InternalLinkSuggestion[] @relation("LinkSourceBlog")
+  linkTargetOf  InternalLinkSuggestion[] @relation("LinkTargetBlog")
+  fromAiTopic   AiContentTopic?
+
+  @@map("blogs")
+}
+
+// Many-to-many: Tool <-> Blog.
+// Mongo can't use a composite @id here, so this gets its own ObjectId id
+// plus a compound unique index to keep one row per (toolId, blogId) pair.
+model ToolBlogRelation {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  toolId String @db.ObjectId
+  blogId String @db.ObjectId
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, blogId])
+  @@map("tool_blog_relations")
+}
+
+// Many-to-many: Blog <-> Blog (related posts) — same composite-key workaround.
+model BlogRelatedBlog {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  blogId        String @db.ObjectId
+  relatedBlogId String @db.ObjectId
+  blog          Blog   @relation("BlogFrom", fields: [blogId], references: [id], onDelete: Cascade)
+  relatedBlog   Blog   @relation("BlogTo", fields: [relatedBlogId], references: [id], onDelete: Cascade)
+
+  @@unique([blogId, relatedBlogId])
+  @@map("blog_related_blogs")
+}
+
+// ---------------------------------------------------------------------------
+// Pages
+// ---------------------------------------------------------------------------
+
+model Page {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String        @unique
+  title       String
+  templateKey String        @default("page-template-1")
+  sections    String // JSON array of { type, content }
+  status      ContentStatus @default(draft)
+
+  headerId String? @db.ObjectId
+  footerId String? @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  seoMeta SeoMeta?
+
+  @@map("pages")
+}
+
+// ---------------------------------------------------------------------------
+// SEO (polymorphic across Tool / Blog / Page)
+// ---------------------------------------------------------------------------
+
+model SeoMeta {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  contentType     String // "tool" | "blog" | "page"
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+  ogImage         String?
+  robotsIndex     Boolean @default(true)
+  schemaType      String?
+
+  toolId String? @unique @db.ObjectId
+  tool   Tool?   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  blogId String? @unique @db.ObjectId
+  blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  pageId String? @unique @db.ObjectId
+  page   Page?   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@map("seo_meta")
+}
+
+// ---------------------------------------------------------------------------
+// Media Library
+// ---------------------------------------------------------------------------
+
+model Media {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  url        String
+  altText    String?
+  uploadedBy String?
+  createdAt  DateTime @default(now())
+
+  @@map("media")
+}
+
+// ---------------------------------------------------------------------------
+// Menus / Site Settings
+// ---------------------------------------------------------------------------
+
+model Menu {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  location  String // "header" | "footer" | "mega-menu"
+  structure String // JSON nested tree
+  updatedAt DateTime @updatedAt
+
+  @@unique([location])
+  @@map("menus")
+}
+
+model SiteSetting {
+  key   String @id @map("_id") // natural key, not an ObjectId
+  value String // JSON or plain string
+
+  @@map("site_settings")
+}
+
+model Redirect {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  fromPath  String       @unique
+  toPath    String
+  type      RedirectType @default(permanent)
+  createdAt DateTime     @default(now())
+
+  @@map("redirects")
+}
+
+// ---------------------------------------------------------------------------
+// AI Content Planner
+// ---------------------------------------------------------------------------
+
+model AiContentPlan {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  toolId    String   @db.ObjectId
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  status    String   @default("draft") // draft | approved
+  createdAt DateTime @default(now())
+
+  topics AiContentTopic[]
+
+  @@map("ai_content_plans")
+}
+
+model AiContentTopic {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  planId       String        @db.ObjectId
+  plan         AiContentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  topicTitle   String
+  searchIntent String?
+  keywords     String // JSON string[]
+  outline      String? // markdown
+  status       TopicStatus   @default(suggested)
+
+  blogId String? @unique @db.ObjectId
+  blog   Blog?   @relation(fields: [blogId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ai_content_topics")
+}
+
+// ---------------------------------------------------------------------------
+// Internal Linking
+// ---------------------------------------------------------------------------
+
+model InternalLinkSuggestion {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  sourceType String // "tool" | "blog"
+  anchorText String
+  status     LinkStatus @default(suggested)
+  createdAt  DateTime   @default(now())
+
+  sourceToolId String? @db.ObjectId
+  sourceTool   Tool?   @relation("LinkSourceTool", fields: [sourceToolId], references: [id])
+
+  sourceBlogId String? @db.ObjectId
+  sourceBlog   Blog?   @relation("LinkSourceBlog", fields: [sourceBlogId], references: [id])
+
+  targetType String // "tool" | "blog"
+
+  targetToolId String? @db.ObjectId
+  targetTool   Tool?   @relation("LinkTargetTool", fields: [targetToolId], references: [id])
+
+  targetBlogId String? @db.ObjectId
+  targetBlog   Blog?   @relation("LinkTargetBlog", fields: [targetBlogId], references: [id])
+
+  @@map("internal_link_suggestions")
+}
