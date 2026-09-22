@@ -19,13 +19,13 @@ export default async function BlogsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Blog Posts</h1>
-          <p className="mt-1 text-sm text-gray-500">সব Blog Post এখান থেকে Create/Edit করুন।</p>
+          <p className="mt-1 text-sm text-gray-500">Create and edit all your blog posts here.</p>
         </div>
         <Link
           href="/admin/blogs/new"
           className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
         >
-          + নতুন Blog Post
+          + New Blog Post
         </Link>
       </div>
 
@@ -65,7 +65,7 @@ export default async function BlogsListPage() {
             {blogs.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                  এখনো কোনো Blog Post তৈরি হয়নি।
+                  No blog posts yet.
                 </td>
               </tr>
             ) : null}

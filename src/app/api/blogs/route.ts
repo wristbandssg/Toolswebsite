@@ -7,7 +7,7 @@ const blogSchema = z.object({
   slug: z
     .string()
     .min(1)
-    .regex(/^[a-z0-9-]+$/, "Slug-এ শুধু ছোট হাতের অক্ষর, সংখ্যা ও হাইফেন ব্যবহার করুন"),
+    .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   title: z.string().min(1),
   featuredImage: z.string().optional().nullable(),
   content: z.string().min(1),
@@ -52,14 +52,14 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
-    return NextResponse.json({ error: "Login প্রয়োজন" }, { status: 401 });
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
 
   const body = await req.json();
   const parsed = blogSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Form Validation ব্যর্থ", details: parsed.error.flatten() },
+      { error: "Form validation failed", details: parsed.error.flatten() },
       { status: 400 }
     );
   }
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
   const existing = await prisma.blog.findUnique({ where: { slug: data.slug } });
   if (existing) {
-    return NextResponse.json({ error: "এই Slug ইতিমধ্যে ব্যবহৃত হয়েছে" }, { status: 409 });
+    return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
   }
 
   const categoryId = await resolveCategoryId(data.categoryId, data.newCategoryName);

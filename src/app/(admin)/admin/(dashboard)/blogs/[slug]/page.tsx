@@ -25,10 +25,10 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{blog.title} Edit করুন</h1>
+      <h1 className="text-2xl font-bold">Edit &quot;{blog.title}&quot;</h1>
       <p className="mt-1 text-sm text-gray-500">
         <a href={`/blog/${blog.slug}`} target="_blank" className="text-indigo-600 hover:underline">
-          Live Page দেখুন →
+          View Live Page →
         </a>
       </p>
       <div className="mt-6">

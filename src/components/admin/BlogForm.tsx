@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import RichTextEditor from "./RichTextEditor";
 
 export interface BlogFormValues {
   slug: string;
@@ -55,8 +56,10 @@ export default function BlogForm({
   const router = useRouter();
   const [values, setValues] = useState<BlogFormValues>({ ...EMPTY, ...initial });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function update<K extends keyof BlogFormValues>(key: K, val: BlogFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -65,6 +68,27 @@ export default function BlogForm({
   function toggleId(key: "toolIds" | "relatedBlogIds", id: string) {
     const current = values[key];
     update(key, current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
+  }
+
+  async function handleFeaturedImageUpload(file: File) {
+    setUploading(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/media/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Image upload failed.");
+        return;
+      }
+      update("featuredImage", data.media.url as string);
+    } catch {
+      setError("Network error while uploading the image.");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -98,13 +122,13 @@ export default function BlogForm({
       );
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Save করা যায়নি।");
+        setError(data.error ?? "Could not save the post.");
         return;
       }
       router.push("/admin/blogs");
       router.refresh();
     } catch {
-      setError("নেটওয়ার্ক সমস্যা — আবার চেষ্টা করুন।");
+      setError("Network error — please try again.");
     } finally {
       setSaving(false);
     }
@@ -163,26 +187,64 @@ export default function BlogForm({
               onChange={(e) => update("publishedAt", e.target.value)}
             />
             <span className="mt-1 block text-xs text-gray-400">
-              Status &quot;Published&quot; করলে খালি রাখলে আজকের তারিখ বসবে।
+              Leave blank when publishing to use today&apos;s date.
             </span>
           </label>
-          <label className="text-sm sm:col-span-2">
-            <span className="font-medium">Featured Image URL</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              placeholder="https://..."
-              value={values.featuredImage}
-              onChange={(e) => update("featuredImage", e.target.value)}
-            />
-            <span className="mt-1 block text-xs text-gray-400">
-              Media Library তৈরি হলে (পরবর্তী ধাপে) এখান থেকে সরাসরি Select করা যাবে।
-            </span>
-          </label>
+          <div className="text-sm sm:col-span-2">
+            <span className="font-medium">Featured Image</span>
+            <div className="mt-1 flex items-start gap-3">
+              {values.featuredImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={values.featuredImage}
+                  alt=""
+                  className="h-20 w-32 flex-shrink-0 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                />
+              ) : null}
+              <div className="flex-1 space-y-2">
+                <input
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  placeholder="https://... (paste an image URL)"
+                  value={values.featuredImage}
+                  onChange={(e) => update("featuredImage", e.target.value)}
+                />
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFeaturedImageUpload(file);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={uploading}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50 disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
+                  >
+                    {uploading ? "Uploading..." : "Upload Image"}
+                  </button>
+                  {values.featuredImage ? (
+                    <button
+                      type="button"
+                      onClick={() => update("featuredImage", "")}
+                      className="text-sm text-red-600 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div>
           <label className="text-sm sm:col-span-2">
             <span className="font-medium">Tags</span>
             <input
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              placeholder="finance, budgeting, tips (কমা দিয়ে আলাদা করুন)"
+              placeholder="finance, budgeting, tips (comma-separated)"
               value={values.tags}
               onChange={(e) => update("tags", e.target.value)}
             />
@@ -195,13 +257,13 @@ export default function BlogForm({
         <h2 className="mb-4 font-semibold">Category</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="text-sm">
-            <span className="font-medium">বিদ্যমান Category বেছে নিন</span>
+            <span className="font-medium">Choose an existing category</span>
             <select
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
               value={values.categoryId}
               onChange={(e) => update("categoryId", e.target.value)}
             >
-              <option value="">-- কোনোটা না --</option>
+              <option value="">-- None --</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -210,7 +272,7 @@ export default function BlogForm({
             </select>
           </label>
           <label className="text-sm">
-            <span className="font-medium">অথবা নতুন Category-এর নাম দিন</span>
+            <span className="font-medium">Or create a new category</span>
             <input
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
               placeholder="e.g. Budgeting Tips"
@@ -224,24 +286,15 @@ export default function BlogForm({
       {/* Content */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-4 font-semibold">Content</h2>
-        <label className="block text-sm">
-          <span className="font-medium">Blog Content (HTML লেখা যাবে)</span>
-          <textarea
-            required
-            rows={12}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm dark:border-gray-700 dark:bg-gray-800"
-            value={values.content}
-            onChange={(e) => update("content", e.target.value)}
-          />
-        </label>
+        <RichTextEditor value={values.content} onChange={(html) => update("content", html)} />
       </section>
 
       {/* Tool Relations */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-1 font-semibold">Tool Relations</h2>
         <p className="mb-4 text-sm text-gray-500">
-          এই Blog-টা কোন কোন Calculator Tool-এর &quot;Support Blog&quot; হিসেবে দেখাবে — সেই Tool-এর
-          Page-এ এটা লিংক হবে।
+          Pick which Calculator Tools this post should appear on as a &quot;Support Blog&quot;
+          — it will be linked from that tool&apos;s page.
         </p>
         <div className="flex flex-wrap gap-2">
           {tools.map((t) => (
@@ -263,7 +316,7 @@ export default function BlogForm({
             </label>
           ))}
           {tools.length === 0 ? (
-            <p className="text-sm text-gray-400">এখনো কোনো Tool তৈরি হয়নি।</p>
+            <p className="text-sm text-gray-400">No tools have been created yet.</p>
           ) : null}
         </div>
       </section>
@@ -272,7 +325,7 @@ export default function BlogForm({
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-1 font-semibold">Related Blog Posts</h2>
         <p className="mb-4 text-sm text-gray-500">
-          এই Blog-এর নিচে &quot;আরও পড়ুন&quot; অংশে কোন কোন Post দেখাবে।
+          Choose which posts show up under &quot;Read More&quot; at the bottom of this post.
         </p>
         <div className="flex flex-wrap gap-2">
           {otherBlogs.map((b) => (
@@ -294,7 +347,7 @@ export default function BlogForm({
             </label>
           ))}
           {otherBlogs.length === 0 ? (
-            <p className="text-sm text-gray-400">এখনো অন্য কোনো Blog Post নেই।</p>
+            <p className="text-sm text-gray-400">There are no other blog posts yet.</p>
           ) : null}
         </div>
       </section>

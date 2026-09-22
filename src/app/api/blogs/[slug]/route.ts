@@ -34,20 +34,20 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
       relatedFrom: { include: { relatedBlog: true } },
     },
   });
-  if (!blog) return NextResponse.json({ error: "Blog পাওয়া যায়নি" }, { status: 404 });
+  if (!blog) return NextResponse.json({ error: "Blog not found" }, { status: 404 });
   return NextResponse.json({ blog });
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const session = await auth();
   if (!session?.user) {
-    return NextResponse.json({ error: "Login প্রয়োজন" }, { status: 401 });
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
   const { slug } = await params;
   const body = await req.json();
 
   const existing = await prisma.blog.findUnique({ where: { slug } });
-  if (!existing) return NextResponse.json({ error: "Blog পাওয়া যায়নি" }, { status: 404 });
+  if (!existing) return NextResponse.json({ error: "Blog not found" }, { status: 404 });
 
   const categoryId = await resolveCategoryId(body.categoryId, body.newCategoryName);
 
@@ -96,7 +96,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const session = await auth();
   if (!session?.user) {
-    return NextResponse.json({ error: "Login প্রয়োজন" }, { status: 401 });
+    return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
   const { slug } = await params;
   await prisma.blog.delete({ where: { slug } });

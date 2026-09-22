@@ -10,9 +10,9 @@ export default async function NewBlogPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">নতুন Blog Post</h1>
+      <h1 className="text-2xl font-bold">New Blog Post</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Content লিখুন, Category বেছে নিন, এবং প্রয়োজনে Tool/Related Blog-এর সাথে যুক্ত করুন।
+        Write the content, pick a category, and optionally link it to tools or related posts.
       </p>
       <div className="mt-6">
         <BlogForm
