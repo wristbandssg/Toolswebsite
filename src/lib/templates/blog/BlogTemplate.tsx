@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { BlogTemplateProps } from "./types";
 import TableOfContents from "@/components/TableOfContents";
+import ReadingProgressBar from "@/components/ReadingProgressBar";
 import { extractTableOfContents, estimateReadingMinutes } from "@/lib/toc";
 
 // A small fixed palette so an author's initials-avatar color stays the same
@@ -45,7 +46,7 @@ function RelatedPostRow({
         {blog.title}
       </p>
       {blog.publishedAt ? (
-        <p className="mt-0.5 text-xs text-gray-400">
+        <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-500">
           {new Date(blog.publishedAt).toLocaleDateString()}
         </p>
       ) : null}
@@ -74,7 +75,7 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
 
   const relatedCard =
     relatedBlogs.length > 0 ? (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="bg-gradient-to-r from-amber-500 to-orange-400 px-4 py-2.5">
           <p className="text-xs font-bold uppercase tracking-wide text-white">More Articles</p>
         </div>
@@ -88,42 +89,51 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
+      <ReadingProgressBar />
+
       {/* Header section: category, title, short description, author/meta row */}
       <header>
         {blog.categoryName ? (
-          <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">
-            {blog.categorySlug ? (
-              <Link href={`/blog/category/${blog.categorySlug}`} className="hover:underline">
-                {blog.categoryName}
-              </Link>
-            ) : (
-              blog.categoryName
-            )}
-          </p>
+          blog.categorySlug ? (
+            <Link
+              href={`/blog/category/${blog.categorySlug}`}
+              className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-700 ring-1 ring-inset ring-indigo-200 transition-colors hover:bg-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20 dark:hover:bg-indigo-500/20"
+            >
+              {blog.categoryName}
+            </Link>
+          ) : (
+            <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-700 ring-1 ring-inset ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20">
+              {blog.categoryName}
+            </span>
+          )
         ) : null}
 
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]">
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
           {blog.title}
         </h1>
 
         {blog.excerpt ? (
-          <p className="mt-3 max-w-3xl text-base text-gray-500 sm:text-lg">{blog.excerpt}</p>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-700 dark:text-gray-300 sm:text-lg">
+            {blog.excerpt}
+          </p>
         ) : null}
 
-        <div className="mt-5 flex items-center gap-3 border-b border-gray-100 pb-5 dark:border-gray-800">
+        <div className="mt-6 flex items-center gap-3 border-b border-gray-200 pb-6 dark:border-gray-800">
           <span
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white ${avatarColorFor(authorName)}`}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm ring-2 ring-white dark:ring-gray-950 ${avatarColorFor(authorName)}`}
           >
             {initialsFor(authorName)}
           </span>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
             <span>
-              By <span className="font-medium text-gray-700 dark:text-gray-300">{authorName}</span>
+              By <span className="font-semibold text-gray-900 dark:text-gray-100">{authorName}</span>
             </span>
             <span className="text-gray-300 dark:text-gray-700">·</span>
             <span>Updated {new Date(blog.updatedAt).toLocaleDateString()}</span>
             <span className="text-gray-300 dark:text-gray-700">·</span>
-            <span>{readingMinutes} min read</span>
+            <span className="font-medium text-indigo-600 dark:text-indigo-400">
+              {readingMinutes} min read
+            </span>
           </div>
         </div>
 
@@ -132,20 +142,20 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
           <img
             src={blog.featuredImage}
             alt={blog.title}
-            className="mt-6 aspect-video w-full rounded-xl object-cover"
+            className="mt-8 aspect-video w-full rounded-2xl object-cover shadow-lg ring-1 ring-gray-900/5"
           />
         ) : null}
       </header>
 
       {/* Body section: a softly-shaded panel holding the TOC, article and
           "More Articles" sidebar, visually set apart from the header above. */}
-      <div className="mt-8 rounded-2xl bg-gray-50 p-4 dark:bg-gray-900/40 sm:p-6 lg:p-8">
+      <div className="mt-10 rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_280px]">
           <TableOfContents headings={headings} />
 
           <article className="min-w-0">
             <div
-              className="prose max-w-none dark:prose-invert prose-headings:scroll-mt-24"
+              className="prose max-w-none dark:prose-invert prose-headings:scroll-mt-24 prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-gray-50 prose-p:leading-relaxed prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-a:font-medium prose-a:text-indigo-600 prose-a:no-underline prose-a:underline-offset-2 hover:prose-a:underline dark:prose-a:text-indigo-400 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-blockquote:border-l-4 prose-blockquote:border-indigo-300 prose-blockquote:font-medium prose-blockquote:not-italic prose-blockquote:text-gray-700 dark:prose-blockquote:border-indigo-700 dark:prose-blockquote:text-gray-300 prose-code:rounded prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-code:text-indigo-600 prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-gray-800 dark:prose-code:text-indigo-400 prose-img:rounded-2xl prose-img:shadow-md prose-li:text-gray-800 dark:prose-li:text-gray-300"
               dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
 

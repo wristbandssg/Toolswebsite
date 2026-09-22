@@ -48,7 +48,7 @@ export default function TableOfContents({ headings }: { headings: TocHeading[] }
   return (
     <aside className="hidden lg:block">
       <div className="sticky top-6">
-        <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+        <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">
           Table of Contents
         </p>
         <nav className="relative space-y-0.5 border-l-2 border-gray-200 dark:border-gray-800">
@@ -63,7 +63,7 @@ export default function TableOfContents({ headings }: { headings: TocHeading[] }
                 } ${
                   active
                     ? "border-indigo-600 font-semibold text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
-                    : "border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                    : "border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                 }`}
               >
                 {h.text}
