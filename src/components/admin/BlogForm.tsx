@@ -7,6 +7,7 @@ import RichTextEditor from "./RichTextEditor";
 export interface BlogFormValues {
   slug: string;
   title: string;
+  excerpt: string;
   featuredImage: string;
   content: string;
   tags: string; // comma-separated in the form, converted to array on submit
@@ -21,6 +22,7 @@ export interface BlogFormValues {
 const EMPTY: BlogFormValues = {
   slug: "",
   title: "",
+  excerpt: "",
   featuredImage: "",
   content: "",
   tags: "",
@@ -99,6 +101,7 @@ export default function BlogForm({
       const payload = {
         slug: values.slug,
         title: values.title,
+        excerpt: values.excerpt || null,
         featuredImage: values.featuredImage || null,
         content: values.content,
         tags: values.tags
@@ -135,233 +138,254 @@ export default function BlogForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
-      {/* Basic Info */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-4 font-semibold">Basic Info</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="text-sm">
-            <span className="font-medium">Title</span>
-            <input
-              required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              value={values.title}
-              onChange={(e) => {
-                update("title", e.target.value);
-                if (!slugTouched) update("slug", slugify(e.target.value));
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            <span className="font-medium">Slug / URL</span>
-            <input
-              required
-              disabled={mode === "edit"}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
-              value={values.slug}
-              onChange={(e) => {
-                setSlugTouched(true);
-                update("slug", slugify(e.target.value));
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            <span className="font-medium">Status</span>
-            <select
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              value={values.status}
-              onChange={(e) => update("status", e.target.value as BlogFormValues["status"])}
-            >
-              <option value="draft">Draft</option>
-              <option value="in_review">In Review</option>
-              <option value="published">Published</option>
-              <option value="needs_update">Needs Update</option>
-            </select>
-          </label>
-          <label className="text-sm">
-            <span className="font-medium">Published Date</span>
-            <input
-              type="date"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              value={values.publishedAt}
-              onChange={(e) => update("publishedAt", e.target.value)}
-            />
-            <span className="mt-1 block text-xs text-gray-400">
-              Leave blank when publishing to use today&apos;s date.
-            </span>
-          </label>
-          <div className="text-sm sm:col-span-2">
-            <span className="font-medium">Featured Image</span>
-            <div className="mt-1 flex items-start gap-3">
+    <form onSubmit={handleSubmit} className="max-w-6xl">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+        {/* Main column */}
+        <div className="min-w-0 space-y-8">
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-4 font-semibold">Basic Info</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="text-sm">
+                <span className="font-medium">Title</span>
+                <input
+                  required
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  value={values.title}
+                  onChange={(e) => {
+                    update("title", e.target.value);
+                    if (!slugTouched) update("slug", slugify(e.target.value));
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                <span className="font-medium">Slug / URL</span>
+                <input
+                  required
+                  disabled={mode === "edit"}
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
+                  value={values.slug}
+                  onChange={(e) => {
+                    setSlugTouched(true);
+                    update("slug", slugify(e.target.value));
+                  }}
+                />
+              </label>
+              <label className="text-sm sm:col-span-2">
+                <span className="font-medium">Short Description</span>
+                <textarea
+                  rows={2}
+                  maxLength={300}
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  placeholder="A one or two sentence summary — shown on the blog list and used as the search-result description."
+                  value={values.excerpt}
+                  onChange={(e) => update("excerpt", e.target.value)}
+                />
+                <span className="mt-1 block text-xs text-gray-400">
+                  {values.excerpt.length}/300 characters. Optional — falls back to an excerpt of
+                  the post content if left blank.
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-4 font-semibold">Content</h2>
+            <RichTextEditor value={values.content} onChange={(html) => update("content", html)} />
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-1 font-semibold">Tool Relations</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Pick which Calculator Tools this post should appear on as a &quot;Support
+              Blog&quot; — it will be linked from that tool&apos;s page.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {tools.map((t) => (
+                <label
+                  key={t.id}
+                  className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm ${
+                    values.toolIds.includes(t.id)
+                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
+                      : "border-gray-200 dark:border-gray-700"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="mr-1.5"
+                    checked={values.toolIds.includes(t.id)}
+                    onChange={() => toggleId("toolIds", t.id)}
+                  />
+                  {t.title}
+                </label>
+              ))}
+              {tools.length === 0 ? (
+                <p className="text-sm text-gray-400">No tools have been created yet.</p>
+              ) : null}
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-1 font-semibold">Related Blog Posts</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Choose which posts show up under &quot;Read More&quot; at the bottom of this post.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {otherBlogs.map((b) => (
+                <label
+                  key={b.id}
+                  className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm ${
+                    values.relatedBlogIds.includes(b.id)
+                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
+                      : "border-gray-200 dark:border-gray-700"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="mr-1.5"
+                    checked={values.relatedBlogIds.includes(b.id)}
+                    onChange={() => toggleId("relatedBlogIds", b.id)}
+                  />
+                  {b.title}
+                </label>
+              ))}
+              {otherBlogs.length === 0 ? (
+                <p className="text-sm text-gray-400">There are no other blog posts yet.</p>
+              ) : null}
+            </div>
+          </section>
+
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6 lg:sticky lg:top-6 lg:h-fit">
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-4 font-semibold">Publish</h2>
+            <div className="space-y-4">
+              <label className="block text-sm">
+                <span className="font-medium">Status</span>
+                <select
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  value={values.status}
+                  onChange={(e) => update("status", e.target.value as BlogFormValues["status"])}
+                >
+                  <option value="draft">Draft</option>
+                  <option value="in_review">In Review</option>
+                  <option value="published">Published</option>
+                  <option value="needs_update">Needs Update</option>
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium">Published Date</span>
+                <input
+                  type="date"
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  value={values.publishedAt}
+                  onChange={(e) => update("publishedAt", e.target.value)}
+                />
+                <span className="mt-1 block text-xs text-gray-400">
+                  Leave blank when publishing to use today&apos;s date.
+                </span>
+              </label>
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full rounded-lg bg-indigo-600 px-5 py-2.5 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+              >
+                {saving ? "Saving..." : mode === "create" ? "Create Blog Post" : "Save Changes"}
+              </button>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-4 font-semibold">Featured Image</h2>
+            <div className="space-y-2">
               {values.featuredImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={values.featuredImage}
                   alt=""
-                  className="h-20 w-32 flex-shrink-0 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                  className="aspect-video w-full rounded-lg border border-gray-200 object-cover dark:border-gray-700"
                 />
               ) : null}
-              <div className="flex-1 space-y-2">
+              <input
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                placeholder="https://... (paste an image URL)"
+                value={values.featuredImage}
+                onChange={(e) => update("featuredImage", e.target.value)}
+              />
+              <div className="flex items-center gap-2">
                 <input
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
-                  placeholder="https://... (paste an image URL)"
-                  value={values.featuredImage}
-                  onChange={(e) => update("featuredImage", e.target.value)}
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFeaturedImageUpload(file);
+                  }}
                 />
-                <div className="flex items-center gap-2">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFeaturedImageUpload(file);
-                    }}
-                  />
+                <button
+                  type="button"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50 disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
+                >
+                  {uploading ? "Uploading..." : "Upload Image"}
+                </button>
+                {values.featuredImage ? (
                   <button
                     type="button"
-                    disabled={uploading}
-                    onClick={() => fileInputRef.current?.click()}
-                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50 disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
+                    onClick={() => update("featuredImage", "")}
+                    className="text-sm text-red-600 hover:underline"
                   >
-                    {uploading ? "Uploading..." : "Upload Image"}
+                    Remove
                   </button>
-                  {values.featuredImage ? (
-                    <button
-                      type="button"
-                      onClick={() => update("featuredImage", "")}
-                      className="text-sm text-red-600 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  ) : null}
-                </div>
+                ) : null}
               </div>
             </div>
-          </div>
-          <label className="text-sm sm:col-span-2">
-            <span className="font-medium">Tags</span>
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-4 font-semibold">Category</h2>
+            <div className="space-y-4">
+              <label className="block text-sm">
+                <span className="font-medium">Choose an existing category</span>
+                <select
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  value={values.categoryId}
+                  onChange={(e) => update("categoryId", e.target.value)}
+                >
+                  <option value="">-- None --</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium">Or create a new category</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                  placeholder="e.g. Budgeting Tips"
+                  value={values.newCategoryName}
+                  onChange={(e) => update("newCategoryName", e.target.value)}
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+            <h2 className="mb-4 font-semibold">Tags</h2>
             <input
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
               placeholder="finance, budgeting, tips (comma-separated)"
               value={values.tags}
               onChange={(e) => update("tags", e.target.value)}
             />
-          </label>
+          </section>
         </div>
-      </section>
-
-      {/* Category */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-4 font-semibold">Category</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="text-sm">
-            <span className="font-medium">Choose an existing category</span>
-            <select
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              value={values.categoryId}
-              onChange={(e) => update("categoryId", e.target.value)}
-            >
-              <option value="">-- None --</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm">
-            <span className="font-medium">Or create a new category</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              placeholder="e.g. Budgeting Tips"
-              value={values.newCategoryName}
-              onChange={(e) => update("newCategoryName", e.target.value)}
-            />
-          </label>
-        </div>
-      </section>
-
-      {/* Content */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-4 font-semibold">Content</h2>
-        <RichTextEditor value={values.content} onChange={(html) => update("content", html)} />
-      </section>
-
-      {/* Tool Relations */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-1 font-semibold">Tool Relations</h2>
-        <p className="mb-4 text-sm text-gray-500">
-          Pick which Calculator Tools this post should appear on as a &quot;Support Blog&quot;
-          — it will be linked from that tool&apos;s page.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {tools.map((t) => (
-            <label
-              key={t.id}
-              className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm ${
-                values.toolIds.includes(t.id)
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
-                  : "border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              <input
-                type="checkbox"
-                className="mr-1.5"
-                checked={values.toolIds.includes(t.id)}
-                onChange={() => toggleId("toolIds", t.id)}
-              />
-              {t.title}
-            </label>
-          ))}
-          {tools.length === 0 ? (
-            <p className="text-sm text-gray-400">No tools have been created yet.</p>
-          ) : null}
-        </div>
-      </section>
-
-      {/* Related Blogs */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-1 font-semibold">Related Blog Posts</h2>
-        <p className="mb-4 text-sm text-gray-500">
-          Choose which posts show up under &quot;Read More&quot; at the bottom of this post.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {otherBlogs.map((b) => (
-            <label
-              key={b.id}
-              className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm ${
-                values.relatedBlogIds.includes(b.id)
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
-                  : "border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              <input
-                type="checkbox"
-                className="mr-1.5"
-                checked={values.relatedBlogIds.includes(b.id)}
-                onChange={() => toggleId("relatedBlogIds", b.id)}
-              />
-              {b.title}
-            </label>
-          ))}
-          {otherBlogs.length === 0 ? (
-            <p className="text-sm text-gray-400">There are no other blog posts yet.</p>
-          ) : null}
-        </div>
-      </section>
-
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-lg bg-indigo-600 px-5 py-2.5 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
-          {saving ? "Saving..." : mode === "create" ? "Create Blog Post" : "Save Changes"}
-        </button>
       </div>
     </form>
   );

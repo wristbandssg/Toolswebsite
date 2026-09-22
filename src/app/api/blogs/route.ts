@@ -9,6 +9,7 @@ const blogSchema = z.object({
     .min(1)
     .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   title: z.string().min(1),
+  excerpt: z.string().max(300).optional().nullable(),
   featuredImage: z.string().optional().nullable(),
   content: z.string().min(1),
   tags: z.array(z.string()).default([]),
@@ -83,6 +84,7 @@ export async function POST(req: NextRequest) {
     data: {
       slug: data.slug,
       title: data.title,
+      excerpt: data.excerpt || null,
       featuredImage: data.featuredImage || null,
       content: data.content,
       tags: JSON.stringify(data.tags),

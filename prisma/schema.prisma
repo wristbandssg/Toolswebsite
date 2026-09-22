@@ -150,6 +150,7 @@ model Blog {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
   slug          String        @unique
   title         String
+  excerpt       String? // short "below the title" summary — blog list cards + SEO description fallback
   featuredImage String?
   content       String // rich text HTML/JSON from the editor
   tags          String // JSON string[]

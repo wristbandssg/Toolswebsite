@@ -40,6 +40,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
           initial={{
             slug: blog.slug,
             title: blog.title,
+            excerpt: blog.excerpt ?? "",
             featuredImage: blog.featuredImage ?? "",
             content: blog.content,
             tags: (JSON.parse(blog.tags) as string[]).join(", "),

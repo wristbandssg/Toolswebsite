@@ -56,9 +56,24 @@ export default async function BlogsListPage() {
                   {blog.updatedAt.toLocaleDateString()}
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <Link href={`/admin/blogs/${blog.slug}`} className="text-indigo-600 hover:underline">
-                    Edit
-                  </Link>
+                  <div className="flex items-center justify-end gap-3">
+                    {blog.status === "published" ? (
+                      <a
+                        href={`/blog/${blog.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 hover:text-gray-800 hover:underline dark:hover:text-gray-200"
+                      >
+                        View
+                      </a>
+                    ) : null}
+                    <Link
+                      href={`/admin/blogs/${blog.slug}`}
+                      className="text-indigo-600 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}

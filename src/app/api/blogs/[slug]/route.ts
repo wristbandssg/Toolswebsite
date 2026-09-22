@@ -61,6 +61,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     where: { slug },
     data: {
       title: body.title ?? existing.title,
+      excerpt: body.excerpt !== undefined ? body.excerpt : existing.excerpt,
       featuredImage: body.featuredImage ?? existing.featuredImage,
       content: body.content ?? existing.content,
       tags: body.tags ? JSON.stringify(body.tags) : existing.tags,

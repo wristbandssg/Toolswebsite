@@ -1,10 +1,22 @@
 import Link from "next/link";
 import type { BlogTemplateProps } from "./types";
+import TableOfContents from "@/components/TableOfContents";
+import { extractTableOfContents } from "@/lib/toc";
 
-/** The single Blog Template — every blog post uses this same layout; only content differs. */
+/**
+ * The single Blog Template — every blog post uses this same layout; only
+ * content differs. Layout checked against a live reference site
+ * (nextstair.com/alternatives/surfshark-alternatives): title/meta full
+ * width up top, then a two-column body — a sticky, scroll-spy Table of
+ * Contents on the left (auto-built from the post's own H2/H3 headings)
+ * and the article in the main column. The sidebar is skipped entirely
+ * for short posts with no headings.
+ */
 export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogTemplateProps) {
+  const { html: contentHtml, headings } = extractTableOfContents(blog.content);
+
   return (
-    <article className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8">
       <nav className="mb-4 text-sm text-gray-500">
         <Link href="/">Home</Link> / <Link href="/blog">Blog</Link> / {blog.title}
       </nav>
@@ -29,43 +41,49 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
         ))}
       </div>
 
-      <div
-        className="prose mt-8 max-w-none dark:prose-invert"
-        dangerouslySetInnerHTML={{ __html: blog.content }}
-      />
+      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
+        <TableOfContents headings={headings} />
 
-      {relatedTools.length > 0 ? (
-        <section className="mt-10 border-t border-gray-200 pt-6 dark:border-gray-800">
-          <h2 className="mb-2 text-lg font-semibold">সম্পর্কিত Calculator</h2>
-          <ul className="flex flex-wrap gap-2">
-            {relatedTools.map((t) => (
-              <li key={t.slug}>
-                <a
-                  href={`/tools/${t.slug}`}
-                  className="rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
-                >
-                  {t.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+        <article className="min-w-0">
+          <div
+            className="prose max-w-none dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          />
 
-      {relatedBlogs.length > 0 ? (
-        <section className="mt-6">
-          <h2 className="mb-2 text-lg font-semibold">আরও পড়ুন</h2>
-          <ul className="space-y-2">
-            {relatedBlogs.map((b) => (
-              <li key={b.slug}>
-                <a href={`/blog/${b.slug}`} className="text-indigo-600 hover:underline">
-                  {b.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-    </article>
+          {relatedTools.length > 0 ? (
+            <section className="mt-10 border-t border-gray-200 pt-6 dark:border-gray-800">
+              <h2 className="mb-2 text-lg font-semibold">সম্পর্কিত Calculator</h2>
+              <ul className="flex flex-wrap gap-2">
+                {relatedTools.map((t) => (
+                  <li key={t.slug}>
+                    <a
+                      href={`/tools/${t.slug}`}
+                      className="rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                    >
+                      {t.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {relatedBlogs.length > 0 ? (
+            <section className="mt-6">
+              <h2 className="mb-2 text-lg font-semibold">আরও পড়ুন</h2>
+              <ul className="space-y-2">
+                {relatedBlogs.map((b) => (
+                  <li key={b.slug}>
+                    <a href={`/blog/${b.slug}`} className="text-indigo-600 hover:underline">
+                      {b.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </article>
+      </div>
+    </div>
   );
 }

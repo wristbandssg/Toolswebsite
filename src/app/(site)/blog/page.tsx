@@ -28,6 +28,9 @@ export default async function BlogListPage() {
               <span className="text-xs font-medium text-indigo-600">{blog.category.name}</span>
             ) : null}
             <h2 className="mt-1 text-lg font-semibold">{blog.title}</h2>
+            {blog.excerpt ? (
+              <p className="mt-1 line-clamp-2 text-sm text-gray-500">{blog.excerpt}</p>
+            ) : null}
             {blog.publishedAt ? (
               <p className="mt-2 text-sm text-gray-500">
                 {blog.publishedAt.toLocaleDateString()}

@@ -30,7 +30,7 @@ export async function generateMetadata({
   return buildSeoMetadata({
     seoMeta: blog.seoMeta,
     fallbackTitle: blog.title,
-    fallbackDescription: excerptFromHtml(blog.content),
+    fallbackDescription: blog.excerpt || excerptFromHtml(blog.content),
     path: `/blog/${blog.slug}`,
   });
 }
