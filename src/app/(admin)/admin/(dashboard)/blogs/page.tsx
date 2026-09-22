@@ -21,12 +21,20 @@ export default async function BlogsListPage() {
           <h1 className="text-2xl font-bold">Blog Posts</h1>
           <p className="mt-1 text-sm text-gray-500">Create and edit all your blog posts here.</p>
         </div>
-        <Link
-          href="/admin/blogs/new"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          + New Blog Post
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/blogs/categories"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            Manage Categories
+          </Link>
+          <Link
+            href="/admin/blogs/new"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            + New Blog Post
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">

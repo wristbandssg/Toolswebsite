@@ -18,15 +18,23 @@ export default async function ToolsListPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Calculator Tools</h1>
-          <p className="mt-1 text-sm text-gray-500">সব Tool এখান থেকে Create/Edit করুন।</p>
+          <h1 className="text-2xl font-bold">Tools</h1>
+          <p className="mt-1 text-sm text-gray-500">Create and edit all your calculator tools here.</p>
         </div>
-        <Link
-          href="/admin/tools/new"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          + নতুন Tool
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/tools/categories"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            Manage Categories
+          </Link>
+          <Link
+            href="/admin/tools/new"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            + New Tool
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
@@ -65,7 +73,7 @@ export default async function ToolsListPage() {
             {tools.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                  এখনো কোনো Tool তৈরি হয়নি।
+                  No tools have been created yet.
                 </td>
               </tr>
             ) : null}

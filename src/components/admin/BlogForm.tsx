@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
 
@@ -33,7 +34,6 @@ export interface BlogFormValues {
   status: "draft" | "in_review" | "published" | "needs_update";
   publishedAt: string; // yyyy-mm-dd
   categoryId: string;
-  newCategoryName: string;
   toolIds: string[];
   relatedBlogIds: string[];
   seo: BlogSeoValues;
@@ -50,7 +50,6 @@ const EMPTY: BlogFormValues = {
   status: "draft",
   publishedAt: "",
   categoryId: "",
-  newCategoryName: "",
   toolIds: [],
   relatedBlogIds: [],
   seo: EMPTY_SEO,
@@ -137,7 +136,6 @@ export default function BlogForm({
         status: values.status,
         publishedAt: values.publishedAt || null,
         categoryId: values.categoryId || null,
-        newCategoryName: values.newCategoryName || null,
         toolIds: values.toolIds,
         relatedBlogIds: values.relatedBlogIds,
       };
@@ -428,33 +426,31 @@ export default function BlogForm({
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="mb-4 font-semibold">Category</h2>
-            <div className="space-y-4">
-              <label className="block text-sm">
-                <span className="font-medium">Choose an existing category</span>
-                <select
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                  value={values.categoryId}
-                  onChange={(e) => update("categoryId", e.target.value)}
-                >
-                  <option value="">-- None --</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm">
-                <span className="font-medium">Or create a new category</span>
-                <input
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                  placeholder="e.g. Budgeting Tips"
-                  value={values.newCategoryName}
-                  onChange={(e) => update("newCategoryName", e.target.value)}
-                />
-              </label>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold">Category</h2>
+              <Link
+                href="/admin/blogs/categories"
+                target="_blank"
+                className="text-xs font-medium text-indigo-600 hover:underline"
+              >
+                Manage Categories →
+              </Link>
             </div>
+            <label className="block text-sm">
+              <span className="font-medium">Choose a category</span>
+              <select
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                value={values.categoryId}
+                onChange={(e) => update("categoryId", e.target.value)}
+              >
+                <option value="">-- None --</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </section>
         </div>
       </div>

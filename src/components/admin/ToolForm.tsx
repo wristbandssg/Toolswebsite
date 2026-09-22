@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
 import { TOOL_TEMPLATES } from "@/lib/templates/registry";
@@ -10,6 +11,7 @@ export interface ToolFormValues {
   title: string;
   description: string;
   templateKey: string;
+  categoryId: string;
   status: "draft" | "in_review" | "published" | "needs_update";
   calcType: "expression" | "custom";
   calcFormula: string;
@@ -25,6 +27,7 @@ const EMPTY: ToolFormValues = {
   title: "",
   description: "",
   templateKey: "tool-template-1",
+  categoryId: "",
   status: "draft",
   calcType: "expression",
   calcFormula: "",
@@ -46,9 +49,11 @@ function slugify(text: string) {
 export default function ToolForm({
   mode,
   initial,
+  categories,
 }: {
   mode: "create" | "edit";
   initial?: Partial<ToolFormValues>;
+  categories: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const [values, setValues] = useState<ToolFormValues>({ ...EMPTY, ...initial });
@@ -116,13 +121,13 @@ export default function ToolForm({
       );
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Save করা যায়নি।");
+        setError(data.error ?? "Could not save the tool.");
         return;
       }
       router.push("/admin/tools");
       router.refresh();
     } catch {
-      setError("নেটওয়ার্ক সমস্যা — আবার চেষ্টা করুন।");
+      setError("Network error — please try again.");
     } finally {
       setSaving(false);
     }
@@ -210,6 +215,35 @@ export default function ToolForm({
         </div>
       </section>
 
+      {/* Category */}
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-semibold">Category</h2>
+          <Link
+            href="/admin/tools/categories"
+            target="_blank"
+            className="text-xs font-medium text-indigo-600 hover:underline"
+          >
+            Manage Categories →
+          </Link>
+        </div>
+        <label className="block max-w-sm text-sm">
+          <span className="font-medium">Choose a category</span>
+          <select
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+            value={values.categoryId}
+            onChange={(e) => update("categoryId", e.target.value)}
+          >
+            <option value="">-- None --</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
+
       {/* Calculation Logic */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-4 font-semibold">Calculation Logic</h2>
@@ -235,14 +269,14 @@ export default function ToolForm({
               onChange={(e) => update("calcFormula", e.target.value)}
             />
             <span className="mt-1 block text-xs text-gray-400">
-              নিচের Input Field-গুলোর Key ব্যবহার করে Formula লিখুন।
+              Write the formula using the Key of the Input Fields below.
             </span>
           </label>
         ) : (
           <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-            Custom Logic-এর জন্য Developer-কে `src/lib/calc-engine.ts`-এর
-            `customCalculators` Registry-তে এই Tool-এর Slug দিয়ে একটা Function
-            যোগ করতে হবে।
+            For Custom Logic, a developer needs to add a function for this
+            tool&apos;s slug in the `customCalculators` registry in
+            `src/lib/calc-engine.ts`.
           </p>
         )}
 
@@ -254,7 +288,7 @@ export default function ToolForm({
               onClick={addField}
               className="text-sm text-indigo-600 hover:underline"
             >
-              + Field যোগ করুন
+              + Add Field
             </button>
           </div>
           <div className="mt-3 space-y-3">
@@ -300,7 +334,7 @@ export default function ToolForm({
               </div>
             ))}
             {values.calcInputs.length === 0 ? (
-              <p className="text-sm text-gray-400">এখনো কোনো Input Field নেই।</p>
+              <p className="text-sm text-gray-400">No Input Fields yet.</p>
             ) : null}
           </div>
         </div>
@@ -372,7 +406,7 @@ export default function ToolForm({
           <div className="flex items-center justify-between">
             <h3 className="font-medium">FAQ</h3>
             <button type="button" onClick={addFaq} className="text-sm text-indigo-600 hover:underline">
-              + FAQ যোগ করুন
+              + Add FAQ
             </button>
           </div>
           <div className="mt-3 space-y-3">

@@ -1,12 +1,17 @@
+import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
 
-export default function NewToolPage() {
+export default async function NewToolPage() {
+  const categories = await prisma.toolCategory.findMany({ orderBy: { name: "asc" } });
+
   return (
     <div>
-      <h1 className="text-2xl font-bold">নতুন Calculator Tool</h1>
-      <p className="mt-1 text-sm text-gray-500">Tool তৈরি করে Template, Calculation Logic এবং Content সেট করুন।</p>
+      <h1 className="text-2xl font-bold">New Tool</h1>
+      <p className="mt-1 text-sm text-gray-500">
+        Create a tool and set its template, calculation logic, and content.
+      </p>
       <div className="mt-6">
-        <ToolForm mode="create" />
+        <ToolForm mode="create" categories={categories} />
       </div>
     </div>
   );

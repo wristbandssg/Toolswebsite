@@ -8,22 +8,26 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
   const tool = await prisma.tool.findUnique({ where: { slug } });
   if (!tool) notFound();
 
+  const categories = await prisma.toolCategory.findMany({ orderBy: { name: "asc" } });
+
   return (
     <div>
-      <h1 className="text-2xl font-bold">{tool.title} Edit করুন</h1>
+      <h1 className="text-2xl font-bold">Edit &quot;{tool.title}&quot;</h1>
       <p className="mt-1 text-sm text-gray-500">
         <a href={`/tools/${tool.slug}`} target="_blank" className="text-indigo-600 hover:underline">
-          Live Page দেখুন →
+          View Live Page →
         </a>
       </p>
       <div className="mt-6">
         <ToolForm
           mode="edit"
+          categories={categories}
           initial={{
             slug: tool.slug,
             title: tool.title,
             description: tool.description ?? "",
             templateKey: tool.templateKey,
+            categoryId: tool.categoryId ?? "",
             status: tool.status as "draft" | "in_review" | "published" | "needs_update",
             calcType: tool.calcType as "expression" | "custom",
             calcFormula: tool.calcFormula ?? "",
