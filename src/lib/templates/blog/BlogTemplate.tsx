@@ -153,7 +153,11 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
         {/* Body section: a softly-shaded panel holding the TOC, article and
             "More Articles" sidebar, visually set apart from the hero above. */}
         <div className="mt-10 rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_280px]">
+          <div
+            className={`grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] ${
+              relatedCard ? "xl:grid-cols-[220px_1fr_280px]" : "xl:grid-cols-[220px_1fr]"
+            }`}
+          >
             <TableOfContents headings={headings} />
 
           <article className="min-w-0">
