@@ -8,7 +8,8 @@
     "db:push": "prisma db push",
     "start": "next start",
     "lint": "eslint",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:fix-seo-index": "tsx prisma/fix-seo-indexes.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
