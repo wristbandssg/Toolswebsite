@@ -65,33 +65,52 @@ export async function PUT(
   const data = parsed.data;
   const type = contentType as SeoContentType;
 
-  const existing = await prisma.seoMeta.findFirst({ where: whereFor(type, id) });
+  // Wrapped in try/catch (instead of letting a Prisma error bubble up into
+  // Next.js's generic 500 HTML page) so the real database error reaches the
+  // admin UI instead of a bare "server error (500)" with no way to tell
+  // what's actually wrong — e.g. a stale Prisma Client that doesn't know
+  // about the `categoryId` field yet because `npx prisma db push` /
+  // `npx prisma generate` hasn't been run locally since the schema changed.
+  try {
+    const existing = await prisma.seoMeta.findFirst({ where: whereFor(type, id) });
 
-  const seoMeta = existing
-    ? await prisma.seoMeta.update({
-        where: { id: existing.id },
-        data: {
-          contentType: type,
-          metaTitle: data.metaTitle || null,
-          metaDescription: data.metaDescription || null,
-          canonicalUrl: data.canonicalUrl || null,
-          ogImage: data.ogImage || null,
-          robotsIndex: data.robotsIndex,
-          schemaType: data.schemaType || null,
-        },
-      })
-    : await prisma.seoMeta.create({
-        data: {
-          contentType: type,
-          metaTitle: data.metaTitle || null,
-          metaDescription: data.metaDescription || null,
-          canonicalUrl: data.canonicalUrl || null,
-          ogImage: data.ogImage || null,
-          robotsIndex: data.robotsIndex,
-          schemaType: data.schemaType || null,
-          ...createDataFor(type, id),
-        },
-      });
+    const seoMeta = existing
+      ? await prisma.seoMeta.update({
+          where: { id: existing.id },
+          data: {
+            contentType: type,
+            metaTitle: data.metaTitle || null,
+            metaDescription: data.metaDescription || null,
+            canonicalUrl: data.canonicalUrl || null,
+            ogImage: data.ogImage || null,
+            robotsIndex: data.robotsIndex,
+            schemaType: data.schemaType || null,
+          },
+        })
+      : await prisma.seoMeta.create({
+          data: {
+            contentType: type,
+            metaTitle: data.metaTitle || null,
+            metaDescription: data.metaDescription || null,
+            canonicalUrl: data.canonicalUrl || null,
+            ogImage: data.ogImage || null,
+            robotsIndex: data.robotsIndex,
+            schemaType: data.schemaType || null,
+            ...createDataFor(type, id),
+          },
+        });
 
-  return NextResponse.json({ seoMeta });
+    return NextResponse.json({ seoMeta });
+  } catch (err) {
+    console.error(`[api/seo/${contentType}/${id}] PUT failed:`, err);
+    return NextResponse.json(
+      {
+        error:
+          err instanceof Error
+            ? `Could not save: ${err.message}`
+            : "Could not save the SEO settings — unknown server error.",
+      },
+      { status: 500 }
+    );
+  }
 }

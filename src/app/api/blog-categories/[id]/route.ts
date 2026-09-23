@@ -39,20 +39,33 @@ export async function PUT(
     return NextResponse.json({ error: "That name doesn't produce a valid URL slug" }, { status: 400 });
   }
 
-  const clashing = await prisma.blogCategory.findUnique({ where: { slug } });
-  if (clashing && clashing.id !== id) {
-    return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
-  }
+  try {
+    const clashing = await prisma.blogCategory.findUnique({ where: { slug } });
+    if (clashing && clashing.id !== id) {
+      return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
+    }
 
-  const category = await prisma.blogCategory.update({
-    where: { id },
-    data: {
-      name,
-      slug,
-      ...(description !== undefined ? { description: description || null } : {}),
-    },
-  });
-  return NextResponse.json({ category });
+    const category = await prisma.blogCategory.update({
+      where: { id },
+      data: {
+        name,
+        slug,
+        ...(description !== undefined ? { description: description || null } : {}),
+      },
+    });
+    return NextResponse.json({ category });
+  } catch (err) {
+    console.error(`[api/blog-categories/${id}] PUT failed:`, err);
+    return NextResponse.json(
+      {
+        error:
+          err instanceof Error
+            ? `Could not save: ${err.message}`
+            : "Could not save the category — unknown server error.",
+      },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(
