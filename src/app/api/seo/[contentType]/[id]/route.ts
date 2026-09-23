@@ -16,12 +16,14 @@ const seoSchema = z.object({
 function whereFor(contentType: SeoContentType, id: string) {
   if (contentType === "tool") return { toolId: id };
   if (contentType === "blog") return { blogId: id };
+  if (contentType === "category") return { categoryId: id };
   return { pageId: id };
 }
 
 function createDataFor(contentType: SeoContentType, id: string) {
   if (contentType === "tool") return { toolId: id };
   if (contentType === "blog") return { blogId: id };
+  if (contentType === "category") return { categoryId: id };
   return { pageId: id };
 }
 

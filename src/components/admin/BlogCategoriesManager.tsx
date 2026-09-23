@@ -3,12 +3,29 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+export interface BlogCategorySeo {
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  robotsIndex: boolean;
+  schemaType: string;
+}
+
 export interface BlogCategoryRow {
   id: string;
   name: string;
   slug: string;
   postCount: number;
+  seo: BlogCategorySeo;
 }
+
+const EMPTY_SEO: BlogCategorySeo = {
+  metaTitle: "",
+  metaDescription: "",
+  canonicalUrl: "",
+  robotsIndex: true,
+  schemaType: "",
+};
 
 export default function BlogCategoriesManager({ initial }: { initial: BlogCategoryRow[] }) {
   const router = useRouter();
@@ -21,6 +38,51 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
   const [editingName, setEditingName] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const [seoOpenId, setSeoOpenId] = useState<string | null>(null);
+  const [seoDraft, setSeoDraft] = useState<BlogCategorySeo>(EMPTY_SEO);
+  const [savingSeoId, setSavingSeoId] = useState<string | null>(null);
+  const [seoError, setSeoError] = useState<string | null>(null);
+
+  function toggleSeo(cat: BlogCategoryRow) {
+    if (seoOpenId === cat.id) {
+      setSeoOpenId(null);
+      return;
+    }
+    setSeoOpenId(cat.id);
+    setSeoDraft(cat.seo);
+    setSeoError(null);
+  }
+
+  async function handleSaveSeo(id: string) {
+    setSavingSeoId(id);
+    setSeoError(null);
+    try {
+      const res = await fetch(`/api/seo/category/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          metaTitle: seoDraft.metaTitle || null,
+          metaDescription: seoDraft.metaDescription || null,
+          canonicalUrl: seoDraft.canonicalUrl || null,
+          robotsIndex: seoDraft.robotsIndex,
+          schemaType: seoDraft.schemaType || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSeoError(data.error ?? "Could not save the SEO settings.");
+        return;
+      }
+      setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, seo: seoDraft } : c)));
+      setSeoOpenId(null);
+      router.refresh();
+    } catch {
+      setSeoError("Network error — please try again.");
+    } finally {
+      setSavingSeoId(null);
+    }
+  }
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -39,7 +101,9 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
         return;
       }
       setCategories((prev) =>
-        [...prev, data.category as BlogCategoryRow].sort((a, b) => a.name.localeCompare(b.name))
+        [...prev, { ...data.category, seo: EMPTY_SEO } as BlogCategoryRow].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        )
       );
       setNewName("");
       router.refresh();
@@ -135,8 +199,8 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
 
       <div className="mt-6 space-y-2">
         {categories.map((cat) => (
+          <div key={cat.id}>
           <div
-            key={cat.id}
             className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900"
           >
             <span className="h-2 w-2 shrink-0 rounded-full bg-indigo-500" />
@@ -180,6 +244,13 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
                 </span>
                 <button
                   type="button"
+                  onClick={() => toggleSeo(cat)}
+                  className="shrink-0 text-sm text-gray-600 hover:underline dark:text-gray-300"
+                >
+                  {seoOpenId === cat.id ? "Close SEO" : "SEO"}
+                </button>
+                <button
+                  type="button"
                   onClick={() => startEditing(cat)}
                   className="shrink-0 text-sm text-indigo-600 hover:underline"
                 >
@@ -195,6 +266,85 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
                 </button>
               </>
             )}
+          </div>
+
+          {seoOpenId === cat.id ? (
+            <div className="mt-2 space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/40">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                  Meta Title
+                </label>
+                <input
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  placeholder={`${cat.name} — Blog`}
+                  value={seoDraft.metaTitle}
+                  onChange={(e) => setSeoDraft((s) => ({ ...s, metaTitle: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                  Meta Description
+                </label>
+                <textarea
+                  rows={2}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  value={seoDraft.metaDescription}
+                  onChange={(e) => setSeoDraft((s) => ({ ...s, metaDescription: e.target.value }))}
+                />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                    Canonical URL
+                  </label>
+                  <input
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    value={seoDraft.canonicalUrl}
+                    onChange={(e) => setSeoDraft((s) => ({ ...s, canonicalUrl: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                    Schema.org Type
+                  </label>
+                  <input
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    placeholder="CollectionPage"
+                    value={seoDraft.schemaType}
+                    onChange={(e) => setSeoDraft((s) => ({ ...s, schemaType: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                <input
+                  type="checkbox"
+                  checked={seoDraft.robotsIndex}
+                  onChange={(e) => setSeoDraft((s) => ({ ...s, robotsIndex: e.target.checked }))}
+                />
+                Allow search engines to index this category page
+              </label>
+
+              {seoError ? <p className="text-sm text-red-600">{seoError}</p> : null}
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={savingSeoId === cat.id}
+                  onClick={() => handleSaveSeo(cat.id)}
+                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {savingSeoId === cat.id ? "Saving..." : "Save SEO"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSeoOpenId(null)}
+                  className="rounded-lg px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : null}
           </div>
         ))}
 

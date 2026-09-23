@@ -141,7 +141,8 @@ model BlogCategory {
   slug      String   @unique
   createdAt DateTime @default(now())
 
-  blogs Blog[]
+  blogs   Blog[]
+  seoMeta SeoMeta?
 
   @@map("blog_categories")
 }
@@ -232,7 +233,7 @@ model Page {
 
 model SeoMeta {
   id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  contentType     String // "tool" | "blog" | "page"
+  contentType     String // "tool" | "blog" | "page" | "category"
   metaTitle       String?
   metaDescription String?
   canonicalUrl    String?
@@ -248,6 +249,10 @@ model SeoMeta {
 
   pageId String? @unique @db.ObjectId
   page   Page?   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  // Blog Category SEO (category listing pages, e.g. /blog/category/[slug])
+  categoryId String?       @unique @db.ObjectId
+  category   BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("seo_meta")
 }

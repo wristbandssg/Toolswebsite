@@ -7,7 +7,7 @@ export function getSiteUrl() {
   return raw.replace(/\/$/, "");
 }
 
-export const SEO_CONTENT_TYPES = ["tool", "blog", "page"] as const;
+export const SEO_CONTENT_TYPES = ["tool", "blog", "page", "category"] as const;
 export type SeoContentType = (typeof SEO_CONTENT_TYPES)[number];
 
 export interface SeoMetaValues {
