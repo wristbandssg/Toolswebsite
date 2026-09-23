@@ -1,26 +1,36 @@
 // One-time (but safe to re-run) setup script: creates the "Tax & Paycheck
 // Calculators" Tool Category (if it doesn't already exist) and the Nevada
-// Paycheck Calculator Tool, fully configured — input fields, the multi-line
-// breakdown result config, instructions/examples/FAQ, and SEO meta.
+// tax/paycheck calculator Tool, fully configured — input fields, the
+// multi-line breakdown result config, instructions/examples/FAQ, and SEO
+// meta.
 //
 // The actual math for this tool lives in code, not the database: see
-// `customCalculators["nevada-paycheck-calculator"]` in
-// `src/lib/calc-engine.ts` for the federal income tax (2026 IRS brackets +
-// standard deduction) and FICA (Social Security + Medicare) calculation.
-// This script only wires up the Tool row so the public page has a title,
-// input form, and content around that calculation.
+// `customCalculators["nevada-tax-calculator"]` in `src/lib/calc-engine.ts`
+// for the federal income tax (2026 IRS brackets + standard deduction) and
+// FICA (Social Security + Medicare) calculation. This script only wires up
+// the Tool row so the public page has a title, input form, and content
+// around that calculation.
 //
-// Uses `upsert`, so running it again just updates the content to match this
-// file rather than erroring or creating a duplicate.
+// SLUG RENAME: this tool originally shipped as "nevada-paycheck-calculator"
+// and was renamed to "nevada-tax-calculator" for SEO reasons (broader,
+// better-matching keyword). Renaming a live row's unique `slug` can't be
+// done with a plain upsert-by-slug (upserting by the NEW slug would just
+// create a second, duplicate row and leave the old one behind) — so this
+// script looks for the row under the OLD slug first and renames it in
+// place. Once that's happened once, later runs find it under the NEW slug
+// and just update its content, same as a normal upsert.
 //
 // HOW TO RUN
 //   npx tsx prisma/create-nevada-paycheck-tool.ts
 // or
 //   npm run db:create-nevada-tool
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+const OLD_SLUG = "nevada-paycheck-calculator";
+const NEW_SLUG = "nevada-tax-calculator";
 
 async function main() {
   const category = await prisma.toolCategory.upsert({
@@ -37,11 +47,13 @@ async function main() {
   const calcInputs = [
     {
       key: "annualSalary",
-      label: "Annual Gross Salary",
+      label: "Annual Salary",
       type: "currency",
       unit: "USD/year",
       required: true,
       min: 0,
+      max: 300000,
+      step: 1000,
     },
     {
       key: "payFrequency",
@@ -90,7 +102,7 @@ async function main() {
     },
     {
       key: "extraWithholding",
-      label: "Extra Federal Withholding",
+      label: "Extra Withholding",
       unit: "per paycheck",
       type: "currency",
       required: false,
@@ -111,22 +123,29 @@ async function main() {
   ];
 
   const instructions =
-    "This tool works as a Nevada paycheck calculator, Nevada income tax calculator, Nevada state tax " +
-    "calculator, Nevada salary tax calculator, and Nevada after-tax calculator all in one — it shows " +
-    "exactly what's taken out of your salary and what you take home. " +
-    "Enter your annual gross salary, choose how often you're paid, and select your federal filing status. " +
-    "Add any pre-tax deductions (like 401(k) contributions or health insurance premiums), post-tax deductions, " +
-    "and extra federal withholding if they apply to you — otherwise leave them at $0. Click Calculate to see a " +
-    "full breakdown: gross pay, federal income tax, Social Security tax, Medicare tax, Nevada state income tax " +
-    "(always $0 — Nevada has no state income tax), and your estimated take-home pay, both per paycheck and for " +
-    "the year. This is an estimate based on 2026 IRS federal tax brackets and the standard deduction — it doesn't " +
-    "account for tax credits (such as the Child Tax Credit), itemized deductions, or every possible W-4 election. " +
-    "Your actual paycheck may vary slightly depending on your employer's payroll system.";
+    "Whether you're looking for a Nevada income tax calculator, a paycheck tax calculator, a payroll tax " +
+    "calculator, or just a general tax calculator for Nevada, this tool covers it: it works out federal income " +
+    "tax, Social Security, Medicare, and Nevada's state income tax (always zero) from your salary, all in one " +
+    "place.\n\n" +
+    "Enter your annual salary, choose how often you're paid, and select your federal filing status. Add any " +
+    "pre-tax deductions (like 401(k) contributions or health insurance premiums), post-tax deductions, and " +
+    "extra federal withholding if they apply to you — otherwise leave them at $0. Click Calculate to see a full " +
+    "breakdown: gross pay, federal income tax, Social Security tax, Medicare tax, Nevada state income tax " +
+    "(always $0 — Nevada has no state income tax), total deductions, and your estimated take-home pay, both per " +
+    "paycheck and for the year.\n\n" +
+    "This calculator uses 2026 IRS federal tax brackets and the standard deduction for its federal income tax " +
+    "and payroll tax (FICA) figures. It doesn't account for tax credits (such as the Child Tax Credit), " +
+    "itemized deductions, or every possible W-4 election, so treat it as a close estimate rather than an exact " +
+    "paycheck figure — your actual paycheck may vary slightly depending on your employer's payroll system.";
 
   const examples =
     "Example: a single filer earning $75,000 a year, paid biweekly (26 paychecks/year), with no pre-tax or " +
     "post-tax deductions, takes home approximately $2,368.94 per paycheck — about $61,592.50 for the year — " +
-    "after federal income tax, Social Security, and Medicare. Nevada adds no state income tax on top of that.";
+    "after federal income tax, Social Security, and Medicare. Nevada adds no state income tax on top of " +
+    "that.\n\n" +
+    "Because Nevada has no state income or payroll tax, the only difference between this estimate and a " +
+    "paycheck in a state with income tax is that extra state withholding line — everything else (federal " +
+    "income tax, Social Security, Medicare) is calculated the same way nationwide.";
 
   const faq = [
     {
@@ -142,6 +161,13 @@ async function main() {
         "Federal income tax (based on your income and filing status), Social Security tax (6.2% up to the annual " +
         "wage base), and Medicare tax (1.45%, plus an extra 0.9% on wages above a threshold that depends on your " +
         "filing status). There's no state or local income tax in Nevada.",
+    },
+    {
+      question: "Is this a payroll tax calculator too, not just income tax?",
+      answer:
+        "Yes — \"payroll tax\" covers Social Security and Medicare (FICA) as well as income tax withholding, and " +
+        "this calculator includes all of it: federal income tax, Social Security, and Medicare, plus Nevada's " +
+        "(zero) state payroll tax, all in the same breakdown.",
     },
     {
       question: "Is there a Nevada salary tax calculator I can use for any pay frequency?",
@@ -186,77 +212,71 @@ async function main() {
     },
   ];
 
-  await prisma.tool.upsert({
-    where: { slug: "nevada-paycheck-calculator" },
-    update: {
-      title: "Nevada Paycheck Calculator",
-      description:
-        "Free Nevada paycheck and income tax calculator — estimate your salary tax, state tax, and after-tax " +
-        "take-home pay. Nevada has no state income tax, so more of your paycheck stays with you.",
-      templateKey: "tool-template-3",
-      categoryId: category.id,
-      calcType: "custom",
-      calcFormula: null,
-      calcInputs: JSON.stringify(calcInputs),
-      calcResult: JSON.stringify({ label: "Take-Home Pay", unit: "", format: "currency" }),
-      calcResults: JSON.stringify(calcResults),
-      instructions,
-      examples,
-      faq: JSON.stringify(faq),
-      seoMeta: {
-        upsert: {
-          create: {
-            contentType: "tool",
-            metaTitle: "Nevada Paycheck & Income Tax Calculator (2026) — Take-Home Pay",
-            metaDescription:
-              "Free Nevada paycheck and income tax calculator. Estimate your salary tax, state tax, and " +
-              "after-tax take-home pay — Nevada has no state income tax.",
-            schemaType: "SoftwareApplication",
-          },
-          update: {
-            metaTitle: "Nevada Paycheck & Income Tax Calculator (2026) — Take-Home Pay",
-            metaDescription:
-              "Free Nevada paycheck and income tax calculator. Estimate your salary tax, state tax, and " +
-              "after-tax take-home pay — Nevada has no state income tax.",
-            schemaType: "SoftwareApplication",
-          },
-        },
+  const toolContent = {
+    title: "Income Tax Calculator Nevada",
+    description:
+      "This Nevada income tax calculator and paycheck tax calculator shows you, in one place, exactly what's " +
+      "withheld from your paycheck and what you take home. Use it as a general tax calculator for Nevada, a " +
+      "Nevada payroll tax calculator for federal withholding and FICA, or a salary tax calculator for any pay " +
+      "frequency — since Nevada charges no state income tax, more of every paycheck stays with you.",
+    templateKey: "tool-template-3",
+    categoryId: category.id,
+    calcType: "custom",
+    calcFormula: null,
+    calcInputs: JSON.stringify(calcInputs),
+    calcResult: JSON.stringify({ label: "Take-Home Pay", unit: "", format: "currency" }),
+    calcResults: JSON.stringify(calcResults),
+    instructions,
+    examples,
+    faq: JSON.stringify(faq),
+  } satisfies Prisma.ToolUncheckedUpdateInput;
+
+  const seoMetaContent = {
+    contentType: "tool",
+    metaTitle: "Income Tax Calculator Nevada (2026) — Paycheck & Payroll Tax",
+    metaDescription:
+      "Free Nevada income tax calculator and paycheck tax calculator. Estimate federal income tax, payroll tax " +
+      "(FICA), and take-home pay — Nevada has no state income tax.",
+    schemaType: "SoftwareApplication",
+  };
+
+  const existingByNewSlug = await prisma.tool.findUnique({ where: { slug: NEW_SLUG } });
+  const existingByOldSlug = existingByNewSlug
+    ? null
+    : await prisma.tool.findUnique({ where: { slug: OLD_SLUG } });
+
+  if (existingByNewSlug || existingByOldSlug) {
+    // Tool already exists (under either slug) — update it in place. If it's
+    // still under the old slug, this is the one-time rename.
+    await prisma.tool.update({
+      where: { slug: existingByNewSlug ? NEW_SLUG : OLD_SLUG },
+      data: {
+        slug: NEW_SLUG,
+        ...toolContent,
+        seoMeta: { upsert: { create: seoMetaContent, update: seoMetaContent } },
       },
-    },
-    create: {
-      slug: "nevada-paycheck-calculator",
-      title: "Nevada Paycheck Calculator",
-      description:
-        "Free Nevada paycheck and income tax calculator — estimate your salary tax, state tax, and after-tax " +
-        "take-home pay. Nevada has no state income tax, so more of your paycheck stays with you.",
-      templateKey: "tool-template-3",
-      status: "draft",
-      categoryId: category.id,
-      calcType: "custom",
-      calcFormula: null,
-      calcInputs: JSON.stringify(calcInputs),
-      calcResult: JSON.stringify({ label: "Take-Home Pay", unit: "", format: "currency" }),
-      calcResults: JSON.stringify(calcResults),
-      instructions,
-      examples,
-      faq: JSON.stringify(faq),
-      seoMeta: {
-        create: {
-          contentType: "tool",
-          metaTitle: "Nevada Paycheck & Income Tax Calculator (2026) — Take-Home Pay",
-          metaDescription:
-            "Free Nevada paycheck and income tax calculator. Estimate your salary tax, state tax, and " +
-            "after-tax take-home pay — Nevada has no state income tax.",
-          schemaType: "SoftwareApplication",
-        },
+    });
+    console.log(
+      existingByOldSlug
+        ? `Renamed the tool from "${OLD_SLUG}" to "${NEW_SLUG}" and updated its content.`
+        : `Updated the "${NEW_SLUG}" tool's content.`
+    );
+  } else {
+    await prisma.tool.create({
+      data: {
+        slug: NEW_SLUG,
+        status: "draft",
+        ...toolContent,
+        seoMeta: { create: seoMetaContent },
       },
-    },
-  });
+    });
+    console.log(`Created the "${NEW_SLUG}" tool (status: draft).`);
+  }
 
   console.log(
-    "Done. Created/updated the 'Nevada Paycheck Calculator' tool (status: draft) under " +
-      "'Tax & Paycheck Calculators'. Open it in /admin/tools, review it, then set Status to " +
-      "Published when you're happy with it."
+    "Open it in /admin/tools, review it, then set Status to Published when you're happy with it. " +
+      "Its live URL is now /tools/" + NEW_SLUG + " — any old links to /tools/" + OLD_SLUG + " will 404, " +
+      "since Nevada Publish is this recent there shouldn't be meaningful external links to the old URL yet."
   );
 }
 

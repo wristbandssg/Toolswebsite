@@ -32,6 +32,10 @@ export interface CalcInputField {
   default?: number | string;
   min?: number;
   max?: number;
+  // Step for a range slider. Only used when both `min` and `max` are also
+  // set — that's what turns on the slider (see CalculatorWidget). Optional;
+  // falls back to a sensible default based on the min/max span.
+  step?: number;
   options?: { label: string; value: string | number }[];
 }
 
@@ -205,8 +209,7 @@ function progressiveTax(taxableIncome: number, brackets: { rate: number; upTo: n
   return tax;
 }
 
-export const customCalculators: Record<string, CustomCalculator> = {
-  "nevada-paycheck-calculator": (values) => {
+const nevadaTaxCalculator: CustomCalculator = (values) => {
     const annualSalary = Math.max(0, safeNumber(values.annualSalary));
     const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
     const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
@@ -255,7 +258,20 @@ export const customCalculators: Record<string, CustomCalculator> = {
       netPayPerPeriod: annualNetPay / periodsPerYear,
       annualNetPay,
     };
-  },
+};
+
+export const customCalculators: Record<string, CustomCalculator> = {
+  // Keyed by the tool's slug — this must stay in sync with the `slug` set in
+  // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
+  // slug ("nevada-tax-calculator") and the original one
+  // ("nevada-paycheck-calculator", kept as an alias) on purpose: the DB slug
+  // and this file deploy separately (a script run vs. a git push), so for a
+  // short window one can be renamed while the other still has the old value.
+  // Keeping both keys pointed at the same function means the calculator
+  // never 404s during that window. If you rename the slug again, add the
+  // new key here rather than replacing the old one.
+  "nevada-tax-calculator": nevadaTaxCalculator,
+  "nevada-paycheck-calculator": nevadaTaxCalculator,
 };
 
 export function runCalculator(

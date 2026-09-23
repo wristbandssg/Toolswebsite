@@ -1,5 +1,22 @@
 import type { ToolTemplateProps } from "./types";
 
+/** Splits on blank lines so a multi-paragraph Instructions/Examples string
+ * actually renders as separate paragraphs — a plain string dropped into a
+ * <div> ignores "\n\n" and runs everything together in one block. */
+function Paragraphs({ text }: { text: string }) {
+  return (
+    <div className="prose max-w-none dark:prose-invert">
+      {text
+        .split(/\n\s*\n/)
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+    </div>
+  );
+}
+
 /**
  * Shared content blocks (Instructions, Examples, FAQ, Related Tools, Support
  * Blogs) reused across all 5 Tool Templates — see plan doc Section 6
@@ -12,14 +29,14 @@ export function ToolContentSections({ tool, relatedTools, supportBlogs }: ToolTe
       {tool.instructions ? (
         <section>
           <h2 className="mb-2 text-xl font-semibold">How to Use This Calculator</h2>
-          <div className="prose max-w-none dark:prose-invert">{tool.instructions}</div>
+          <Paragraphs text={tool.instructions} />
         </section>
       ) : null}
 
       {tool.examples ? (
         <section>
           <h2 className="mb-2 text-xl font-semibold">Example</h2>
-          <div className="prose max-w-none dark:prose-invert">{tool.examples}</div>
+          <Paragraphs text={tool.examples} />
         </section>
       ) : null}
 
