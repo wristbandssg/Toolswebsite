@@ -16,6 +16,9 @@ export interface BlogCategoryRow {
   name: string;
   slug: string;
   postCount: number;
+  // Short intro shown at the top of the public category page, under the
+  // title — separate from the SEO meta description below.
+  description: string;
   seo: BlogCategorySeo;
 }
 
@@ -41,6 +44,7 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
 
   const [seoOpenId, setSeoOpenId] = useState<string | null>(null);
   const [seoDraft, setSeoDraft] = useState<BlogCategorySeo>(EMPTY_SEO);
+  const [descriptionDraft, setDescriptionDraft] = useState("");
   const [savingSeoId, setSavingSeoId] = useState<string | null>(null);
   const [seoError, setSeoError] = useState<string | null>(null);
 
@@ -51,30 +55,47 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
     }
     setSeoOpenId(cat.id);
     setSeoDraft(cat.seo);
+    setDescriptionDraft(cat.description);
     setSeoError(null);
   }
 
-  async function handleSaveSeo(id: string) {
-    setSavingSeoId(id);
+  async function handleSaveSeo(cat: BlogCategoryRow) {
+    setSavingSeoId(cat.id);
     setSeoError(null);
     try {
-      const res = await fetch(`/api/seo/category/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          metaTitle: seoDraft.metaTitle || null,
-          metaDescription: seoDraft.metaDescription || null,
-          canonicalUrl: seoDraft.canonicalUrl || null,
-          robotsIndex: seoDraft.robotsIndex,
-          schemaType: seoDraft.schemaType || null,
+      const [seoRes, descRes] = await Promise.all([
+        fetch(`/api/seo/category/${cat.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            metaTitle: seoDraft.metaTitle || null,
+            metaDescription: seoDraft.metaDescription || null,
+            canonicalUrl: seoDraft.canonicalUrl || null,
+            robotsIndex: seoDraft.robotsIndex,
+            schemaType: seoDraft.schemaType || null,
+          }),
         }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setSeoError(data.error ?? "Could not save the SEO settings.");
+        // The intro paragraph lives on the category itself, not on SeoMeta —
+        // the rename endpoint doubles as "update category fields", so the
+        // current name is resent unchanged alongside the new description.
+        fetch(`/api/blog-categories/${cat.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: cat.name, description: descriptionDraft }),
+        }),
+      ]);
+      const [seoData, descData] = await Promise.all([seoRes.json(), descRes.json()]);
+      if (!seoRes.ok) {
+        setSeoError(seoData.error ?? "Could not save the SEO settings.");
         return;
       }
-      setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, seo: seoDraft } : c)));
+      if (!descRes.ok) {
+        setSeoError(descData.error ?? "Could not save the description.");
+        return;
+      }
+      setCategories((prev) =>
+        prev.map((c) => (c.id === cat.id ? { ...c, seo: seoDraft, description: descriptionDraft } : c))
+      );
       setSeoOpenId(null);
       router.refresh();
     } catch {
@@ -101,8 +122,8 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
         return;
       }
       setCategories((prev) =>
-        [...prev, { ...data.category, seo: EMPTY_SEO } as BlogCategoryRow].sort((a, b) =>
-          a.name.localeCompare(b.name)
+        [...prev, { ...data.category, description: "", seo: EMPTY_SEO } as BlogCategoryRow].sort(
+          (a, b) => a.name.localeCompare(b.name)
         )
       );
       setNewName("");
@@ -272,6 +293,23 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
             <div className="mt-2 space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/40">
               <div>
                 <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                  Category Page Intro (shown on the public page, under the title)
+                </label>
+                <textarea
+                  rows={4}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  placeholder={`A short intro for the "${cat.name}" category page — around 100–150 words.`}
+                  value={descriptionDraft}
+                  onChange={(e) => setDescriptionDraft(e.target.value)}
+                />
+                <p className="mt-1 text-xs text-gray-400">
+                  {descriptionDraft.trim() ? descriptionDraft.trim().split(/\s+/).length : 0} words
+                  (aim for 100–150)
+                </p>
+              </div>
+
+              <div className="border-t border-gray-200 pt-3 dark:border-gray-800">
+                <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
                   Meta Title
                 </label>
                 <input
@@ -330,10 +368,10 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
                 <button
                   type="button"
                   disabled={savingSeoId === cat.id}
-                  onClick={() => handleSaveSeo(cat.id)}
+                  onClick={() => handleSaveSeo(cat)}
                   className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                 >
-                  {savingSeoId === cat.id ? "Saving..." : "Save SEO"}
+                  {savingSeoId === cat.id ? "Saving..." : "Save"}
                 </button>
                 <button
                   type="button"

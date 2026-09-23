@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 
 const renameSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
+  description: z.string().trim().max(2000).optional(),
 });
 
 function slugify(text: string) {
@@ -32,7 +33,7 @@ export async function PUT(
       { status: 400 }
     );
   }
-  const name = parsed.data.name;
+  const { name, description } = parsed.data;
   const slug = slugify(name);
   if (!slug) {
     return NextResponse.json({ error: "That name doesn't produce a valid URL slug" }, { status: 400 });
@@ -43,7 +44,14 @@ export async function PUT(
     return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
   }
 
-  const category = await prisma.blogCategory.update({ where: { id }, data: { name, slug } });
+  const category = await prisma.blogCategory.update({
+    where: { id },
+    data: {
+      name,
+      slug,
+      ...(description !== undefined ? { description: description || null } : {}),
+    },
+  });
   return NextResponse.json({ category });
 }
 

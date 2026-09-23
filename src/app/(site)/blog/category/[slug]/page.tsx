@@ -54,7 +54,8 @@ export async function generateMetadata({
   return buildSeoMetadata({
     seoMeta: data.category.seoMeta,
     fallbackTitle: `${data.category.name} — Blog`,
-    fallbackDescription: `${data.category.name} বিষয়ক সব Article এখানে দেখুন।`,
+    fallbackDescription:
+      data.category.description || `${data.category.name} বিষয়ক সব Article এখানে দেখুন।`,
     path: `/blog/category/${data.category.slug}`,
   });
 }
@@ -95,19 +96,32 @@ export default async function BlogCategoryPage({
 
   return (
     <div className="bg-white dark:bg-gray-950">
+      {/* Full-bleed colored hero band, centered — breadcrumb, title, and
+          the category's own 100–150 word intro (set from the admin), same
+          treatment as a blog post's own header. */}
+      <div className="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 dark:from-indigo-800 dark:via-blue-800 dark:to-indigo-900">
+        <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:py-16">
+          <p className="text-sm text-indigo-100">
+            <Link href="/blog" className="hover:underline">
+              Blog
+            </Link>{" "}
+            / {category.name}
+          </p>
+
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            {category.name}
+          </h1>
+          <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-white/40" />
+
+          {category.description ? (
+            <p className="mx-auto mt-5 max-w-2xl text-indigo-100 sm:text-lg">
+              {category.description}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
       <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          <Link href="/blog" className="hover:text-indigo-600 hover:underline">
-            Blog
-          </Link>{" "}
-          / {category.name}
-        </p>
-
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-          {category.name}
-        </h1>
-        <div className="mt-3 h-1 w-16 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600" />
-
         {blogs.length === 0 ? (
           <p className="mt-10 rounded-2xl border border-dashed border-gray-200 px-6 py-16 text-center text-gray-400 dark:border-gray-800">
             এই ক্যাটাগরিতে এখনো কোনো Blog Post Publish হয়নি।

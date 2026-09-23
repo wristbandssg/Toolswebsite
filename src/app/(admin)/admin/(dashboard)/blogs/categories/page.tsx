@@ -19,8 +19,8 @@ export default async function BlogCategoriesPage() {
       <h1 className="mt-1 text-2xl font-bold">Blog Categories</h1>
       <p className="mt-1 text-sm text-gray-500">
         Add, rename, or remove the categories blog posts can be filed under. Each one gets its
-        own public page — open &quot;SEO&quot; on a category to set its meta title, description, and
-        more.
+        own public page — open &quot;SEO&quot; on a category to set its meta title, description,
+        the 100–150 word intro shown on the page, and more.
       </p>
       <div className="mt-6">
         <BlogCategoriesManager
@@ -29,6 +29,7 @@ export default async function BlogCategoriesPage() {
             name: c.name,
             slug: c.slug,
             postCount: c._count.blogs,
+            description: c.description ?? "",
             seo: {
               metaTitle: c.seoMeta?.metaTitle ?? "",
               metaDescription: c.seoMeta?.metaDescription ?? "",

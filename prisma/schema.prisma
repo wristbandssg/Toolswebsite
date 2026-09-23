@@ -136,10 +136,13 @@ model Tool {
 // ---------------------------------------------------------------------------
 
 model BlogCategory {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now())
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  slug String @unique
+  // Short intro (~100–150 words) shown at the top of the public category
+  // page, under the title — separate from the SEO meta description.
+  description String?
+  createdAt   DateTime @default(now())
 
   blogs   Blog[]
   seoMeta SeoMeta?
