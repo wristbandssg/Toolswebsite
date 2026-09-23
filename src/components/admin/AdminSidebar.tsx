@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin", label: "Dashboard Overview" },
   { href: "/admin/tools", label: "Tools" },
   { href: "/admin/tools/categories", label: "Tool Categories", indent: true },
+  { href: "/admin/state-calculators", label: "State Calculators", indent: true },
   { href: "/admin/blogs", label: "Blog Posts" },
   { href: "/admin/blogs/categories", label: "Blog Categories", indent: true },
   { href: "/admin/pages", label: "Pages" },

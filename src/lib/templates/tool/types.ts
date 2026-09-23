@@ -1,4 +1,5 @@
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
+import type { StateCalculatorEntry } from "./StateCalculatorGrid";
 
 export interface ToolTemplateProps {
   tool: {
@@ -20,4 +21,8 @@ export interface ToolTemplateProps {
   };
   relatedTools: { slug: string; title: string }[];
   supportBlogs: { slug: string; title: string }[];
+  // "Other state calculators" directory — only populated for tools in the
+  // state tax/paycheck calculator family (see the [slug]/page.tsx gating).
+  // Empty/omitted on every other tool, so this is fully opt-in.
+  stateCalculators?: StateCalculatorEntry[];
 }

@@ -138,6 +138,25 @@ model Tool {
   @@map("tools")
 }
 
+// "Other state calculators" directory shown on a state-specific tax/paycheck
+// tool's page (see ToolContentSections). Deliberately its own lightweight
+// model rather than reusing Tool: most of the 50 states don't have a real
+// Tool built yet, but the admin still wants the full 50-state grid visible
+// (matching how competitor sites present a complete directory) with each
+// entry manageable from /admin/state-calculators — name/abbreviation always
+// shown, `toolSlug` filled in once that state's calculator actually exists.
+model StateCalculatorLink {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  stateName    String // e.g. "Alabama" — shown as the link's accessible/title text
+  abbreviation String   @unique // e.g. "AL" — shown on the button itself
+  toolSlug     String? // e.g. "nevada-tax-calculator" — null until that state's tool is built
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("state_calculator_links")
+}
+
 // ---------------------------------------------------------------------------
 // Blog
 // ---------------------------------------------------------------------------

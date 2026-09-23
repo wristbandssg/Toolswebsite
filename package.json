@@ -11,7 +11,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:fix-seo-index": "tsx prisma/fix-seo-indexes.ts",
     "db:migrate-blog-categories": "tsx prisma/migrate-blog-multi-category.ts",
-    "db:create-nevada-tool": "tsx prisma/create-nevada-paycheck-tool.ts"
+    "db:create-nevada-tool": "tsx prisma/create-nevada-paycheck-tool.ts",
+    "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

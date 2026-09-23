@@ -45,6 +45,17 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     select: { slug: true, title: true },
   });
 
+  // "Other state calculators" grid — only relevant for tools in the state
+  // tax/paycheck calculator family, so it's gated on category slug rather
+  // than shown on every tool page. The current tool's own state is filtered
+  // out (it's the "OTHER state calculators" list, not this one).
+  const stateCalculators =
+    tool.category?.slug === "tax-paycheck-calculators"
+      ? (await prisma.stateCalculatorLink.findMany({ orderBy: { order: "asc" } })).filter(
+          (s) => s.toolSlug !== tool.slug
+        )
+      : [];
+
   const { component: Template } = getToolTemplate(tool.templateKey);
 
   return (
@@ -68,6 +79,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       }}
       relatedTools={relatedTools}
       supportBlogs={tool.blogRelations.map((r) => ({ slug: r.blog.slug, title: r.blog.title }))}
+      stateCalculators={stateCalculators.map((s) => ({
+        stateName: s.stateName,
+        abbreviation: s.abbreviation,
+        toolSlug: s.toolSlug,
+      }))}
     />
   );
 }

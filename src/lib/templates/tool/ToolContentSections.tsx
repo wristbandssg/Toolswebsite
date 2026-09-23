@@ -1,4 +1,5 @@
 import type { ToolTemplateProps } from "./types";
+import { StateCalculatorGrid } from "./StateCalculatorGrid";
 
 /** Splits on blank lines so a multi-paragraph Instructions/Examples string
  * actually renders as separate paragraphs — a plain string dropped into a
@@ -23,7 +24,12 @@ function Paragraphs({ text }: { text: string }) {
  * "Calculator Tool Page Design" for the full section list. Only the outer
  * layout differs per template; this keeps that content logic in one place.
  */
-export function ToolContentSections({ tool, relatedTools, supportBlogs }: ToolTemplateProps) {
+export function ToolContentSections({
+  tool,
+  relatedTools,
+  supportBlogs,
+  stateCalculators,
+}: ToolTemplateProps) {
   return (
     <div className="space-y-8">
       {tool.instructions ? (
@@ -38,6 +44,12 @@ export function ToolContentSections({ tool, relatedTools, supportBlogs }: ToolTe
           <h2 className="mb-2 text-xl font-semibold">Example</h2>
           <Paragraphs text={tool.examples} />
         </section>
+      ) : null}
+
+      {/* Above the FAQ, per request — a directory of the other 49 states'
+          calculators (this tool's own state is filtered out server-side). */}
+      {stateCalculators && stateCalculators.length > 0 ? (
+        <StateCalculatorGrid states={stateCalculators} />
       ) : null}
 
       {tool.faq.length > 0 ? (

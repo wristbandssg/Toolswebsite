@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import { ToolContentSections } from "./ToolContentSections";
+import { ToolDescription } from "./ToolDescription";
 import type { ToolTemplateProps } from "./types";
 
 /** Tool Template 2 — Split Sidebar: sticky calculator in a right sidebar, content in the main column. */
@@ -14,9 +15,7 @@ export default function ToolTemplate2(props: ToolTemplateProps) {
       <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
         <div>
           <h1 className="text-3xl font-bold">{tool.title}</h1>
-          {tool.description ? (
-            <p className="mt-2 text-gray-600 dark:text-gray-300">{tool.description}</p>
-          ) : null}
+          <ToolDescription text={tool.description} className="mt-2 text-gray-600 dark:text-gray-300" />
           <div className="mt-8">
             <ToolContentSections {...props} />
           </div>
