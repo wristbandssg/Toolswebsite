@@ -145,18 +145,13 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
-        {blog.featuredImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={blog.featuredImage}
-            alt={blog.title}
-            className="aspect-video w-full rounded-2xl object-cover shadow-lg ring-1 ring-gray-900/5"
-          />
-        ) : null}
+        {/* The single post page no longer shows the Featured Image as a
+            banner here — it's still used for blog-list/category cards and
+            social share previews, just not repeated inside the post itself. */}
 
         {/* Body section: a softly-shaded panel holding the TOC, article and
             "More Articles" sidebar, visually set apart from the hero above. */}
-        <div className="mt-10 rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
+        <div className="rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
           <div
             className={`grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] ${
               relatedCard ? "xl:grid-cols-[220px_1fr_280px]" : "xl:grid-cols-[220px_1fr]"

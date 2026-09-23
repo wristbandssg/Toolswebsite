@@ -312,6 +312,14 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
                 <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                   {cat.postCount} post{cat.postCount === 1 ? "" : "s"}
                 </span>
+                <a
+                  href={`/blog/category/${cat.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 text-sm text-gray-600 hover:underline dark:text-gray-300"
+                >
+                  View
+                </a>
                 <button
                   type="button"
                   onClick={() => toggleSeo(cat)}
