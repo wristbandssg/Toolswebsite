@@ -141,6 +141,21 @@ async function main() {
         "filing status). There's no state or local income tax in Nevada.",
     },
     {
+      question: "Is there a Nevada salary tax calculator I can use for any pay frequency?",
+      answer:
+        "Yes — this calculator works as a Nevada salary tax calculator for weekly, biweekly, semi-monthly, " +
+        "monthly, or annual pay. Enter your annual salary and choose your pay frequency above, and it recalculates " +
+        "federal income tax, Social Security, and Medicare for that schedule automatically.",
+    },
+    {
+      question: "What is my after-tax (take-home) pay in Nevada?",
+      answer:
+        "Your after-tax pay is your gross salary minus federal income tax, Social Security, Medicare, and any " +
+        "deductions you enter. Because Nevada has no state income tax, nothing further is subtracted for state " +
+        "tax, so Nevada workers typically keep more of their after-tax pay than workers in states that do tax " +
+        "income.",
+    },
+    {
       question: "How accurate is this calculator?",
       answer:
         "It's an estimate, using the 2026 IRS federal tax brackets and standard deduction amounts. It doesn't " +
@@ -173,8 +188,8 @@ async function main() {
     update: {
       title: "Nevada Paycheck Calculator",
       description:
-        "Estimate your Nevada take-home pay after federal income tax, Social Security, and Medicare — Nevada " +
-        "has no state income tax, so more of your paycheck stays with you.",
+        "Free Nevada paycheck and income tax calculator — estimate your salary tax, state tax, and after-tax " +
+        "take-home pay. Nevada has no state income tax, so more of your paycheck stays with you.",
       templateKey: "tool-template-3",
       categoryId: category.id,
       calcType: "custom",
@@ -189,17 +204,17 @@ async function main() {
         upsert: {
           create: {
             contentType: "tool",
-            metaTitle: "Nevada Paycheck Calculator (2026) — Estimate Your Take-Home Pay",
+            metaTitle: "Nevada Paycheck & Income Tax Calculator (2026) — Take-Home Pay",
             metaDescription:
-              "Free Nevada paycheck calculator. See your estimated take-home pay after federal income tax, " +
-              "Social Security, and Medicare — Nevada has no state income tax.",
+              "Free Nevada paycheck and income tax calculator. Estimate your salary tax, state tax, and " +
+              "after-tax take-home pay — Nevada has no state income tax.",
             schemaType: "SoftwareApplication",
           },
           update: {
-            metaTitle: "Nevada Paycheck Calculator (2026) — Estimate Your Take-Home Pay",
+            metaTitle: "Nevada Paycheck & Income Tax Calculator (2026) — Take-Home Pay",
             metaDescription:
-              "Free Nevada paycheck calculator. See your estimated take-home pay after federal income tax, " +
-              "Social Security, and Medicare — Nevada has no state income tax.",
+              "Free Nevada paycheck and income tax calculator. Estimate your salary tax, state tax, and " +
+              "after-tax take-home pay — Nevada has no state income tax.",
             schemaType: "SoftwareApplication",
           },
         },
@@ -209,8 +224,8 @@ async function main() {
       slug: "nevada-paycheck-calculator",
       title: "Nevada Paycheck Calculator",
       description:
-        "Estimate your Nevada take-home pay after federal income tax, Social Security, and Medicare — Nevada " +
-        "has no state income tax, so more of your paycheck stays with you.",
+        "Free Nevada paycheck and income tax calculator — estimate your salary tax, state tax, and after-tax " +
+        "take-home pay. Nevada has no state income tax, so more of your paycheck stays with you.",
       templateKey: "tool-template-3",
       status: "draft",
       categoryId: category.id,
@@ -225,10 +240,10 @@ async function main() {
       seoMeta: {
         create: {
           contentType: "tool",
-          metaTitle: "Nevada Paycheck Calculator (2026) — Estimate Your Take-Home Pay",
+          metaTitle: "Nevada Paycheck & Income Tax Calculator (2026) — Take-Home Pay",
           metaDescription:
-            "Free Nevada paycheck calculator. See your estimated take-home pay after federal income tax, " +
-            "Social Security, and Medicare — Nevada has no state income tax.",
+            "Free Nevada paycheck and income tax calculator. Estimate your salary tax, state tax, and " +
+            "after-tax take-home pay — Nevada has no state income tax.",
           schemaType: "SoftwareApplication",
         },
       },

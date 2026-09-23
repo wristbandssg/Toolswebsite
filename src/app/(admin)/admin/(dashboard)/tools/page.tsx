@@ -1,18 +1,15 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-
-const STATUS_LABEL: Record<string, string> = {
-  draft: "Draft",
-  in_review: "In Review",
-  published: "Published",
-  needs_update: "Needs Update",
-};
+import ToolsList from "@/components/admin/ToolsList";
 
 export default async function ToolsListPage() {
-  const tools = await prisma.tool.findMany({
-    orderBy: { updatedAt: "desc" },
-    include: { category: true },
-  });
+  const [tools, categories] = await Promise.all([
+    prisma.tool.findMany({
+      orderBy: { updatedAt: "desc" },
+      include: { category: true },
+    }),
+    prisma.toolCategory.findMany({ orderBy: { name: "asc" } }),
+  ]);
 
   return (
     <div>
@@ -37,48 +34,19 @@ export default async function ToolsListPage() {
         </div>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-gray-50 text-gray-500 dark:bg-gray-950">
-            <tr>
-              <th className="px-4 py-3">Title</th>
-              <th className="px-4 py-3">Category</th>
-              <th className="px-4 py-3">Template</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Updated</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {tools.map((tool) => (
-              <tr key={tool.id}>
-                <td className="px-4 py-3 font-medium">{tool.title}</td>
-                <td className="px-4 py-3 text-gray-500">{tool.category?.name ?? "—"}</td>
-                <td className="px-4 py-3 text-gray-500">{tool.templateKey}</td>
-                <td className="px-4 py-3">
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs dark:bg-gray-800">
-                    {STATUS_LABEL[tool.status] ?? tool.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-gray-500">
-                  {tool.updatedAt.toLocaleDateString()}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <Link href={`/admin/tools/${tool.slug}`} className="text-indigo-600 hover:underline">
-                    Edit
-                  </Link>
-                </td>
-              </tr>
-            ))}
-            {tools.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                  No tools have been created yet.
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
+      <div className="mt-6">
+        <ToolsList
+          tools={tools.map((tool) => ({
+            id: tool.id,
+            slug: tool.slug,
+            title: tool.title,
+            status: tool.status,
+            templateKey: tool.templateKey,
+            updatedAtLabel: tool.updatedAt.toLocaleDateString(),
+            category: tool.category ? { id: tool.category.id, name: tool.category.name } : null,
+          }))}
+          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+        />
       </div>
     </div>
   );

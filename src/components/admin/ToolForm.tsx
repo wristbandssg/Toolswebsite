@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { TOOL_TEMPLATES } from "@/lib/templates/registry";
+import CalculatorWidget from "@/components/CalculatorWidget";
 
 export interface ToolFormValues {
   slug: string;
@@ -159,7 +160,8 @@ export default function ToolForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {/* Basic Info */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-4 font-semibold">Basic Info</h2>
@@ -550,5 +552,72 @@ export default function ToolForm({
         </button>
       </div>
     </form>
+
+      {/* Live Preview — kept outside the <form> above (a <form> can't
+          contain another <form>, and CalculatorWidget renders its own).
+          Sticky on large screens so it stays in view while editing. */}
+      <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
+            <h2 className="font-semibold">Live Preview</h2>
+          </div>
+          <p className="mt-1 text-xs text-gray-400">
+            A rough look at how visitors will see this tool.
+          </p>
+
+          <div className="mt-4 space-y-1">
+            <p className="font-medium text-gray-900 dark:text-gray-100">
+              {values.title || "Untitled Tool"}
+            </p>
+            {values.description ? (
+              <p className="text-sm text-gray-500">{values.description}</p>
+            ) : null}
+          </div>
+
+          <div className="mt-4">
+            {values.calcInputs.length > 0 ? (
+              <CalculatorWidget
+                toolSlug={values.slug || "preview"}
+                fields={values.calcInputs}
+                result={values.calcResult}
+                results={values.calcResults}
+              />
+            ) : (
+              <p className="rounded-lg border border-dashed border-gray-300 px-3 py-6 text-center text-sm text-gray-400 dark:border-gray-700">
+                Add Input Fields below to preview the calculator.
+              </p>
+            )}
+          </div>
+
+          {values.calcInputs.length > 0 ? (
+            <p className="mt-3 text-xs text-gray-400">
+              Clicking Calculate here runs against the last <span className="font-medium">saved</span>{" "}
+              version of this tool — save your changes first to test the latest logic.
+            </p>
+          ) : null}
+        </div>
+
+        {values.instructions || values.examples || values.faq.length > 0 ? (
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
+            <h3 className="font-semibold">Content Preview</h3>
+            <dl className="mt-3 space-y-2 text-gray-500">
+              <div className="flex justify-between">
+                <dt>Instructions</dt>
+                <dd>{values.instructions ? `${values.instructions.length} chars` : "—"}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt>Examples</dt>
+                <dd>{values.examples ? `${values.examples.length} chars` : "—"}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt>FAQ items</dt>
+                <dd>{values.faq.length}</dd>
+              </div>
+            </dl>
+          </div>
+        ) : null}
+      </aside>
+    </div>
   );
 }
