@@ -111,6 +111,9 @@ async function main() {
   ];
 
   const instructions =
+    "This tool works as a Nevada paycheck calculator, Nevada income tax calculator, Nevada state tax " +
+    "calculator, Nevada salary tax calculator, and Nevada after-tax calculator all in one — it shows " +
+    "exactly what's taken out of your salary and what you take home. " +
     "Enter your annual gross salary, choose how often you're paid, and select your federal filing status. " +
     "Add any pre-tax deductions (like 401(k) contributions or health insurance premiums), post-tax deductions, " +
     "and extra federal withholding if they apply to you — otherwise leave them at $0. Click Calculate to see a " +

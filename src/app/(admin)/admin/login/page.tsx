@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
     const res = await signIn("credentials", { email, password, redirect: false });
     setLoading(false);
     if (res?.error) {
-      setError("ইমেইল অথবা পাসওয়ার্ড ভুল।");
+      setError("Incorrect email or password.");
       return;
     }
     router.push("/admin");
@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
         className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
       >
         <h1 className="text-xl font-semibold">Admin Login</h1>
-        <p className="mt-1 text-sm text-gray-500">Dashboard-এ প্রবেশ করতে লগইন করুন।</p>
+        <p className="mt-1 text-sm text-gray-500">Log in to access the Dashboard.</p>
 
         <label className="mt-6 block text-sm">
           <span className="font-medium text-gray-700 dark:text-gray-200">Email</span>

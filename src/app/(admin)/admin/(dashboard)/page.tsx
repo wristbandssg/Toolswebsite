@@ -16,7 +16,7 @@ export default async function DashboardOverviewPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">Dashboard Overview</h1>
-      <p className="mt-1 text-sm text-gray-500">আপনার Website-এর একটা Snapshot।</p>
+      <p className="mt-1 text-sm text-gray-500">A snapshot of your website.</p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         {cards.map((card) => (
@@ -32,8 +32,8 @@ export default async function DashboardOverviewPage() {
       </div>
 
       <div className="mt-8 rounded-2xl border border-dashed border-gray-300 p-6 text-sm text-gray-500 dark:border-gray-700">
-        Recent Activity — Phase 2-এ এই অংশে Tool/Blog/Page-এর সাম্প্রতিক পরিবর্তনের Log
-        দেখানো হবে।
+        Recent Activity — this section will show a log of recent Tool/Blog/Page changes in
+        Phase 2.
       </div>
     </div>
   );

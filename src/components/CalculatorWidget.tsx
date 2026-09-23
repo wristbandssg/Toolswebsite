@@ -50,7 +50,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "হিসাব করতে সমস্যা হয়েছে।");
+        setError(data.error ?? "Something went wrong while calculating.");
         setOutput(null);
         setBreakdown(null);
         return;
@@ -63,7 +63,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
         setBreakdown(null);
       }
     } catch {
-      setError("নেটওয়ার্ক সমস্যা — আবার চেষ্টা করুন।");
+      setError("Network error — please try again.");
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                 required={field.required !== false}
               >
                 <option value="" disabled>
-                  বাছাই করুন
+                  Select...
                 </option>
                 {field.options.map((opt) => (
                   <option key={String(opt.value)} value={opt.value}>
@@ -128,7 +128,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
             disabled={loading}
             className="w-full rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-60 sm:w-auto"
           >
-            {loading ? "হিসাব হচ্ছে..." : "Calculate"}
+            {loading ? "Calculating..." : "Calculate"}
           </button>
         </div>
       </form>

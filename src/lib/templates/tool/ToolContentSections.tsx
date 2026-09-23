@@ -11,21 +11,21 @@ export function ToolContentSections({ tool, relatedTools, supportBlogs }: ToolTe
     <div className="space-y-8">
       {tool.instructions ? (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">এই Calculator কীভাবে ব্যবহার করবেন</h2>
+          <h2 className="mb-2 text-xl font-semibold">How to Use This Calculator</h2>
           <div className="prose max-w-none dark:prose-invert">{tool.instructions}</div>
         </section>
       ) : null}
 
       {tool.examples ? (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">উদাহরণ</h2>
+          <h2 className="mb-2 text-xl font-semibold">Example</h2>
           <div className="prose max-w-none dark:prose-invert">{tool.examples}</div>
         </section>
       ) : null}
 
       {tool.faq.length > 0 ? (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
+          <h2 className="mb-2 text-xl font-semibold">Frequently Asked Questions</h2>
           <div className="divide-y divide-gray-200 dark:divide-gray-800">
             {tool.faq.map((item, i) => (
               <details key={i} className="group py-3">
@@ -41,7 +41,7 @@ export function ToolContentSections({ tool, relatedTools, supportBlogs }: ToolTe
 
       {relatedTools.length > 0 ? (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">সম্পর্কিত Calculator</h2>
+          <h2 className="mb-2 text-xl font-semibold">Related Calculators</h2>
           <ul className="flex flex-wrap gap-2">
             {relatedTools.map((t) => (
               <li key={t.slug}>
@@ -59,7 +59,7 @@ export function ToolContentSections({ tool, relatedTools, supportBlogs }: ToolTe
 
       {supportBlogs.length > 0 ? (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">এই Topic নিয়ে বিস্তারিত পড়ুন</h2>
+          <h2 className="mb-2 text-xl font-semibold">Read More About This Topic</h2>
           <ul className="space-y-2">
             {supportBlogs.map((b) => (
               <li key={b.slug}>

@@ -1,8 +1,9 @@
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
-// সব Admin Dashboard Page Auth-gated এবং সবসময় Fresh Data দরকার — তাই Build-time
-// Static Prerender বন্ধ রাখা হলো (নাহলে Build-এর সময় Database Connection লাগবে,
-// যা Render-এর মতো Host-এ Deploy Pipeline-এ সমস্যা করে)।
+// Every admin dashboard page is auth-gated and always needs fresh data — so
+// build-time static prerendering is turned off here (otherwise the build
+// would need a database connection, which breaks the deploy pipeline on a
+// host like Render).
 export const dynamic = "force-dynamic";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

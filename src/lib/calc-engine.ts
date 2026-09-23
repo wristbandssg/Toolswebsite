@@ -76,16 +76,16 @@ export function runExpressionCalc(
     const raw = values[field.key];
     if (raw === undefined || raw === null || Number.isNaN(raw)) {
       if (field.required !== false) {
-        throw new CalculationError(`"${field.label}" আবশ্যক — একটা সংখ্যা দিন।`);
+        throw new CalculationError(`"${field.label}" is required — please enter a number.`);
       }
       scope[field.key] = typeof field.default === "number" ? field.default : 0;
       continue;
     }
     if (field.min !== undefined && raw < field.min) {
-      throw new CalculationError(`"${field.label}" কমপক্ষে ${field.min} হতে হবে।`);
+      throw new CalculationError(`"${field.label}" must be at least ${field.min}.`);
     }
     if (field.max !== undefined && raw > field.max) {
-      throw new CalculationError(`"${field.label}" সর্বোচ্চ ${field.max} হতে পারে।`);
+      throw new CalculationError(`"${field.label}" can be at most ${field.max}.`);
     }
     scope[field.key] = raw;
   }
@@ -93,13 +93,13 @@ export function runExpressionCalc(
   try {
     const result = evaluate(formula, scope);
     if (typeof result !== "number" || !Number.isFinite(result)) {
-      throw new CalculationError("এই ইনপুটে সঠিক ফলাফল বের করা যায়নি।");
+      throw new CalculationError("Could not compute a valid result from this input.");
     }
     return result;
   } catch (err) {
     if (err instanceof CalculationError) throw err;
     throw new CalculationError(
-      "হিসাব করতে সমস্যা হয়েছে — ইনপুট আবার চেক করুন।"
+      "Something went wrong while calculating — please check your input and try again."
     );
   }
 }
@@ -269,13 +269,13 @@ export function runCalculator(
     const fn = customCalculators[toolSlug];
     if (!fn) {
       throw new CalculationError(
-        `"${toolSlug}"-এর জন্য কোনো Custom Calculator যুক্ত করা হয়নি।`
+        `No custom calculator has been registered for "${toolSlug}".`
       );
     }
     return fn(values);
   }
   if (!formula) {
-    throw new CalculationError("এই Tool-এ এখনো কোনো Formula সেট করা হয়নি।");
+    throw new CalculationError("No formula has been set for this tool yet.");
   }
   return runExpressionCalc(formula, fields, values);
 }
