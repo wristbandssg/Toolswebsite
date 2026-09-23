@@ -16,7 +16,7 @@ export default function ToolTemplate3(props: ToolTemplateProps) {
         </div>
       </div>
       <div className="mx-auto -mt-6 max-w-2xl px-4">
-        <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} />
+        <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} results={tool.calcResults} />
       </div>
       <div className="mx-auto mt-10 max-w-3xl px-4 pb-10">
         <ToolContentSections {...props} />

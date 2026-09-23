@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
+import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 
 interface Props {
   toolSlug: string;
   fields: CalcInputField[];
   result: CalcResultConfig | null;
+  // When set (non-empty), the calculator shows a full multi-line breakdown
+  // instead of one number — e.g. gross pay / federal tax / FICA / net pay
+  // all at once. Optional and additive: a tool with no `results` config
+  // behaves exactly as before.
+  results?: CalcResultLineConfig[] | null;
 }
 
 /**
@@ -16,15 +21,18 @@ interface Props {
  * server-side via /api/tools/[id]/calculate so the formula never has to be
  * shipped to the browser.
  */
-export default function CalculatorWidget({ toolSlug, fields, result }: Props) {
+export default function CalculatorWidget({ toolSlug, fields, result, results }: Props) {
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(
       fields.map((f) => [f.key, f.default !== undefined ? String(f.default) : ""])
     )
   );
   const [output, setOutput] = useState<number | null>(null);
+  const [breakdown, setBreakdown] = useState<Record<string, number> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const hasBreakdownConfig = Boolean(results && results.length > 0);
 
   async function handleCalculate(e: React.FormEvent) {
     e.preventDefault();
@@ -44,9 +52,16 @@ export default function CalculatorWidget({ toolSlug, fields, result }: Props) {
       if (!res.ok) {
         setError(data.error ?? "হিসাব করতে সমস্যা হয়েছে।");
         setOutput(null);
+        setBreakdown(null);
         return;
       }
-      setOutput(data.result);
+      if (data.results && typeof data.results === "object") {
+        setBreakdown(data.results);
+        setOutput(null);
+      } else {
+        setOutput(data.result);
+        setBreakdown(null);
+      }
     } catch {
       setError("নেটওয়ার্ক সমস্যা — আবার চেষ্টা করুন।");
     } finally {
@@ -54,14 +69,18 @@ export default function CalculatorWidget({ toolSlug, fields, result }: Props) {
     }
   }
 
-  function formatOutput(n: number) {
-    if (result?.format === "currency") {
+  function formatValue(n: number, format?: "number" | "currency" | "percentage") {
+    if (format === "currency") {
       return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
     }
-    if (result?.format === "percentage") {
+    if (format === "percentage") {
       return `${n.toFixed(2)}%`;
     }
     return n.toLocaleString();
+  }
+
+  function formatOutput(n: number) {
+    return formatValue(n, result?.format);
   }
 
   return (
@@ -120,7 +139,31 @@ export default function CalculatorWidget({ toolSlug, fields, result }: Props) {
         </p>
       ) : null}
 
-      {output !== null && !error ? (
+      {breakdown && !error && results ? (
+        <div className="mt-4 overflow-hidden rounded-lg border border-indigo-100 dark:border-indigo-900">
+          {results.map((line) => {
+            const value = breakdown[line.key];
+            if (value === undefined) return null;
+            return (
+              <div
+                key={line.key}
+                className={`flex items-center justify-between gap-3 px-4 py-3 ${
+                  line.highlight
+                    ? "bg-indigo-600 text-white"
+                    : "border-t border-indigo-100 bg-indigo-50/60 text-gray-700 first:border-t-0 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-gray-300"
+                }`}
+              >
+                <span className={`text-sm ${line.highlight ? "font-medium" : ""}`}>{line.label}</span>
+                <span className={line.highlight ? "text-xl font-bold" : "font-semibold"}>
+                  {formatValue(value, line.format)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
+
+      {output !== null && !error && !hasBreakdownConfig ? (
         <div className="mt-4 rounded-lg bg-indigo-50 px-4 py-3 dark:bg-indigo-950">
           <p className="text-sm text-gray-600 dark:text-gray-300">
             {result?.label ?? "Result"}

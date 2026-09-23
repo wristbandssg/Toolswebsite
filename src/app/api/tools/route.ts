@@ -36,6 +36,21 @@ const toolCreateSchema = z.object({
     })
     .optional()
     .nullable(),
+  // Multi-line breakdown result — see Tool.calcResults. Optional; when
+  // provided (non-empty), the public page shows a full breakdown instead of
+  // the single calcResult number.
+  calcResults: z
+    .array(
+      z.object({
+        key: z.string().min(1),
+        label: z.string().min(1),
+        unit: z.string().optional(),
+        format: z.enum(["number", "currency", "percentage"]).optional(),
+        highlight: z.boolean().optional(),
+      })
+    )
+    .optional()
+    .nullable(),
   instructions: z.string().optional().nullable(),
   examples: z.string().optional().nullable(),
   faq: z.array(z.object({ question: z.string(), answer: z.string() })).default([]),
@@ -88,6 +103,7 @@ export async function POST(req: NextRequest) {
       calcFormula: data.calcFormula,
       calcInputs: JSON.stringify(data.calcInputs),
       calcResult: data.calcResult ? JSON.stringify(data.calcResult) : null,
+      calcResults: data.calcResults && data.calcResults.length > 0 ? JSON.stringify(data.calcResults) : null,
       instructions: data.instructions,
       examples: data.examples,
       faq: JSON.stringify(data.faq),

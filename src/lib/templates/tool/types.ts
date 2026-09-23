@@ -1,4 +1,4 @@
-import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
+import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 
 export interface ToolTemplateProps {
   tool: {
@@ -10,6 +10,9 @@ export interface ToolTemplateProps {
     calcFormula: string | null;
     calcInputs: CalcInputField[];
     calcResult: CalcResultConfig | null;
+    // Multi-line breakdown result config — see Tool.calcResults. Null/empty
+    // for the vast majority of (single-output) tools.
+    calcResults: CalcResultLineConfig[] | null;
     instructions: string | null;
     examples: string | null;
     faq: { question: string; answer: string }[];

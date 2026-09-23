@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
+import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { TOOL_TEMPLATES } from "@/lib/templates/registry";
 
 export interface ToolFormValues {
@@ -17,6 +17,10 @@ export interface ToolFormValues {
   calcFormula: string;
   calcInputs: CalcInputField[];
   calcResult: CalcResultConfig;
+  // Multi-line breakdown result — when non-empty, this is shown on the
+  // public page instead of the single calcResult above (e.g. a paycheck
+  // calculator showing gross pay / federal tax / FICA / net pay together).
+  calcResults: CalcResultLineConfig[];
   instructions: string;
   examples: string;
   faq: { question: string; answer: string }[];
@@ -33,6 +37,7 @@ const EMPTY: ToolFormValues = {
   calcFormula: "",
   calcInputs: [],
   calcResult: { label: "Result", unit: "", format: "number" },
+  calcResults: [],
   instructions: "",
   examples: "",
   faq: [],
@@ -82,6 +87,26 @@ export default function ToolForm({
     update(
       "calcInputs",
       values.calcInputs.filter((_, idx) => idx !== i)
+    );
+  }
+
+  function addResultLine() {
+    update("calcResults", [
+      ...values.calcResults,
+      { key: "", label: "", format: "number", highlight: values.calcResults.length === 0 },
+    ]);
+  }
+
+  function updateResultLine(i: number, patch: Partial<CalcResultLineConfig>) {
+    const next = [...values.calcResults];
+    next[i] = { ...next[i], ...patch };
+    update("calcResults", next);
+  }
+
+  function removeResultLine(i: number) {
+    update(
+      "calcResults",
+      values.calcResults.filter((_, idx) => idx !== i)
     );
   }
 
@@ -377,6 +402,81 @@ export default function ToolForm({
               <option value="percentage">Percentage</option>
             </select>
           </label>
+        </div>
+        <p className="mt-3 text-xs text-gray-400">
+          Used when no Breakdown Lines are added below. Leave the Breakdown empty for a normal
+          single-number calculator.
+        </p>
+
+        <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-medium">Breakdown (multiple results, optional)</h3>
+              <p className="mt-1 text-xs text-gray-400">
+                For a calculator that should show several numbers at once (e.g. gross pay,
+                federal tax, FICA, and net pay all together) instead of one result. Each line&apos;s
+                Key must match a field name the Custom Calculator returns. Adding any line here
+                overrides the single Result Section above on the public page.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={addResultLine}
+              className="shrink-0 text-sm text-indigo-600 hover:underline"
+            >
+              + Add Line
+            </button>
+          </div>
+          <div className="mt-3 space-y-3">
+            {values.calcResults.map((line, i) => (
+              <div
+                key={i}
+                className="grid grid-cols-2 gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-700 sm:grid-cols-6"
+              >
+                <input
+                  placeholder="key (returned by calculator)"
+                  className="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-800 sm:col-span-2"
+                  value={line.key}
+                  onChange={(e) => updateResultLine(i, { key: e.target.value })}
+                />
+                <input
+                  placeholder="Label"
+                  className="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  value={line.label}
+                  onChange={(e) => updateResultLine(i, { label: e.target.value })}
+                />
+                <select
+                  className="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  value={line.format ?? "number"}
+                  onChange={(e) =>
+                    updateResultLine(i, { format: e.target.value as CalcResultLineConfig["format"] })
+                  }
+                >
+                  <option value="number">Number</option>
+                  <option value="currency">Currency</option>
+                  <option value="percentage">Percentage</option>
+                </select>
+                <label className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <input
+                    type="checkbox"
+                    checked={line.highlight ?? false}
+                    onChange={(e) => updateResultLine(i, { highlight: e.target.checked })}
+                  />
+                  Highlight
+                </label>
+                <button
+                  type="button"
+                  onClick={() => removeResultLine(i)}
+                  className="rounded border border-red-200 px-2 py-1 text-sm text-red-600 hover:bg-red-50 dark:border-red-900"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            {values.calcResults.length === 0 ? (
+              <p className="text-sm text-gray-400">No breakdown lines — using the single Result above.</p>
+            ) : null}
+          </div>
         </div>
       </section>
 

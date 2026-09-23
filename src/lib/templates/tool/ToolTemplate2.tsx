@@ -22,7 +22,7 @@ export default function ToolTemplate2(props: ToolTemplateProps) {
           </div>
         </div>
         <aside className="lg:sticky lg:top-6 lg:h-fit">
-          <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} />
+          <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} results={tool.calcResults} />
         </aside>
       </div>
     </article>

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
-import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
+import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 
 export default async function EditToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -35,6 +35,9 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
             calcResult: tool.calcResult
               ? (JSON.parse(tool.calcResult) as CalcResultConfig)
               : { label: "Result", unit: "", format: "number" },
+            calcResults: tool.calcResults
+              ? (JSON.parse(tool.calcResults) as CalcResultLineConfig[])
+              : [],
             instructions: tool.instructions ?? "",
             examples: tool.examples ?? "",
             faq: tool.faq ? JSON.parse(tool.faq) : [],

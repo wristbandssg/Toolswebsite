@@ -10,7 +10,8 @@
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
     "db:fix-seo-index": "tsx prisma/fix-seo-indexes.ts",
-    "db:migrate-blog-categories": "tsx prisma/migrate-blog-multi-category.ts"
+    "db:migrate-blog-categories": "tsx prisma/migrate-blog-multi-category.ts",
+    "db:create-nevada-tool": "tsx prisma/create-nevada-paycheck-tool.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

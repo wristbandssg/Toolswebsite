@@ -29,7 +29,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
       fields,
       body.values
     );
-    return NextResponse.json({ result });
+    // A "custom" calculator may return a single number (legacy shape, most
+    // tools) or a named breakdown object (multi-line result — see
+    // Tool.calcResults). Only one of the two response keys is ever set, so
+    // the client can tell which shape it got.
+    if (typeof result === "number") {
+      return NextResponse.json({ result });
+    }
+    return NextResponse.json({ results: result });
   } catch (err) {
     if (err instanceof CalculationError) {
       return NextResponse.json({ error: err.message }, { status: 422 });

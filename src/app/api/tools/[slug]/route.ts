@@ -41,6 +41,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       calcFormula: body.calcFormula ?? existing.calcFormula,
       calcInputs: body.calcInputs ? JSON.stringify(body.calcInputs) : existing.calcInputs,
       calcResult: body.calcResult ? JSON.stringify(body.calcResult) : existing.calcResult,
+      // `calcResults` is only touched when the request explicitly includes
+      // the key — an empty array clears it back to single-output mode, and
+      // omitting the key entirely (older callers) leaves it untouched.
+      ...(Object.prototype.hasOwnProperty.call(body, "calcResults")
+        ? {
+            calcResults:
+              Array.isArray(body.calcResults) && body.calcResults.length > 0
+                ? JSON.stringify(body.calcResults)
+                : null,
+          }
+        : {}),
       instructions: body.instructions ?? existing.instructions,
       examples: body.examples ?? existing.examples,
       faq: body.faq ? JSON.stringify(body.faq) : existing.faq,

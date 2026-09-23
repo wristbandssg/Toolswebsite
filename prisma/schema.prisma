@@ -112,7 +112,14 @@ model Tool {
   calcType    CalcType @default(expression)
   calcFormula String? // e.g. "(part / whole) * 100"
   calcInputs  String // JSON: [{ key, label, type, unit, required, default, min, max }]
-  calcResult  String? // JSON: { label, unit, format }
+  calcResult  String? // JSON: { label, unit, format } — single-output tools (legacy/default)
+  // Multi-line breakdown output (e.g. a paycheck calculator showing gross
+  // pay, federal tax, FICA, state tax and net pay all at once) — JSON:
+  // [{ key, label, unit, format, highlight }]. When this is set (non-empty
+  // array), it takes priority over calcResult and the calculator shows a
+  // full breakdown instead of one number. Additive/optional so every
+  // existing single-output Tool keeps working unchanged.
+  calcResults String?
 
   // Content
   instructions String? // rich text / markdown

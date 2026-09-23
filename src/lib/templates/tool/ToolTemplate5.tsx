@@ -12,7 +12,7 @@ export default function ToolTemplate5(props: ToolTemplateProps) {
         <p className="mt-1 text-sm text-gray-500">{tool.description}</p>
       ) : null}
       <div className="mt-4">
-        <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} />
+        <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} results={tool.calcResults} />
       </div>
       <div className="mt-6">
         <ToolContentSections {...props} />

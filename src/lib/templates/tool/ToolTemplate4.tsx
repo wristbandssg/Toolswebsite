@@ -13,7 +13,7 @@ export default function ToolTemplate4(props: ToolTemplateProps) {
           <p className="mt-2 text-gray-600 dark:text-gray-300">{tool.description}</p>
         ) : null}
       </div>
-      <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} />
+      <CalculatorWidget toolSlug={tool.slug} fields={tool.calcInputs} result={tool.calcResult} results={tool.calcResults} />
       <div className="rounded-2xl border border-gray-200 p-6 dark:border-gray-800">
         <ToolContentSections {...props} />
       </div>

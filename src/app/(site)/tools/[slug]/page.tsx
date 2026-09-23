@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getToolTemplate } from "@/lib/templates/registry";
-import type { CalcInputField, CalcResultConfig } from "@/lib/calc-engine";
+import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { buildSeoMetadata } from "@/lib/seo";
 
 async function loadTool(slug: string) {
@@ -58,6 +58,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         calcFormula: tool.calcFormula,
         calcInputs: JSON.parse(tool.calcInputs) as CalcInputField[],
         calcResult: tool.calcResult ? (JSON.parse(tool.calcResult) as CalcResultConfig) : null,
+        calcResults: tool.calcResults
+          ? (JSON.parse(tool.calcResults) as CalcResultLineConfig[])
+          : null,
         instructions: tool.instructions,
         examples: tool.examples,
         faq: tool.faq ? JSON.parse(tool.faq) : [],
