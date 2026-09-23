@@ -59,50 +59,99 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
     setSeoError(null);
   }
 
+  // Reads a Response body as JSON without throwing — a 500 from a stale
+  // Prisma Client (schema field not yet pushed to the DB) comes back as an
+  // HTML error page, not JSON, and `.json()` on that would throw and get
+  // swallowed by a single shared catch below, masking which of the two
+  // saves actually failed. Returning null here instead lets the caller
+  // build a specific, honest error message from the status code.
+  async function safeJson(res: Response): Promise<{ error?: string } | null> {
+    try {
+      return await res.json();
+    } catch {
+      return null;
+    }
+  }
+
   async function handleSaveSeo(cat: BlogCategoryRow) {
     setSavingSeoId(cat.id);
     setSeoError(null);
-    try {
-      const [seoRes, descRes] = await Promise.all([
-        fetch(`/api/seo/category/${cat.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            metaTitle: seoDraft.metaTitle || null,
-            metaDescription: seoDraft.metaDescription || null,
-            canonicalUrl: seoDraft.canonicalUrl || null,
-            robotsIndex: seoDraft.robotsIndex,
-            schemaType: seoDraft.schemaType || null,
-          }),
+
+    // Promise.allSettled (not Promise.all) so a failure in one request can
+    // never hide the outcome of the other — each of the two independent
+    // saves (SEO meta fields, and the category's name+description) reports
+    // its own success/failure separately below.
+    const [seoOutcome, descOutcome] = await Promise.allSettled([
+      fetch(`/api/seo/category/${cat.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          metaTitle: seoDraft.metaTitle || null,
+          metaDescription: seoDraft.metaDescription || null,
+          canonicalUrl: seoDraft.canonicalUrl || null,
+          robotsIndex: seoDraft.robotsIndex,
+          schemaType: seoDraft.schemaType || null,
         }),
-        // The intro paragraph lives on the category itself, not on SeoMeta —
-        // the rename endpoint doubles as "update category fields", so the
-        // current name is resent unchanged alongside the new description.
-        fetch(`/api/blog-categories/${cat.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: cat.name, description: descriptionDraft }),
-        }),
-      ]);
-      const [seoData, descData] = await Promise.all([seoRes.json(), descRes.json()]);
-      if (!seoRes.ok) {
-        setSeoError(seoData.error ?? "Could not save the SEO settings.");
-        return;
+      }),
+      // The intro paragraph lives on the category itself, not on SeoMeta —
+      // the rename endpoint doubles as "update category fields", so the
+      // current name is resent unchanged alongside the new description.
+      fetch(`/api/blog-categories/${cat.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: cat.name, description: descriptionDraft }),
+      }),
+    ]);
+
+    const errors: string[] = [];
+    let seoOk = false;
+    let descOk = false;
+
+    if (seoOutcome.status === "fulfilled") {
+      const res = seoOutcome.value;
+      const data = await safeJson(res);
+      if (res.ok) {
+        seoOk = true;
+      } else {
+        errors.push(`SEO fields: ${data?.error ?? `server error (${res.status}) — the database may need the latest schema pushed`}`);
       }
-      if (!descRes.ok) {
-        setSeoError(descData.error ?? "Could not save the description.");
-        return;
-      }
-      setCategories((prev) =>
-        prev.map((c) => (c.id === cat.id ? { ...c, seo: seoDraft, description: descriptionDraft } : c))
-      );
-      setSeoOpenId(null);
-      router.refresh();
-    } catch {
-      setSeoError("Network error — please try again.");
-    } finally {
-      setSavingSeoId(null);
+    } else {
+      errors.push("SEO fields: could not reach the server.");
     }
+
+    if (descOutcome.status === "fulfilled") {
+      const res = descOutcome.value;
+      const data = await safeJson(res);
+      if (res.ok) {
+        descOk = true;
+      } else {
+        errors.push(`Page intro: ${data?.error ?? `server error (${res.status})`}`);
+      }
+    } else {
+      errors.push("Page intro: could not reach the server.");
+    }
+
+    if (seoOk || descOk) {
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === cat.id
+            ? {
+                ...c,
+                seo: seoOk ? seoDraft : c.seo,
+                description: descOk ? descriptionDraft : c.description,
+              }
+            : c
+        )
+      );
+    }
+
+    if (errors.length > 0) {
+      setSeoError(errors.join("  •  "));
+    } else {
+      setSeoOpenId(null);
+    }
+    router.refresh();
+    setSavingSeoId(null);
   }
 
   async function handleCreate(e: React.FormEvent) {

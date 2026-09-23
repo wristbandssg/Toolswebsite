@@ -114,7 +114,7 @@ export default async function BlogCategoryPage({
           <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-white/40" />
 
           {category.description ? (
-            <p className="mx-auto mt-5 max-w-2xl text-indigo-100 sm:text-lg">
+            <p className="mx-auto mt-5 max-w-4xl text-indigo-100 sm:text-lg">
               {category.description}
             </p>
           ) : null}
