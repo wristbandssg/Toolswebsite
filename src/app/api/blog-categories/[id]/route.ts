@@ -78,14 +78,22 @@ export async function DELETE(
   }
   const { id } = await params;
 
-  // Mongo has no real foreign key, so a Blog left pointing at a deleted
-  // category wouldn't error — but it would silently show "no category" on
-  // the public site. Detach those posts explicitly instead, and tell the
-  // admin how many were affected.
-  const affected = await prisma.blog.updateMany({
-    where: { categoryId: id },
-    data: { categoryId: null },
+  // A post can be filed under several categories at once, so deleting one
+  // must only remove THIS category from each affected post's list, leaving
+  // its other categories untouched. Prisma's typed API has no "remove one
+  // value from a list" update, but going through the relation's own
+  // `disconnect` does exactly that (and keeps BlogCategory.blogIds on the
+  // other side of the many-to-many in sync too).
+  const affectedBlogs = await prisma.blog.findMany({
+    where: { categoryIds: { has: id } },
+    select: { id: true },
   });
+  await Promise.all(
+    affectedBlogs.map((b) =>
+      prisma.blog.update({ where: { id: b.id }, data: { categories: { disconnect: { id } } } })
+    )
+  );
+  const affected = { count: affectedBlogs.length };
 
   // Same idea for sub-categories: deleting a parent category shouldn't
   // silently orphan or cascade-delete its children (self-relation is set

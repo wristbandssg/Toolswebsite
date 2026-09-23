@@ -100,19 +100,18 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
           white margins around it) so the post opens with real visual impact. */}
       <div className="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 dark:from-indigo-800 dark:via-blue-800 dark:to-indigo-900">
         <header className="mx-auto max-w-5xl px-4 py-10 sm:py-14">
-          {blog.categoryName ? (
-            blog.categorySlug ? (
-              <Link
-                href={`/blog/category/${blog.categorySlug}`}
-                className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-inset ring-white/30 transition-colors hover:bg-white/25"
-              >
-                {blog.categoryName}
-              </Link>
-            ) : (
-              <span className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-inset ring-white/30">
-                {blog.categoryName}
-              </span>
-            )
+          {blog.categories.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {blog.categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/blog/category/${cat.slug}`}
+                  className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-inset ring-white/30 transition-colors hover:bg-white/25"
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
           ) : null}
 
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">

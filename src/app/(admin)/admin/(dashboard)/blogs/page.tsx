@@ -11,7 +11,7 @@ const STATUS_LABEL: Record<string, string> = {
 export default async function BlogsListPage() {
   const blogs = await prisma.blog.findMany({
     orderBy: { updatedAt: "desc" },
-    include: { category: true, toolRelations: true },
+    include: { categories: true, toolRelations: true },
   });
 
   return (
@@ -53,7 +53,11 @@ export default async function BlogsListPage() {
             {blogs.map((blog) => (
               <tr key={blog.id}>
                 <td className="px-4 py-3 font-medium">{blog.title}</td>
-                <td className="px-4 py-3 text-gray-500">{blog.category?.name ?? "—"}</td>
+                <td className="px-4 py-3 text-gray-500">
+                  {blog.categories.length > 0
+                    ? blog.categories.map((c) => c.name).join(", ")
+                    : "—"}
+                </td>
                 <td className="px-4 py-3 text-gray-500">{blog.toolRelations.length}</td>
                 <td className="px-4 py-3">
                   <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs dark:bg-gray-800">

@@ -8,11 +8,11 @@ async function loadBlog(slug: string) {
   const blog = await prisma.blog.findUnique({
     where: { slug },
     include: {
-      category: true,
+      categories: true,
       author: true,
       seoMeta: true,
       toolRelations: { include: { tool: true } },
-      relatedFrom: { include: { relatedBlog: { include: { category: true } } } },
+      relatedFrom: { include: { relatedBlog: { include: { categories: true } } } },
     },
   });
   if (!blog || blog.status !== "published") return null;
@@ -59,8 +59,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         publishedAt: blog.publishedAt ? blog.publishedAt.toISOString() : null,
         updatedAt: blog.updatedAt.toISOString(),
         authorName: blog.author?.name,
-        categoryName: blog.category?.name,
-        categorySlug: blog.category?.slug,
+        categories: blog.categories.map((c) => ({ name: c.name, slug: c.slug })),
       }}
       relatedTools={blog.toolRelations.map((r) => ({ slug: r.tool.slug, title: r.tool.title }))}
       relatedBlogs={blog.relatedFrom
@@ -72,7 +71,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           slug: r.relatedBlog.slug,
           title: r.relatedBlog.title,
           publishedAt: r.relatedBlog.publishedAt ? r.relatedBlog.publishedAt.toISOString() : null,
-          categoryName: r.relatedBlog.category?.name,
+          // The compact "More Articles" list stays to one label per post —
+          // just the first category, not the full multi-select list.
+          categoryName: r.relatedBlog.categories[0]?.name,
         }))}
     />
   );

@@ -9,7 +9,7 @@ export default async function BlogListPage() {
   const blogs = await prisma.blog.findMany({
     where: { status: "published" },
     orderBy: { publishedAt: "desc" },
-    include: { category: true },
+    include: { categories: true },
   });
 
   return (
@@ -23,13 +23,18 @@ export default async function BlogListPage() {
             key={blog.id}
             className="rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 dark:border-gray-800"
           >
-            {blog.category ? (
-              <Link
-                href={`/blog/category/${blog.category.slug}`}
-                className="text-xs font-medium text-indigo-600 hover:underline"
-              >
-                {blog.category.name}
-              </Link>
+            {blog.categories.length > 0 ? (
+              <div className="flex flex-wrap gap-x-2 gap-y-1">
+                {blog.categories.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/blog/category/${c.slug}`}
+                    className="text-xs font-medium text-indigo-600 hover:underline"
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
             ) : null}
             <Link href={`/blog/${blog.slug}`} className="block">
               <h2 className="mt-1 text-lg font-semibold">{blog.title}</h2>

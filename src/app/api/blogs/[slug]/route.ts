@@ -10,7 +10,14 @@ function slugify(text: string) {
     .replace(/\s+/g, "-");
 }
 
-async function resolveCategoryId(categoryId?: string | null, newCategoryName?: string | null) {
+// Resolves the final set of category ids for a post: whatever was picked
+// from the multi-select, plus (if provided) a brand-new category created on
+// the fly from a typed name.
+async function resolveCategoryIds(
+  categoryIds: string[] = [],
+  newCategoryName?: string | null
+): Promise<string[]> {
+  const ids = new Set(categoryIds);
   if (newCategoryName && newCategoryName.trim()) {
     const slug = slugify(newCategoryName);
     const category = await prisma.blogCategory.upsert({
@@ -18,9 +25,9 @@ async function resolveCategoryId(categoryId?: string | null, newCategoryName?: s
       update: {},
       create: { name: newCategoryName.trim(), slug },
     });
-    return category.id;
+    ids.add(category.id);
   }
-  return categoryId || undefined;
+  return [...ids];
 }
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
@@ -34,7 +41,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   const blog = await prisma.blog.findUnique({
     where: { slug },
     include: {
-      category: true,
+      categories: true,
       seoMeta: true,
       toolRelations: { include: { tool: true } },
       relatedFrom: { include: { relatedBlog: true } },
@@ -55,7 +62,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   const existing = await prisma.blog.findUnique({ where: { slug } });
   if (!existing) return NextResponse.json({ error: "Blog not found" }, { status: 404 });
 
-  const categoryId = await resolveCategoryId(body.categoryId, body.newCategoryName);
+  const categoryIds = await resolveCategoryIds(
+    Array.isArray(body.categoryIds) ? body.categoryIds : existing.categoryIds,
+    body.newCategoryName
+  );
 
   const blog = await prisma.blog.update({
     where: { slug },
@@ -72,7 +82,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
           : body.publishedAt
             ? new Date(body.publishedAt)
             : existing.publishedAt,
-      categoryId: categoryId ?? existing.categoryId,
+      // `set` (a full replace) rather than `connect` — connect only adds,
+      // it would never let unchecking a category in the admin UI remove it.
+      categories: { set: categoryIds.map((id) => ({ id })) },
     },
   });
 

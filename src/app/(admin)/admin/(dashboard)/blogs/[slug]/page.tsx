@@ -48,7 +48,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
             tags: (JSON.parse(blog.tags) as string[]).join(", "),
             status: blog.status as "draft" | "in_review" | "published" | "needs_update",
             publishedAt: blog.publishedAt ? blog.publishedAt.toISOString().slice(0, 10) : "",
-            categoryId: blog.categoryId ?? "",
+            categoryIds: blog.categoryIds,
             toolIds: blog.toolRelations.map((r) => r.toolId),
             relatedBlogIds: blog.relatedFrom.map((r) => r.relatedBlogId),
             seo: {

@@ -156,7 +156,14 @@ model BlogCategory {
   parent   BlogCategory?  @relation("BlogCategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children BlogCategory[] @relation("BlogCategoryHierarchy")
 
-  blogs   Blog[]
+  // The other half of the many-to-many with Blog — MongoDB has no join
+  // table, so Prisma requires an array field mirroring the relation on
+  // BOTH sides (Blog.categoryIds lists a post's categories; this lists a
+  // category's posts). Prisma keeps the two in sync automatically as long
+  // as writes go through the `categories`/`blogs` relation fields (connect
+  // / set / disconnect) rather than assigning the id arrays directly.
+  blogIds String[] @db.ObjectId
+  blogs   Blog[]   @relation("BlogCategories", fields: [blogIds], references: [id])
   seoMeta SeoMeta?
 
   @@map("blog_categories")
@@ -173,8 +180,12 @@ model Blog {
   status        ContentStatus @default(draft)
   publishedAt   DateTime?
 
-  categoryId String?       @db.ObjectId
-  category   BlogCategory? @relation(fields: [categoryId], references: [id])
+  // A post can belong to more than one category/sub-category at once —
+  // stored as an array of BlogCategory ids directly on the Blog document
+  // (MongoDB's flavor of a many-to-many relation: no join table, the list
+  // lives on this side, filtered elsewhere with `categoryIds: { has: id }`).
+  categoryIds String[]       @db.ObjectId
+  categories  BlogCategory[] @relation("BlogCategories", fields: [categoryIds], references: [id])
 
   authorId String? @db.ObjectId
   author   User?   @relation("BlogAuthor", fields: [authorId], references: [id])

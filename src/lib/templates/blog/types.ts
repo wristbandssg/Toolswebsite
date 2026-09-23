@@ -9,8 +9,8 @@ export interface BlogTemplateProps {
     publishedAt: string | null;
     updatedAt: string;
     authorName?: string | null;
-    categoryName?: string | null;
-    categorySlug?: string | null;
+    // A post can belong to more than one category at once.
+    categories: { name: string; slug: string }[];
   };
   relatedTools: { slug: string; title: string }[];
   relatedBlogs: {

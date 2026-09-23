@@ -34,6 +34,31 @@ const EMPTY_SEO: BlogCategorySeo = {
   schemaType: "",
 };
 
+/** A small colored icon badge — folder for a top-level category, a "nested
+ * under" arrow for a sub-category — so the hierarchy reads at a glance
+ * instead of relying only on indentation and a plain dot. */
+function CategoryIcon({ isChild }: { isChild: boolean }) {
+  return (
+    <span
+      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+        isChild
+          ? "bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400"
+          : "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400"
+      }`}
+    >
+      {isChild ? (
+        <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 3v8a3 3 0 0 0 3 3h6M11 11l4 3-4 3" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+          <path d="M3 5.5A1.5 1.5 0 0 1 4.5 4h3.379a1.5 1.5 0 0 1 1.06.44l1.122 1.12A1.5 1.5 0 0 0 11.12 6H15.5A1.5 1.5 0 0 1 17 7.5v7A1.5 1.5 0 0 1 15.5 16h-11A1.5 1.5 0 0 1 3 14.5v-9Z" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 /**
  * One category (or sub-category) row, plus its expandable SEO/intro panel.
  * Top-level rows and sub-category rows share this exact same component —
@@ -90,10 +115,8 @@ function CategoryRow({
 }) {
   return (
     <div className={isChild ? "ml-6 sm:ml-10" : undefined}>
-      <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
-        <span
-          className={`h-2 w-2 shrink-0 rounded-full ${isChild ? "bg-sky-400" : "bg-indigo-500"}`}
-        />
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors hover:border-indigo-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900">
+        <CategoryIcon isChild={isChild} />
 
         {editingId === cat.id ? (
           <div className="flex flex-1 items-center gap-2">
@@ -126,54 +149,63 @@ function CategoryRow({
         ) : (
           <>
             <div className="min-w-0 flex-1">
-              <p className="font-medium">
-                {isChild ? <span className="mr-1 text-gray-400">↳</span> : null}
-                {cat.name}
-              </p>
-              <p className="text-xs text-gray-400">/blog/category/{cat.slug}</p>
+              <p className="truncate font-medium">{cat.name}</p>
+              <p className="truncate text-xs text-gray-400">/blog/category/{cat.slug}</p>
             </div>
-            <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+            <span
+              className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
+                cat.postCount > 0
+                  ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
+                  : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+              }`}
+            >
               {cat.postCount} post{cat.postCount === 1 ? "" : "s"}
             </span>
-            <a
-              href={`/blog/category/${cat.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 text-sm text-gray-600 hover:underline dark:text-gray-300"
-            >
-              View
-            </a>
-            {!isChild && onAddSubcategory ? (
+            <div className="flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
+              <a
+                href={`/blog/category/${cat.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                View
+              </a>
+              {!isChild && onAddSubcategory ? (
+                <button
+                  type="button"
+                  onClick={() => onAddSubcategory(cat)}
+                  className="text-gray-500 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  + Sub-Category
+                </button>
+              ) : null}
               <button
                 type="button"
-                onClick={() => onAddSubcategory(cat)}
-                className="shrink-0 text-sm text-gray-600 hover:underline dark:text-gray-300"
+                onClick={() => toggleSeo(cat)}
+                className={`hover:underline ${
+                  seoOpenId === cat.id
+                    ? "font-medium text-indigo-600 dark:text-indigo-400"
+                    : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                }`}
               >
-                + Sub-Category
+                {seoOpenId === cat.id ? "Close SEO" : "SEO"}
               </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => toggleSeo(cat)}
-              className="shrink-0 text-sm text-gray-600 hover:underline dark:text-gray-300"
-            >
-              {seoOpenId === cat.id ? "Close SEO" : "SEO"}
-            </button>
-            <button
-              type="button"
-              onClick={() => startEditing(cat)}
-              className="shrink-0 text-sm text-indigo-600 hover:underline"
-            >
-              Rename
-            </button>
-            <button
-              type="button"
-              disabled={deletingId === cat.id}
-              onClick={() => handleDelete(cat)}
-              className="shrink-0 text-sm text-red-600 hover:underline disabled:opacity-50"
-            >
-              {deletingId === cat.id ? "Deleting..." : "Delete"}
-            </button>
+              <button
+                type="button"
+                onClick={() => startEditing(cat)}
+                className="text-indigo-600 hover:underline"
+              >
+                Rename
+              </button>
+              <button
+                type="button"
+                disabled={deletingId === cat.id}
+                onClick={() => handleDelete(cat)}
+                className="text-red-600 hover:underline disabled:opacity-50"
+              >
+                {deletingId === cat.id ? "Deleting..." : "Delete"}
+              </button>
+            </div>
           </>
         )}
       </div>
@@ -531,12 +563,12 @@ export default function BlogCategoriesManager({ initial }: { initial: BlogCatego
   const selectedParentName = topLevelCategories.find((c) => c.id === newParentId)?.name;
 
   return (
-    <div className="max-w-3xl">
+    <div className="w-full">
       <form
         onSubmit={handleCreate}
         className="rounded-2xl border-2 border-dashed border-indigo-300 bg-indigo-50/50 p-5 dark:border-indigo-800 dark:bg-indigo-950/20"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             ref={nameInputRef}
             className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"

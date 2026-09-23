@@ -15,7 +15,8 @@ const blogSchema = z.object({
   tags: z.array(z.string()).default([]),
   status: z.enum(["draft", "in_review", "published", "needs_update"]).default("draft"),
   publishedAt: z.string().optional().nullable(),
-  categoryId: z.string().optional().nullable(),
+  // A post can belong to more than one category/sub-category.
+  categoryIds: z.array(z.string()).default([]),
   newCategoryName: z.string().optional().nullable(),
   toolIds: z.array(z.string()).default([]),
   relatedBlogIds: z.array(z.string()).default([]),
@@ -29,7 +30,14 @@ function slugify(text: string) {
     .replace(/\s+/g, "-");
 }
 
-async function resolveCategoryId(categoryId?: string | null, newCategoryName?: string | null) {
+// Resolves the final set of category ids for a post: whatever was picked
+// from the multi-select, plus (if provided) a brand-new category created on
+// the fly from a typed name.
+async function resolveCategoryIds(
+  categoryIds: string[] = [],
+  newCategoryName?: string | null
+): Promise<string[]> {
+  const ids = new Set(categoryIds);
   if (newCategoryName && newCategoryName.trim()) {
     const slug = slugify(newCategoryName);
     const category = await prisma.blogCategory.upsert({
@@ -37,9 +45,9 @@ async function resolveCategoryId(categoryId?: string | null, newCategoryName?: s
       update: {},
       create: { name: newCategoryName.trim(), slug },
     });
-    return category.id;
+    ids.add(category.id);
   }
-  return categoryId || undefined;
+  return [...ids];
 }
 
 export async function GET() {
@@ -51,7 +59,7 @@ export async function GET() {
   }
   const blogs = await prisma.blog.findMany({
     orderBy: { updatedAt: "desc" },
-    include: { category: true, toolRelations: true },
+    include: { categories: true, toolRelations: true },
   });
   return NextResponse.json({ blogs });
 }
@@ -77,7 +85,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
   }
 
-  const categoryId = await resolveCategoryId(data.categoryId, data.newCategoryName);
+  const categoryIds = await resolveCategoryIds(data.categoryIds, data.newCategoryName);
   const authorId = (session.user as { id?: string }).id;
 
   const blog = await prisma.blog.create({
@@ -95,7 +103,7 @@ export async function POST(req: NextRequest) {
           : data.publishedAt
             ? new Date(data.publishedAt)
             : null,
-      categoryId: categoryId ?? undefined,
+      categories: { connect: categoryIds.map((id) => ({ id })) },
       authorId: authorId ?? undefined,
       toolRelations: {
         create: data.toolIds.map((toolId) => ({ toolId })),

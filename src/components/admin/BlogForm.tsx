@@ -33,7 +33,7 @@ export interface BlogFormValues {
   tags: string; // comma-separated in the form, converted to array on submit
   status: "draft" | "in_review" | "published" | "needs_update";
   publishedAt: string; // yyyy-mm-dd
-  categoryId: string;
+  categoryIds: string[];
   toolIds: string[];
   relatedBlogIds: string[];
   seo: BlogSeoValues;
@@ -49,7 +49,7 @@ const EMPTY: BlogFormValues = {
   tags: "",
   status: "draft",
   publishedAt: "",
-  categoryId: "",
+  categoryIds: [],
   toolIds: [],
   relatedBlogIds: [],
   seo: EMPTY_SEO,
@@ -107,7 +107,7 @@ export default function BlogForm({
     setValues((v) => ({ ...v, seo: { ...v.seo, [key]: val } }));
   }
 
-  function toggleId(key: "toolIds" | "relatedBlogIds", id: string) {
+  function toggleId(key: "categoryIds" | "toolIds" | "relatedBlogIds", id: string) {
     const current = values[key];
     update(key, current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
   }
@@ -150,7 +150,7 @@ export default function BlogForm({
           .filter(Boolean),
         status: values.status,
         publishedAt: values.publishedAt || null,
-        categoryId: values.categoryId || null,
+        categoryIds: values.categoryIds,
         toolIds: values.toolIds,
         relatedBlogIds: values.relatedBlogIds,
       };
@@ -441,8 +441,8 @@ export default function BlogForm({
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-semibold">Category</h2>
+            <div className="mb-1 flex items-center justify-between">
+              <h2 className="font-semibold">Categories</h2>
               <Link
                 href="/admin/blogs/categories"
                 target="_blank"
@@ -451,21 +451,32 @@ export default function BlogForm({
                 Manage Categories →
               </Link>
             </div>
-            <label className="block text-sm">
-              <span className="font-medium">Choose a category</span>
-              <select
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                value={values.categoryId}
-                onChange={(e) => update("categoryId", e.target.value)}
-              >
-                <option value="">-- None --</option>
-                {categoryOptions.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.parentId ? `— ${c.name}` : c.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <p className="mb-4 text-sm text-gray-500">
+              Select one or more categories (and sub-categories) this post belongs to.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {categoryOptions.map((c) => (
+                <label
+                  key={c.id}
+                  className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm ${
+                    values.categoryIds.includes(c.id)
+                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
+                      : "border-gray-200 dark:border-gray-700"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="mr-1.5"
+                    checked={values.categoryIds.includes(c.id)}
+                    onChange={() => toggleId("categoryIds", c.id)}
+                  />
+                  {c.parentId ? `— ${c.name}` : c.name}
+                </label>
+              ))}
+              {categoryOptions.length === 0 ? (
+                <p className="text-sm text-gray-400">No categories yet.</p>
+              ) : null}
+            </div>
           </section>
         </div>
       </div>

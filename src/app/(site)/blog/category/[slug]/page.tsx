@@ -24,9 +24,8 @@ async function loadCategory(slug: string) {
   });
   if (!category) return null;
   const blogs = await prisma.blog.findMany({
-    where: { status: "published", categoryId: category.id },
+    where: { status: "published", categoryIds: { has: category.id } },
     orderBy: { publishedAt: "desc" },
-    include: { category: true },
   });
   return { category, blogs };
 }
