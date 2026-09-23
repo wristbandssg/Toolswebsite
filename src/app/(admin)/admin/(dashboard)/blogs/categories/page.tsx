@@ -18,9 +18,10 @@ export default async function BlogCategoriesPage() {
       </p>
       <h1 className="mt-1 text-2xl font-bold">Blog Categories</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Add, rename, or remove the categories blog posts can be filed under. Each one gets its
-        own public page — open &quot;SEO&quot; on a category to set its meta title, description,
-        the 100–150 word intro shown on the page, and more.
+        Add, rename, or remove the categories blog posts can be filed under — including
+        sub-categories nested one level under a top-level category. Every category (top-level or
+        sub) gets its own public page with the same design — open &quot;SEO&quot; on any of them
+        to set its meta title, description, the 100–150 word intro shown on the page, and more.
       </p>
       <div className="mt-6">
         <BlogCategoriesManager
@@ -28,6 +29,7 @@ export default async function BlogCategoriesPage() {
             id: c.id,
             name: c.name,
             slug: c.slug,
+            parentId: c.parentId,
             postCount: c._count.blogs,
             description: c.description ?? "",
             seo: {

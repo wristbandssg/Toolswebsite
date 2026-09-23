@@ -72,7 +72,7 @@ export default function BlogForm({
 }: {
   mode: "create" | "edit";
   initial?: Partial<BlogFormValues>;
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; parentId?: string | null }[];
   tools: { id: string; title: string }[];
   otherBlogs: { id: string; title: string }[];
 }) {
@@ -83,6 +83,21 @@ export default function BlogForm({
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sub-categories are just regular categories with a parentId — group them
+  // directly under their parent in the dropdown (indented) instead of
+  // listing every category alphabetically flat, so the hierarchy set up on
+  // the Categories page is visible here too.
+  const topLevelCategories = categories.filter((c) => !c.parentId);
+  const groupedCategoryOptions = topLevelCategories.flatMap((parent) => [
+    parent,
+    ...categories.filter((c) => c.parentId === parent.id),
+  ]);
+  // Fallback for the unexpected case of a parentId that doesn't match any
+  // top-level category in this list (e.g. stale data) — still show it
+  // rather than silently dropping it from the dropdown.
+  const groupedIds = new Set(groupedCategoryOptions.map((c) => c.id));
+  const categoryOptions = [...groupedCategoryOptions, ...categories.filter((c) => !groupedIds.has(c.id))];
 
   function update<K extends keyof BlogFormValues>(key: K, val: BlogFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -444,9 +459,9 @@ export default function BlogForm({
                 onChange={(e) => update("categoryId", e.target.value)}
               >
                 <option value="">-- None --</option>
-                {categories.map((c) => (
+                {categoryOptions.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name}
+                    {c.parentId ? `— ${c.name}` : c.name}
                   </option>
                 ))}
               </select>

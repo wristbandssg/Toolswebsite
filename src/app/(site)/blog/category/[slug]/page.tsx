@@ -18,7 +18,10 @@ const HERO_SLIDES = 4;
 const FEATURED_COUNT = 3;
 
 async function loadCategory(slug: string) {
-  const category = await prisma.blogCategory.findUnique({ where: { slug }, include: { seoMeta: true } });
+  const category = await prisma.blogCategory.findUnique({
+    where: { slug },
+    include: { seoMeta: true, parent: true },
+  });
   if (!category) return null;
   const blogs = await prisma.blog.findMany({
     where: { status: "published", categoryId: category.id },
@@ -105,6 +108,14 @@ export default async function BlogCategoryPage({
             <Link href="/blog" className="hover:underline">
               Blog
             </Link>{" "}
+            {category.parent ? (
+              <>
+                /{" "}
+                <Link href={`/blog/category/${category.parent.slug}`} className="hover:underline">
+                  {category.parent.name}
+                </Link>{" "}
+              </>
+            ) : null}
             / {category.name}
           </p>
 
