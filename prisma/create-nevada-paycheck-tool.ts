@@ -32,6 +32,22 @@ const prisma = new PrismaClient();
 const OLD_SLUG = "nevada-paycheck-calculator";
 const NEW_SLUG = "nevada-tax-calculator";
 
+// Instructions/Examples/Assumptions are now rich-text (HTML) fields — the
+// admin edits them with the same Tiptap editor used for Blog posts, and the
+// public page renders them with dangerouslySetInnerHTML (see
+// ToolContentSections). Content below is still authored as plain
+// "\n\n"-separated paragraphs, since that's easier to read/edit here; this
+// wraps each paragraph in a <p> tag so it's valid HTML by the time it's
+// saved, instead of rendering as one unbroken run-on paragraph.
+function paragraphsToHtml(text: string): string {
+  return text
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p>${p}</p>`)
+    .join("");
+}
+
 async function main() {
   const category = await prisma.toolCategory.upsert({
     where: { slug: "tax-paycheck-calculators" },
@@ -241,9 +257,9 @@ async function main() {
     calcInputs: JSON.stringify(calcInputs),
     calcResult: JSON.stringify({ label: "Take-Home Pay", unit: "", format: "currency" }),
     calcResults: JSON.stringify(calcResults),
-    instructions,
-    examples,
-    assumptions,
+    instructions: paragraphsToHtml(instructions),
+    examples: paragraphsToHtml(examples),
+    assumptions: paragraphsToHtml(assumptions),
     faq: JSON.stringify(faq),
   } satisfies Prisma.ToolUncheckedUpdateInput;
 

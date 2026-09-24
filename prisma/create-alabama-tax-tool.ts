@@ -28,6 +28,17 @@ const prisma = new PrismaClient();
 
 const SLUG = "alabama-tax-calculator";
 
+// Instructions/Examples/Assumptions are now rich-text (HTML) fields — see
+// the matching helper/comment in create-nevada-paycheck-tool.ts.
+function paragraphsToHtml(text: string): string {
+  return text
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p>${p}</p>`)
+    .join("");
+}
+
 async function main() {
   const category = await prisma.toolCategory.upsert({
     where: { slug: "tax-paycheck-calculators" },
@@ -266,9 +277,9 @@ async function main() {
     calcInputs: JSON.stringify(calcInputs),
     calcResult: JSON.stringify({ label: "Take-Home Pay", unit: "", format: "currency" }),
     calcResults: JSON.stringify(calcResults),
-    instructions,
-    examples,
-    assumptions,
+    instructions: paragraphsToHtml(instructions),
+    examples: paragraphsToHtml(examples),
+    assumptions: paragraphsToHtml(assumptions),
     faq: JSON.stringify(faq),
   } satisfies Prisma.ToolUncheckedUpdateInput;
 

@@ -2,32 +2,28 @@ import { ChevronDown } from "lucide-react";
 import type { ToolTemplateProps } from "./types";
 import { StateCalculatorGrid } from "./StateCalculatorGrid";
 
-/** Splits on blank lines so a multi-paragraph Instructions/Examples string
- * actually renders as separate paragraphs — a plain string dropped into a
- * <div> ignores "\n\n" and runs everything together in one block. */
-function Paragraphs({ text }: { text: string }) {
+/** Instructions/Examples/Assumptions are authored with the same rich-text
+ * editor as Blog posts (see admin ToolForm → RichTextEditor) and stored as
+ * HTML, not plain text — so they render the same way the blog's content
+ * does (see BlogTemplate), via dangerouslySetInnerHTML with `prose` styling,
+ * rather than the old plain-text "\n\n"-split paragraphs. This is what lets
+ * an admin add links and images inside these sections. */
+function RichContent({ html }: { html: string }) {
   return (
-    <div className="prose max-w-none dark:prose-invert">
-      {text
-        .split(/\n\s*\n/)
-        .map((p) => p.trim())
-        .filter(Boolean)
-        .map((p, i) => (
-          <p key={i}>{p}</p>
-        ))}
-    </div>
+    <div
+      className="prose max-w-none dark:prose-invert prose-a:font-medium prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-img:rounded-xl"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }
 
 /**
  * A closed-by-default accordion bar — grey summary row with a chevron that
- * rotates on open, content revealed below a divider. This is the standard
- * format for a tool page's top content sections from here on ("About This
- * Calculator", "Assumptions", ...), matching the reference layout at
- * smartasset.com/taxes/alaska-tax-calculator: a calculator page opens with
- * collapsed accordions rather than walls of always-visible text.
+ * rotates on open, content revealed below a divider. Used ONLY for "About
+ * This Calculator" (per explicit request — Assumptions and Example are
+ * always-visible plain sections, not accordions).
  */
-function AccordionSection({ title, text }: { title: string; text: string }) {
+function AccordionSection({ title, html }: { title: string; html: string }) {
   return (
     <details className="group overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
       <summary className="flex cursor-pointer list-none items-center justify-between bg-gray-50 px-4 py-3 font-medium text-gray-700 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800">
@@ -35,22 +31,27 @@ function AccordionSection({ title, text }: { title: string; text: string }) {
         <ChevronDown className="h-4 w-4 shrink-0 text-gray-400 transition-transform group-open:rotate-180" />
       </summary>
       <div className="border-t border-gray-200 px-4 py-4 dark:border-gray-800">
-        <Paragraphs text={text} />
+        <RichContent html={html} />
       </div>
     </details>
   );
 }
 
 /**
- * Shared content blocks (About This Calculator, Assumptions, Examples, FAQ,
+ * Shared content blocks (About This Calculator, Example, Assumptions, FAQ,
  * Related Tools, Support Blogs) reused across all 5 Tool Templates — see
  * plan doc Section 6 "Calculator Tool Page Design" for the full section
  * list. Only the outer layout differs per template; this keeps that content
  * logic in one place.
  *
+ * Section order/behavior, per explicit request: "About This Calculator" is
+ * the ONLY collapsible accordion — Example sits directly below it, and
+ * Assumptions is a plain always-visible section (not a dropdown) after
+ * Example, not grouped with About This Calculator.
+ *
  * IMPORTANT: the "Other State Calculators" grid's position — directly above
- * the FAQ section — and its own rendering are untouched by the accordion
- * redesign below. Don't move or restyle it when editing this file.
+ * the FAQ section — and its own rendering are untouched here. Don't move or
+ * restyle it when editing this file.
  */
 export function ToolContentSections({
   tool,
@@ -60,21 +61,21 @@ export function ToolContentSections({
 }: ToolTemplateProps) {
   return (
     <div className="space-y-8">
-      {tool.instructions || tool.assumptions ? (
-        <div className="space-y-3">
-          {tool.instructions ? (
-            <AccordionSection title="About This Calculator" text={tool.instructions} />
-          ) : null}
-          {tool.assumptions ? (
-            <AccordionSection title="Assumptions" text={tool.assumptions} />
-          ) : null}
-        </div>
+      {tool.instructions ? (
+        <AccordionSection title="About This Calculator" html={tool.instructions} />
       ) : null}
 
       {tool.examples ? (
         <section>
           <h2 className="mb-2 text-xl font-semibold">Example</h2>
-          <Paragraphs text={tool.examples} />
+          <RichContent html={tool.examples} />
+        </section>
+      ) : null}
+
+      {tool.assumptions ? (
+        <section>
+          <h2 className="mb-2 text-xl font-semibold">Assumptions</h2>
+          <RichContent html={tool.assumptions} />
         </section>
       ) : null}
 

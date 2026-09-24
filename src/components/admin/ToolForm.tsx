@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { TOOL_TEMPLATES } from "@/lib/templates/registry";
 import CalculatorWidget from "@/components/CalculatorWidget";
+import RichTextEditor from "./RichTextEditor";
 
 export interface ToolFormValues {
   slug: string;
@@ -501,39 +502,37 @@ export default function ToolForm({
       {/* Content */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-4 font-semibold">Content</h2>
-        <label className="block text-sm">
+        <div className="block text-sm">
           <span className="font-medium">Instructions</span>
           <span className="ml-1 text-xs text-gray-400">
-            (shown as the &quot;About This Calculator&quot; dropdown)
+            (shown as the &quot;About This Calculator&quot; dropdown — same rich text editor as Blog posts, so you
+            can add links and images here too)
           </span>
-          <textarea
-            rows={3}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-            value={values.instructions}
-            onChange={(e) => update("instructions", e.target.value)}
-          />
-        </label>
-        <label className="mt-4 block text-sm">
+          <div className="mt-1">
+            <RichTextEditor
+              value={values.instructions}
+              onChange={(html) => update("instructions", html)}
+            />
+          </div>
+        </div>
+        <div className="mt-4 block text-sm">
           <span className="font-medium">Assumptions</span>
           <span className="ml-1 text-xs text-gray-400">
-            (shown as its own &quot;Assumptions&quot; dropdown, right after About This Calculator — optional)
+            (shown as its own always-visible &quot;Assumptions&quot; section, after the Example section — optional)
           </span>
-          <textarea
-            rows={3}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-            value={values.assumptions}
-            onChange={(e) => update("assumptions", e.target.value)}
-          />
-        </label>
-        <label className="mt-4 block text-sm">
+          <div className="mt-1">
+            <RichTextEditor
+              value={values.assumptions}
+              onChange={(html) => update("assumptions", html)}
+            />
+          </div>
+        </div>
+        <div className="mt-4 block text-sm">
           <span className="font-medium">Examples</span>
-          <textarea
-            rows={3}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-            value={values.examples}
-            onChange={(e) => update("examples", e.target.value)}
-          />
-        </label>
+          <div className="mt-1">
+            <RichTextEditor value={values.examples} onChange={(html) => update("examples", html)} />
+          </div>
+        </div>
 
         <div className="mt-6">
           <div className="flex items-center justify-between">
