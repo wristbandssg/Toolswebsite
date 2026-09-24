@@ -27,6 +27,15 @@
     "db:create-illinois-tool": "tsx prisma/create-illinois-tax-tool.ts",
     "db:create-indiana-tool": "tsx prisma/create-indiana-tax-tool.ts",
     "db:create-iowa-tool": "tsx prisma/create-iowa-tax-tool.ts",
+    "db:create-kansas-tool": "tsx prisma/create-kansas-tax-tool.ts",
+    "db:create-kentucky-tool": "tsx prisma/create-kentucky-tax-tool.ts",
+    "db:create-louisiana-tool": "tsx prisma/create-louisiana-tax-tool.ts",
+    "db:create-maine-tool": "tsx prisma/create-maine-tax-tool.ts",
+    "db:create-maryland-tool": "tsx prisma/create-maryland-tax-tool.ts",
+    "db:create-massachusetts-tool": "tsx prisma/create-massachusetts-tax-tool.ts",
+    "db:create-michigan-tool": "tsx prisma/create-michigan-tax-tool.ts",
+    "db:create-minnesota-tool": "tsx prisma/create-minnesota-tax-tool.ts",
+    "db:create-mississippi-tool": "tsx prisma/create-mississippi-tax-tool.ts",
     "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
   },
   "prisma": {
