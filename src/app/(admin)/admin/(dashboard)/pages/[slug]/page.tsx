@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function EditPagePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const page = await prisma.page.findUnique({ where: { slug } });
+  const page = await prisma.page.findUnique({ where: { slug }, include: { seoMeta: true } });
   if (!page) notFound();
 
   const tools = await prisma.tool.findMany({
@@ -32,11 +32,19 @@ export default async function EditPagePage({ params }: { params: Promise<{ slug:
           templates={templates}
           tools={tools}
           initial={{
+            id: page.id,
             slug: page.slug,
             title: page.title,
             templateKey: page.templateKey,
             sections: JSON.parse(page.sections) as PageSection[],
             status: page.status as "draft" | "in_review" | "published" | "needs_update",
+            seo: {
+              metaTitle: page.seoMeta?.metaTitle ?? "",
+              metaDescription: page.seoMeta?.metaDescription ?? "",
+              canonicalUrl: page.seoMeta?.canonicalUrl ?? "",
+              robotsIndex: page.seoMeta?.robotsIndex ?? true,
+              schemaType: page.seoMeta?.schemaType ?? "",
+            },
           }}
         />
       </div>

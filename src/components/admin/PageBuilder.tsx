@@ -4,20 +4,44 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PageSection } from "@/lib/templates/page/types";
 
+export interface PageSeoValues {
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  robotsIndex: boolean;
+  schemaType: string;
+}
+
+const EMPTY_SEO: PageSeoValues = {
+  metaTitle: "",
+  metaDescription: "",
+  canonicalUrl: "",
+  robotsIndex: true,
+  schemaType: "",
+};
+
 export interface PageFormValues {
+  id: string; // Mongo ObjectId — empty until the page is first created
   slug: string;
   title: string;
   templateKey: string;
   sections: PageSection[];
   status: "draft" | "in_review" | "published" | "needs_update";
+  // SEO — meta title/description, canonical URL, schema type, and indexing
+  // for this page's own public URL. Edited right here, saved right after
+  // the page itself (same two-step save the Blog Post form uses), instead
+  // of routing out to the (now removed) separate SEO Manager page.
+  seo: PageSeoValues;
 }
 
 const EMPTY: PageFormValues = {
+  id: "",
   slug: "",
   title: "",
   templateKey: "page-template-1",
   sections: [],
   status: "draft",
+  seo: EMPTY_SEO,
 };
 
 const SECTION_LABELS: Record<PageSection["type"], string> = {
@@ -77,6 +101,10 @@ export default function PageBuilder({
 
   function update<K extends keyof PageFormValues>(key: K, val: PageFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
+  }
+
+  function updateSeo<K extends keyof PageSeoValues>(key: K, val: PageSeoValues[K]) {
+    setValues((v) => ({ ...v, seo: { ...v.seo, [key]: val } }));
   }
 
   function updateSection(index: number, patch: Partial<PageSection>) {
@@ -155,6 +183,21 @@ export default function PageBuilder({
         setError(data.error ?? "Could not save the page.");
         return;
       }
+
+      const pageId = data.page?.id as string | undefined;
+      if (pageId) {
+        try {
+          await fetch(`/api/seo/page/${pageId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values.seo),
+          });
+        } catch {
+          // The page itself saved fine — don't block navigation over the SEO
+          // sidecar write failing.
+        }
+      }
+
       router.push("/admin/pages");
       router.refresh();
     } catch {
@@ -429,6 +472,61 @@ export default function PageBuilder({
           >
             + Add Section
           </button>
+        </div>
+      </section>
+
+      {/* SEO — inline, saved right after the page above. No separate SEO
+          Manager page to visit. */}
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="mb-4 font-semibold">SEO</h2>
+        <div className="space-y-4">
+          <label className="block text-sm">
+            <span className="font-medium">Meta Title</span>
+            <input
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+              placeholder={values.title || "Falls back to the page title"}
+              value={values.seo.metaTitle}
+              onChange={(e) => updateSeo("metaTitle", e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="font-medium">Meta Description</span>
+            <textarea
+              rows={3}
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+              value={values.seo.metaDescription}
+              onChange={(e) => updateSeo("metaDescription", e.target.value)}
+            />
+          </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="font-medium">Canonical URL</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                placeholder={values.slug ? `/pages/${values.slug}` : "Leave blank to use this page's own URL"}
+                value={values.seo.canonicalUrl}
+                onChange={(e) => updateSeo("canonicalUrl", e.target.value)}
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="font-medium">Schema.org Type</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                placeholder="e.g. WebPage (optional)"
+                value={values.seo.schemaType}
+                onChange={(e) => updateSeo("schemaType", e.target.value)}
+              />
+            </label>
+          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300"
+              checked={values.seo.robotsIndex}
+              onChange={(e) => updateSeo("robotsIndex", e.target.checked)}
+            />
+            <span className="font-medium">Allow search engines to index this page</span>
+          </label>
         </div>
       </section>
 
