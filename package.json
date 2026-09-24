@@ -21,6 +21,12 @@
     "db:create-connecticut-tool": "tsx prisma/create-connecticut-tax-tool.ts",
     "db:create-delaware-tool": "tsx prisma/create-delaware-tax-tool.ts",
     "db:create-florida-tool": "tsx prisma/create-florida-tax-tool.ts",
+    "db:create-georgia-tool": "tsx prisma/create-georgia-tax-tool.ts",
+    "db:create-hawaii-tool": "tsx prisma/create-hawaii-tax-tool.ts",
+    "db:create-idaho-tool": "tsx prisma/create-idaho-tax-tool.ts",
+    "db:create-illinois-tool": "tsx prisma/create-illinois-tax-tool.ts",
+    "db:create-indiana-tool": "tsx prisma/create-indiana-tax-tool.ts",
+    "db:create-iowa-tool": "tsx prisma/create-iowa-tax-tool.ts",
     "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
   },
   "prisma": {

@@ -1009,6 +1009,498 @@ const delawareTaxCalculator: CustomCalculator = (values) => {
 // `nevadaTaxCalculator` as-is, same as Alaska does.
 const floridaTaxCalculator: CustomCalculator = nevadaTaxCalculator;
 
+// ---------------------------------------------------------------------------
+// Georgia Income Tax Calculator — a flat 4.99% rate after a flat standard
+// deduction. Sourced from the Georgia Department of Revenue's "Important
+// Tax Updates" page (dor.georgia.gov):
+//   - Flat rate: 4.99% of Georgia taxable income, every filing status.
+//   - Standard deduction: $15,000 (Single, Married Filing Separately, and
+//     Head of Household), $30,000 (Married Filing Jointly).
+// No dependents field — Georgia's current flat-tax law, per this source,
+// doesn't add a separate per-dependent exemption on top of the standard
+// deduction, so this tool uses the same simple input set as
+// Arizona/Colorado.
+// ---------------------------------------------------------------------------
+
+const GA_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 15000, // Single
+  1: 30000, // Married Filing Jointly
+  2: 15000, // Married Filing Separately
+  3: 15000, // Head of Household
+};
+
+const GA_FLAT_RATE = 0.0499;
+
+const georgiaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Georgia state income tax: taxable wages minus the standard deduction,
+  // then a single flat 4.99% rate — no brackets.
+  const gaStandardDeduction = GA_STANDARD_DEDUCTION_2026[filingStatus];
+  const georgiaTaxableIncome = Math.max(0, taxableAnnualWages - gaStandardDeduction);
+  const annualStateIncomeTax = georgiaTaxableIncome * GA_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Hawaii Income Tax Calculator — the widest bracket schedule of any state
+// tool so far: 12 brackets from 1.4% up to 11%, after a flat standard
+// deduction. Figures sourced from a 2026 bracket aggregator for the exact
+// Single/Married Filing Jointly thresholds, and from Hawaii's own 2024 tax
+// reform legislation (HB2404 CD1, capitol.hawaii.gov) for the standard
+// deduction amounts effective for tax years beginning after December 31,
+// 2025 (i.e., 2026):
+//   - Standard deduction: $8,000 (Single/MFS), $16,000 (Married Filing
+//     Jointly), $12,000 (Head of Household).
+// SIMPLIFICATIONS (documented in the Tool's Assumptions text): Married
+// Filing Separately is derived as exactly half of the Married Filing
+// Jointly bracket thresholds (the same convention used elsewhere in this
+// file); Head of Household is approximated using the Single bracket
+// schedule rather than its own exact thresholds; Hawaii's separate personal
+// exemption isn't modeled, since the 2024 reform substantially restructured
+// Hawaii's deduction/exemption system around the larger standard deduction
+// figures above.
+// ---------------------------------------------------------------------------
+
+const HI_BRACKETS_SINGLE_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.014, upTo: 9600 },
+  { rate: 0.032, upTo: 14400 },
+  { rate: 0.055, upTo: 19200 },
+  { rate: 0.064, upTo: 24000 },
+  { rate: 0.068, upTo: 36000 },
+  { rate: 0.072, upTo: 48000 },
+  { rate: 0.076, upTo: 125000 },
+  { rate: 0.079, upTo: 175000 },
+  { rate: 0.0825, upTo: 225000 },
+  { rate: 0.09, upTo: 275000 },
+  { rate: 0.1, upTo: 325000 },
+  { rate: 0.11, upTo: Infinity },
+];
+
+const HI_BRACKETS_MFJ_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.014, upTo: 19200 },
+  { rate: 0.032, upTo: 28800 },
+  { rate: 0.055, upTo: 38400 },
+  { rate: 0.064, upTo: 48000 },
+  { rate: 0.068, upTo: 72000 },
+  { rate: 0.072, upTo: 96000 },
+  { rate: 0.076, upTo: 250000 },
+  { rate: 0.079, upTo: 350000 },
+  { rate: 0.0825, upTo: 450000 },
+  { rate: 0.09, upTo: 550000 },
+  { rate: 0.1, upTo: 650000 },
+  { rate: 0.11, upTo: Infinity },
+];
+
+// Married Filing Separately = exactly half the MFJ thresholds; Head of
+// Household approximated with the Single schedule — see the simplification
+// note in the block comment above.
+function hawaiiBracketsFor(status: FilingStatus): { rate: number; upTo: number }[] {
+  if (status === 1) return HI_BRACKETS_MFJ_2026;
+  if (status === 2) {
+    return HI_BRACKETS_MFJ_2026.map((b) => ({
+      rate: b.rate,
+      upTo: b.upTo === Infinity ? Infinity : b.upTo / 2,
+    }));
+  }
+  return HI_BRACKETS_SINGLE_2026;
+}
+
+const HI_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 8000, // Single
+  1: 16000, // Married Filing Jointly
+  2: 8000, // Married Filing Separately
+  3: 12000, // Head of Household
+};
+
+const hawaiiTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Hawaii state income tax: taxable wages minus the standard deduction,
+  // run through the 1.4%–11% brackets.
+  const hiStandardDeduction = HI_STANDARD_DEDUCTION_2026[filingStatus];
+  const hawaiiTaxableIncome = Math.max(0, taxableAnnualWages - hiStandardDeduction);
+  const annualStateIncomeTax = progressiveTax(hawaiiTaxableIncome, hawaiiBracketsFor(filingStatus));
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Idaho Income Tax Calculator — a flat 5.3% rate after a flat deduction
+// floor. Sourced from the Idaho State Tax Commission's individual income
+// tax rate schedule (tax.idaho.gov) — the most recently published figures
+// at the time this tool was built were for 2025 ($4,811 Single / $9,622
+// Married); Idaho adjusts this floor for inflation annually, so review for
+// a small update once 2026 figures are published. No dependents field —
+// Idaho's flat-tax system doesn't add a separate per-dependent exemption on
+// top of this floor, so this tool uses the same simple input set as
+// Georgia/Colorado.
+// ---------------------------------------------------------------------------
+
+const ID_STANDARD_DEDUCTION: Record<FilingStatus, number> = {
+  0: 4811, // Single
+  1: 9622, // Married Filing Jointly
+  2: 4811, // Married Filing Separately
+  3: 4811, // Head of Household
+};
+
+const IDAHO_FLAT_RATE = 0.053;
+
+const idahoTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Idaho state income tax: taxable wages minus the deduction floor, then a
+  // single flat 5.3% rate — no brackets.
+  const idStandardDeduction = ID_STANDARD_DEDUCTION[filingStatus];
+  const idahoTaxableIncome = Math.max(0, taxableAnnualWages - idStandardDeduction);
+  const annualStateIncomeTax = idahoTaxableIncome * IDAHO_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Illinois Income Tax Calculator — a flat 4.95% rate, with a per-exemption
+// personal exemption instead of a standard deduction. Sourced from a 2026
+// payroll withholding-table vendor:
+//   - Flat rate: 4.95% of Illinois taxable income, every filing status.
+//   - Personal exemption: $2,925 per exemption (self, spouse if filing
+//     jointly, and each dependent), subtracted from taxable wages before
+//     the flat rate applies — Illinois has no separate standard deduction.
+// Because the exemption count depends on dependents, this tool keeps the
+// "Number of Dependents" input field (like Alabama/Arkansas/California).
+// ---------------------------------------------------------------------------
+
+const IL_PERSONAL_EXEMPTION = 2925;
+const ILLINOIS_FLAT_RATE = 0.0495;
+
+const illinoisTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Illinois state income tax: taxable wages minus $2,925 per exemption
+  // (self + spouse-if-MFJ + dependents), then a flat 4.95% rate.
+  const numberOfExemptions = 1 + (filingStatus === 1 ? 1 : 0) + numberOfDependents;
+  const illinoisTaxableIncome = Math.max(0, taxableAnnualWages - numberOfExemptions * IL_PERSONAL_EXEMPTION);
+  const annualStateIncomeTax = illinoisTaxableIncome * ILLINOIS_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Indiana Income Tax Calculator — a flat 2.95% rate, with a per-exemption
+// personal exemption (like Illinois) PLUS an extra additional exemption for
+// each dependent. Sourced from the NFC's official 2026 Indiana state
+// withholding bulletin:
+//   - Flat rate: 2.95% of Indiana taxable income, every filing status.
+//   - Personal exemption: $1,000 per exemption (self, spouse if filing
+//     jointly, and each dependent).
+//   - Additional dependent exemption: another $1,500 per dependent, on top
+//     of that dependent's $1,000 personal exemption — so each dependent is
+//     worth $2,500 total, while you and your spouse are worth $1,000 each.
+// Because the exemption count depends on dependents, this tool keeps the
+// "Number of Dependents" input field.
+// ---------------------------------------------------------------------------
+
+const IN_PERSONAL_EXEMPTION = 1000;
+const IN_ADDITIONAL_DEPENDENT_EXEMPTION = 1500;
+const INDIANA_FLAT_RATE = 0.0295;
+
+const indianaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Indiana state income tax: taxable wages minus $1,000 per exemption
+  // (self + spouse-if-MFJ + dependents) minus an extra $1,500 per
+  // dependent, then a flat 2.95% rate.
+  const numberOfExemptions = 1 + (filingStatus === 1 ? 1 : 0) + numberOfDependents;
+  const indianaExemptions =
+    numberOfExemptions * IN_PERSONAL_EXEMPTION + numberOfDependents * IN_ADDITIONAL_DEPENDENT_EXEMPTION;
+  const indianaTaxableIncome = Math.max(0, taxableAnnualWages - indianaExemptions);
+  const annualStateIncomeTax = indianaTaxableIncome * INDIANA_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Iowa Income Tax Calculator — a flat 3.8% rate after a flat standard
+// deduction. Sourced from the Iowa Department of Revenue's official 2026
+// individual income tax withholding formula (revenue.iowa.gov):
+//   - Flat rate: 3.8% of Iowa taxable income, every filing status.
+//   - Standard deduction: $13,000 (Single/MFS), $26,000 (Married Filing
+//     Jointly, no spouse earned income), $19,500 (Head of Household).
+// No dependents field — Iowa's flat-tax withholding formula doesn't add a
+// separate per-dependent exemption on top of this deduction, so this tool
+// uses the same simple input set as Georgia/Idaho/Colorado.
+// ---------------------------------------------------------------------------
+
+const IA_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 13000, // Single
+  1: 26000, // Married Filing Jointly
+  2: 13000, // Married Filing Separately
+  3: 19500, // Head of Household
+};
+
+const IOWA_FLAT_RATE = 0.038;
+
+const iowaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Iowa state income tax: taxable wages minus the standard deduction, then
+  // a single flat 3.8% rate — no brackets.
+  const iaStandardDeduction = IA_STANDARD_DEDUCTION_2026[filingStatus];
+  const iowaTaxableIncome = Math.max(0, taxableAnnualWages - iaStandardDeduction);
+  const annualStateIncomeTax = iowaTaxableIncome * IOWA_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -1030,6 +1522,12 @@ export const customCalculators: Record<string, CustomCalculator> = {
   "connecticut-tax-calculator": connecticutTaxCalculator,
   "delaware-tax-calculator": delawareTaxCalculator,
   "florida-tax-calculator": floridaTaxCalculator,
+  "georgia-tax-calculator": georgiaTaxCalculator,
+  "hawaii-tax-calculator": hawaiiTaxCalculator,
+  "idaho-tax-calculator": idahoTaxCalculator,
+  "illinois-tax-calculator": illinoisTaxCalculator,
+  "indiana-tax-calculator": indianaTaxCalculator,
+  "iowa-tax-calculator": iowaTaxCalculator,
 };
 
 export function runCalculator(
