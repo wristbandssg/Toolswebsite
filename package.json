@@ -61,7 +61,9 @@
     "db:create-west-virginia-tool": "tsx prisma/create-west-virginia-tax-tool.ts",
     "db:create-wisconsin-tool": "tsx prisma/create-wisconsin-tax-tool.ts",
     "db:create-wyoming-tool": "tsx prisma/create-wyoming-tax-tool.ts",
-    "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
+    "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts",
+    "db:create-uk-income-tax-tool": "tsx prisma/create-uk-income-tax-tool.ts",
+    "db:create-scotland-income-tax-tool": "tsx prisma/create-scotland-income-tax-tool.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

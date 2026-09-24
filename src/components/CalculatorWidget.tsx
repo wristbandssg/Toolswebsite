@@ -14,6 +14,25 @@ interface Props {
   results?: CalcResultLineConfig[] | null;
 }
 
+// Locale to format each supported currency in its own convention (grouping,
+// decimal separator, symbol placement) rather than always formatting as if
+// it were US dollars. Add an entry here (and to CURRENCY_SYMBOL below) when
+// a new country's tools use a currency not already listed — everything
+// else in this component works unchanged once both maps have the code.
+const CURRENCY_LOCALE: Record<string, string> = {
+  USD: "en-US",
+  GBP: "en-GB",
+  CAD: "en-CA",
+  INR: "en-IN",
+};
+
+const CURRENCY_SYMBOL: Record<string, string> = {
+  USD: "$",
+  GBP: "£",
+  CAD: "$",
+  INR: "₹",
+};
+
 function defaultStep(min: number, max: number) {
   const span = max - min;
   if (span > 20000) return 1000;
@@ -94,9 +113,11 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     }
   }
 
-  function formatValue(n: number, format?: "number" | "currency" | "percentage") {
+  function formatValue(n: number, format?: "number" | "currency" | "percentage", currency?: string) {
     if (format === "currency") {
-      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+      const code = currency ?? "USD";
+      const locale = CURRENCY_LOCALE[code] ?? "en-US";
+      return new Intl.NumberFormat(locale, { style: "currency", currency: code }).format(n);
     }
     if (format === "percentage") {
       return `${n.toFixed(2)}%`;
@@ -105,8 +126,16 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
   }
 
   function formatOutput(n: number) {
-    return formatValue(n, result?.format);
+    return formatValue(n, result?.format, result?.currency);
   }
+
+  // Drives the "$ Results" header symbol — the single-output `result`
+  // config when this tool has one, otherwise the first breakdown line
+  // (every line in a given tool's `results` is the same currency, so the
+  // first is representative). Falls back to "$" for a tool with neither
+  // set yet (matches the pre-currency-field behavior).
+  const resultsCurrency = result?.currency ?? results?.[0]?.currency ?? "USD";
+  const resultsCurrencySymbol = CURRENCY_SYMBOL[resultsCurrency] ?? "$";
 
   const highlightLine = results?.find((line) => line.highlight) ?? null;
   const detailLines = (results ?? []).filter((line) => !line.highlight);
@@ -195,7 +224,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
         {/* Results */}
         <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-5">
           <h3 className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-gray-400">
-            <span aria-hidden>$</span> Results
+            <span aria-hidden>{resultsCurrencySymbol}</span> Results
           </h3>
 
           {!hasCalculated && !error ? (
@@ -218,7 +247,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                     {highlightLine.label}
                   </p>
                   <p className="mt-1 text-3xl font-bold">
-                    {formatValue(breakdown[highlightLine.key], highlightLine.format)}
+                    {formatValue(breakdown[highlightLine.key], highlightLine.format, highlightLine.currency)}
                   </p>
                 </div>
               ) : null}
@@ -234,7 +263,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                           key={line.key}
                           className="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-400 dark:bg-gray-800/60"
                         >
-                          {line.label} — {formatValue(0, line.format)}
+                          {line.label} — {formatValue(0, line.format, line.currency)}
                         </p>
                       );
                     }
@@ -244,7 +273,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600 dark:text-gray-300">{line.label}</span>
                           <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            {formatValue(value, line.format)}
+                            {formatValue(value, line.format, line.currency)}
                           </span>
                         </div>
                         <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
