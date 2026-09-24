@@ -5,7 +5,7 @@ import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/l
 
 export default async function EditToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const tool = await prisma.tool.findUnique({ where: { slug } });
+  const tool = await prisma.tool.findUnique({ where: { slug }, include: { seoMeta: true } });
   if (!tool) notFound();
 
   const categories = await prisma.toolCategory.findMany({ orderBy: { name: "asc" } });
@@ -43,6 +43,13 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
             examples: tool.examples ?? "",
             assumptions: tool.assumptions ?? "",
             faq: tool.faq ? JSON.parse(tool.faq) : [],
+            seo: {
+              metaTitle: tool.seoMeta?.metaTitle ?? "",
+              metaDescription: tool.seoMeta?.metaDescription ?? "",
+              canonicalUrl: tool.seoMeta?.canonicalUrl ?? "",
+              robotsIndex: tool.seoMeta?.robotsIndex ?? true,
+              schemaType: tool.seoMeta?.schemaType ?? "",
+            },
           }}
         />
       </div>

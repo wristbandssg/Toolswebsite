@@ -80,6 +80,33 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       examples: body.examples ?? existing.examples,
       assumptions: body.assumptions ?? existing.assumptions,
       faq: body.faq ? JSON.stringify(body.faq) : existing.faq,
+      // SEO — edited inline on this same form and saved together with
+      // everything else. Only touched when the request actually includes a
+      // `seo` object; upsert since the tool may or may not have a SeoMeta
+      // row yet (e.g. one created before this feature existed).
+      ...(body.seo && typeof body.seo === "object"
+        ? {
+            seoMeta: {
+              upsert: {
+                create: {
+                  contentType: "tool",
+                  metaTitle: body.seo.metaTitle || null,
+                  metaDescription: body.seo.metaDescription || null,
+                  canonicalUrl: body.seo.canonicalUrl || null,
+                  robotsIndex: typeof body.seo.robotsIndex === "boolean" ? body.seo.robotsIndex : true,
+                  schemaType: body.seo.schemaType || null,
+                },
+                update: {
+                  metaTitle: body.seo.metaTitle || null,
+                  metaDescription: body.seo.metaDescription || null,
+                  canonicalUrl: body.seo.canonicalUrl || null,
+                  robotsIndex: typeof body.seo.robotsIndex === "boolean" ? body.seo.robotsIndex : true,
+                  schemaType: body.seo.schemaType || null,
+                },
+              },
+            },
+          }
+        : {}),
     },
   });
 

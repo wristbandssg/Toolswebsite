@@ -32,6 +32,18 @@ export interface ToolFormValues {
   // (instructions). Optional, like Examples/FAQ.
   assumptions: string;
   faq: { question: string; answer: string }[];
+  // SEO — meta title/description, canonical URL, schema type, and indexing
+  // for this tool's own public page. Edited right here (and saved together
+  // with everything else by the same Save button) instead of routing out to
+  // the separate SEO Manager page, the same inline approach Tool Categories
+  // uses.
+  seo: {
+    metaTitle: string;
+    metaDescription: string;
+    canonicalUrl: string;
+    robotsIndex: boolean;
+    schemaType: string;
+  };
 }
 
 const EMPTY: ToolFormValues = {
@@ -51,6 +63,13 @@ const EMPTY: ToolFormValues = {
   examples: "",
   assumptions: "",
   faq: [],
+  seo: {
+    metaTitle: "",
+    metaDescription: "",
+    canonicalUrl: "",
+    robotsIndex: true,
+    schemaType: "",
+  },
 };
 
 function slugify(text: string) {
@@ -606,6 +625,66 @@ export default function ToolForm({
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* SEO — inline, saved together with the rest of the tool by the Save
+          button below. No separate page to visit. */}
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="font-semibold">SEO</h2>
+        <p className="mt-1 text-xs text-gray-400">
+          Meta title, description, canonical URL, and indexing for this tool&apos;s own page —
+          saved with the rest of the tool, no separate SEO page needed.
+        </p>
+        <div className="mt-4 space-y-4">
+          <label className="block text-sm">
+            <span className="font-medium">Meta Title</span>
+            <input
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+              placeholder={values.title || "Tool Name"}
+              value={values.seo.metaTitle}
+              onChange={(e) => update("seo", { ...values.seo, metaTitle: e.target.value })}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="font-medium">Meta Description</span>
+            <textarea
+              rows={2}
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+              placeholder={values.description || undefined}
+              value={values.seo.metaDescription}
+              onChange={(e) => update("seo", { ...values.seo, metaDescription: e.target.value })}
+            />
+          </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="font-medium">Canonical URL</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                placeholder={values.slug ? `/tools/${values.slug}` : ""}
+                value={values.seo.canonicalUrl}
+                onChange={(e) => update("seo", { ...values.seo, canonicalUrl: e.target.value })}
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="font-medium">Schema.org Type</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                placeholder="WebApplication"
+                value={values.seo.schemaType}
+                onChange={(e) => update("seo", { ...values.seo, schemaType: e.target.value })}
+              />
+            </label>
+          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300"
+              checked={values.seo.robotsIndex}
+              onChange={(e) => update("seo", { ...values.seo, robotsIndex: e.target.checked })}
+            />
+            <span className="font-medium">Allow search engines to index this tool&apos;s page</span>
+          </label>
         </div>
       </section>
 

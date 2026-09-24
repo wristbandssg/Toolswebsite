@@ -58,6 +58,18 @@ const toolCreateSchema = z.object({
   examples: z.string().optional().nullable(),
   assumptions: z.string().optional().nullable(),
   faq: z.array(z.object({ question: z.string(), answer: z.string() })).default([]),
+  // SEO for this tool's own public page — set inline on the same form, no
+  // separate SEO Manager visit needed. Optional so older callers that don't
+  // send it still work.
+  seo: z
+    .object({
+      metaTitle: z.string().optional().nullable(),
+      metaDescription: z.string().optional().nullable(),
+      canonicalUrl: z.string().optional().nullable(),
+      robotsIndex: z.boolean().optional().default(true),
+      schemaType: z.string().optional().nullable(),
+    })
+    .optional(),
 });
 
 export async function GET() {
@@ -113,6 +125,22 @@ export async function POST(req: NextRequest) {
       examples: data.examples,
       assumptions: data.assumptions,
       faq: JSON.stringify(data.faq),
+      // Only attached when the form actually sent SEO data — nested create
+      // of the one-to-one SeoMeta row via its Tool.seoMeta back-relation.
+      ...(data.seo
+        ? {
+            seoMeta: {
+              create: {
+                contentType: "tool",
+                metaTitle: data.seo.metaTitle || null,
+                metaDescription: data.seo.metaDescription || null,
+                canonicalUrl: data.seo.canonicalUrl || null,
+                robotsIndex: data.seo.robotsIndex ?? true,
+                schemaType: data.seo.schemaType || null,
+              },
+            },
+          }
+        : {}),
     },
   });
 
