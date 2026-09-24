@@ -79,7 +79,8 @@
     "db:create-nunavut-tool": "tsx prisma/create-nunavut-tax-tool.ts",
     "db:create-india-tool": "tsx prisma/create-india-tax-tool.ts",
     "db:create-australia-tool": "tsx prisma/create-australia-tax-tool.ts",
-    "db:create-south-africa-tool": "tsx prisma/create-south-africa-tax-tool.ts"
+    "db:create-south-africa-tool": "tsx prisma/create-south-africa-tax-tool.ts",
+    "db:create-pakistan-tool": "tsx prisma/create-pakistan-tax-tool.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

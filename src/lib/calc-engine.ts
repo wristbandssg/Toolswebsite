@@ -16,6 +16,7 @@
  *  - calc-engine-india.ts — India, New Regime vs Old Regime (one national tool)
  *  - calc-engine-australia.ts — Australia, one national tool (no state income tax)
  *  - calc-engine-southafrica.ts — South Africa, one national tool (no provincial income tax)
+ *  - calc-engine-pakistan.ts — Pakistan, one national tool (no provincial income tax)
  * Adding a new country means adding one more calc-engine-<country>.ts file
  * and one more line below merging its map in — no existing country's file
  * is touched.
@@ -44,16 +45,17 @@ import { canadaCustomCalculators } from "./calc-engine-canada";
 import { indiaCustomCalculators } from "./calc-engine-india";
 import { australiaCustomCalculators } from "./calc-engine-australia";
 import { southAfricaCustomCalculators } from "./calc-engine-southafrica";
+import { pakistanCustomCalculators } from "./calc-engine-pakistan";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
-// "alabama-tax-calculator"; UK/Canada/India/Australia/South Africa use a
-// country/region prefix like "uk-income-tax-calculator",
+// "alabama-tax-calculator"; UK/Canada/India/Australia/South Africa/Pakistan
+// use a country/region prefix like "uk-income-tax-calculator",
 // "scotland-income-tax-calculator", "ontario-income-tax-calculator",
 // "india-income-tax-calculator", "australia-income-tax-calculator",
-// "south-africa-income-tax-calculator" — see each country file's header
-// for its own slug convention), so a plain spread merge is safe: no two
-// countries' keys collide.
+// "south-africa-income-tax-calculator", "pakistan-income-tax-calculator" —
+// see each country file's header for its own slug convention), so a plain
+// spread merge is safe: no two countries' keys collide.
 export const customCalculators: Record<string, CustomCalculator> = {
   ...usCustomCalculators,
   ...ukCustomCalculators,
@@ -61,6 +63,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...indiaCustomCalculators,
   ...australiaCustomCalculators,
   ...southAfricaCustomCalculators,
+  ...pakistanCustomCalculators,
 };
 
 export function runCalculator(
