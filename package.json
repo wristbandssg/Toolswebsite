@@ -76,7 +76,8 @@
     "db:create-newfoundland-and-labrador-tool": "tsx prisma/create-newfoundland-and-labrador-tax-tool.ts",
     "db:create-yukon-tool": "tsx prisma/create-yukon-tax-tool.ts",
     "db:create-northwest-territories-tool": "tsx prisma/create-northwest-territories-tax-tool.ts",
-    "db:create-nunavut-tool": "tsx prisma/create-nunavut-tax-tool.ts"
+    "db:create-nunavut-tool": "tsx prisma/create-nunavut-tax-tool.ts",
+    "db:create-india-tool": "tsx prisma/create-india-tax-tool.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
