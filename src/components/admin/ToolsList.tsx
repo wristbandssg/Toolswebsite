@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Draft",
@@ -31,15 +32,19 @@ export interface ToolRow {
  * across the admin panel.
  */
 export default function ToolsList({
-  tools,
+  tools: initialTools,
   categories,
 }: {
   tools: ToolRow[];
   categories: { id: string; name: string }[];
 }) {
+  const router = useRouter();
+  const [tools, setTools] = useState(initialTools);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -50,6 +55,32 @@ export default function ToolsList({
       return true;
     });
   }, [tools, search, statusFilter, categoryFilter]);
+
+  async function handleDelete(tool: ToolRow) {
+    if (
+      !window.confirm(
+        `Delete "${tool.title}"? This permanently removes the tool and its content — this can't be undone.`
+      )
+    ) {
+      return;
+    }
+    setDeletingSlug(tool.slug);
+    setError(null);
+    try {
+      const res = await fetch(`/api/tools/${tool.slug}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "Could not delete the tool.");
+        return;
+      }
+      setTools((prev) => prev.filter((t) => t.slug !== tool.slug));
+      router.refresh();
+    } catch {
+      setError("Network error — please try again.");
+    } finally {
+      setDeletingSlug(null);
+    }
+  }
 
   const hasActiveFilters = search.trim() !== "" || statusFilter !== "all" || categoryFilter !== "all";
 
@@ -124,6 +155,12 @@ export default function ToolsList({
         </p>
       ) : null}
 
+      {error ? (
+        <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40 dark:text-red-400">
+          {error}
+        </p>
+      ) : null}
+
       <div className="mt-3 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <table className="w-full text-left text-sm">
           <thead className="bg-gray-50 text-gray-500 dark:bg-gray-950">
@@ -163,6 +200,14 @@ export default function ToolsList({
                     <Link href={`/admin/tools/${tool.slug}`} className="text-indigo-600 hover:underline">
                       Edit
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(tool)}
+                      disabled={deletingSlug === tool.slug}
+                      className="text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      {deletingSlug === tool.slug ? "Deleting…" : "Delete"}
+                    </button>
                   </div>
                 </td>
               </tr>

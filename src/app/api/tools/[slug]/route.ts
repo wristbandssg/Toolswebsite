@@ -90,5 +90,15 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   }
   const { slug } = await params;
   await prisma.tool.delete({ where: { slug } });
+
+  // StateCalculatorLink.toolSlug is a plain string, not a relation, so
+  // deleting the Tool row above doesn't touch it — without this, a deleted
+  // state tax tool would leave its row in the "Other State Calculators"
+  // grid pointing at a now-404ing URL instead of reverting to "not built
+  // yet". Clear it back to null (same as a state that never had a tool).
+  await prisma.stateCalculatorLink.updateMany({
+    where: { toolSlug: slug },
+    data: { toolSlug: null },
+  });
   return NextResponse.json({ ok: true });
 }

@@ -70,6 +70,7 @@ export default function ToolForm({
   const router = useRouter();
   const [values, setValues] = useState<ToolFormValues>({ ...EMPTY, ...initial });
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
   // The slug this tool was loaded under — captured once and never updated
@@ -168,6 +169,32 @@ export default function ToolForm({
       setError("Network error — please try again.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (
+      !window.confirm(
+        `Delete "${values.title || originalSlug}"? This permanently removes the tool and its content — this can't be undone.`
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/tools/${originalSlug}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "Could not delete the tool.");
+        return;
+      }
+      router.push("/admin/tools");
+      router.refresh();
+    } catch {
+      setError("Network error — please try again.");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -572,7 +599,7 @@ export default function ToolForm({
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         <button
           type="submit"
           disabled={saving}
@@ -580,6 +607,16 @@ export default function ToolForm({
         >
           {saving ? "Saving..." : mode === "create" ? "Create Tool" : "Save Changes"}
         </button>
+        {mode === "edit" ? (
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleting || saving}
+            className="rounded-lg border border-red-300 px-5 py-2.5 font-medium text-red-600 hover:bg-red-50 disabled:opacity-60 dark:border-red-900 dark:hover:bg-red-950/40"
+          >
+            {deleting ? "Deleting..." : "Delete Tool"}
+          </button>
+        ) : null}
       </div>
     </form>
 
