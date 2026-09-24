@@ -406,6 +406,87 @@ const alabamaTaxCalculator: CustomCalculator = (values) => {
 // a second slug at it is correct, not a shortcut.
 const alaskaTaxCalculator: CustomCalculator = nevadaTaxCalculator;
 
+// ---------------------------------------------------------------------------
+// Arizona Income Tax Calculator — same federal income tax + FICA model as
+// above, plus a real Arizona state income tax. Unlike Alabama's 2%/4%/5%
+// brackets, Arizona taxes ALL income at a single FLAT 2.5% rate (no
+// brackets) after subtracting a flat standard deduction — simpler than
+// Alabama on purpose, since that's what Arizona's own law actually is, not
+// a shortcut. Figures sourced from the Arizona Department of Revenue's
+// "Individual Income Tax Highlights" page (azdor.gov) and cross-checked
+// against the Tax Foundation's 2026 Arizona summary:
+//   - Flat rate: 2.5% of Arizona taxable income, for every filing status.
+//   - Standard deduction: $15,750 (Single or Married Filing Separately),
+//     $31,500 (Married Filing Jointly), $23,625 (Head of Household).
+// Arizona has no separate personal/dependent exemption line in its current
+// (post-2021) flat-tax system — the standard deduction is the only
+// subtraction before the flat rate applies.
+// ---------------------------------------------------------------------------
+
+const AZ_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 15750, // Single
+  1: 31500, // Married Filing Jointly
+  2: 15750, // Married Filing Separately
+  3: 23625, // Head of Household
+};
+
+const AZ_FLAT_RATE = 0.025;
+
+const arizonaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  // Wages actually subject to federal income tax, FICA, and Arizona state
+  // income tax, after pre-tax deductions come out.
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Arizona state income tax: taxable wages minus the flat standard
+  // deduction, then a single flat 2.5% rate — no brackets.
+  const azStandardDeduction = AZ_STANDARD_DEDUCTION_2026[filingStatus];
+  const arizonaTaxableIncome = Math.max(0, taxableAnnualWages - azStandardDeduction);
+  const annualStateIncomeTax = arizonaTaxableIncome * AZ_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -420,6 +501,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   "nevada-paycheck-calculator": nevadaTaxCalculator,
   "alabama-tax-calculator": alabamaTaxCalculator,
   "alaska-tax-calculator": alaskaTaxCalculator,
+  "arizona-tax-calculator": arizonaTaxCalculator,
 };
 
 export function runCalculator(
