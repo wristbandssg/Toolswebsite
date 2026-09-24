@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+
+export interface ToolCategorySeo {
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  robotsIndex: boolean;
+  schemaType: string;
+}
 
 export interface ToolCategoryRow {
   id: string;
@@ -14,26 +21,37 @@ export interface ToolCategoryRow {
   heroSubheading: string;
   heroDescription: string;
   toolCount: number;
+  seo: ToolCategorySeo;
 }
 
-// A small fixed palette, picked deterministically per category so the grid
-// reads as a colorful catalog rather than a plain list (kept visually
-// distinct from the Blog Categories manager's design).
-const SWATCHES = [
-  "bg-rose-500",
-  "bg-amber-500",
-  "bg-emerald-500",
-  "bg-sky-500",
-  "bg-violet-500",
-  "bg-fuchsia-500",
-  "bg-cyan-500",
-  "bg-orange-500",
-];
+const EMPTY_SEO: ToolCategorySeo = {
+  metaTitle: "",
+  metaDescription: "",
+  canonicalUrl: "",
+  robotsIndex: true,
+  schemaType: "",
+};
 
-function swatchFor(name: string) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-  return SWATCHES[hash % SWATCHES.length];
+/** A small calculator icon badge, matching the visual language of the Blog
+ * Categories manager's folder icon — gives each row a bit of color and
+ * identity instead of a bare text list. */
+function CategoryIcon() {
+  return (
+    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        className="h-4 w-4"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="4" y="2.5" width="12" height="15" rx="1.5" />
+        <path d="M7 6h6M7 9.5h.01M10 9.5h.01M13 9.5h.01M7 12.5h.01M10 12.5h.01M13 12.5h.01" />
+      </svg>
+    </span>
+  );
 }
 
 export default function ToolCategoriesManager({ initial }: { initial: ToolCategoryRow[] }) {
@@ -49,6 +67,26 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [editingHeroDescription, setEditingHeroDescription] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // SEO panel — inline on this same page, the same pattern as the Blog
+  // Categories manager, rather than a link out to the general SEO Manager
+  // (a category's SEO fields are edited and saved right here).
+  const [seoOpenId, setSeoOpenId] = useState<string | null>(null);
+  const [seoDraft, setSeoDraft] = useState<ToolCategorySeo>(EMPTY_SEO);
+  const [savingSeoId, setSavingSeoId] = useState<string | null>(null);
+  const [seoError, setSeoError] = useState<string | null>(null);
+
+  // A 500 from a stale Prisma Client (schema field not yet pushed to the
+  // DB) comes back as an HTML error page, not JSON — `.json()` on that
+  // throws, so this lets the caller build an honest error message from the
+  // status code instead of a raw exception.
+  async function safeJson(res: Response): Promise<{ error?: string } | null> {
+    try {
+      return await res.json();
+    } catch {
+      return null;
+    }
+  }
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -67,7 +105,9 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
         return;
       }
       setCategories((prev) =>
-        [...prev, data.category as ToolCategoryRow].sort((a, b) => a.name.localeCompare(b.name))
+        [...prev, { ...data.category, seo: EMPTY_SEO } as ToolCategoryRow].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        )
       );
       setNewName("");
       router.refresh();
@@ -83,6 +123,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
     setEditingName(cat.name);
     setEditingHeroSubheading(cat.heroSubheading);
     setEditingHeroDescription(cat.heroDescription);
+    setSeoOpenId(null);
     setError(null);
   }
 
@@ -129,6 +170,49 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
     }
   }
 
+  function toggleSeo(cat: ToolCategoryRow) {
+    if (seoOpenId === cat.id) {
+      setSeoOpenId(null);
+      return;
+    }
+    setSeoOpenId(cat.id);
+    setSeoDraft(cat.seo);
+    setSeoError(null);
+    setEditingId(null);
+  }
+
+  async function handleSaveSeo(cat: ToolCategoryRow) {
+    setSavingSeoId(cat.id);
+    setSeoError(null);
+    try {
+      const res = await fetch(`/api/seo/tool_category/${cat.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          metaTitle: seoDraft.metaTitle || null,
+          metaDescription: seoDraft.metaDescription || null,
+          canonicalUrl: seoDraft.canonicalUrl || null,
+          robotsIndex: seoDraft.robotsIndex,
+          schemaType: seoDraft.schemaType || null,
+        }),
+      });
+      const data = await safeJson(res);
+      if (!res.ok) {
+        setSeoError(
+          data?.error ?? `Could not save SEO settings — server error (${res.status}).`
+        );
+        return;
+      }
+      setCategories((prev) => prev.map((c) => (c.id === cat.id ? { ...c, seo: seoDraft } : c)));
+      setSeoOpenId(null);
+      router.refresh();
+    } catch {
+      setSeoError("Network error — please try again.");
+    } finally {
+      setSavingSeoId(null);
+    }
+  }
+
   async function handleDelete(cat: ToolCategoryRow) {
     const warning =
       cat.toolCount > 0
@@ -169,7 +253,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
         <button
           type="submit"
           disabled={creating || !newName.trim()}
-          className="shrink-0 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+          className="shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
         >
           {creating ? "Adding..." : "+ Add Category"}
         </button>
@@ -177,16 +261,14 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
 
       {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 space-y-3">
         {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
-          >
-            <div className={`h-1.5 ${swatchFor(cat.name)}`} />
-            <div className="p-4">
+          <div key={cat.id}>
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors hover:border-indigo-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900">
+              <CategoryIcon />
+
               {editingId === cat.id ? (
-                <div className="space-y-2">
+                <div className="min-w-0 flex-1 space-y-2">
                   <label className="block text-xs">
                     <span className="font-medium text-gray-500">Name</span>
                     <input
@@ -223,14 +305,14 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                       type="button"
                       disabled={savingId === cat.id}
                       onClick={() => handleRename(cat.id)}
-                      className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-700 disabled:opacity-50 dark:bg-white dark:text-gray-900"
+                      className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                     >
                       {savingId === cat.id ? "Saving..." : "Save"}
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditingId(null)}
-                      className="rounded-lg px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      className="rounded-lg px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       Cancel
                     </button>
@@ -238,37 +320,51 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                 </div>
               ) : (
                 <>
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="truncate font-semibold">{cat.name}</p>
-                      <p className="truncate text-xs text-gray-400">/tools/category/{cat.slug}</p>
-                    </div>
-                    <span
-                      className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium text-white ${swatchFor(cat.name)}`}
-                    >
-                      {cat.toolCount}
-                    </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{cat.name}</p>
+                    <p className="truncate text-xs text-gray-400">/tools/category/{cat.slug}</p>
                   </div>
-                  <div className="mt-3 flex gap-4 border-t border-gray-100 pt-3 text-xs dark:border-gray-800">
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
+                      cat.toolCount > 0
+                        ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
+                        : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                    }`}
+                  >
+                    {cat.toolCount} tool{cat.toolCount === 1 ? "" : "s"}
+                  </span>
+                  <div className="flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
+                    <a
+                      href={`/tools/category/${cat.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-500 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      View
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => toggleSeo(cat)}
+                      className={`hover:underline ${
+                        seoOpenId === cat.id
+                          ? "font-medium text-indigo-600 dark:text-indigo-400"
+                          : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                      }`}
+                    >
+                      {seoOpenId === cat.id ? "Close SEO" : "SEO"}
+                    </button>
                     <button
                       type="button"
                       onClick={() => startEditing(cat)}
-                      className="font-medium text-gray-600 hover:underline dark:text-gray-300"
+                      className="text-indigo-600 hover:underline"
                     >
                       Edit
                     </button>
-                    <Link
-                      href={`/admin/seo/tool_category/${cat.id}`}
-                      target="_blank"
-                      className="font-medium text-gray-600 hover:underline dark:text-gray-300"
-                    >
-                      SEO →
-                    </Link>
                     <button
                       type="button"
                       disabled={deletingId === cat.id}
                       onClick={() => handleDelete(cat)}
-                      className="font-medium text-red-600 hover:underline disabled:opacity-50"
+                      className="text-red-600 hover:underline disabled:opacity-50"
                     >
                       {deletingId === cat.id ? "Deleting..." : "Delete"}
                     </button>
@@ -276,11 +372,95 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                 </>
               )}
             </div>
+
+            {seoOpenId === cat.id ? (
+              <div className="mt-2 space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/40">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                    Meta Title
+                  </label>
+                  <input
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    placeholder={`${cat.name} Calculators`}
+                    value={seoDraft.metaTitle}
+                    onChange={(e) => setSeoDraft((s) => ({ ...s, metaTitle: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                    Meta Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    value={seoDraft.metaDescription}
+                    onChange={(e) =>
+                      setSeoDraft((s) => ({ ...s, metaDescription: e.target.value }))
+                    }
+                  />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                      Canonical URL
+                    </label>
+                    <input
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                      value={seoDraft.canonicalUrl}
+                      onChange={(e) =>
+                        setSeoDraft((s) => ({ ...s, canonicalUrl: e.target.value }))
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-300">
+                      Schema.org Type
+                    </label>
+                    <input
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                      placeholder="CollectionPage"
+                      value={seoDraft.schemaType}
+                      onChange={(e) => setSeoDraft((s) => ({ ...s, schemaType: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <input
+                    type="checkbox"
+                    checked={seoDraft.robotsIndex}
+                    onChange={(e) =>
+                      setSeoDraft((s) => ({ ...s, robotsIndex: e.target.checked }))
+                    }
+                  />
+                  Allow search engines to index this category page
+                </label>
+
+                {seoError ? <p className="text-sm text-red-600">{seoError}</p> : null}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={savingSeoId === cat.id}
+                    onClick={() => handleSaveSeo(cat)}
+                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                  >
+                    {savingSeoId === cat.id ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSeoOpenId(null)}
+                    className="rounded-lg px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
         ))}
 
         {categories.length === 0 ? (
-          <p className="col-span-full rounded-2xl border border-dashed border-gray-200 px-4 py-10 text-center text-sm text-gray-400 dark:border-gray-800">
+          <p className="rounded-2xl border border-dashed border-gray-200 px-4 py-10 text-center text-sm text-gray-400 dark:border-gray-800">
             No categories yet — add your first one above.
           </p>
         ) : null}

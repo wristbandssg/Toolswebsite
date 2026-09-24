@@ -10,8 +10,9 @@ export const dynamic = "force-dynamic";
 // A distinct visual identity from the Blog category page: a light hero
 // section with a gradient-accented headline (rather than a colored banner)
 // followed by a grid of compact, icon-free tool cards — title, description,
-// and an optional "POPULAR" badge, with a "Use Calculator →" hint that
-// fades in on hover.
+// and an optional "POPULAR" badge, with a full-width "Use Calculator →" bar
+// that slides up over the card's own empty space on hover, rather than
+// taking up room (or changing the card's height) when at rest.
 
 async function loadCategory(slug: string) {
   const category = await prisma.toolCategory.findUnique({
@@ -89,16 +90,18 @@ export default async function ToolCategoryPage({
       </div>
 
       {/* Tool card grid — deliberately small and icon-free: 4 across on a
-          wide screen rather than 3, tight padding, and a "Use Calculator →"
-          hint that only shows up on hover instead of always taking up
-          space, so the resting card stays compact. */}
+          wide screen rather than 3, tight padding, and each card's own
+          resting height (with whatever empty space that leaves) is left
+          alone — the "Use Calculator →" bar lives in an absolutely
+          positioned overlay that slides up from the bottom edge on hover,
+          so it never adds height or pushes anything at rest. */}
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {tools.map((tool) => (
             <Link
               key={tool.id}
               href={`/tools/${tool.slug}`}
-              className="group relative flex flex-col rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
             >
               {tool.isPopular ? (
                 <span className="absolute right-3 top-3 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
@@ -119,7 +122,7 @@ export default async function ToolCategoryPage({
               ) : null}
               <span
                 aria-hidden
-                className="mt-2 block -translate-y-1 text-xs font-semibold text-indigo-600 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 dark:text-indigo-400"
+                className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center bg-indigo-600 py-2 text-xs font-semibold text-white transition-transform duration-200 group-hover:translate-y-0 dark:bg-indigo-500"
               >
                 Use Calculator →
               </span>
