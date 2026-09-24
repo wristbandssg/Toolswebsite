@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export interface ToolCategoryRow {
   id: string;
@@ -256,6 +257,13 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                     >
                       Edit
                     </button>
+                    <Link
+                      href={`/admin/seo/tool_category/${cat.id}`}
+                      target="_blank"
+                      className="font-medium text-gray-600 hover:underline dark:text-gray-300"
+                    >
+                      SEO →
+                    </Link>
                     <button
                       type="button"
                       disabled={deletingId === cat.id}

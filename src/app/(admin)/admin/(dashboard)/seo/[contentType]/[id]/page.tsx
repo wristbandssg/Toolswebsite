@@ -26,6 +26,19 @@ async function loadContent(contentType: SeoContentType, id: string) {
       seoMeta: blog.seoMeta,
     };
   }
+  if (contentType === "tool_category") {
+    const category = await prisma.toolCategory.findUnique({
+      where: { id },
+      include: { seoMeta: true },
+    });
+    if (!category) return null;
+    return {
+      title: category.name,
+      publicHref: `/tools/category/${category.slug}`,
+      fallbackDescription: category.heroDescription ?? category.heroSubheading ?? undefined,
+      seoMeta: category.seoMeta,
+    };
+  }
   const page = await prisma.page.findUnique({ where: { id }, include: { seoMeta: true } });
   if (!page) return null;
   return {
@@ -60,7 +73,7 @@ export default async function EditSeoPage({
         <SeoForm
           contentType={type}
           id={id}
-          backHref="/admin/seo"
+          backHref={type === "tool_category" ? "/admin/tools/categories" : "/admin/seo"}
           fallbackTitle={content.title}
           fallbackDescription={content.fallbackDescription}
           initial={{

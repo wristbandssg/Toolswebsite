@@ -103,7 +103,8 @@ model ToolCategory {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tools Tool[]
+  tools   Tool[]
+  seoMeta SeoMeta?
 
   @@map("tool_categories")
 }
@@ -119,12 +120,10 @@ model Tool {
   categoryId String?       @db.ObjectId
   category   ToolCategory? @relation(fields: [categoryId], references: [id])
 
-  // Shown on the /tools/category/[slug] card grid (added per user request):
-  // `icon` is a single emoji the admin types in (e.g. "💰"), rendered in a
-  // small badge on the card — optional, the card falls back to a generic
-  // calculator icon when unset. `isPopular` shows a small "POPULAR" pill on
-  // the card when true.
-  icon      String?
+  // Shows a small "POPULAR" pill on this tool's card on its category page
+  // (added per user request). No icon field — the admin tried a
+  // per-tool emoji icon on the card and asked for it to be removed, so the
+  // card grid is icon-free by design; don't re-add one without asking.
   isPopular Boolean @default(false)
 
   // Calculation logic
@@ -310,7 +309,7 @@ model Page {
 
 model SeoMeta {
   id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  contentType     String // "tool" | "blog" | "page" | "category"
+  contentType     String // "tool" | "blog" | "page" | "category" | "tool_category"
   metaTitle       String?
   metaDescription String?
   canonicalUrl    String?
@@ -330,6 +329,12 @@ model SeoMeta {
   // Blog Category SEO (category listing pages, e.g. /blog/category/[slug])
   categoryId String?       @unique @db.ObjectId
   category   BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Tool Category SEO (e.g. /tools/category/[slug]) — a separate relation
+  // from the Blog Category one above since they're different models, even
+  // though both share the "category" idea.
+  toolCategoryId String?       @unique @db.ObjectId
+  toolCategory   ToolCategory? @relation(fields: [toolCategoryId], references: [id], onDelete: Cascade)
 
   @@map("seo_meta")
 }

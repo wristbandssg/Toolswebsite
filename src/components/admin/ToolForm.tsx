@@ -15,9 +15,7 @@ export interface ToolFormValues {
   templateKey: string;
   categoryId: string;
   status: "draft" | "in_review" | "published" | "needs_update";
-  // Shown on the /tools/category/[slug] card grid — a single emoji (e.g.
-  // "💰") and whether to show a "POPULAR" badge on this tool's card.
-  icon: string;
+  // Shows a "POPULAR" badge on this tool's card on its category page.
   isPopular: boolean;
   calcType: "expression" | "custom";
   calcFormula: string;
@@ -43,7 +41,6 @@ const EMPTY: ToolFormValues = {
   templateKey: "tool-template-1",
   categoryId: "",
   status: "draft",
-  icon: "",
   isPopular: false,
   calcType: "expression",
   calcFormula: "",
@@ -262,19 +259,6 @@ export default function ToolForm({
               <option value="published">Published</option>
               <option value="needs_update">Needs Update</option>
             </select>
-          </label>
-          <label className="text-sm">
-            <span className="font-medium">Card Icon</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-              placeholder="e.g. 💰"
-              maxLength={8}
-              value={values.icon}
-              onChange={(e) => update("icon", e.target.value)}
-            />
-            <span className="mt-1 block text-xs text-gray-400">
-              One emoji, shown on this tool&apos;s card on its category page. Leave blank for a generic icon.
-            </span>
           </label>
           <label className="flex items-center gap-2 text-sm">
             <input
@@ -663,7 +647,6 @@ export default function ToolForm({
 
           <div className="mt-4 space-y-1">
             <div className="flex items-center gap-2">
-              {values.icon ? <span className="text-lg">{values.icon}</span> : null}
               <p className="font-medium text-gray-900 dark:text-gray-100">
                 {values.title || "Untitled Tool"}
               </p>

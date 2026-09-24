@@ -29,7 +29,6 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
             templateKey: tool.templateKey,
             categoryId: tool.categoryId ?? "",
             status: tool.status as "draft" | "in_review" | "published" | "needs_update",
-            icon: tool.icon ?? "",
             isPopular: tool.isPopular,
             calcType: tool.calcType as "expression" | "custom",
             calcFormula: tool.calcFormula ?? "",

@@ -17,6 +17,7 @@ function whereFor(contentType: SeoContentType, id: string) {
   if (contentType === "tool") return { toolId: id };
   if (contentType === "blog") return { blogId: id };
   if (contentType === "category") return { categoryId: id };
+  if (contentType === "tool_category") return { toolCategoryId: id };
   return { pageId: id };
 }
 
@@ -24,6 +25,7 @@ function createDataFor(contentType: SeoContentType, id: string) {
   if (contentType === "tool") return { toolId: id };
   if (contentType === "blog") return { blogId: id };
   if (contentType === "category") return { categoryId: id };
+  if (contentType === "tool_category") return { toolCategoryId: id };
   return { pageId: id };
 }
 
