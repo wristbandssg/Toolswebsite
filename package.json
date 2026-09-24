@@ -15,6 +15,7 @@
     "db:create-alabama-tool": "tsx prisma/create-alabama-tax-tool.ts",
     "db:create-alaska-tool": "tsx prisma/create-alaska-tax-tool.ts",
     "db:create-arizona-tool": "tsx prisma/create-arizona-tax-tool.ts",
+    "db:create-arkansas-tool": "tsx prisma/create-arkansas-tax-tool.ts",
     "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
   },
   "prisma": {

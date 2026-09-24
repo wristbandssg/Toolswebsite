@@ -487,6 +487,111 @@ const arizonaTaxCalculator: CustomCalculator = (values) => {
   };
 };
 
+// ---------------------------------------------------------------------------
+// Arkansas Income Tax Calculator — same federal income tax + FICA model as
+// above, plus a real Arkansas state income tax: a graduated 5-bracket
+// schedule (0% / 2% / 3% / 3.4% / 3.9%) on income after a flat standard
+// deduction, then a small per-exemption PERSONAL TAX CREDIT subtracted
+// directly from the computed tax (not from taxable income) — Arkansas's own
+// withholding formula works this way. Figures sourced from the Arkansas
+// Department of Finance and Administration's 2026 withholding tax tables
+// (dfa.arkansas.gov) and cross-checked against a 2026 payroll-tax-table
+// vendor's published breakdown:
+//   - Brackets (same schedule for every filing status): 0% up to $5,600,
+//     2% up to $11,200, 3% up to $16,000, 3.4% up to $26,400, 3.9% above.
+//   - Standard deduction: $2,470 per person — $2,470 for Single/MFS/Head of
+//     Household, $4,940 for Married Filing Jointly (two people's worth).
+//   - Personal tax credit: $29 per exemption (self, spouse if filing
+//     jointly, and each dependent), subtracted from the computed bracket
+//     tax rather than from taxable income.
+// SIMPLIFICATION (documented in the Tool's Assumptions text, same
+// estimate-grade spirit as Alabama's standard-deduction interpolation):
+// Arkansas actually swaps to a second, simplified rate table for net income
+// above $94,700 (to avoid a bracket-edge cliff) — this calculator applies
+// the standard graduated schedule at every income level instead of
+// modeling that swap, which is accurate for the vast majority of filers and
+// only diverges slightly near/above that threshold. It also doesn't model
+// Arkansas's separate "low income tax table" credit for very low incomes.
+// ---------------------------------------------------------------------------
+
+const AR_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 2470, // Single
+  1: 4940, // Married Filing Jointly (two people's worth)
+  2: 2470, // Married Filing Separately
+  3: 2470, // Head of Household
+};
+
+const AR_BRACKETS_2026: { rate: number; upTo: number }[] = [
+  { rate: 0, upTo: 5600 },
+  { rate: 0.02, upTo: 11200 },
+  { rate: 0.03, upTo: 16000 },
+  { rate: 0.034, upTo: 26400 },
+  { rate: 0.039, upTo: Infinity },
+];
+
+const AR_PERSONAL_CREDIT_PER_EXEMPTION = 29;
+
+const arkansasTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  // Wages actually subject to federal income tax, FICA, and Arkansas state
+  // income tax, after pre-tax deductions come out.
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Arkansas state income tax: taxable wages minus the flat standard
+  // deduction, run through the 0%/2%/3%/3.4%/3.9% brackets, then the
+  // per-exemption personal tax credit ($29 x self + spouse-if-MFJ +
+  // dependents) is subtracted from that computed tax, not from income.
+  const arStandardDeduction = AR_STANDARD_DEDUCTION_2026[filingStatus];
+  const arkansasTaxableIncome = Math.max(0, taxableAnnualWages - arStandardDeduction);
+  const arTaxBeforeCredit = progressiveTax(arkansasTaxableIncome, AR_BRACKETS_2026);
+  const numberOfExemptions = 1 + (filingStatus === 1 ? 1 : 0) + numberOfDependents;
+  const arPersonalCredit = numberOfExemptions * AR_PERSONAL_CREDIT_PER_EXEMPTION;
+  const annualStateIncomeTax = Math.max(0, arTaxBeforeCredit - arPersonalCredit);
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -502,6 +607,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   "alabama-tax-calculator": alabamaTaxCalculator,
   "alaska-tax-calculator": alaskaTaxCalculator,
   "arizona-tax-calculator": arizonaTaxCalculator,
+  "arkansas-tax-calculator": arkansasTaxCalculator,
 };
 
 export function runCalculator(
