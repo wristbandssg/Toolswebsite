@@ -16,6 +16,11 @@
     "db:create-alaska-tool": "tsx prisma/create-alaska-tax-tool.ts",
     "db:create-arizona-tool": "tsx prisma/create-arizona-tax-tool.ts",
     "db:create-arkansas-tool": "tsx prisma/create-arkansas-tax-tool.ts",
+    "db:create-california-tool": "tsx prisma/create-california-tax-tool.ts",
+    "db:create-colorado-tool": "tsx prisma/create-colorado-tax-tool.ts",
+    "db:create-connecticut-tool": "tsx prisma/create-connecticut-tax-tool.ts",
+    "db:create-delaware-tool": "tsx prisma/create-delaware-tax-tool.ts",
+    "db:create-florida-tool": "tsx prisma/create-florida-tax-tool.ts",
     "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
   },
   "prisma": {

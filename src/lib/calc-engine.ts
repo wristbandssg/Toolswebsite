@@ -592,6 +592,423 @@ const arkansasTaxCalculator: CustomCalculator = (values) => {
   };
 };
 
+// ---------------------------------------------------------------------------
+// California Income Tax Calculator — the most involved state model so far:
+// a real 9-bracket progressive schedule (1% up to 13.3%, the top rate
+// already including the 1% Mental Health Services Tax surcharge above
+// $1,000,000) PLUS a separate, mandatory State Disability Insurance (SDI)
+// payroll withholding — a real line on every California paycheck, distinct
+// from income tax, so it's reported as its own breakdown line
+// ("stateDisabilityInsurance") rather than folded into stateIncomeTax.
+// Figures sourced from the EDD's 2026 SDI page (edd.ca.gov) and the
+// NFC's official 2026 California withholding bulletin, cross-checked
+// against a 2026 bracket aggregator:
+//   - Brackets: 1% / 2% / 4% / 6% / 8% / 9.3% / 10.3% / 11.3% / 12.3% /
+//     13.3% (top rate already includes the 1% Mental Health Services Tax
+//     above $1,000,000 of taxable income) — sourced exactly for Single and
+//     Married Filing Jointly; Married Filing Separately and Head of
+//     Household are approximated using the Single schedule (documented
+//     simplification below).
+//   - Standard deduction: $5,706 (Single/MFS), $11,412 (Married Filing
+//     Jointly and Head of Household — both get the doubled amount).
+//   - Personal exemption credit: $168.30 per exemption (self, spouse if
+//     filing jointly, and each dependent), subtracted from the computed
+//     bracket tax, not from taxable income — same "credit not deduction"
+//     shape as Arkansas's personal tax credit.
+//   - SDI: a flat 1.3% of wages, with NO wage cap (California removed the
+//     SDI taxable wage limit effective 2024), applied to the same
+//     wage base as FICA/state income tax in this calculator (see the
+//     shared pre-tax-deduction assumption below).
+// SIMPLIFICATIONS (documented in the Tool's Assumptions text): Married
+// Filing Separately and Head of Household use the Single bracket schedule
+// rather than their own exact thresholds (a close approximation, not exact
+// to the dollar); California's separate, larger dependent exemption credit
+// isn't modeled — every exemption uses the $168.30 personal credit amount.
+// ---------------------------------------------------------------------------
+
+const CA_BRACKETS_SINGLE_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.01, upTo: 11079 },
+  { rate: 0.02, upTo: 26264 },
+  { rate: 0.04, upTo: 41452 },
+  { rate: 0.06, upTo: 57542 },
+  { rate: 0.08, upTo: 72724 },
+  { rate: 0.093, upTo: 371479 },
+  { rate: 0.103, upTo: 445771 },
+  { rate: 0.113, upTo: 742953 },
+  { rate: 0.123, upTo: 1000000 },
+  { rate: 0.133, upTo: Infinity },
+];
+
+const CA_BRACKETS_MFJ_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.01, upTo: 22158 },
+  { rate: 0.02, upTo: 52528 },
+  { rate: 0.04, upTo: 82904 },
+  { rate: 0.06, upTo: 115084 },
+  { rate: 0.08, upTo: 145448 },
+  { rate: 0.093, upTo: 742958 },
+  { rate: 0.103, upTo: 891542 },
+  { rate: 0.113, upTo: 1000000 },
+  { rate: 0.123, upTo: 1485906 },
+  { rate: 0.133, upTo: Infinity },
+];
+
+// Married Filing Separately and Head of Household approximated with the
+// Single schedule — see the simplification note in the block comment above.
+function californiaBracketsFor(status: FilingStatus): { rate: number; upTo: number }[] {
+  return status === 1 ? CA_BRACKETS_MFJ_2026 : CA_BRACKETS_SINGLE_2026;
+}
+
+const CA_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 5706, // Single
+  1: 11412, // Married Filing Jointly
+  2: 5706, // Married Filing Separately
+  3: 11412, // Head of Household
+};
+
+const CA_PERSONAL_EXEMPTION_CREDIT = 168.3;
+const CA_SDI_RATE = 0.013;
+
+const californiaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  // Wages actually subject to federal income tax, FICA, California state
+  // income tax, and SDI, after pre-tax deductions come out.
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // California state income tax: taxable wages minus the standard
+  // deduction, run through the 1%–13.3% brackets, then the $168.30-per-
+  // exemption personal credit is subtracted from that computed tax.
+  const caStandardDeduction = CA_STANDARD_DEDUCTION_2026[filingStatus];
+  const californiaTaxableIncome = Math.max(0, taxableAnnualWages - caStandardDeduction);
+  const caTaxBeforeCredit = progressiveTax(californiaTaxableIncome, californiaBracketsFor(filingStatus));
+  const numberOfExemptions = 1 + (filingStatus === 1 ? 1 : 0) + numberOfDependents;
+  const caPersonalCredit = numberOfExemptions * CA_PERSONAL_EXEMPTION_CREDIT;
+  const annualStateIncomeTax = Math.max(0, caTaxBeforeCredit - caPersonalCredit);
+
+  // California SDI: a flat 1.3% of the same wage base, with no cap.
+  const annualSDI = taxableAnnualWages * CA_SDI_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax + annualSDI;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    stateDisabilityInsurance: annualSDI / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Colorado Income Tax Calculator — a flat 4.4% rate, but with a distinctive
+// tax base: Colorado does NOT define its own standard deduction. Instead,
+// Colorado taxable income starts from FEDERAL taxable income (income after
+// the federal standard deduction is already applied) and the flat rate is
+// applied directly to that. This calculator reuses the `federalTaxableIncome`
+// value already computed for the federal tax line, rather than subtracting a
+// second, separate deduction — that would double-count it. Sourced from the
+// Tax Foundation's 2026 Colorado summary (flat 4.4%) and a CPA explainer of
+// Colorado's tax-base mechanics.
+// SIMPLIFICATION: Colorado requires an addback of some federal deductions
+// for taxpayers with federal AGI above $300,000 (to recapture part of the
+// federal standard/itemized deduction) — this calculator doesn't model that
+// high-income addback, which only affects incomes above this tool's $300,000
+// salary input ceiling anyway.
+// ---------------------------------------------------------------------------
+
+const COLORADO_FLAT_RATE = 0.044;
+
+const coloradoTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Colorado state income tax: the flat 4.4% rate applied directly to
+  // federal taxable income (Colorado's own tax base) — no separate
+  // Colorado standard deduction to subtract.
+  const annualStateIncomeTax = federalTaxableIncome * COLORADO_FLAT_RATE;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Connecticut Income Tax Calculator — a 7-bracket progressive schedule
+// (2% up to 6.99%) after a flat standard deduction. Sourced from a 2026
+// bracket aggregator and a 2026 payroll standard-deduction table:
+//   - Brackets: sourced exactly for Single and Married Filing Jointly;
+//     Married Filing Separately is derived as exactly half of the MFJ
+//     thresholds (Connecticut does this by law, same convention already
+//     used for the federal MFS brackets in this file), and Head of
+//     Household is approximated using the Single schedule (documented
+//     simplification below).
+//   - Standard deduction: $6,000 (Single), $12,000 (Married Filing
+//     Jointly), $9,000 (Head of Household); Married Filing Separately
+//     uses the Single amount ($6,000).
+// SIMPLIFICATIONS (documented in the Tool's Assumptions text): Connecticut
+// also has (1) a "tax recapture" provision that phases out the benefit of
+// its lower brackets for high earners, and (2) an income-based personal tax
+// credit table — neither is modeled here, which keeps this calculator's
+// scope in line with the other state tools rather than reproducing every
+// Connecticut-specific adjustment; both mainly affect higher incomes.
+// ---------------------------------------------------------------------------
+
+const CT_BRACKETS_SINGLE_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.02, upTo: 10000 },
+  { rate: 0.045, upTo: 50000 },
+  { rate: 0.055, upTo: 100000 },
+  { rate: 0.06, upTo: 200000 },
+  { rate: 0.065, upTo: 250000 },
+  { rate: 0.069, upTo: 500000 },
+  { rate: 0.0699, upTo: Infinity },
+];
+
+const CT_BRACKETS_MFJ_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.02, upTo: 20000 },
+  { rate: 0.045, upTo: 100000 },
+  { rate: 0.055, upTo: 200000 },
+  { rate: 0.06, upTo: 400000 },
+  { rate: 0.065, upTo: 500000 },
+  { rate: 0.069, upTo: 1000000 },
+  { rate: 0.0699, upTo: Infinity },
+];
+
+// Married Filing Separately = exactly half the MFJ thresholds (by law);
+// Head of Household is approximated with the Single schedule — see the
+// simplification note in the block comment above.
+function connecticutBracketsFor(status: FilingStatus): { rate: number; upTo: number }[] {
+  if (status === 1) return CT_BRACKETS_MFJ_2026;
+  if (status === 2) {
+    return CT_BRACKETS_MFJ_2026.map((b) => ({
+      rate: b.rate,
+      upTo: b.upTo === Infinity ? Infinity : b.upTo / 2,
+    }));
+  }
+  return CT_BRACKETS_SINGLE_2026;
+}
+
+const CT_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 6000, // Single
+  1: 12000, // Married Filing Jointly
+  2: 6000, // Married Filing Separately
+  3: 9000, // Head of Household
+};
+
+const connecticutTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Connecticut state income tax: taxable wages minus the standard
+  // deduction, run through the 2%–6.99% brackets.
+  const ctStandardDeduction = CT_STANDARD_DEDUCTION_2026[filingStatus];
+  const connecticutTaxableIncome = Math.max(0, taxableAnnualWages - ctStandardDeduction);
+  const annualStateIncomeTax = progressiveTax(connecticutTaxableIncome, connecticutBracketsFor(filingStatus));
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Delaware Income Tax Calculator — a 7-bracket progressive schedule (0% up
+// to 6.6%) after a flat standard deduction. Unlike most other states in
+// this file, Delaware uses the SAME bracket schedule for every filing
+// status (no separate MFJ table) — sourced from a 2026 payroll
+// withholding-table vendor:
+//   - Brackets: 0% up to $2,000, 2.2% up to $5,000, 3.9% up to $10,000,
+//     4.8% up to $20,000, 5.2% up to $25,000, 5.55% up to $60,000, 6.6%
+//     above $60,000 — the same schedule regardless of filing status.
+//   - Standard deduction: $3,250 (Single/MFS/Head of Household — Delaware's
+//     source table didn't list Head of Household separately, so it uses
+//     the Single amount, documented as a simplification), $6,500 (Married
+//     Filing Jointly).
+// ---------------------------------------------------------------------------
+
+const DE_BRACKETS_2026: { rate: number; upTo: number }[] = [
+  { rate: 0, upTo: 2000 },
+  { rate: 0.022, upTo: 5000 },
+  { rate: 0.039, upTo: 10000 },
+  { rate: 0.048, upTo: 20000 },
+  { rate: 0.052, upTo: 25000 },
+  { rate: 0.0555, upTo: 60000 },
+  { rate: 0.066, upTo: Infinity },
+];
+
+const DE_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 3250, // Single
+  1: 6500, // Married Filing Jointly
+  2: 3250, // Married Filing Separately
+  3: 3250, // Head of Household (approximated with the Single amount)
+};
+
+const delawareTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Delaware state income tax: taxable wages minus the standard deduction,
+  // run through the same 0%–6.6% bracket schedule for every filing status.
+  const deStandardDeduction = DE_STANDARD_DEDUCTION_2026[filingStatus];
+  const delawareTaxableIncome = Math.max(0, taxableAnnualWages - deStandardDeduction);
+  const annualStateIncomeTax = progressiveTax(delawareTaxableIncome, DE_BRACKETS_2026);
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// Florida, like Nevada and Alaska, levies no state income tax (confirmed
+// via the Tax Foundation's 2026 Florida summary — see
+// prisma/create-florida-tax-tool.ts for the citation) — so it reuses
+// `nevadaTaxCalculator` as-is, same as Alaska does.
+const floridaTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -608,6 +1025,11 @@ export const customCalculators: Record<string, CustomCalculator> = {
   "alaska-tax-calculator": alaskaTaxCalculator,
   "arizona-tax-calculator": arizonaTaxCalculator,
   "arkansas-tax-calculator": arkansasTaxCalculator,
+  "california-tax-calculator": californiaTaxCalculator,
+  "colorado-tax-calculator": coloradoTaxCalculator,
+  "connecticut-tax-calculator": connecticutTaxCalculator,
+  "delaware-tax-calculator": delawareTaxCalculator,
+  "florida-tax-calculator": floridaTaxCalculator,
 };
 
 export function runCalculator(
