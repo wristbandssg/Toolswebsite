@@ -24,6 +24,7 @@ const CURRENCY_LOCALE: Record<string, string> = {
   GBP: "en-GB",
   CAD: "en-CA",
   INR: "en-IN",
+  AUD: "en-AU",
 };
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -31,6 +32,7 @@ const CURRENCY_SYMBOL: Record<string, string> = {
   GBP: "£",
   CAD: "$",
   INR: "₹",
+  AUD: "$",
 };
 
 function defaultStep(min: number, max: number) {
