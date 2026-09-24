@@ -1,0 +1,306 @@
+// One-time (but safe to re-run) setup script: creates the Oregon Income Tax
+// Calculator Tool inside the existing "Tax & Paycheck Calculators" category
+// (created by create-nevada-paycheck-tool.ts, or here if that hasn't run
+// yet) — input fields, the multi-line breakdown result config,
+// instructions/examples/FAQ, and SEO meta. Mirrors
+// create-alabama-tax-tool.ts's structure and template (tool-template-3)
+// exactly, per request — same design, different state.
+//
+// Like Alabama, Oregon DOES levy a state income tax, so this tool's
+// breakdown actually shows a non-zero Oregon State Income Tax line. The
+// math lives in code, not the database: see
+// `customCalculators["oregon-tax-calculator"]` in `src/lib/calc-engine.ts`
+// for the federal income tax (2026 IRS brackets + standard deduction), FICA
+// (Social Security + Medicare), and Oregon state income tax (4.75%/6.75%/
+// 8.75%/9.9% brackets and Oregon's own, much smaller standard deduction —
+// figures sourced from a 2026 standard-deduction roundup plus a bracket
+// aggregator for Oregon's rate schedule) calculation. This script only
+// wires up the Tool row so the public page has a title, input form, and
+// content around that calculation.
+//
+// HOW TO RUN
+//   npx tsx prisma/create-oregon-tax-tool.ts
+// or
+//   npm run db:create-oregon-tool
+
+import { PrismaClient, Prisma } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+const SLUG = "oregon-tax-calculator";
+
+// Instructions/Examples/Assumptions are now rich-text (HTML) fields — see
+// the matching helper/comment in create-nevada-paycheck-tool.ts.
+function paragraphsToHtml(text: string): string {
+  return text
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p>${p}</p>`)
+    .join("");
+}
+
+async function main() {
+  const category = await prisma.toolCategory.upsert({
+    where: { slug: "tax-paycheck-calculators" },
+    update: { name: "Tax & Paycheck Calculators" },
+    create: {
+      name: "Tax & Paycheck Calculators",
+      slug: "tax-paycheck-calculators",
+      templateKey: "category-template-1",
+      viewStyle: "grid",
+    },
+  });
+
+  const calcInputs = [
+    {
+      key: "annualSalary",
+      label: "Annual Salary",
+      type: "currency",
+      unit: "USD/year",
+      required: true,
+      min: 0,
+      max: 300000,
+      step: 1000,
+    },
+    {
+      key: "payFrequency",
+      label: "Pay Frequency",
+      type: "dropdown",
+      required: true,
+      default: 26,
+      options: [
+        { label: "Weekly (52 paychecks/year)", value: 52 },
+        { label: "Biweekly (26 paychecks/year)", value: 26 },
+        { label: "Semi-Monthly (24 paychecks/year)", value: 24 },
+        { label: "Monthly (12 paychecks/year)", value: 12 },
+        { label: "Annually (1 payment/year)", value: 1 },
+      ],
+    },
+    {
+      key: "filingStatus",
+      label: "Filing Status",
+      type: "dropdown",
+      required: true,
+      default: 0,
+      options: [
+        { label: "Single", value: 0 },
+        { label: "Married Filing Jointly", value: 1 },
+        { label: "Married Filing Separately", value: 2 },
+        { label: "Head of Household", value: 3 },
+      ],
+    },
+    {
+      key: "preTaxDeductions",
+      label: "Pre-Tax Deductions",
+      unit: "per paycheck",
+      type: "currency",
+      required: false,
+      default: 0,
+      min: 0,
+    },
+    {
+      key: "postTaxDeductions",
+      label: "Post-Tax Deductions",
+      unit: "per paycheck",
+      type: "currency",
+      required: false,
+      default: 0,
+      min: 0,
+    },
+    {
+      key: "extraWithholding",
+      label: "Extra Withholding",
+      unit: "per paycheck",
+      type: "currency",
+      required: false,
+      default: 0,
+      min: 0,
+    },
+  ];
+
+  const calcResults = [
+    { key: "grossPayPerPeriod", label: "Gross Pay (per paycheck)", format: "currency" },
+    { key: "federalIncomeTax", label: "Federal Income Tax (per paycheck)", format: "currency" },
+    { key: "socialSecurityTax", label: "Social Security Tax (per paycheck)", format: "currency" },
+    { key: "medicareTax", label: "Medicare Tax (per paycheck)", format: "currency" },
+    { key: "stateIncomeTax", label: "Oregon State Income Tax", format: "currency" },
+    { key: "totalDeductions", label: "Total Taxes & Deductions (per paycheck)", format: "currency" },
+    { key: "netPayPerPeriod", label: "Your Take-Home Pay (per paycheck)", format: "currency", highlight: true },
+    { key: "annualNetPay", label: "Estimated Annual Take-Home Pay", format: "currency" },
+  ];
+
+  const instructions =
+    "Whether you're looking for an Oregon income tax calculator, a paycheck tax calculator, a payroll tax " +
+    "calculator, or just a general tax calculator for Oregon, this tool covers it: it works out federal income " +
+    "tax, Social Security, Medicare, and Oregon's state income tax from your salary, all in one place.\n\n" +
+    "Enter your annual salary, choose how often you're paid, select your federal filing status, and add any " +
+    "pre-tax deductions (like 401(k) contributions or health insurance premiums), post-tax deductions, and extra " +
+    "federal withholding if they apply to you — otherwise leave them at $0. Click Calculate to see a full " +
+    "breakdown: gross pay, federal income tax, Social Security tax, Medicare tax, Oregon state income tax, total " +
+    "deductions, and your estimated take-home pay, both per paycheck and for the year.\n\n" +
+    "Oregon taxes income across four brackets running from 4.75% up to 9.9% — one of the highest top marginal " +
+    "rates of any state — after subtracting Oregon's own standard deduction, which is set well below the " +
+    "federal standard deduction amount.\n\n" +
+    "Income taxes are calculated in four steps: taxable wages are worked out by subtracting your pre-tax " +
+    "deductions from gross pay, Oregon's standard deduction (based on your filing status) is subtracted from " +
+    "that to get Oregon taxable income, the 4.75%/6.75%/8.75%/9.9% bracket rates are applied to that, and " +
+    "federal income tax plus Social Security and Medicare are calculated separately alongside it. This " +
+    "calculator is reviewed and updated whenever the IRS or the Oregon Department of Revenue publish new annual " +
+    "figures.";
+
+  const assumptions =
+    "This calculator uses 2026 IRS federal tax brackets and the federal standard deduction for its federal " +
+    "figures, and Oregon's published 2026 brackets and standard deduction amounts for its state figures. It " +
+    "doesn't account for tax credits, itemized deductions, or every possible W-4 election, so treat it as a " +
+    "close estimate rather than an exact paycheck figure — your actual paycheck may vary slightly depending on " +
+    "your employer's payroll system.\n\n" +
+    "Oregon's Married Filing Separately thresholds are derived here as exactly half of the Married Filing " +
+    "Jointly thresholds, and Head of Household uses the Single bracket schedule together with its own, separate " +
+    "$4,560 standard deduction — a documented simplification, since exact Oregon Married Filing Separately and " +
+    "Head of Household bracket schedules weren't both cleanly available.\n\n" +
+    "Oregon also offers a small personal exemption credit — a flat-dollar credit rather than a deduction — which " +
+    "isn't modeled in this calculator, so your real Oregon state tax may be slightly lower than this estimate.\n\n" +
+    "Pre-tax deductions you enter (like traditional 401(k) contributions or health insurance premiums) are " +
+    "assumed to reduce wages for federal income tax, FICA, AND Oregon state income tax alike — some deduction " +
+    "types only reduce some of these, which this calculator doesn't distinguish between.\n\n" +
+    "This tool provides general estimates for informational purposes only and isn't tax, legal, or financial " +
+    "advice. For guidance specific to your situation, consult a qualified tax professional or the Oregon " +
+    "Department of Revenue.";
+
+  const examples =
+    "Example: a single filer with no dependents earning $75,000 a year, paid biweekly (26 paychecks/year), with " +
+    "no pre-tax or post-tax deductions, takes home approximately $2,138.35 per paycheck — about $55,597.06 for " +
+    "the year — after federal income tax, Social Security, Medicare, and Oregon state income tax.\n\n" +
+    "Oregon's standard deduction is only $2,835 for a single filer — a small fraction of the federal standard " +
+    "deduction — and its top 9.9% bracket starts at $125,000 of taxable income (Single), which together with " +
+    "one of the highest top rates in the country explains why Oregon take-home pay is noticeably lower here " +
+    "than in most other states at the same salary.";
+
+  const faq = [
+    {
+      question: "Does Oregon have a state income tax?",
+      answer:
+        "Yes. Oregon taxes income across four brackets, from 4.75% up to 9.9% — one of the highest top marginal " +
+        "rates of any state.",
+    },
+    {
+      question: "What are the Oregon income tax brackets?",
+      answer:
+        "For Single filers: 4.75% up to $4,550, 6.75% up to $11,400, 8.75% up to $125,000, and 9.9% above " +
+        "$125,000. For Married Filing Jointly filers: 4.75% up to $9,100, 6.75% up to $22,800, 8.75% up to " +
+        "$250,000, and 9.9% above $250,000.",
+    },
+    {
+      question: "What is Oregon's standard deduction?",
+      answer:
+        "$2,835 for Single and Married Filing Separately filers, $5,670 for Married Filing Jointly filers, and " +
+        "$4,560 for Head of Household filers — much smaller than the federal standard deduction.",
+    },
+    {
+      question: "Does Oregon offer a personal exemption?",
+      answer:
+        "Oregon offers a small personal exemption credit — a flat-dollar credit applied after tax is calculated, " +
+        "rather than a deduction subtracted from income beforehand. It isn't modeled in this calculator, so " +
+        "your real Oregon state tax may be slightly lower than the estimate shown here.",
+    },
+    {
+      question: "What taxes are actually taken out of an Oregon paycheck?",
+      answer:
+        "Federal income tax, Social Security tax (6.2% up to the annual wage base), Medicare tax (1.45%, plus " +
+        "an extra 0.9% on wages above a threshold that depends on your filing status), and Oregon state income " +
+        "tax (4.75%/6.75%/8.75%/9.9% brackets after Oregon's standard deduction).",
+    },
+    {
+      question: "Is this a payroll tax calculator too, not just income tax?",
+      answer:
+        "Yes — \"payroll tax\" covers Social Security and Medicare (FICA) as well as income tax withholding, and " +
+        "this calculator includes all of it: federal income tax, Social Security, Medicare, and Oregon state " +
+        "income tax, all in the same breakdown.",
+    },
+    {
+      question: "What is my after-tax (take-home) pay in Oregon?",
+      answer:
+        "Your after-tax pay is your gross salary minus federal income tax, Social Security, Medicare, Oregon " +
+        "state income tax, and any deductions you enter. Because Oregon's standard deduction is small and its " +
+        "top rate is high, Oregon take-home pay tends to run lower than in most other states at the same salary.",
+    },
+    {
+      question: "How accurate is this calculator?",
+      answer:
+        "It's an estimate, using 2026 IRS federal tax brackets and standard deduction amounts, plus Oregon's " +
+        "published 2026 brackets and standard deduction figures. It approximates Oregon's Married Filing " +
+        "Separately and Head of Household schedules and doesn't include Oregon's personal exemption credit, tax " +
+        "credits generally, itemized deductions, or every W-4 adjustment — so your actual withholding may differ " +
+        "slightly.",
+    },
+  ];
+
+  const toolContent = {
+    title: "Oregon Income Tax Calculator",
+    description:
+      "This Oregon income tax calculator and paycheck tax calculator shows you, in one place, exactly what's " +
+      "withheld from your paycheck and what you take home. Use it as a general tax calculator for Oregon, an " +
+      "Oregon payroll tax calculator for federal withholding, FICA, and state tax, or a salary tax calculator " +
+      "for any pay frequency and filing status.",
+    templateKey: "tool-template-3",
+    categoryId: category.id,
+    calcType: "custom",
+    calcFormula: null,
+    calcInputs: JSON.stringify(calcInputs),
+    calcResult: JSON.stringify({ label: "Take-Home Pay", unit: "", format: "currency" }),
+    calcResults: JSON.stringify(calcResults),
+    instructions: paragraphsToHtml(instructions),
+    examples: paragraphsToHtml(examples),
+    assumptions: paragraphsToHtml(assumptions),
+    faq: JSON.stringify(faq),
+  } satisfies Prisma.ToolUncheckedUpdateInput;
+
+  const seoMetaContent = {
+    contentType: "tool",
+    metaTitle: "Oregon Income Tax Calculator (2026) — Paycheck & Payroll Tax",
+    metaDescription:
+      "Free Oregon income tax calculator and paycheck tax calculator. Estimate federal income tax, payroll tax " +
+      "(FICA), Oregon state income tax, and take-home pay.",
+    schemaType: "SoftwareApplication",
+  };
+
+  const existing = await prisma.tool.findUnique({ where: { slug: SLUG } });
+
+  if (existing) {
+    await prisma.tool.update({
+      where: { slug: SLUG },
+      data: {
+        ...toolContent,
+        seoMeta: { upsert: { create: seoMetaContent, update: seoMetaContent } },
+      },
+    });
+    console.log(`Updated the "${SLUG}" tool's content.`);
+  } else {
+    await prisma.tool.create({
+      data: {
+        slug: SLUG,
+        status: "draft",
+        ...toolContent,
+        seoMeta: { create: seoMetaContent },
+      },
+    });
+    console.log(`Created the "${SLUG}" tool (status: draft).`);
+  }
+
+  console.log(
+    "Open it in /admin/tools, review it, then set Status to Published when you're happy with it. " +
+      "Its live URL will be /tools/" + SLUG + ". Once published, link it to Oregon's row in " +
+      "/admin/state-calculators so it shows up in the \"Other State Calculators\" grid on Nevada's (and any " +
+      "other state's) tool page."
+  );
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
