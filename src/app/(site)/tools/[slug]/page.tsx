@@ -74,6 +74,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           : null,
         instructions: tool.instructions,
         examples: tool.examples,
+        assumptions: tool.assumptions,
         faq: tool.faq ? JSON.parse(tool.faq) : [],
         categoryName: tool.category?.name,
       }}

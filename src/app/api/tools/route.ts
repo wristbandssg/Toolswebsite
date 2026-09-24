@@ -53,6 +53,7 @@ const toolCreateSchema = z.object({
     .nullable(),
   instructions: z.string().optional().nullable(),
   examples: z.string().optional().nullable(),
+  assumptions: z.string().optional().nullable(),
   faq: z.array(z.object({ question: z.string(), answer: z.string() })).default([]),
 });
 
@@ -106,6 +107,7 @@ export async function POST(req: NextRequest) {
       calcResults: data.calcResults && data.calcResults.length > 0 ? JSON.stringify(data.calcResults) : null,
       instructions: data.instructions,
       examples: data.examples,
+      assumptions: data.assumptions,
       faq: JSON.stringify(data.faq),
     },
   });

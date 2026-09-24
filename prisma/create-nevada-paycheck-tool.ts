@@ -133,10 +133,25 @@ async function main() {
     "breakdown: gross pay, federal income tax, Social Security tax, Medicare tax, Nevada state income tax " +
     "(always $0 — Nevada has no state income tax), total deductions, and your estimated take-home pay, both per " +
     "paycheck and for the year.\n\n" +
+    "Income taxes are calculated in four steps: taxable wages are worked out by subtracting your pre-tax " +
+    "deductions from gross pay, the federal standard deduction is subtracted from that to get taxable income, " +
+    "the 2026 IRS bracket rates are applied to that taxable income, and Social Security and Medicare are " +
+    "calculated separately on taxable wages before the standard deduction. This calculator is reviewed and " +
+    "updated whenever the IRS publishes new annual brackets, deduction amounts, or wage bases.";
+
+  const assumptions =
     "This calculator uses 2026 IRS federal tax brackets and the standard deduction for its federal income tax " +
     "and payroll tax (FICA) figures. It doesn't account for tax credits (such as the Child Tax Credit), " +
     "itemized deductions, or every possible W-4 election, so treat it as a close estimate rather than an exact " +
-    "paycheck figure — your actual paycheck may vary slightly depending on your employer's payroll system.";
+    "paycheck figure — your actual paycheck may vary slightly depending on your employer's payroll system.\n\n" +
+    "Pre-tax deductions you enter (like traditional 401(k) contributions or health insurance premiums) are " +
+    "assumed to reduce wages for federal income tax AND FICA alike, which is the common case for a " +
+    "cafeteria-plan/Section 125-style deduction — some deduction types only reduce one or the other, which this " +
+    "calculator doesn't distinguish between.\n\n" +
+    "Nevada has no state income tax and no local income taxes, so that part of the breakdown needs no " +
+    "assumptions — it's always $0 for every filer, at every income level, statewide.\n\n" +
+    "This tool provides general estimates for informational purposes only and isn't tax, legal, or financial " +
+    "advice. For guidance specific to your situation, consult a qualified tax professional or the IRS.";
 
   const examples =
     "Example: a single filer earning $75,000 a year, paid biweekly (26 paychecks/year), with no pre-tax or " +
@@ -228,6 +243,7 @@ async function main() {
     calcResults: JSON.stringify(calcResults),
     instructions,
     examples,
+    assumptions,
     faq: JSON.stringify(faq),
   } satisfies Prisma.ToolUncheckedUpdateInput;
 

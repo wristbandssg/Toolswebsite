@@ -16,6 +16,10 @@ export interface ToolTemplateProps {
     calcResults: CalcResultLineConfig[] | null;
     instructions: string | null;
     examples: string | null;
+    // Limitations/disclaimer text — see Tool.assumptions. Renders as its own
+    // collapsible "Assumptions" section, right after "About This
+    // Calculator" (instructions).
+    assumptions?: string | null;
     faq: { question: string; answer: string }[];
     categoryName?: string | null;
   };

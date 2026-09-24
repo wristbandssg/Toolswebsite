@@ -260,6 +260,144 @@ const nevadaTaxCalculator: CustomCalculator = (values) => {
     };
 };
 
+// ---------------------------------------------------------------------------
+// Alabama Income Tax Calculator — same federal income tax + FICA model as
+// Nevada above, PLUS a real Alabama state income tax (Alabama, unlike
+// Nevada, does levy one). Figures below are sourced from the Alabama
+// Department of Revenue's 2026 withholding tax tables/instructions:
+//   - Brackets: 2% / 4% / 5%, with the 2%/4% break-points doubled for
+//     Married Filing Jointly (and Qualifying Widow(er), treated as MFJ here)
+//     versus Single/MFS/Head of Household.
+//   - Standard deduction is income-phased (it shrinks as AGI rises) rather
+//     than a single flat number — Alabama's own tables step it down in
+//     discrete $500-of-AGI increments; this calculator approximates that
+//     step schedule with straight-line interpolation between the published
+//     endpoints, which is accurate to within a few dollars and simpler than
+//     reproducing every step row. Same "estimate-grade" spirit as the
+//     federal model above.
+//   - A Personal Exemption ($1,500 Single/MFS, $3,000 MFJ/Head of
+//     Household) and a per-dependent exemption (which itself shrinks at
+//     higher income — $1,000/$500/$300 per dependent) are then subtracted
+//     before applying the bracket rates.
+// ---------------------------------------------------------------------------
+
+const AL_BRACKETS: Record<FilingStatus, { rate: number; upTo: number }[]> = {
+  0: [
+    { rate: 0.02, upTo: 500 },
+    { rate: 0.04, upTo: 3000 },
+    { rate: 0.05, upTo: Infinity },
+  ],
+  1: [
+    { rate: 0.02, upTo: 1000 },
+    { rate: 0.04, upTo: 6000 },
+    { rate: 0.05, upTo: Infinity },
+  ],
+  2: [
+    { rate: 0.02, upTo: 500 },
+    { rate: 0.04, upTo: 3000 },
+    { rate: 0.05, upTo: Infinity },
+  ],
+  3: [
+    { rate: 0.02, upTo: 500 },
+    { rate: 0.04, upTo: 3000 },
+    { rate: 0.05, upTo: Infinity },
+  ],
+};
+
+// Standard deduction phase-out endpoints: { agi where the deduction starts
+// shrinking, deduction at/below that AGI } -> { agi where it bottoms out,
+// deduction from that AGI up }. Linear in between (see comment above).
+const AL_STANDARD_DEDUCTION_RANGE: Record<
+  FilingStatus,
+  { loAgi: number; loDeduction: number; hiAgi: number; hiDeduction: number }
+> = {
+  0: { loAgi: 25999, loDeduction: 3000, hiAgi: 35500, hiDeduction: 2500 }, // Single
+  1: { loAgi: 25999, loDeduction: 8500, hiAgi: 35500, hiDeduction: 5000 }, // MFJ
+  2: { loAgi: 12999, loDeduction: 4250, hiAgi: 17750, hiDeduction: 2500 }, // MFS
+  3: { loAgi: 25999, loDeduction: 5200, hiAgi: 35500, hiDeduction: 2500 }, // Head of Household
+};
+
+function alabamaStandardDeduction(status: FilingStatus, agi: number): number {
+  const r = AL_STANDARD_DEDUCTION_RANGE[status];
+  if (agi <= r.loAgi) return r.loDeduction;
+  if (agi >= r.hiAgi) return r.hiDeduction;
+  const progress = (agi - r.loAgi) / (r.hiAgi - r.loAgi);
+  return r.loDeduction + progress * (r.hiDeduction - r.loDeduction);
+}
+
+function alabamaPersonalExemption(status: FilingStatus): number {
+  return status === 1 || status === 3 ? 3000 : 1500; // MFJ/HoH: $3,000, Single/MFS: $1,500
+}
+
+function alabamaDependentExemptionPerDependent(agi: number): number {
+  if (agi <= 50000) return 1000;
+  if (agi <= 100000) return 500;
+  return 300;
+}
+
+const alabamaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  // Wages actually subject to federal income tax, FICA, and Alabama state
+  // income tax, after pre-tax deductions come out.
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Alabama state income tax: taxable wages minus the (income-phased)
+  // standard deduction, personal exemption, and per-dependent exemption,
+  // then run through Alabama's 2%/4%/5% brackets.
+  const alStandardDeduction = alabamaStandardDeduction(filingStatus, taxableAnnualWages);
+  const alPersonalExemption = alabamaPersonalExemption(filingStatus);
+  const alDependentExemption =
+    numberOfDependents * alabamaDependentExemptionPerDependent(taxableAnnualWages);
+  const alabamaTaxableIncome = Math.max(
+    0,
+    taxableAnnualWages - alStandardDeduction - alPersonalExemption - alDependentExemption
+  );
+  const annualStateIncomeTax = progressiveTax(alabamaTaxableIncome, AL_BRACKETS[filingStatus]);
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -272,6 +410,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   // new key here rather than replacing the old one.
   "nevada-tax-calculator": nevadaTaxCalculator,
   "nevada-paycheck-calculator": nevadaTaxCalculator,
+  "alabama-tax-calculator": alabamaTaxCalculator,
 };
 
 export function runCalculator(

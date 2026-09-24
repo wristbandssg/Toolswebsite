@@ -122,9 +122,15 @@ model Tool {
   calcResults String?
 
   // Content
-  instructions String? // rich text / markdown
-  examples     String? // rich text / markdown
-  faq          String? // JSON: [{ question, answer }]
+  instructions String? // rich text / markdown — shown as the "About This
+  // Calculator" collapsible section on the public page (see
+  // ToolContentSections)
+  examples    String? // rich text / markdown
+  // Limitations/disclaimer text — shown as a separate "Assumptions"
+  // collapsible section, right after "About This Calculator". Optional: a
+  // tool with no assumptions text simply doesn't render that section.
+  assumptions String?
+  faq         String? // JSON: [{ question, answer }]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

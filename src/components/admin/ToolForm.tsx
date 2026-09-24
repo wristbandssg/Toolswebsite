@@ -24,6 +24,10 @@ export interface ToolFormValues {
   calcResults: CalcResultLineConfig[];
   instructions: string;
   examples: string;
+  // Limitations/disclaimer text — rendered as its own "Assumptions"
+  // accordion on the public page, right after "About This Calculator"
+  // (instructions). Optional, like Examples/FAQ.
+  assumptions: string;
   faq: { question: string; answer: string }[];
 }
 
@@ -41,6 +45,7 @@ const EMPTY: ToolFormValues = {
   calcResults: [],
   instructions: "",
   examples: "",
+  assumptions: "",
   faq: [],
 };
 
@@ -66,6 +71,12 @@ export default function ToolForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  // The slug this tool was loaded under — captured once and never updated
+  // by typing, unlike `values.slug`. In edit mode the PUT request has to go
+  // to the OLD slug's URL (to find the row) while the request body carries
+  // whatever `values.slug` has been changed to; using `values.slug` for
+  // both would 404 the moment the admin edits the URL field.
+  const [originalSlug] = useState(initial?.slug ?? "");
 
   function update<K extends keyof ToolFormValues>(key: K, val: ToolFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -138,7 +149,7 @@ export default function ToolForm({
         calcFormula: values.calcType === "expression" ? values.calcFormula : null,
       };
       const res = await fetch(
-        mode === "create" ? "/api/tools" : `/api/tools/${values.slug}`,
+        mode === "create" ? "/api/tools" : `/api/tools/${originalSlug}`,
         {
           method: mode === "create" ? "POST" : "PUT",
           headers: { "Content-Type": "application/json" },
@@ -182,14 +193,19 @@ export default function ToolForm({
             <span className="font-medium">Slug / URL</span>
             <input
               required
-              disabled={mode === "edit"}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
               value={values.slug}
               onChange={(e) => {
                 setSlugTouched(true);
                 update("slug", slugify(e.target.value));
               }}
             />
+            {mode === "edit" && values.slug !== originalSlug ? (
+              <span className="mt-1 block text-xs text-amber-600 dark:text-amber-400">
+                Changing this changes the live URL (/tools/{values.slug}) — old links to /tools/{originalSlug} will
+                stop working after you save.
+              </span>
+            ) : null}
           </label>
           <label className="text-sm sm:col-span-2">
             <span className="font-medium">Short Description</span>
@@ -487,11 +503,26 @@ export default function ToolForm({
         <h2 className="mb-4 font-semibold">Content</h2>
         <label className="block text-sm">
           <span className="font-medium">Instructions</span>
+          <span className="ml-1 text-xs text-gray-400">
+            (shown as the &quot;About This Calculator&quot; dropdown)
+          </span>
           <textarea
             rows={3}
             className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
             value={values.instructions}
             onChange={(e) => update("instructions", e.target.value)}
+          />
+        </label>
+        <label className="mt-4 block text-sm">
+          <span className="font-medium">Assumptions</span>
+          <span className="ml-1 text-xs text-gray-400">
+            (shown as its own &quot;Assumptions&quot; dropdown, right after About This Calculator — optional)
+          </span>
+          <textarea
+            rows={3}
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+            value={values.assumptions}
+            onChange={(e) => update("assumptions", e.target.value)}
           />
         </label>
         <label className="mt-4 block text-sm">
@@ -598,13 +629,17 @@ export default function ToolForm({
           ) : null}
         </div>
 
-        {values.instructions || values.examples || values.faq.length > 0 ? (
+        {values.instructions || values.assumptions || values.examples || values.faq.length > 0 ? (
           <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
             <h3 className="font-semibold">Content Preview</h3>
             <dl className="mt-3 space-y-2 text-gray-500">
               <div className="flex justify-between">
-                <dt>Instructions</dt>
+                <dt>Instructions (About This Calculator)</dt>
                 <dd>{values.instructions ? `${values.instructions.length} chars` : "—"}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt>Assumptions</dt>
+                <dd>{values.assumptions ? `${values.assumptions.length} chars` : "—"}</dd>
               </div>
               <div className="flex justify-between">
                 <dt>Examples</dt>

@@ -40,6 +40,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
               : [],
             instructions: tool.instructions ?? "",
             examples: tool.examples ?? "",
+            assumptions: tool.assumptions ?? "",
             faq: tool.faq ? JSON.parse(tool.faq) : [],
           }}
         />

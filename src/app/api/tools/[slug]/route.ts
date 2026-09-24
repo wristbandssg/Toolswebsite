@@ -29,9 +29,30 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   const existing = await prisma.tool.findUnique({ where: { slug } });
   if (!existing) return NextResponse.json({ error: "Tool not found" }, { status: 404 });
 
+  // Slug (URL) rename — optional. `slug` here is the OLD slug (from the
+  // route param, used to find the row); `body.slug` is what the admin form
+  // now wants it to be, which may be unchanged. Validate format and
+  // uniqueness before touching anything, since a slug change is a live URL
+  // change (old links to the previous URL will 404 after this).
+  let newSlug = existing.slug;
+  if (typeof body.slug === "string" && body.slug !== existing.slug) {
+    if (!/^[a-z0-9-]+$/.test(body.slug)) {
+      return NextResponse.json(
+        { error: "Slug can only contain lowercase letters, numbers, and hyphens" },
+        { status: 400 }
+      );
+    }
+    const clash = await prisma.tool.findUnique({ where: { slug: body.slug } });
+    if (clash) {
+      return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
+    }
+    newSlug = body.slug;
+  }
+
   const tool = await prisma.tool.update({
     where: { slug },
     data: {
+      slug: newSlug,
       title: body.title ?? existing.title,
       description: body.description ?? existing.description,
       templateKey: body.templateKey ?? existing.templateKey,
@@ -54,6 +75,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
         : {}),
       instructions: body.instructions ?? existing.instructions,
       examples: body.examples ?? existing.examples,
+      assumptions: body.assumptions ?? existing.assumptions,
       faq: body.faq ? JSON.stringify(body.faq) : existing.faq,
     },
   });
