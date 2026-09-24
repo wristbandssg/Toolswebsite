@@ -80,7 +80,12 @@
     "db:create-india-tool": "tsx prisma/create-india-tax-tool.ts",
     "db:create-australia-tool": "tsx prisma/create-australia-tax-tool.ts",
     "db:create-south-africa-tool": "tsx prisma/create-south-africa-tax-tool.ts",
-    "db:create-pakistan-tool": "tsx prisma/create-pakistan-tax-tool.ts"
+    "db:create-pakistan-tool": "tsx prisma/create-pakistan-tax-tool.ts",
+    "db:create-hong-kong-tool": "tsx prisma/create-hong-kong-tax-tool.ts",
+    "db:create-malaysia-tool": "tsx prisma/create-malaysia-tax-tool.ts",
+    "db:create-philippines-tool": "tsx prisma/create-philippines-tax-tool.ts",
+    "db:create-new-zealand-tool": "tsx prisma/create-new-zealand-tax-tool.ts",
+    "db:create-singapore-tool": "tsx prisma/create-singapore-tax-tool.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

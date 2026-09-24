@@ -27,6 +27,11 @@ const CURRENCY_LOCALE: Record<string, string> = {
   AUD: "en-AU",
   ZAR: "en-ZA",
   PKR: "en-PK",
+  HKD: "en-HK",
+  MYR: "en-MY",
+  PHP: "en-PH",
+  NZD: "en-NZ",
+  SGD: "en-SG",
 };
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -37,6 +42,11 @@ const CURRENCY_SYMBOL: Record<string, string> = {
   AUD: "$",
   ZAR: "R",
   PKR: "Rs",
+  HKD: "HK$",
+  MYR: "RM",
+  PHP: "₱",
+  NZD: "NZ$",
+  SGD: "S$",
 };
 
 function defaultStep(min: number, max: number) {
