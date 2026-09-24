@@ -12,7 +12,8 @@
  * The actual tax logic lives one file per country:
  *  - calc-engine-us.ts — US federal + all 50 states (see that file's header)
  *  - calc-engine-uk.ts — UK income tax (rest of UK + Scotland)
- * Adding a new country (Canada, India, ...) means adding one more
+ *  - calc-engine-canada.ts — Canada federal + all 10 provinces + 3 territories
+ * Adding a new country (India, ...) means adding one more
  * calc-engine-<country>.ts file and one more line below merging its map in
  * — no existing country's file is touched.
  *
@@ -36,16 +37,19 @@ import type { CalcInputField, CalcInputValues, CustomCalculator, CustomCalculato
 import { CalculationError, runExpressionCalc } from "./calc-engine-types";
 import { usCustomCalculators } from "./calc-engine-us";
 import { ukCustomCalculators } from "./calc-engine-uk";
+import { canadaCustomCalculators } from "./calc-engine-canada";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
 // "alabama-tax-calculator"; UK/Canada/India use a country/region prefix
-// like "uk-income-tax-calculator", "scotland-income-tax-calculator" — see
-// each country file's header for its own slug convention), so a plain
-// spread merge is safe: no two countries' keys collide.
+// like "uk-income-tax-calculator", "scotland-income-tax-calculator",
+// "ontario-income-tax-calculator" — see each country file's header for its
+// own slug convention), so a plain spread merge is safe: no two countries'
+// keys collide.
 export const customCalculators: Record<string, CustomCalculator> = {
   ...usCustomCalculators,
   ...ukCustomCalculators,
+  ...canadaCustomCalculators,
 };
 
 export function runCalculator(

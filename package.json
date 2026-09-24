@@ -63,7 +63,20 @@
     "db:create-wyoming-tool": "tsx prisma/create-wyoming-tax-tool.ts",
     "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts",
     "db:create-uk-income-tax-tool": "tsx prisma/create-uk-income-tax-tool.ts",
-    "db:create-scotland-income-tax-tool": "tsx prisma/create-scotland-income-tax-tool.ts"
+    "db:create-scotland-income-tax-tool": "tsx prisma/create-scotland-income-tax-tool.ts",
+    "db:create-ontario-tool": "tsx prisma/create-ontario-tax-tool.ts",
+    "db:create-quebec-tool": "tsx prisma/create-quebec-tax-tool.ts",
+    "db:create-british-columbia-tool": "tsx prisma/create-british-columbia-tax-tool.ts",
+    "db:create-alberta-tool": "tsx prisma/create-alberta-tax-tool.ts",
+    "db:create-manitoba-tool": "tsx prisma/create-manitoba-tax-tool.ts",
+    "db:create-saskatchewan-tool": "tsx prisma/create-saskatchewan-tax-tool.ts",
+    "db:create-nova-scotia-tool": "tsx prisma/create-nova-scotia-tax-tool.ts",
+    "db:create-new-brunswick-tool": "tsx prisma/create-new-brunswick-tax-tool.ts",
+    "db:create-prince-edward-island-tool": "tsx prisma/create-prince-edward-island-tax-tool.ts",
+    "db:create-newfoundland-and-labrador-tool": "tsx prisma/create-newfoundland-and-labrador-tax-tool.ts",
+    "db:create-yukon-tool": "tsx prisma/create-yukon-tax-tool.ts",
+    "db:create-northwest-territories-tool": "tsx prisma/create-northwest-territories-tax-tool.ts",
+    "db:create-nunavut-tool": "tsx prisma/create-nunavut-tax-tool.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
