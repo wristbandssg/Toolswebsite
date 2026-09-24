@@ -398,6 +398,14 @@ const alabamaTaxCalculator: CustomCalculator = (values) => {
   };
 };
 
+// Alaska, like Nevada, levies no state income tax (confirmed via the Tax
+// Foundation's 2026 state tax summary — see prisma/create-alaska-tax-tool.ts
+// for the citation) — so it reuses `nevadaTaxCalculator` as-is rather than a
+// near-duplicate function. The function itself doesn't hardcode "Nevada"
+// anywhere; it's a generic zero-state-income-tax paycheck model, so pointing
+// a second slug at it is correct, not a shortcut.
+const alaskaTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -411,6 +419,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   "nevada-tax-calculator": nevadaTaxCalculator,
   "nevada-paycheck-calculator": nevadaTaxCalculator,
   "alabama-tax-calculator": alabamaTaxCalculator,
+  "alaska-tax-calculator": alaskaTaxCalculator,
 };
 
 export function runCalculator(
