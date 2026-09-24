@@ -112,6 +112,10 @@ function CategoryRow({
   setEditingHeroSubheading,
   editingHeroDescription,
   setEditingHeroDescription,
+  editingParentId,
+  setEditingParentId,
+  parentOptions,
+  childCount,
   savingId,
   startEditing,
   handleRename,
@@ -137,6 +141,21 @@ function CategoryRow({
   setEditingHeroSubheading: (v: string) => void;
   editingHeroDescription: string;
   setEditingHeroDescription: (v: string) => void;
+  // "" means top-level; otherwise the id of the top-level category this
+  // one is being filed under. Editable on every row (not just children) so
+  // an existing top-level category can be turned into a sub-category, or a
+  // sub-category can be moved or promoted back — the gap the admin
+  // couldn't previously fill in from here at all.
+  editingParentId: string;
+  setEditingParentId: (v: string) => void;
+  // Other top-level categories this row could be filed under (never
+  // includes `cat` itself, and only meaningful while editingId === cat.id).
+  parentOptions: ToolCategoryRow[];
+  // How many other categories currently list `cat` as their parent — a
+  // category that already has sub-categories of its own can't also become
+  // a sub-category (kept to one level deep), so the parent select is
+  // disabled with an explanation instead.
+  childCount: number;
   savingId: string | null;
   startEditing: (cat: ToolCategoryRow) => void;
   handleRename: (id: string) => void;
@@ -190,6 +209,28 @@ function CategoryRow({
                 value={editingHeroDescription}
                 onChange={(e) => setEditingHeroDescription(e.target.value)}
               />
+            </label>
+            <label className="block text-xs">
+              <span className="font-medium text-gray-500">Parent Category</span>
+              <select
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800"
+                value={editingParentId}
+                disabled={childCount > 0}
+                onChange={(e) => setEditingParentId(e.target.value)}
+              >
+                <option value="">-- Top-Level Category --</option>
+                {parentOptions.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    Sub-category of: {c.name}
+                  </option>
+                ))}
+              </select>
+              {childCount > 0 ? (
+                <span className="mt-1 block text-gray-400">
+                  Has {childCount} sub-categor{childCount === 1 ? "y" : "ies"} of its own, so it
+                  can&apos;t be made a sub-category itself.
+                </span>
+              ) : null}
             </label>
             <div className="flex gap-2">
               <button
@@ -360,6 +401,9 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [editingName, setEditingName] = useState("");
   const [editingHeroSubheading, setEditingHeroSubheading] = useState("");
   const [editingHeroDescription, setEditingHeroDescription] = useState("");
+  // "" = top-level; otherwise the id of the top-level category this row is
+  // being filed under while its edit form is open.
+  const [editingParentId, setEditingParentId] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -441,6 +485,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
     setEditingName(cat.name);
     setEditingHeroSubheading(cat.heroSubheading);
     setEditingHeroDescription(cat.heroDescription);
+    setEditingParentId(cat.parentId ?? "");
     setSeoOpenId(null);
     setError(null);
   }
@@ -457,6 +502,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
           name: editingName.trim(),
           heroSubheading: editingHeroSubheading.trim(),
           heroDescription: editingHeroDescription.trim(),
+          parentId: editingParentId || null,
         }),
       });
       const data = await res.json();
@@ -474,6 +520,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                   slug: data.category.slug,
                   heroSubheading: data.category.heroSubheading ?? "",
                   heroDescription: data.category.heroDescription ?? "",
+                  parentId: data.category.parentId ?? null,
                 }
               : c
           )
@@ -641,6 +688,10 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
               setEditingHeroSubheading={setEditingHeroSubheading}
               editingHeroDescription={editingHeroDescription}
               setEditingHeroDescription={setEditingHeroDescription}
+              editingParentId={editingParentId}
+              setEditingParentId={setEditingParentId}
+              parentOptions={topLevelCategories.filter((c) => c.id !== cat.id)}
+              childCount={childrenByParentId.get(cat.id)?.length ?? 0}
               savingId={savingId}
               startEditing={startEditing}
               handleRename={handleRename}
@@ -669,6 +720,10 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                 setEditingHeroSubheading={setEditingHeroSubheading}
                 editingHeroDescription={editingHeroDescription}
                 setEditingHeroDescription={setEditingHeroDescription}
+                editingParentId={editingParentId}
+                setEditingParentId={setEditingParentId}
+                parentOptions={topLevelCategories.filter((c) => c.id !== child.id)}
+                childCount={childrenByParentId.get(child.id)?.length ?? 0}
                 savingId={savingId}
                 startEditing={startEditing}
                 handleRename={handleRename}

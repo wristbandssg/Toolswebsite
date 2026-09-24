@@ -10,6 +10,15 @@ const renameSchema = z.object({
   // same endpoint still works for a plain rename.
   heroSubheading: z.string().trim().optional(),
   heroDescription: z.string().trim().optional(),
+  // Move this category under a different top-level category, or back to
+  // top-level. Optional and only applied when the request body explicitly
+  // includes the key (same convention as the hero fields above) — pass an
+  // id string to file it under that category, or null/"" to make it
+  // top-level. This is what lets an EXISTING category be turned into a
+  // sub-category (or reparented, or promoted back) from the admin UI —
+  // previously that was only possible when a sub-category was first
+  // created via POST /api/tool-categories.
+  parentId: z.string().trim().optional().nullable(),
 });
 
 function slugify(text: string) {
@@ -48,6 +57,37 @@ export async function PUT(
     return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
   }
 
+  // parentId follows the same "only touched when the key is present"
+  // convention as the hero fields, but needs real validation first — unlike
+  // a hero paragraph, a bad parentId would corrupt the category tree.
+  const hasParentIdKey = Object.prototype.hasOwnProperty.call(body, "parentId");
+  const nextParentId = (parsed.data.parentId || null) as string | null;
+  if (hasParentIdKey && nextParentId) {
+    if (nextParentId === id) {
+      return NextResponse.json({ error: "A category can't be its own parent" }, { status: 400 });
+    }
+    const parent = await prisma.toolCategory.findUnique({ where: { id: nextParentId } });
+    if (!parent) {
+      return NextResponse.json({ error: "That parent category no longer exists" }, { status: 400 });
+    }
+    if (parent.parentId) {
+      return NextResponse.json(
+        { error: "Sub-categories can only be one level deep — pick a top-level category as the parent" },
+        { status: 400 }
+      );
+    }
+    const childCount = await prisma.toolCategory.count({ where: { parentId: id } });
+    if (childCount > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "This category has its own sub-categories, so it can't become a sub-category itself — move or remove them first",
+        },
+        { status: 400 }
+      );
+    }
+  }
+
   const category = await prisma.toolCategory.update({
     where: { id },
     data: {
@@ -63,6 +103,7 @@ export async function PUT(
       ...(Object.prototype.hasOwnProperty.call(body, "heroDescription")
         ? { heroDescription: parsed.data.heroDescription || null }
         : {}),
+      ...(hasParentIdKey ? { parentId: nextParentId } : {}),
     },
   });
   return NextResponse.json({ category });
