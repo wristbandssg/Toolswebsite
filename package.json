@@ -51,6 +51,16 @@
     "db:create-pennsylvania-tool": "tsx prisma/create-pennsylvania-tax-tool.ts",
     "db:create-rhode-island-tool": "tsx prisma/create-rhode-island-tax-tool.ts",
     "db:create-south-carolina-tool": "tsx prisma/create-south-carolina-tax-tool.ts",
+    "db:create-south-dakota-tool": "tsx prisma/create-south-dakota-tax-tool.ts",
+    "db:create-tennessee-tool": "tsx prisma/create-tennessee-tax-tool.ts",
+    "db:create-texas-tool": "tsx prisma/create-texas-tax-tool.ts",
+    "db:create-utah-tool": "tsx prisma/create-utah-tax-tool.ts",
+    "db:create-vermont-tool": "tsx prisma/create-vermont-tax-tool.ts",
+    "db:create-virginia-tool": "tsx prisma/create-virginia-tax-tool.ts",
+    "db:create-washington-tool": "tsx prisma/create-washington-tax-tool.ts",
+    "db:create-west-virginia-tool": "tsx prisma/create-west-virginia-tax-tool.ts",
+    "db:create-wisconsin-tool": "tsx prisma/create-wisconsin-tax-tool.ts",
+    "db:create-wyoming-tool": "tsx prisma/create-wyoming-tax-tool.ts",
     "db:seed-state-calculators": "tsx prisma/seed-state-calculators.ts"
   },
   "prisma": {

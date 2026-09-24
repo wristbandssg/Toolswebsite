@@ -3590,6 +3590,483 @@ const southCarolinaTaxCalculator: CustomCalculator = (values) => {
   };
 };
 
+// ---------------------------------------------------------------------------
+// South Dakota, Tennessee, Texas, Washington, Wyoming — all five have NO
+// state income tax on wages (confirmed for 2026 against a current
+// no-income-tax-states roundup: the full list is Alaska, Florida, Nevada,
+// New Hampshire, South Dakota, Tennessee, Texas, Washington, Wyoming). Each
+// is a direct alias of the Nevada federal+FICA-only calculator, the same
+// treatment already used for New Hampshire.
+// ---------------------------------------------------------------------------
+
+const southDakotaTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+const tennesseeTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+const texasTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+const washingtonTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+const wyomingTaxCalculator: CustomCalculator = nevadaTaxCalculator;
+
+// ---------------------------------------------------------------------------
+// Utah Income Tax Calculator — a flat 4.45% rate for 2026 (Utah's sixth
+// consecutive annual rate cut, down from 4.5% in 2025, effective
+// retroactively to January 1, 2026 — confirmed via an EY tax alert citing
+// the enacting law). IMPORTANT: Utah's tax base is FEDERAL AGI, not federal
+// taxable income — the state's own TC-40 return starts from "federal
+// adjusted gross income" and Utah has NO standard deduction and NO personal
+// exemption of its own. So this calculator applies the flat rate directly
+// to taxable wages (salary minus pre-tax deductions, our AGI proxy) rather
+// than to `federalTaxableIncome`.
+// NOT MODELED: Utah offsets this AGI-based system with a nonrefundable
+// "Taxpayer Tax Credit" (roughly 6% of a federal-exemption-equivalent
+// amount, phased out at 1.3% of income above a threshold that depends on
+// filing status) that approximates the value of a standard deduction for
+// low-to-middle earners. It isn't modeled here since its base isn't cleanly
+// defined post-TCJA; a real Utah filer's actual tax will typically be lower
+// than this estimate, especially at lower incomes.
+// ---------------------------------------------------------------------------
+
+const UT_FLAT_RATE_2026 = 0.0445;
+
+const utahTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Utah state income tax: a flat 4.45% of taxable wages (used as a federal
+  // AGI proxy) — no standard deduction or personal exemption subtracted
+  // first, since Utah's own return doesn't have either.
+  const annualStateIncomeTax = taxableAnnualWages * UT_FLAT_RATE_2026;
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Vermont Income Tax Calculator — a real 4-bracket progressive schedule
+// (3.35% up to 8.75%), sourced from Vermont's own 2026 VT Tax Tables
+// document (via an aggregator that mirrors it, since the source PDF itself
+// wasn't directly fetchable) for Single and Married Filing Jointly. PLUS
+// Vermont's own standard deduction (Single $6,500, MFJ $13,050) from the
+// same source — notably smaller than the federal amount.
+// SIMPLIFICATIONS (documented in the Tool's Assumptions text): Married
+// Filing Separately is derived as exactly half of MFJ's thresholds and
+// standard deduction; Head of Household uses the Single bracket schedule
+// and standard deduction — Vermont's exact Head of Household figures
+// weren't cleanly sourced, so it's approximated the same way as several
+// other states here. Vermont's own Child Tax Credit isn't modeled.
+// ---------------------------------------------------------------------------
+
+const VT_BRACKETS_SINGLE_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.0335, upTo: 47900 },
+  { rate: 0.066, upTo: 116000 },
+  { rate: 0.076, upTo: 242000 },
+  { rate: 0.0875, upTo: Infinity },
+];
+
+const VT_BRACKETS_MFJ_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.0335, upTo: 79950 },
+  { rate: 0.066, upTo: 193300 },
+  { rate: 0.076, upTo: 294600 },
+  { rate: 0.0875, upTo: Infinity },
+];
+
+function vermontBracketsFor(status: FilingStatus): { rate: number; upTo: number }[] {
+  if (status === 1) return VT_BRACKETS_MFJ_2026;
+  if (status === 2) {
+    return VT_BRACKETS_MFJ_2026.map((b) => ({
+      rate: b.rate,
+      upTo: b.upTo === Infinity ? Infinity : b.upTo / 2,
+    }));
+  }
+  return VT_BRACKETS_SINGLE_2026;
+}
+
+const VT_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 6500, // Single
+  1: 13050, // Married Filing Jointly
+  2: 6500, // Married Filing Separately
+  3: 6500, // Head of Household (approximated with the Single amount — see note above)
+};
+
+const vermontTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Vermont state income tax: taxable wages minus Vermont's own standard
+  // deduction, run through the 3.35%-8.75% brackets.
+  const vtStandardDeduction = VT_STANDARD_DEDUCTION_2026[filingStatus];
+  const vermontTaxableIncome = Math.max(0, taxableAnnualWages - vtStandardDeduction);
+  const annualStateIncomeTax = progressiveTax(vermontTaxableIncome, vermontBracketsFor(filingStatus));
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Virginia Income Tax Calculator — a compact 4-bracket schedule (2% to
+// 5.75%) with the SAME dollar thresholds for every filing status ($3,000 /
+// $5,000 / $17,000 — NOT doubled for Married Filing Jointly, a real
+// Virginia quirk confirmed directly from the source, not an approximation).
+// Virginia has NO standard deduction concept beyond a flat dollar amount
+// (Single/MFS $8,750, MFJ $17,500 for 2025-2026, confirmed via Virginia Tax)
+// PLUS a $930 personal exemption (self, and again if MFJ) and a $930
+// exemption per dependent, confirmed from Virginia Tax's own exemptions
+// page — so this tool keeps the "Number of Dependents" input field.
+// NOT MODELED: Virginia's additional $800 exemption for being 65+ or blind
+// — a small addition, not included here.
+// SIMPLIFICATION: Head of Household uses the Single standard deduction
+// amount ($8,750) — Virginia's own instructions don't separately schedule
+// Head of Household.
+// ---------------------------------------------------------------------------
+
+const VA_BRACKETS_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.02, upTo: 3000 },
+  { rate: 0.03, upTo: 5000 },
+  { rate: 0.05, upTo: 17000 },
+  { rate: 0.0575, upTo: Infinity },
+];
+
+const VA_STANDARD_DEDUCTION_2026: Record<FilingStatus, number> = {
+  0: 8750, // Single
+  1: 17500, // Married Filing Jointly
+  2: 8750, // Married Filing Separately
+  3: 8750, // Head of Household (approximated with the Single amount — see note above)
+};
+
+const VA_PERSONAL_EXEMPTION = 930;
+const VA_DEPENDENT_EXEMPTION = 930;
+
+const virginiaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Virginia state income tax: taxable wages minus Virginia's flat standard
+  // deduction and $930-per-exemption personal/dependent exemptions, run
+  // through the 2%-5.75% brackets (the same thresholds for every filing
+  // status).
+  const vaStandardDeduction = VA_STANDARD_DEDUCTION_2026[filingStatus];
+  const numberOfPersonalExemptions = 1 + (filingStatus === 1 ? 1 : 0);
+  const vaExemptions =
+    numberOfPersonalExemptions * VA_PERSONAL_EXEMPTION + numberOfDependents * VA_DEPENDENT_EXEMPTION;
+  const virginiaTaxableIncome = Math.max(0, taxableAnnualWages - vaStandardDeduction - vaExemptions);
+  const annualStateIncomeTax = progressiveTax(virginiaTaxableIncome, VA_BRACKETS_2026);
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// West Virginia Income Tax Calculator — a 5-bracket schedule (2.11% up to
+// 4.58%, reflecting West Virginia's latest 5% across-the-board rate cut
+// retroactive to January 1, 2026) with the SAME dollar thresholds for every
+// filing status, confirmed directly from the West Virginia Tax Division's
+// own 2026 rate-cut page. IMPORTANT: West Virginia's tax base is FEDERAL
+// AGI (not federal taxable income) — confirmed directly from the state's
+// own IT-140 instructions ("The starting point for the West Virginia income
+// tax return is your federal adjusted gross income") — and West Virginia
+// has NO standard deduction at all. Instead, it allows a $2,000 exemption
+// for each personal exemption claimed (self, spouse if MFJ, and each
+// dependent), with a $500 floor if zero exemptions are claimed — confirmed
+// from the same official instructions and from West Virginia's own
+// administrative regulation (110 CSR 21-16). So this tool keeps the
+// "Number of Dependents" input field.
+// ---------------------------------------------------------------------------
+
+const WV_BRACKETS_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.0211, upTo: 10000 },
+  { rate: 0.0281, upTo: 25000 },
+  { rate: 0.0316, upTo: 40000 },
+  { rate: 0.0422, upTo: 60000 },
+  { rate: 0.0458, upTo: Infinity },
+];
+
+const WV_EXEMPTION_PER_PERSON = 2000;
+const WV_ZERO_EXEMPTION_FLOOR = 500;
+
+const westVirginiaTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+  const numberOfDependents = Math.max(0, Math.round(safeNumber(values.numberOfDependents, 0)));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // West Virginia state income tax: taxable wages (a federal-AGI proxy,
+  // West Virginia's actual tax base) minus $2,000 per exemption (self,
+  // spouse if MFJ, each dependent) — or a $500 floor if zero exemptions —
+  // run through the 2.11%-4.58% brackets.
+  const numberOfExemptions = 1 + (filingStatus === 1 ? 1 : 0) + numberOfDependents;
+  const wvExemptionAmount =
+    numberOfExemptions > 0 ? numberOfExemptions * WV_EXEMPTION_PER_PERSON : WV_ZERO_EXEMPTION_FLOOR;
+  const westVirginiaTaxableIncome = Math.max(0, taxableAnnualWages - wvExemptionAmount);
+  const annualStateIncomeTax = progressiveTax(westVirginiaTaxableIncome, WV_BRACKETS_2026);
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Wisconsin Income Tax Calculator — a 4-bracket progressive schedule
+// (3.5%-7.65%), sourced exactly for Single/Head of Household (which share
+// one schedule) and Married Filing Jointly from Wisconsin Department of
+// Revenue's own official 2026 Form 1-ES instructions PDF. PLUS Wisconsin's
+// distinctive SLIDING-SCALE standard deduction, which phases down linearly
+// with income rather than being a flat amount — also sourced exactly from
+// the same official document: Single/HoH starts at $13,960 and phases out
+// at 12% per dollar of income above $20,119, reaching $0 at $136,453; MFJ
+// starts at $25,840 and phases out at 19.778% per dollar above $29,039,
+// reaching $0 at $159,690. This calculator implements that exact formula,
+// not an approximation.
+// SIMPLIFICATION: Married Filing Separately uses the Single/Head of
+// Household formula — Wisconsin's own MFS standard deduction schedule
+// wasn't cleanly sourced separately, so it's approximated the same way as
+// several other states here (documented in the Tool's Assumptions text).
+// No dependents field: Wisconsin's deduction phase-out is income-based, not
+// dependent-count-based (Wisconsin does have its own Married Couple Credit
+// and other credits, not modeled here).
+// ---------------------------------------------------------------------------
+
+const WI_BRACKETS_SINGLE_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.035, upTo: 15110 },
+  { rate: 0.044, upTo: 51950 },
+  { rate: 0.053, upTo: 332720 },
+  { rate: 0.0765, upTo: Infinity },
+];
+
+const WI_BRACKETS_MFJ_2026: { rate: number; upTo: number }[] = [
+  { rate: 0.035, upTo: 20150 },
+  { rate: 0.044, upTo: 69260 },
+  { rate: 0.053, upTo: 443630 },
+  { rate: 0.0765, upTo: Infinity },
+];
+
+function wisconsinBracketsFor(status: FilingStatus): { rate: number; upTo: number }[] {
+  return status === 1 ? WI_BRACKETS_MFJ_2026 : WI_BRACKETS_SINGLE_2026;
+}
+
+// Wisconsin's official sliding-scale standard deduction formula (2026):
+// starts at a maximum, phases straight down as income rises, floors at $0.
+function wisconsinStandardDeduction(status: FilingStatus, income: number): number {
+  if (status === 1) {
+    // Married Filing Jointly: $25,840 max, phases out at 19.778% of income
+    // above $29,039, reaching $0 at $159,690.
+    if (income <= 29039) return 25840;
+    if (income >= 159690) return 0;
+    return Math.max(0, 25840 - 0.19778 * (income - 29039));
+  }
+  // Single / Head of Household / Married Filing Separately: $13,960 max,
+  // phases out at 12% of income above $20,119, reaching $0 at $136,453.
+  if (income <= 20119) return 13960;
+  if (income >= 136453) return 0;
+  return Math.max(0, 13960 - 0.12 * (income - 20119));
+}
+
+const wisconsinTaxCalculator: CustomCalculator = (values) => {
+  const annualSalary = Math.max(0, safeNumber(values.annualSalary));
+  const periodsPerYear = safeNumber(values.payFrequency, 26) || 26;
+  const filingStatusRaw = Math.round(safeNumber(values.filingStatus, 0));
+  const filingStatus = ([0, 1, 2, 3] as FilingStatus[]).includes(filingStatusRaw as FilingStatus)
+    ? (filingStatusRaw as FilingStatus)
+    : 0;
+  const preTaxPerPeriod = Math.max(0, safeNumber(values.preTaxDeductions));
+  const postTaxPerPeriod = Math.max(0, safeNumber(values.postTaxDeductions));
+  const extraWithholdingPerPeriod = Math.max(0, safeNumber(values.extraWithholding));
+
+  const annualPreTax = preTaxPerPeriod * periodsPerYear;
+  const annualPostTax = postTaxPerPeriod * periodsPerYear;
+  const annualExtraWithholding = extraWithholdingPerPeriod * periodsPerYear;
+
+  const taxableAnnualWages = Math.max(0, annualSalary - annualPreTax);
+
+  const standardDeduction = STANDARD_DEDUCTION_2026[filingStatus];
+  const federalTaxableIncome = Math.max(0, taxableAnnualWages - standardDeduction);
+  const annualFederalIncomeTax =
+    progressiveTax(federalTaxableIncome, federalBracketsFor(filingStatus)) + annualExtraWithholding;
+
+  const socialSecurityWages = Math.min(taxableAnnualWages, SOCIAL_SECURITY_WAGE_BASE_2026);
+  const annualSocialSecurityTax = socialSecurityWages * SOCIAL_SECURITY_RATE;
+
+  const additionalMedicareThreshold = ADDITIONAL_MEDICARE_THRESHOLD_2026[filingStatus];
+  const annualMedicareTax =
+    taxableAnnualWages * MEDICARE_RATE +
+    Math.max(0, taxableAnnualWages - additionalMedicareThreshold) * ADDITIONAL_MEDICARE_RATE;
+
+  // Wisconsin state income tax: taxable wages minus Wisconsin's sliding-
+  // scale standard deduction (computed from taxable wages itself), run
+  // through the 3.5%-7.65% brackets.
+  const wiStandardDeduction = wisconsinStandardDeduction(filingStatus, taxableAnnualWages);
+  const wisconsinTaxableIncome = Math.max(0, taxableAnnualWages - wiStandardDeduction);
+  const annualStateIncomeTax = progressiveTax(wisconsinTaxableIncome, wisconsinBracketsFor(filingStatus));
+
+  const annualTaxesTotal =
+    annualFederalIncomeTax + annualSocialSecurityTax + annualMedicareTax + annualStateIncomeTax;
+  const annualTotalDeductions = annualTaxesTotal + annualPreTax + annualPostTax;
+  const annualNetPay = Math.max(0, annualSalary - annualTotalDeductions);
+
+  return {
+    grossPayPerPeriod: annualSalary / periodsPerYear,
+    federalIncomeTax: annualFederalIncomeTax / periodsPerYear,
+    socialSecurityTax: annualSocialSecurityTax / periodsPerYear,
+    medicareTax: annualMedicareTax / periodsPerYear,
+    stateIncomeTax: annualStateIncomeTax / periodsPerYear,
+    totalDeductions: annualTotalDeductions / periodsPerYear,
+    netPayPerPeriod: annualNetPay / periodsPerYear,
+    annualNetPay,
+  };
+};
+
 export const customCalculators: Record<string, CustomCalculator> = {
   // Keyed by the tool's slug — this must stay in sync with the `slug` set in
   // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
@@ -3641,6 +4118,16 @@ export const customCalculators: Record<string, CustomCalculator> = {
   "pennsylvania-tax-calculator": pennsylvaniaTaxCalculator,
   "rhode-island-tax-calculator": rhodeIslandTaxCalculator,
   "south-carolina-tax-calculator": southCarolinaTaxCalculator,
+  "south-dakota-tax-calculator": southDakotaTaxCalculator,
+  "tennessee-tax-calculator": tennesseeTaxCalculator,
+  "texas-tax-calculator": texasTaxCalculator,
+  "utah-tax-calculator": utahTaxCalculator,
+  "vermont-tax-calculator": vermontTaxCalculator,
+  "virginia-tax-calculator": virginiaTaxCalculator,
+  "washington-tax-calculator": washingtonTaxCalculator,
+  "west-virginia-tax-calculator": westVirginiaTaxCalculator,
+  "wisconsin-tax-calculator": wisconsinTaxCalculator,
+  "wyoming-tax-calculator": wyomingTaxCalculator,
 };
 
 export function runCalculator(
