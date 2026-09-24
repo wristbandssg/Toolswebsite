@@ -5,6 +5,11 @@ import { auth } from "@/lib/auth";
 
 const renameSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
+  // Hero section content for the public /tools/category/[slug] page —
+  // both optional, omitting a key leaves that field untouched so this
+  // same endpoint still works for a plain rename.
+  heroSubheading: z.string().trim().optional(),
+  heroDescription: z.string().trim().optional(),
 });
 
 function slugify(text: string) {
@@ -43,7 +48,23 @@ export async function PUT(
     return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
   }
 
-  const category = await prisma.toolCategory.update({ where: { id }, data: { name, slug } });
+  const category = await prisma.toolCategory.update({
+    where: { id },
+    data: {
+      name,
+      slug,
+      // Only touched when the request explicitly includes the key, so a
+      // plain { name } rename never wipes out hero content set earlier —
+      // an empty string, on the other hand, clears it back to the
+      // generated fallback copy the public page falls back to.
+      ...(Object.prototype.hasOwnProperty.call(body, "heroSubheading")
+        ? { heroSubheading: parsed.data.heroSubheading || null }
+        : {}),
+      ...(Object.prototype.hasOwnProperty.call(body, "heroDescription")
+        ? { heroDescription: parsed.data.heroDescription || null }
+        : {}),
+    },
+  });
   return NextResponse.json({ category });
 }
 

@@ -25,6 +25,10 @@ const toolCreateSchema = z.object({
   templateKey: z.string().default("tool-template-1"),
   status: z.enum(["draft", "in_review", "published", "needs_update"]).default("draft"),
   categoryId: z.string().optional().nullable(),
+  // Shown on the /tools/category/[slug] card grid — see Tool.icon /
+  // Tool.isPopular in schema.prisma for what these control.
+  icon: z.string().optional().nullable(),
+  isPopular: z.boolean().optional().default(false),
   calcType: z.enum(["expression", "custom"]).default("expression"),
   calcFormula: z.string().optional().nullable(),
   calcInputs: z.array(calcInputFieldSchema).default([]),
@@ -100,6 +104,8 @@ export async function POST(req: NextRequest) {
       templateKey: data.templateKey,
       status: data.status,
       categoryId: data.categoryId ?? undefined,
+      icon: data.icon || null,
+      isPopular: data.isPopular ?? false,
       calcType: data.calcType,
       calcFormula: data.calcFormula,
       calcInputs: JSON.stringify(data.calcInputs),

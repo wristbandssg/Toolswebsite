@@ -89,8 +89,19 @@ model ToolCategory {
   //   2) which of the 3 tool-list view styles (grid / list / card-description)
   templateKey String   @default("category-template-1")
   viewStyle   String   @default("grid") // grid | list | card-description
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  // Public /tools/category/[slug] hero section content (added per user
+  // request — hero section above the tool card grid). Both optional and
+  // admin-editable from /admin/tools/categories: `name` is still the big
+  // headline, `heroSubheading` is the short line under it, and
+  // `heroDescription` is the longer descriptive paragraph. A category with
+  // neither set falls back to generated copy on the page itself, so this
+  // never blocks a category from having a working page.
+  heroSubheading  String?
+  heroDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   tools Tool[]
 
@@ -107,6 +118,14 @@ model Tool {
 
   categoryId String?       @db.ObjectId
   category   ToolCategory? @relation(fields: [categoryId], references: [id])
+
+  // Shown on the /tools/category/[slug] card grid (added per user request):
+  // `icon` is a single emoji the admin types in (e.g. "💰"), rendered in a
+  // small badge on the card — optional, the card falls back to a generic
+  // calculator icon when unset. `isPopular` shows a small "POPULAR" pill on
+  // the card when true.
+  icon      String?
+  isPopular Boolean @default(false)
 
   // Calculation logic
   calcType    CalcType @default(expression)

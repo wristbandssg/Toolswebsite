@@ -5,6 +5,8 @@ import { auth } from "@/lib/auth";
 
 const createSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
+  heroSubheading: z.string().trim().optional(),
+  heroDescription: z.string().trim().optional(),
 });
 
 function slugify(text: string) {
@@ -29,6 +31,8 @@ export async function GET() {
       id: c.id,
       name: c.name,
       slug: c.slug,
+      heroSubheading: c.heroSubheading ?? "",
+      heroDescription: c.heroDescription ?? "",
       toolCount: c._count.tools,
     })),
   });
@@ -58,6 +62,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
   }
 
-  const category = await prisma.toolCategory.create({ data: { name, slug } });
+  const category = await prisma.toolCategory.create({
+    data: {
+      name,
+      slug,
+      heroSubheading: parsed.data.heroSubheading || null,
+      heroDescription: parsed.data.heroDescription || null,
+    },
+  });
   return NextResponse.json({ category: { ...category, toolCount: 0 } }, { status: 201 });
 }

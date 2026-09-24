@@ -58,6 +58,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       templateKey: body.templateKey ?? existing.templateKey,
       status: body.status ?? existing.status,
       categoryId: body.categoryId ?? existing.categoryId,
+      // Only touched when explicitly present so older callers that don't
+      // send these fields at all leave them untouched — an empty string
+      // icon clears it back to the card grid's generic fallback icon.
+      ...(Object.prototype.hasOwnProperty.call(body, "icon")
+        ? { icon: body.icon || null }
+        : {}),
+      ...(typeof body.isPopular === "boolean" ? { isPopular: body.isPopular } : {}),
       calcType: body.calcType ?? existing.calcType,
       calcFormula: body.calcFormula ?? existing.calcFormula,
       calcInputs: body.calcInputs ? JSON.stringify(body.calcInputs) : existing.calcInputs,

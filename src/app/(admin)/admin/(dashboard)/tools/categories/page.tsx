@@ -18,8 +18,9 @@ export default async function ToolCategoriesPage() {
       </p>
       <h1 className="mt-1 text-2xl font-bold">Tool Categories</h1>
       <p className="mt-1 text-sm text-gray-500">
-        Add, rename, or remove the categories Tools can be filed under. Each one gets its own
-        public listing page.
+        Add, edit, or remove the categories Tools can be filed under. Each one gets its own public
+        listing page — Edit a category to set the hero headline subheading and description shown
+        at the top of its page, above the tool card grid.
       </p>
       <div className="mt-6">
         <ToolCategoriesManager
@@ -27,6 +28,8 @@ export default async function ToolCategoriesPage() {
             id: c.id,
             name: c.name,
             slug: c.slug,
+            heroSubheading: c.heroSubheading ?? "",
+            heroDescription: c.heroDescription ?? "",
             toolCount: c._count.tools,
           }))}
         />

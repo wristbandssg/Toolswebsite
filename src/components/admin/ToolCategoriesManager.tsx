@@ -7,6 +7,11 @@ export interface ToolCategoryRow {
   id: string;
   name: string;
   slug: string;
+  // Hero section content for this category's public /tools/category/[slug]
+  // page (see the page component) — both blank until the admin fills them
+  // in below; the public page generates fallback copy until then.
+  heroSubheading: string;
+  heroDescription: string;
   toolCount: number;
 }
 
@@ -39,6 +44,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [editingHeroSubheading, setEditingHeroSubheading] = useState("");
+  const [editingHeroDescription, setEditingHeroDescription] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -73,6 +80,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   function startEditing(cat: ToolCategoryRow) {
     setEditingId(cat.id);
     setEditingName(cat.name);
+    setEditingHeroSubheading(cat.heroSubheading);
+    setEditingHeroDescription(cat.heroDescription);
     setError(null);
   }
 
@@ -84,16 +93,30 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
       const res = await fetch(`/api/tool-categories/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: editingName.trim() }),
+        body: JSON.stringify({
+          name: editingName.trim(),
+          heroSubheading: editingHeroSubheading.trim(),
+          heroDescription: editingHeroDescription.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Could not rename the category.");
+        setError(data.error ?? "Could not save the category.");
         return;
       }
       setCategories((prev) =>
         prev
-          .map((c) => (c.id === id ? { ...c, name: data.category.name, slug: data.category.slug } : c))
+          .map((c) =>
+            c.id === id
+              ? {
+                  ...c,
+                  name: data.category.name,
+                  slug: data.category.slug,
+                  heroSubheading: data.category.heroSubheading ?? "",
+                  heroDescription: data.category.heroDescription ?? "",
+                }
+              : c
+          )
           .sort((a, b) => a.name.localeCompare(b.name))
       );
       setEditingId(null);
@@ -163,16 +186,37 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
             <div className="p-4">
               {editingId === cat.id ? (
                 <div className="space-y-2">
-                  <input
-                    autoFocus
-                    className="w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleRename(cat.id);
-                      if (e.key === "Escape") setEditingId(null);
-                    }}
-                  />
+                  <label className="block text-xs">
+                    <span className="font-medium text-gray-500">Name</span>
+                    <input
+                      autoFocus
+                      className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape") setEditingId(null);
+                      }}
+                    />
+                  </label>
+                  <label className="block text-xs">
+                    <span className="font-medium text-gray-500">Hero Subheading</span>
+                    <input
+                      className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+                      placeholder="Short line under the headline"
+                      value={editingHeroSubheading}
+                      onChange={(e) => setEditingHeroSubheading(e.target.value)}
+                    />
+                  </label>
+                  <label className="block text-xs">
+                    <span className="font-medium text-gray-500">Hero Description</span>
+                    <textarea
+                      className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+                      rows={3}
+                      placeholder="Longer paragraph shown under the subheading"
+                      value={editingHeroDescription}
+                      onChange={(e) => setEditingHeroDescription(e.target.value)}
+                    />
+                  </label>
                   <div className="flex gap-2">
                     <button
                       type="button"
@@ -210,7 +254,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
                       onClick={() => startEditing(cat)}
                       className="font-medium text-gray-600 hover:underline dark:text-gray-300"
                     >
-                      Rename
+                      Edit
                     </button>
                     <button
                       type="button"
