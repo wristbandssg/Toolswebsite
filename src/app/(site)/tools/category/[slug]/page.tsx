@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 async function loadCategory(slug: string) {
   const category = await prisma.toolCategory.findUnique({
     where: { slug },
-    include: { seoMeta: true },
+    include: { seoMeta: true, parent: true },
   });
   if (!category) return null;
   const tools = await prisma.tool.findMany({
@@ -75,7 +75,16 @@ export default async function ToolCategoryPage({
       <div className="bg-gray-50 px-4 py-16 text-center dark:bg-gray-900/40 sm:py-20">
         <div className="mx-auto max-w-3xl">
           <p className="text-sm text-gray-400">
-            Tools / {category.name}
+            Tools
+            {category.parent ? (
+              <>
+                {" "}
+                / <Link href={`/tools/category/${category.parent.slug}`} className="hover:underline">
+                  {category.parent.name}
+                </Link>
+              </>
+            ) : null}{" "}
+            / {category.name}
           </p>
           <h1 className="mt-3 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
             {category.name}

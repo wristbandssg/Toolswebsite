@@ -100,6 +100,18 @@ model ToolCategory {
   heroSubheading  String?
   heroDescription String?
 
+  // Sub-categories: a category may optionally belong to one parent
+  // category. Kept to a single level deep (a sub-category can't itself
+  // have a parent — enforced in the API, not here, since Mongo has no
+  // CHECK constraints), matching how BlogCategory does it. A sub-category
+  // is otherwise a completely normal ToolCategory row — same slug
+  // uniqueness, same hero fields, same SEO, same public page template as
+  // any top-level category, since /tools/category/[slug] doesn't care
+  // whether a category has a parent.
+  parentId String?        @db.ObjectId
+  parent   ToolCategory?  @relation("ToolCategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children ToolCategory[] @relation("ToolCategoryHierarchy")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

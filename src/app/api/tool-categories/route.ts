@@ -7,6 +7,11 @@ const createSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
   heroSubheading: z.string().trim().optional(),
   heroDescription: z.string().trim().optional(),
+  // Optional parent category id — when set, this becomes a sub-category.
+  // Kept to a single level deep: the chosen parent must itself be a
+  // top-level category (checked below), so a sub-category can never have
+  // its own sub-categories. Same pattern as BlogCategory's parentId.
+  parentId: z.string().trim().optional().nullable(),
 });
 
 function slugify(text: string) {
@@ -31,6 +36,7 @@ export async function GET() {
       id: c.id,
       name: c.name,
       slug: c.slug,
+      parentId: c.parentId,
       heroSubheading: c.heroSubheading ?? "",
       heroDescription: c.heroDescription ?? "",
       toolCount: c._count.tools,
@@ -52,6 +58,7 @@ export async function POST(req: NextRequest) {
     );
   }
   const name = parsed.data.name;
+  const { parentId } = parsed.data;
   const slug = slugify(name);
   if (!slug) {
     return NextResponse.json({ error: "That name doesn't produce a valid URL slug" }, { status: 400 });
@@ -62,12 +69,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
   }
 
+  if (parentId) {
+    const parent = await prisma.toolCategory.findUnique({ where: { id: parentId } });
+    if (!parent) {
+      return NextResponse.json({ error: "That parent category no longer exists" }, { status: 400 });
+    }
+    if (parent.parentId) {
+      return NextResponse.json(
+        { error: "Sub-categories can only be one level deep — pick a top-level category as the parent" },
+        { status: 400 }
+      );
+    }
+  }
+
   const category = await prisma.toolCategory.create({
     data: {
       name,
       slug,
       heroSubheading: parsed.data.heroSubheading || null,
       heroDescription: parsed.data.heroDescription || null,
+      ...(parentId ? { parentId } : {}),
     },
   });
   return NextResponse.json({ category: { ...category, toolCount: 0 } }, { status: 201 });

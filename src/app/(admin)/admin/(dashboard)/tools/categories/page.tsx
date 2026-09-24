@@ -5,11 +5,11 @@ import ToolCategoriesManager from "@/components/admin/ToolCategoriesManager";
 export default async function ToolCategoriesPage() {
   const categories = await prisma.toolCategory.findMany({
     orderBy: { name: "asc" },
-    include: { _count: { select: { tools: true } }, seoMeta: true },
+    include: { seoMeta: true, tools: { select: { status: true } } },
   });
 
-  const totalTools = categories.reduce((sum, c) => sum + c._count.tools, 0);
-  const emptyCount = categories.filter((c) => c._count.tools === 0).length;
+  const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
+  const emptyCount = categories.filter((c) => c.tools.length === 0).length;
   const missingSeoCount = categories.filter((c) => !c.seoMeta?.metaTitle).length;
 
   return (
@@ -37,9 +37,11 @@ export default async function ToolCategoriesPage() {
               id: c.id,
               name: c.name,
               slug: c.slug,
+              parentId: c.parentId,
               heroSubheading: c.heroSubheading ?? "",
               heroDescription: c.heroDescription ?? "",
-              toolCount: c._count.tools,
+              toolCount: c.tools.length,
+              publishedCount: c.tools.filter((t) => t.status === "published").length,
               seo: {
                 metaTitle: c.seoMeta?.metaTitle ?? "",
                 metaDescription: c.seoMeta?.metaDescription ?? "",

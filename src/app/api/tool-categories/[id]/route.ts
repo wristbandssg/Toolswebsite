@@ -84,7 +84,22 @@ export async function DELETE(
     where: { categoryId: id },
     data: { categoryId: null },
   });
+
+  // Same idea for sub-categories: deleting a parent category shouldn't
+  // silently orphan or cascade-delete its children (the self-relation is
+  // `onDelete: NoAction`, so Mongo would leave a dangling parentId
+  // otherwise). Promote them to top-level categories instead — same
+  // behavior as deleting a Blog Category with sub-categories.
+  const detachedChildren = await prisma.toolCategory.updateMany({
+    where: { parentId: id },
+    data: { parentId: null },
+  });
+
   await prisma.toolCategory.delete({ where: { id } });
 
-  return NextResponse.json({ ok: true, detachedTools: affected.count });
+  return NextResponse.json({
+    ok: true,
+    detachedTools: affected.count,
+    detachedSubcategories: detachedChildren.count,
+  });
 }
