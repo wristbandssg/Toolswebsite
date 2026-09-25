@@ -71,6 +71,27 @@
  *    indexation choice — Dividend Tax, Property Tax and Professional Tax
  *    (Mumbai/Maharashtra representative), Stamp Duty (Maharashtra
  *    representative), and presumptive-taxation Self Employment)
+ *  - calc-engine-hongkong-extended-calculators.ts — 7 more Hong Kong tools
+ *    under the existing "Hong Kong Tax & Salary Calculators" category
+ *    (Profits Tax, Property Tax, Stamp Duty (AVD), Rental Income Tax
+ *    (Property Tax vs Personal Assessment, whichever is lower), Capital
+ *    Gains and Dividend Tax honestly framed around Hong Kong's "generally
+ *    not taxed" rules, and MPF — an 8th "Salaries Tax" tool was skipped as
+ *    a duplicate of the existing hong-kong-income-tax-calculator)
+ *  - calc-engine-malaysia-extended-calculators.ts — 10 more Malaysia tools
+ *    under the existing "Malaysia Tax & Salary Calculators" category (EPF,
+ *    SOCSO, EIS, PCB/Monthly Tax Deduction estimate, SST, Real Property
+ *    Gains Tax, Stamp Duty, Rental Income Tax, Dividend Tax (new 2% tax),
+ *    and a Capital Gains Tax explainer honestly framed around Malaysia's
+ *    CGT regime excluding individuals entirely)
+ *  - calc-engine-philippines-extended-calculators.ts — 10 more Philippines
+ *    tools under the existing "Philippines Tax & Salary Calculators"
+ *    category (VAT, Withholding/EWT, Capital Gains Tax modeling its two
+ *    genuinely distinct mechanisms — 6% real property vs 15% unlisted
+ *    shares — Estate Tax, Donor's Tax, Percentage Tax, Documentary Stamp
+ *    Tax, Real Property Tax (national statutory caps only, LGU rates
+ *    vary), Dividend Tax, and Self Employed Tax comparing the 8% flat
+ *    option against graduated rates + percentage tax)
  * Adding a new country means adding one more calc-engine-<country>.ts file
  * and one more line below merging its map in — no existing country's file
  * is touched.
@@ -115,6 +136,9 @@ import { australiaExtendedCustomCalculators } from "./calc-engine-australia-exte
 import { newZealandExtendedCustomCalculators } from "./calc-engine-newzealand-extended-calculators";
 import { singaporeExtendedCustomCalculators } from "./calc-engine-singapore-extended-calculators";
 import { indiaExtendedCustomCalculators } from "./calc-engine-india-extended-calculators";
+import { hongKongExtendedCustomCalculators } from "./calc-engine-hongkong-extended-calculators";
+import { malaysiaExtendedCustomCalculators } from "./calc-engine-malaysia-extended-calculators";
+import { philippinesExtendedCustomCalculators } from "./calc-engine-philippines-extended-calculators";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -150,6 +174,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...newZealandExtendedCustomCalculators,
   ...singaporeExtendedCustomCalculators,
   ...indiaExtendedCustomCalculators,
+  ...hongKongExtendedCustomCalculators,
+  ...malaysiaExtendedCustomCalculators,
+  ...philippinesExtendedCustomCalculators,
 };
 
 export function runCalculator(
