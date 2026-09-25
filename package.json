@@ -13,6 +13,7 @@
     "db:migrate-blog-categories": "tsx prisma/migrate-blog-multi-category.ts",
     "db:create-nevada-tool": "tsx prisma/create-nevada-paycheck-tool.ts",
     "db:create-us-tax-salary-tools": "tsx prisma/create-us-tax-salary-calculators.ts",
+    "db:create-capital-gains-sales-vat-tools": "tsx prisma/create-capital-gains-sales-vat-calculators.ts",
     "db:create-alabama-tool": "tsx prisma/create-alabama-tax-tool.ts",
     "db:create-alaska-tool": "tsx prisma/create-alaska-tax-tool.ts",
     "db:create-arizona-tool": "tsx prisma/create-arizona-tax-tool.ts",
