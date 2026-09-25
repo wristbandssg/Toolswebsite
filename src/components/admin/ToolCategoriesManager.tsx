@@ -166,6 +166,9 @@ function ToolCountPills({ toolCount, publishedCount }: { toolCount: number; publ
 function CategoryRow({
   cat,
   depth,
+  hasChildren,
+  isExpanded,
+  onToggleExpand,
   editingId,
   editingName,
   setEditingName,
@@ -195,6 +198,18 @@ function CategoryRow({
 }: {
   cat: ToolCategoryRow;
   depth: number;
+  // Whether `cat` has any sub-categories of its own — controls whether an
+  // expand/collapse chevron renders at all.
+  hasChildren: boolean;
+  // Whether `cat`'s children are currently shown below it. Root rows
+  // (depth 0) are always expanded — Finance Calculators and its direct
+  // topic sub-categories (Tax Calculators, Loan Calculators, ...) are the
+  // "main + sub-category" view that's always visible — so this only does
+  // anything for depth > 0, where a category's own children (e.g. the
+  // country categories under Tax Calculators) start collapsed and open on
+  // click, keeping a long list readable.
+  isExpanded: boolean;
+  onToggleExpand: () => void;
   editingId: string | null;
   editingName: string;
   setEditingName: (v: string) => void;
@@ -234,9 +249,33 @@ function CategoryRow({
   handleDelete: (cat: ToolCategoryRow) => void;
   onAddSubcategory?: (cat: ToolCategoryRow) => void;
 }) {
+  const canToggle = depth > 0 && hasChildren;
   return (
     <div style={depth > 0 ? { marginLeft: Math.min(depth, 6) * 28 } : undefined}>
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors hover:border-indigo-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900">
+        {canToggle ? (
+          <button
+            type="button"
+            onClick={onToggleExpand}
+            aria-label={isExpanded ? "Collapse sub-categories" : "Expand sub-categories"}
+            aria-expanded={isExpanded}
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+          >
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              className={`h-3 w-3 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 4l6 6-6 6" />
+            </svg>
+          </button>
+        ) : (
+          <span className="h-5 w-5 shrink-0" aria-hidden />
+        )}
         <CategoryIcon isNested={depth > 0} />
 
         {editingId === cat.id ? (
@@ -315,7 +354,14 @@ function CategoryRow({
         ) : (
           <>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium">{cat.name}</p>
+              <p className="truncate font-medium">
+                {cat.name}
+                {canToggle && !isExpanded ? (
+                  <span className="ml-2 font-normal text-gray-400">
+                    ({childCount} sub-categor{childCount === 1 ? "y" : "ies"} hidden)
+                  </span>
+                ) : null}
+              </p>
             </div>
             <ToolCountPills toolCount={cat.toolCount} publishedCount={cat.publishedCount} />
             <div className="flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
@@ -476,6 +522,28 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [savingSeoId, setSavingSeoId] = useState<string | null>(null);
   const [seoError, setSeoError] = useState<string | null>(null);
 
+  // Ids of categories whose children are currently expanded (visible) below
+  // them. Starts empty on purpose: a root category's own direct
+  // sub-categories are always shown regardless of this set (see
+  // renderCategoryNode), but anything nested deeper than that — e.g. the
+  // dozen country categories under "Tax Calculators" — stays collapsed
+  // until its parent's id is added here, so a long tree opens with just
+  // "main category + sub-category" visible instead of every leaf at once.
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  function toggleExpand(id: string) {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function expand(id: string) {
+    setExpandedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  }
+
   const topLevelCategories = categories.filter((c) => !c.parentId);
   const childrenByParentId = buildChildrenMap(categories);
   const flatCategories = flattenTree(topLevelCategories, childrenByParentId);
@@ -494,6 +562,9 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
 
   function startAddSubcategory(cat: ToolCategoryRow) {
     setNewParentId(cat.id);
+    // So the admin can see cat's existing children (and the new one, once
+    // added) instead of adding into a collapsed, invisible list.
+    expand(cat.id);
     nameInputRef.current?.focus();
     nameInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
@@ -526,6 +597,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
           } as ToolCategoryRow,
         ].sort((a, b) => a.name.localeCompare(b.name))
       );
+      if (data.category.parentId) expand(data.category.parentId);
       setNewName("");
       // Deliberately NOT resetting newParentId — it's common to add several
       // sub-categories under the same parent back to back.
@@ -583,6 +655,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
           )
           .sort((a, b) => a.name.localeCompare(b.name))
       );
+      if (data.category.parentId) expand(data.category.parentId);
       setEditingId(null);
       router.refresh();
     } catch {
@@ -694,11 +767,20 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   function renderCategoryNode(cat: ToolCategoryRow, depth: number): React.ReactNode {
     const excluded = new Set([cat.id, ...getDescendantIds(cat.id, childrenByParentId)]);
     const parentOptions = flatCategories.filter((o) => !excluded.has(o.id));
+    const children = childrenByParentId.get(cat.id) ?? [];
+    // Depth 0's children (the direct topic sub-categories under a root
+    // category) are always shown — that's the "main category + sub-category"
+    // baseline view. Anything deeper only shows once its parent has been
+    // expanded by a click.
+    const showChildren = depth === 0 || expandedIds.has(cat.id);
     return (
       <div key={cat.id} className="space-y-2">
         <CategoryRow
           cat={cat}
           depth={depth}
+          hasChildren={children.length > 0}
+          isExpanded={showChildren}
+          onToggleExpand={() => toggleExpand(cat.id)}
           editingId={editingId}
           editingName={editingName}
           setEditingName={setEditingName}
@@ -726,7 +808,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
           handleDelete={handleDelete}
           onAddSubcategory={startAddSubcategory}
         />
-        {(childrenByParentId.get(cat.id) ?? []).map((child) => renderCategoryNode(child, depth + 1))}
+        {showChildren ? children.map((child) => renderCategoryNode(child, depth + 1)) : null}
       </div>
     );
   }
