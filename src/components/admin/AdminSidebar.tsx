@@ -13,6 +13,7 @@ interface NavItem {
 /** The 13 dashboard sections from the plan doc, Section 6: Admin Dashboard Architecture. */
 const NAV_ITEMS: NavItem[] = [
   { href: "/admin", label: "Dashboard Overview" },
+  { href: "/admin/ad-settings", label: "Ad Settings" },
   { href: "/admin/tools", label: "Tools" },
   { href: "/admin/tools/categories", label: "Tool Categories", indent: true },
   { href: "/admin/state-calculators", label: "State Calculators", indent: true },
@@ -29,7 +30,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/search-console", label: "Search Console" },
   { href: "/admin/media", label: "Media Library" },
   { href: "/admin/settings", label: "Website Settings" },
-  { href: "/admin/ad-settings", label: "Ad Settings" },
 ];
 
 export default function AdminSidebar() {

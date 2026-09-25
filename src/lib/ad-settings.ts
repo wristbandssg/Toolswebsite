@@ -31,6 +31,10 @@ export interface AdPlacementDef {
   key: string;
   label: string;
   description: string;
+  // Which section of the admin form this card is grouped under — purely a
+  // display grouping, doesn't affect storage/lookup (still a flat map keyed
+  // by `key`).
+  group: string;
   // Reserved minimum height (px) for the slot's container while an ad is
   // enabled — keeps the page from jumping/shifting once the ad script
   // finishes loading and injects its own content (Core Web Vitals: CLS).
@@ -40,86 +44,114 @@ export interface AdPlacementDef {
 export const AD_PLACEMENTS: AdPlacementDef[] = [
   {
     key: "site_header_bottom",
-    label: "Sitewide — Below Header",
+    label: "Below Header",
     description:
       "Shows near the top of every public page (Tool, Category, Blog, Blog Category, and general Pages), just under the site header.",
+    group: "Sitewide",
     minHeight: 90,
   },
   {
     key: "site_footer_top",
-    label: "Sitewide — Above Footer",
+    label: "Above Footer",
     description: "Shows at the bottom of every public page, just above the site footer.",
+    group: "Sitewide",
     minHeight: 90,
   },
   {
     key: "tool_content_top",
-    label: "Tool Page — Above Content",
+    label: "Above Content",
     description:
-      "On a Calculator Tool page, right below the calculator widget and above the About/Example/Assumptions sections. Appears on all 5 Tool Page templates (shared component).",
+      "Right below the calculator widget and above the About/Example/Assumptions sections. Appears on all 5 Tool Page templates (shared component).",
+    group: "Tool Page",
     minHeight: 250,
   },
   {
     key: "tool_content_bottom",
-    label: "Tool Page — Bottom of Content",
+    label: "Bottom of Content",
     description:
-      "On a Calculator Tool page, after FAQ/Related Calculators/Support Blogs — the very end of the content. Appears on all 5 Tool Page templates.",
+      "After FAQ/Related Calculators/Support Blogs — the very end of the content. Appears on all 5 Tool Page templates.",
+    group: "Tool Page",
     minHeight: 250,
   },
   {
     key: "category_top",
-    label: "Category Page — Top",
-    description: "On a Tool Category page, right below the hero section, above the sub-category/tool grid.",
+    label: "Top",
+    description: "Right below the hero section, above the sub-category/tool grid.",
+    group: "Tool Category Page",
     minHeight: 90,
   },
   {
     key: "category_bottom",
-    label: "Category Page — Bottom",
-    description: "On a Tool Category page, at the very bottom.",
+    label: "Bottom",
+    description: "At the very bottom of the page.",
+    group: "Tool Category Page",
     minHeight: 90,
   },
   {
     key: "blog_top",
-    label: "Blog Post — Top",
-    description: "On a Blog post, right below the header/hero band, above the article body.",
+    label: "Top",
+    description: "Right below the header/hero band, above the article body.",
+    group: "Blog Post",
     minHeight: 90,
   },
   {
     key: "blog_in_article",
-    label: "Blog Post — In-Article",
-    description: "On a Blog post, right after the article content, before the related-calculators section.",
+    label: "In-Article",
+    description: "Right after the article content, before the related-calculators section.",
+    group: "Blog Post",
     minHeight: 250,
   },
   {
     key: "blog_bottom",
-    label: "Blog Post — Bottom",
-    description: "On a Blog post, at the very end of the article.",
+    label: "Bottom",
+    description: "At the very end of the article.",
+    group: "Blog Post",
     minHeight: 250,
   },
   {
     key: "blog_category_top",
-    label: "Blog Category Page — Top",
-    description: "On a Blog Category page, right below the hero, above the hero slider/featured posts.",
+    label: "Top",
+    description: "Right below the hero, above the hero slider/featured posts.",
+    group: "Blog Category Page",
     minHeight: 90,
   },
   {
     key: "blog_category_bottom",
-    label: "Blog Category Page — Bottom",
-    description: "On a Blog Category page, at the bottom of the post grid.",
+    label: "Bottom",
+    description: "At the bottom of the post grid.",
+    group: "Blog Category Page",
     minHeight: 90,
   },
   {
     key: "page_top",
-    label: "General Page — Top",
-    description: "On a general Page (both of the 2 Page templates), right below the title.",
+    label: "Top",
+    description: "Right below the title. Applies to both of the 2 Page templates.",
+    group: "General Page",
     minHeight: 90,
   },
   {
     key: "page_bottom",
-    label: "General Page — Bottom",
-    description: "On a general Page (both templates), at the very bottom.",
+    label: "Bottom",
+    description: "At the very bottom. Applies to both Page templates.",
+    group: "General Page",
     minHeight: 90,
   },
 ];
+
+/** `AD_PLACEMENTS` grouped by `group`, in first-seen order — what the admin
+ * form actually renders (one section per group). */
+export function groupedAdPlacements(): { group: string; placements: AdPlacementDef[] }[] {
+  const order: string[] = [];
+  const byGroup = new Map<string, AdPlacementDef[]>();
+  for (const p of AD_PLACEMENTS) {
+    if (!byGroup.has(p.group)) {
+      byGroup.set(p.group, []);
+      order.push(p.group);
+    }
+    byGroup.get(p.group)!.push(p);
+  }
+  return order.map((group) => ({ group, placements: byGroup.get(group)! }));
+}
 
 export type AdSettings = Record<string, AdPlacementConfig>;
 
