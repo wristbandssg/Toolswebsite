@@ -29,6 +29,9 @@
  *  - calc-engine-capital-gains-sales-vat-calculators.ts — 32 more "Tax
  *    Calculators" tools (Capital Gains Tax, Sales Tax, VAT families), also
  *    filed directly under the Tax Calculators category
+ *  - calc-engine-property-tax-self-employment-calculators.ts — 24 more
+ *    "Tax Calculators" tools (Property Tax, Self-Employment Tax families),
+ *    also filed directly under the Tax Calculators category
  * Adding a new country means adding one more calc-engine-<country>.ts file
  * and one more line below merging its map in — no existing country's file
  * is touched.
@@ -65,6 +68,7 @@ import { newZealandCustomCalculators } from "./calc-engine-newzealand";
 import { singaporeCustomCalculators } from "./calc-engine-singapore";
 import { usTaxSalaryCustomCalculators } from "./calc-engine-us-tax-salary-calculators";
 import { capitalGainsSalesVatCustomCalculators } from "./calc-engine-capital-gains-sales-vat-calculators";
+import { propertyTaxSelfEmploymentCustomCalculators } from "./calc-engine-property-tax-self-employment-calculators";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -92,6 +96,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...singaporeCustomCalculators,
   ...usTaxSalaryCustomCalculators,
   ...capitalGainsSalesVatCustomCalculators,
+  ...propertyTaxSelfEmploymentCustomCalculators,
 };
 
 export function runCalculator(
