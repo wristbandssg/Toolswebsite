@@ -1,45 +1,67 @@
-// One-time (but safe to re-run) migration: makes "Finance Calculators" the
-// single top-level umbrella category and turns every OTHER existing
-// top-level Tool Category into a sub-category underneath it — Australia,
-// Canada, Hong Kong, India, Malaysia, New Zealand, Pakistan, Philippines,
-// Singapore, South Africa, Tax & Paycheck Calculators, UK, and any other
-// top-level category that exists at run time.
+// One-time (but safe to re-run) migration: builds out the full Finance
+// Calculators taxonomy —
 //
-// WHY THIS EXISTS
-// ----------------
-// ToolCategory already supports one level of sub-categories (parentId —
-// see schema.prisma), and the admin can create a NEW category as a
-// sub-category from the start ("+ Sub-Category" in /admin/tools/categories).
-// But there was no way to take a category that ALREADY exists as top-level
-// and re-file it under another one — the rename endpoint
-// (PUT /api/tool-categories/[id]) didn't accept parentId at all. That gap
-// is fixed alongside this script (see the same commit's changes to
-// src/app/api/tool-categories/[id]/route.ts and
-// src/components/admin/ToolCategoriesManager.tsx, which add a "Parent
-// Category" dropdown to every row's Edit panel) — this script just does the
-// one-time bulk move so the admin doesn't have to click through a dozen
-// categories by hand.
+//   Finance Calculators (root, no tools filed directly under it)
+//     +- Loan Calculators
+//     +- Mortgage Calculators
+//     +- Investment Calculators
+//     +- Interest Calculators
+//     +- Savings Calculators
+//     +- Retirement Calculators
+//     +- Tax Calculators
+//     |    +- Australia Tax & Salary Calculators
+//     |    +- Canada Tax & Salary Calculators
+//     |    +- Hong Kong Tax & Salary Calculators
+//     |    +- India Tax & Salary Calculators
+//     |    +- Malaysia Tax & Salary Calculators
+//     |    +- New Zealand Tax & Salary Calculators
+//     |    +- Pakistan Tax & Salary Calculators
+//     |    +- Philippines Tax & Salary Calculators
+//     |    +- Singapore Tax & Salary Calculators
+//     |    +- South Africa Tax & Salary Calculators
+//     |    +- Tax & Paycheck Calculators (the US states)
+//     |    +- UK Tax & Salary Calculators
+//     +- Credit & Debt Calculators
+//     +- Salary & Income Calculators
+//     +- Business Finance Calculators
+//     +- Real Estate Calculators
+//     +- Currency & Exchange Calculators
 //
-// WHAT IT DOES
-// ------------
-//   1. Finds the "Finance Calculators" category (by slug "finance" — the
-//      slug prisma/seed.ts originally created it with — falling back to
-//      slug "finance-calculators" or a case-insensitive name match, in case
-//      it was ever recreated by hand from the admin UI). Creates it fresh
-//      (slug "finance-calculators") only if none of those match.
-//   2. Finds every OTHER top-level category (parentId is null) and sets its
-//      parentId to Finance Calculators' id.
-//   3. Skips (with a warning) any category that already has sub-categories
-//      of its own — ToolCategory is enforced to one level deep, so a
-//      category that already has children can't also become a child.
+// Every existing TOOL keeps its current category exactly as-is (a Pakistan
+// tool is still filed under "Pakistan Tax & Salary Calculators" — this
+// script only moves CATEGORIES around, three levels deep now instead of
+// two: Finance Calculators -> Tax Calculators -> country/state category ->
+// tool. The 11 topic categories other than Tax Calculators are created
+// empty and ready for tools to be filed under them directly, whenever
+// there are tools that belong there.
 //
-// Safe to run more than once: a category that's already filed under Finance
-// Calculators is simply not touched again.
+// This supersedes the earlier version of this script, which only nested
+// everything ONE level deep directly under Finance Calculators (including
+// the 12 country/state tax categories). Running this version moves those
+// 12 one level further in, under the new "Tax Calculators" category — it
+// finds each one by its known slug, so it works no matter which state
+// they're currently in (still top-level, or already filed directly under
+// Finance Calculators from an earlier run of the old script).
+//
+// WHY THIS WORKS WITHOUT A SCHEMA CHANGE
+// ---------------------------------------
+// ToolCategory.parentId already supports arbitrary nesting depth — the
+// only thing that changed alongside this script is that the admin API
+// (src/app/api/tool-categories/route.ts and .../[id]/route.ts) no longer
+// artificially restricts nesting to one level; it now only rejects an edit
+// that would create a CYCLE. See the ToolCategory.parentId comment in
+// schema.prisma, and the matching change in
+// src/components/admin/ToolCategoriesManager.tsx, which can now render and
+// edit a category tree of any depth (a "Parent Category" dropdown on every
+// row, not just top-level ones).
+//
+// Safe to run more than once — every step is an upsert or a "skip if
+// already correct" check.
 //
 // HOW TO RUN
 //   npx tsx prisma/reparent-tool-categories-under-finance.ts
 // or
-//   npm run db:reparent-tool-categories
+//   npm run db:setup-finance-categories
 
 import { PrismaClient } from "@prisma/client";
 
@@ -48,17 +70,53 @@ const prisma = new PrismaClient();
 const FINANCE_NAME = "Finance Calculators";
 const FINANCE_SLUGS = ["finance", "finance-calculators"];
 
-async function main() {
-  let finance = await prisma.toolCategory.findFirst({
-    where: { slug: { in: FINANCE_SLUGS } },
-  });
+// The 12 topic-level sub-categories that go directly under Finance
+// Calculators. "Tax Calculators" is the one that gets its own children
+// (the country/state categories) below — every other entry here is
+// created empty, ready for tools to be filed under it later.
+const TOPIC_CATEGORIES: { name: string; slug: string }[] = [
+  { name: "Loan Calculators", slug: "loan-calculators" },
+  { name: "Mortgage Calculators", slug: "mortgage-calculators" },
+  { name: "Investment Calculators", slug: "investment-calculators" },
+  { name: "Interest Calculators", slug: "interest-calculators" },
+  { name: "Savings Calculators", slug: "savings-calculators" },
+  { name: "Retirement Calculators", slug: "retirement-calculators" },
+  { name: "Tax Calculators", slug: "tax-calculators" },
+  { name: "Credit & Debt Calculators", slug: "credit-debt-calculators" },
+  { name: "Salary & Income Calculators", slug: "salary-income-calculators" },
+  { name: "Business Finance Calculators", slug: "business-finance-calculators" },
+  { name: "Real Estate Calculators", slug: "real-estate-calculators" },
+  { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
+];
 
+const TAX_CALCULATORS_SLUG = "tax-calculators";
+
+// The country/state tax categories created by the earlier
+// create-<country>-tax-tool.ts / create-<state>-tax-tool.ts scripts — these
+// move under "Tax Calculators" regardless of where they currently sit.
+const COUNTRY_TAX_CATEGORY_SLUGS = [
+  "australia-tax-salary-calculators",
+  "canada-tax-salary-calculators",
+  "hong-kong-tax-salary-calculators",
+  "india-tax-salary-calculators",
+  "malaysia-tax-salary-calculators",
+  "new-zealand-tax-salary-calculators",
+  "pakistan-tax-salary-calculators",
+  "philippines-tax-salary-calculators",
+  "singapore-tax-salary-calculators",
+  "south-africa-tax-salary-calculators",
+  "tax-paycheck-calculators",
+  "uk-tax-salary-calculators",
+];
+
+async function main() {
+  // 1. Finance Calculators — the root.
+  let finance = await prisma.toolCategory.findFirst({ where: { slug: { in: FINANCE_SLUGS } } });
   if (!finance) {
     finance = await prisma.toolCategory.findFirst({
       where: { name: { equals: FINANCE_NAME, mode: "insensitive" } },
     });
   }
-
   if (!finance) {
     finance = await prisma.toolCategory.create({
       data: {
@@ -70,52 +128,63 @@ async function main() {
     });
     console.log(`Created the "${FINANCE_NAME}" category (it didn't exist yet).`);
   } else {
-    console.log(`Using existing "${finance.name}" category (slug: ${finance.slug}) as the umbrella.`);
+    console.log(`Using existing "${finance.name}" category (slug: ${finance.slug}) as the root.`);
   }
-
-  // If Finance Calculators itself somehow already has a parent (shouldn't
-  // happen, but the API allows any category to be reparented), promote it
-  // back to top-level first — it's meant to be the root here.
   if (finance.parentId) {
-    finance = await prisma.toolCategory.update({
-      where: { id: finance.id },
-      data: { parentId: null },
-    });
+    finance = await prisma.toolCategory.update({ where: { id: finance.id }, data: { parentId: null } });
     console.log(`"${finance.name}" had its own parent — promoted it back to top-level.`);
   }
 
-  const otherTopLevel = await prisma.toolCategory.findMany({
-    where: { id: { not: finance.id }, parentId: null },
-  });
+  // 2. The 12 topic sub-categories directly under Finance Calculators.
+  const topicIdBySlug = new Map<string, string>();
+  for (const topic of TOPIC_CATEGORIES) {
+    const cat = await prisma.toolCategory.upsert({
+      where: { slug: topic.slug },
+      update: { name: topic.name, parentId: finance.id },
+      create: {
+        name: topic.name,
+        slug: topic.slug,
+        parentId: finance.id,
+        templateKey: "category-template-1",
+        viewStyle: "grid",
+      },
+    });
+    topicIdBySlug.set(topic.slug, cat.id);
+    console.log(`- "${cat.name}" is ready under "${finance.name}"`);
+  }
 
-  let moved = 0;
-  let skippedHasChildren = 0;
-
-  for (const cat of otherTopLevel) {
-    const childCount = await prisma.toolCategory.count({ where: { parentId: cat.id } });
-    if (childCount > 0) {
-      skippedHasChildren++;
-      console.warn(
-        `- skipped "${cat.name}": it already has ${childCount} sub-categor${
-          childCount === 1 ? "y" : "ies"
-        } of its own, and sub-categories can only be one level deep.`
-      );
+  // 3. The 12 existing country/state tax categories move one level further
+  // in, under "Tax Calculators" specifically (one of the topics above).
+  const taxCalculatorsId = topicIdBySlug.get(TAX_CALCULATORS_SLUG);
+  if (!taxCalculatorsId) {
+    throw new Error('"Tax Calculators" wasn\'t created — this should never happen, aborting.');
+  }
+  let movedCountryCats = 0;
+  let alreadyCorrect = 0;
+  for (const slug of COUNTRY_TAX_CATEGORY_SLUGS) {
+    const cat = await prisma.toolCategory.findUnique({ where: { slug } });
+    if (!cat) {
+      console.warn(`- skipped "${slug}": no category with this slug exists yet (its tool hasn't been created).`);
       continue;
     }
-    await prisma.toolCategory.update({
-      where: { id: cat.id },
-      data: { parentId: finance.id },
-    });
-    moved++;
-    console.log(`- moved "${cat.name}" under "${finance.name}"`);
+    if (cat.parentId === taxCalculatorsId) {
+      alreadyCorrect++;
+      continue;
+    }
+    await prisma.toolCategory.update({ where: { id: cat.id }, data: { parentId: taxCalculatorsId } });
+    movedCountryCats++;
+    console.log(`- moved "${cat.name}" under "Tax Calculators"`);
   }
 
   console.log(
-    `\nDone. Moved ${moved} categor${moved === 1 ? "y" : "ies"} under "${finance.name}", skipped ${skippedHasChildren}.`
+    `\nDone. "${finance.name}" now has ${TOPIC_CATEGORIES.length} topic sub-categories. ` +
+      `${movedCountryCats} country/state tax categor${movedCountryCats === 1 ? "y" : "ies"} moved under ` +
+      `"Tax Calculators" (${alreadyCorrect} were already there).`
   );
   console.log(
-    `Open /admin/tools/categories to see the new tree — "${finance.name}" now lists them all as sub-categories, ` +
-      "and each one still has its own public page, tools, and SEO exactly as before."
+    "Open /admin/tools/categories to see the full tree. Every existing tool keeps its current category — only " +
+      "the category tree around it changed. The 11 topic categories other than Tax Calculators are empty for " +
+      "now; file tools under them from each tool's Edit page whenever you're ready."
   );
 }
 

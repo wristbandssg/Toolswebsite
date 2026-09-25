@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
+import { flattenCategoryTree } from "@/lib/flattenCategoryTree";
 
 export default async function EditToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -21,7 +22,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
       <div className="mt-6">
         <ToolForm
           mode="edit"
-          categories={categories}
+          categories={flattenCategoryTree(categories)}
           initial={{
             slug: tool.slug,
             title: tool.title,

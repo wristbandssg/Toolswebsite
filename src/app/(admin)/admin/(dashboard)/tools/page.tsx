@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ToolsList from "@/components/admin/ToolsList";
+import { flattenCategoryTree } from "@/lib/flattenCategoryTree";
 
 export default async function ToolsListPage() {
   const [tools, categories] = await Promise.all([
@@ -45,7 +46,7 @@ export default async function ToolsListPage() {
             updatedAtLabel: tool.updatedAt.toLocaleDateString(),
             category: tool.category ? { id: tool.category.id, name: tool.category.name } : null,
           }))}
-          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+          categories={flattenCategoryTree(categories).map((c) => ({ id: c.id, name: c.name }))}
         />
       </div>
     </div>

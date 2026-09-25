@@ -10,14 +10,14 @@ const renameSchema = z.object({
   // same endpoint still works for a plain rename.
   heroSubheading: z.string().trim().optional(),
   heroDescription: z.string().trim().optional(),
-  // Move this category under a different top-level category, or back to
-  // top-level. Optional and only applied when the request body explicitly
-  // includes the key (same convention as the hero fields above) — pass an
-  // id string to file it under that category, or null/"" to make it
-  // top-level. This is what lets an EXISTING category be turned into a
-  // sub-category (or reparented, or promoted back) from the admin UI —
-  // previously that was only possible when a sub-category was first
-  // created via POST /api/tool-categories.
+  // Move this category under a different category (at any depth), or back
+  // to top-level. Optional and only applied when the request body
+  // explicitly includes the key (same convention as the hero fields
+  // above) — pass an id string to file it under that category, or
+  // null/"" to make it top-level. This is what lets an EXISTING category
+  // be turned into a sub-category (or reparented, or promoted back) from
+  // the admin UI — previously that was only possible when a sub-category
+  // was first created via POST /api/tool-categories.
   parentId: z.string().trim().optional().nullable(),
 });
 
@@ -60,6 +60,9 @@ export async function PUT(
   // parentId follows the same "only touched when the key is present"
   // convention as the hero fields, but needs real validation first — unlike
   // a hero paragraph, a bad parentId would corrupt the category tree.
+  // Arbitrary depth is allowed (see the ToolCategory.parentId comment in
+  // schema.prisma), so the only thing to guard against is a CYCLE: this
+  // category ending up nested inside one of its own descendants.
   const hasParentIdKey = Object.prototype.hasOwnProperty.call(body, "parentId");
   const nextParentId = (parsed.data.parentId || null) as string | null;
   if (hasParentIdKey && nextParentId) {
@@ -70,21 +73,26 @@ export async function PUT(
     if (!parent) {
       return NextResponse.json({ error: "That parent category no longer exists" }, { status: 400 });
     }
-    if (parent.parentId) {
-      return NextResponse.json(
-        { error: "Sub-categories can only be one level deep — pick a top-level category as the parent" },
-        { status: 400 }
-      );
-    }
-    const childCount = await prisma.toolCategory.count({ where: { parentId: id } });
-    if (childCount > 0) {
-      return NextResponse.json(
-        {
-          error:
-            "This category has its own sub-categories, so it can't become a sub-category itself — move or remove them first",
-        },
-        { status: 400 }
-      );
+    // Walk up the candidate parent's own ancestor chain — if this
+    // category's id shows up there, the candidate is one of ITS
+    // descendants, and nesting under it would create a loop. Capped at 20
+    // hops as a defensive backstop against corrupted data looping forever;
+    // a real category tree on this site is only ever a few levels deep.
+    let cursorId: string | null = parent.parentId;
+    let hops = 0;
+    while (cursorId && hops < 20) {
+      if (cursorId === id) {
+        return NextResponse.json(
+          { error: "That category is nested under this one — pick a different parent to avoid a loop" },
+          { status: 400 }
+        );
+      }
+      const cursor: { parentId: string | null } | null = await prisma.toolCategory.findUnique({
+        where: { id: cursorId },
+        select: { parentId: true },
+      });
+      cursorId = cursor?.parentId ?? null;
+      hops++;
     }
   }
 
@@ -126,14 +134,18 @@ export async function DELETE(
     data: { categoryId: null },
   });
 
-  // Same idea for sub-categories: deleting a parent category shouldn't
-  // silently orphan or cascade-delete its children (the self-relation is
+  // Same idea for sub-categories: deleting a category shouldn't silently
+  // orphan or cascade-delete its children (the self-relation is
   // `onDelete: NoAction`, so Mongo would leave a dangling parentId
-  // otherwise). Promote them to top-level categories instead — same
-  // behavior as deleting a Blog Category with sub-categories.
+  // otherwise). Re-file them one level up — under THIS category's own
+  // parent, if it had one (so deleting a middle category like "Tax
+  // Calculators" moves its country sub-categories up to sit directly under
+  // "Finance Calculators" rather than losing their place in the tree
+  // entirely), or to top-level if it didn't.
+  const deleted = await prisma.toolCategory.findUnique({ where: { id }, select: { parentId: true } });
   const detachedChildren = await prisma.toolCategory.updateMany({
     where: { parentId: id },
-    data: { parentId: null },
+    data: { parentId: deleted?.parentId ?? null },
   });
 
   await prisma.toolCategory.delete({ where: { id } });

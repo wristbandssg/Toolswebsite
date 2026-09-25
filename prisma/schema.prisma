@@ -101,13 +101,18 @@ model ToolCategory {
   heroDescription String?
 
   // Sub-categories: a category may optionally belong to one parent
-  // category. Kept to a single level deep (a sub-category can't itself
-  // have a parent — enforced in the API, not here, since Mongo has no
-  // CHECK constraints), matching how BlogCategory does it. A sub-category
+  // category, and that parent may itself have a parent — arbitrary depth
+  // is allowed (e.g. Finance Calculators -> Tax Calculators -> Pakistan
+  // Tax & Salary Calculators -> a tool), the only rule being no cycles
+  // (a category can't be nested inside its own descendant — enforced in
+  // the API, not here, since Mongo has no CHECK constraints, by walking
+  // the candidate parent's ancestor chain before saving). A sub-category
   // is otherwise a completely normal ToolCategory row — same slug
   // uniqueness, same hero fields, same SEO, same public page template as
-  // any top-level category, since /tools/category/[slug] doesn't care
-  // whether a category has a parent.
+  // any top-level category. /tools/category/[slug] shows a grid of child
+  // category cards for a category that HAS children, and a grid of tool
+  // cards for one that doesn't (a leaf) — never both, since tools are
+  // meant to be filed at the leaf level.
   parentId String?        @db.ObjectId
   parent   ToolCategory?  @relation("ToolCategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children ToolCategory[] @relation("ToolCategoryHierarchy")

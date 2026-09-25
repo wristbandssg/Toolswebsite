@@ -7,10 +7,12 @@ const createSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
   heroSubheading: z.string().trim().optional(),
   heroDescription: z.string().trim().optional(),
-  // Optional parent category id — when set, this becomes a sub-category.
-  // Kept to a single level deep: the chosen parent must itself be a
-  // top-level category (checked below), so a sub-category can never have
-  // its own sub-categories. Same pattern as BlogCategory's parentId.
+  // Optional parent category id — when set, this becomes a sub-category of
+  // it. Arbitrary depth is allowed (the parent may itself be a
+  // sub-category), matching how ToolCategory.parentId works everywhere
+  // else — see the model comment in schema.prisma. No cycle check is
+  // needed here: a brand-new category has no children of its own yet, so
+  // it can't be an ancestor of anything.
   parentId: z.string().trim().optional().nullable(),
 });
 
@@ -73,12 +75,6 @@ export async function POST(req: NextRequest) {
     const parent = await prisma.toolCategory.findUnique({ where: { id: parentId } });
     if (!parent) {
       return NextResponse.json({ error: "That parent category no longer exists" }, { status: 400 });
-    }
-    if (parent.parentId) {
-      return NextResponse.json(
-        { error: "Sub-categories can only be one level deep — pick a top-level category as the parent" },
-        { status: 400 }
-      );
     }
   }
 

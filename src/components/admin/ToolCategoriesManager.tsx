@@ -16,9 +16,11 @@ export interface ToolCategoryRow {
   name: string;
   slug: string;
   // Sub-categories: null/undefined for a top-level category, otherwise the
-  // id of the top-level category this one is filed under. Kept to a single
-  // level deep — a sub-category can't itself have sub-categories. Same
-  // pattern as the Blog Categories manager.
+  // id of the category this one is filed under. Arbitrary depth is
+  // supported — a sub-category can itself have sub-categories (e.g.
+  // Finance Calculators -> Tax Calculators -> Pakistan Tax & Salary
+  // Calculators -> a tool) — see the ToolCategory.parentId comment in
+  // schema.prisma for how cycles are prevented.
   parentId: string | null;
   // Hero section content for this category's public /tools/category/[slug]
   // page (see the page component) — both blank until the admin fills them
@@ -33,6 +35,17 @@ export interface ToolCategoryRow {
   seo: ToolCategorySeo;
 }
 
+/** A flattened, tree-ordered option for the "Parent Category" selects — a
+ * parent always appears immediately before its own children, and `depth`
+ * drives the indentation prefix so the hierarchy reads at a glance in a
+ * plain <select> (which can't reliably render CSS indentation per-option
+ * across browsers, so a text prefix is what actually shows up). */
+interface ParentOption {
+  id: string;
+  name: string;
+  depth: number;
+}
+
 const EMPTY_SEO: ToolCategorySeo = {
   metaTitle: "",
   metaDescription: "",
@@ -41,19 +54,68 @@ const EMPTY_SEO: ToolCategorySeo = {
   schemaType: "",
 };
 
+/** Builds parentId -> sorted children lookup once per render. Categories
+ * are kept globally name-sorted by every mutation below, so children come
+ * out already alphabetical without a second sort here. */
+function buildChildrenMap(categories: ToolCategoryRow[]): Map<string, ToolCategoryRow[]> {
+  const map = new Map<string, ToolCategoryRow[]>();
+  for (const c of categories) {
+    if (!c.parentId) continue;
+    const siblings = map.get(c.parentId) ?? [];
+    siblings.push(c);
+    map.set(c.parentId, siblings);
+  }
+  return map;
+}
+
+/** Every id nested anywhere under `id` (children, grandchildren, ...) — used
+ * to keep a category out of its own "Parent Category" options, since
+ * choosing one of its descendants as its parent would create a loop (the
+ * API rejects this too, but filtering it out of the dropdown means the
+ * admin never sees an option that would just bounce back as an error). */
+function getDescendantIds(id: string, childrenByParentId: Map<string, ToolCategoryRow[]>): Set<string> {
+  const result = new Set<string>();
+  const stack = [...(childrenByParentId.get(id) ?? [])];
+  while (stack.length) {
+    const c = stack.pop()!;
+    if (result.has(c.id)) continue;
+    result.add(c.id);
+    stack.push(...(childrenByParentId.get(c.id) ?? []));
+  }
+  return result;
+}
+
+/** Flattens the whole tree, parent-then-children, with a depth for each
+ * entry — the source list for every "Parent Category" dropdown. */
+function flattenTree(
+  topLevelCategories: ToolCategoryRow[],
+  childrenByParentId: Map<string, ToolCategoryRow[]>
+): ParentOption[] {
+  const out: ParentOption[] = [];
+  function walk(list: ToolCategoryRow[], depth: number) {
+    for (const c of list) {
+      out.push({ id: c.id, name: c.name, depth });
+      walk(childrenByParentId.get(c.id) ?? [], depth + 1);
+    }
+  }
+  walk(topLevelCategories, 0);
+  return out;
+}
+
 /** A small colored icon badge — folder for a top-level category, a "nested
- * under" arrow for a sub-category — so the hierarchy reads at a glance,
- * matching the Blog Categories manager's visual language. */
-function CategoryIcon({ isChild }: { isChild: boolean }) {
+ * under" arrow for anything filed under another one — so the hierarchy
+ * reads at a glance, matching the Blog Categories manager's visual
+ * language. Every depth below the root gets the same nested icon. */
+function CategoryIcon({ isNested }: { isNested: boolean }) {
   return (
     <span
       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-        isChild
+        isNested
           ? "bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400"
           : "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400"
       }`}
     >
-      {isChild ? (
+      {isNested ? (
         <svg
           viewBox="0 0 20 20"
           fill="none"
@@ -96,15 +158,14 @@ function ToolCountPills({ toolCount, publishedCount }: { toolCount: number; publ
 }
 
 /**
- * One category (or sub-category) row, plus its expandable Edit/SEO panels.
- * Top-level rows and sub-category rows share this exact same component —
- * every category gets the same hero/SEO feature set regardless of nesting —
- * the only differences are the indentation and the "+ Sub-Category" quick
- * action, which only makes sense on a top-level row.
+ * One category row, at any depth, plus its expandable Edit/SEO panels.
+ * Every row shares this exact same component — every category gets the
+ * same hero/SEO/sub-category feature set regardless of nesting — the only
+ * difference is the indentation, which scales with `depth`.
  */
 function CategoryRow({
   cat,
-  isChild,
+  depth,
   editingId,
   editingName,
   setEditingName,
@@ -133,7 +194,7 @@ function CategoryRow({
   onAddSubcategory,
 }: {
   cat: ToolCategoryRow;
-  isChild: boolean;
+  depth: number;
   editingId: string | null;
   editingName: string;
   setEditingName: (v: string) => void;
@@ -141,20 +202,21 @@ function CategoryRow({
   setEditingHeroSubheading: (v: string) => void;
   editingHeroDescription: string;
   setEditingHeroDescription: (v: string) => void;
-  // "" means top-level; otherwise the id of the top-level category this
-  // one is being filed under. Editable on every row (not just children) so
-  // an existing top-level category can be turned into a sub-category, or a
-  // sub-category can be moved or promoted back — the gap the admin
-  // couldn't previously fill in from here at all.
+  // "" means top-level; otherwise the id of the category this one is being
+  // filed under. Editable on every row at any depth, so an existing
+  // category can be turned into a sub-category, moved to a different
+  // parent, or promoted back to top-level — the gap the admin couldn't
+  // previously fill in from here at all.
   editingParentId: string;
   setEditingParentId: (v: string) => void;
-  // Other top-level categories this row could be filed under (never
-  // includes `cat` itself, and only meaningful while editingId === cat.id).
-  parentOptions: ToolCategoryRow[];
-  // How many other categories currently list `cat` as their parent — a
-  // category that already has sub-categories of its own can't also become
-  // a sub-category (kept to one level deep), so the parent select is
-  // disabled with an explanation instead.
+  // Every category `cat` could be filed under — the full tree minus `cat`
+  // itself and its own descendants (picking one of those would create a
+  // loop) — only meaningful while editingId === cat.id.
+  parentOptions: ParentOption[];
+  // How many other categories currently list `cat` as their parent —
+  // shown as a heads-up (moving `cat` moves them all with it), not a
+  // restriction: nesting depth is unlimited, so a category with
+  // sub-categories of its own can still become a sub-category itself.
   childCount: number;
   savingId: string | null;
   startEditing: (cat: ToolCategoryRow) => void;
@@ -173,9 +235,9 @@ function CategoryRow({
   onAddSubcategory?: (cat: ToolCategoryRow) => void;
 }) {
   return (
-    <div className={isChild ? "ml-6 sm:ml-10" : undefined}>
+    <div style={depth > 0 ? { marginLeft: Math.min(depth, 6) * 28 } : undefined}>
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors hover:border-indigo-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900">
-        <CategoryIcon isChild={isChild} />
+        <CategoryIcon isNested={depth > 0} />
 
         {editingId === cat.id ? (
           <div className="min-w-0 flex-1 space-y-2">
@@ -213,22 +275,22 @@ function CategoryRow({
             <label className="block text-xs">
               <span className="font-medium text-gray-500">Parent Category</span>
               <select
-                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800"
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
                 value={editingParentId}
-                disabled={childCount > 0}
                 onChange={(e) => setEditingParentId(e.target.value)}
               >
                 <option value="">-- Top-Level Category --</option>
-                {parentOptions.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    Sub-category of: {c.name}
+                {parentOptions.map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {"— ".repeat(o.depth)}
+                    {o.name}
                   </option>
                 ))}
               </select>
               {childCount > 0 ? (
                 <span className="mt-1 block text-gray-400">
-                  Has {childCount} sub-categor{childCount === 1 ? "y" : "ies"} of its own, so it
-                  can&apos;t be made a sub-category itself.
+                  Has {childCount} sub-categor{childCount === 1 ? "y" : "ies"} of its own — they&apos;ll
+                  move along with it.
                 </span>
               ) : null}
             </label>
@@ -265,7 +327,7 @@ function CategoryRow({
               >
                 View
               </a>
-              {!isChild && onAddSubcategory ? (
+              {onAddSubcategory ? (
                 <button
                   type="button"
                   onClick={() => onAddSubcategory(cat)}
@@ -391,7 +453,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [categories, setCategories] = useState<ToolCategoryRow[]>(initial);
   const [newName, setNewName] = useState("");
   // Empty string = new category will be top-level; otherwise the id of the
-  // top-level category it becomes a sub-category of.
+  // category it becomes a sub-category of (at any depth).
   const [newParentId, setNewParentId] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -401,8 +463,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [editingName, setEditingName] = useState("");
   const [editingHeroSubheading, setEditingHeroSubheading] = useState("");
   const [editingHeroDescription, setEditingHeroDescription] = useState("");
-  // "" = top-level; otherwise the id of the top-level category this row is
-  // being filed under while its edit form is open.
+  // "" = top-level; otherwise the id of the category this row is being
+  // filed under while its edit form is open.
   const [editingParentId, setEditingParentId] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -415,13 +477,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [seoError, setSeoError] = useState<string | null>(null);
 
   const topLevelCategories = categories.filter((c) => !c.parentId);
-  const childrenByParentId = new Map<string, ToolCategoryRow[]>();
-  for (const c of categories) {
-    if (!c.parentId) continue;
-    const siblings = childrenByParentId.get(c.parentId) ?? [];
-    siblings.push(c);
-    childrenByParentId.set(c.parentId, siblings);
-  }
+  const childrenByParentId = buildChildrenMap(categories);
+  const flatCategories = flattenTree(topLevelCategories, childrenByParentId);
 
   // A 500 from a stale Prisma Client (schema field not yet pushed to the
   // DB) comes back as an HTML error page, not JSON — `.json()` on that
@@ -580,6 +637,9 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
 
   async function handleDelete(cat: ToolCategoryRow) {
     const childCount = childrenByParentId.get(cat.id)?.length ?? 0;
+    const grandparentName = cat.parentId
+      ? categories.find((c) => c.id === cat.parentId)?.name
+      : null;
     const parts: string[] = [];
     if (cat.toolCount > 0) {
       parts.push(
@@ -587,8 +647,11 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
       );
     }
     if (childCount > 0) {
+      const childLabel = childCount === 1 ? "its sub-category" : `its ${childCount} sub-categories`;
       parts.push(
-        `turn ${childCount === 1 ? "its sub-category" : `its ${childCount} sub-categories`} into top-level categories`
+        grandparentName
+          ? `move ${childLabel} up under "${grandparentName}"`
+          : `turn ${childLabel} into top-level categories`
       );
     }
     const warning =
@@ -606,10 +669,13 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
         setError(data.error ?? "Could not delete the category.");
         return;
       }
+      // Match the API: children are re-filed under the deleted category's
+      // OWN parent (cat.parentId — null if it was top-level), not always
+      // bumped to top-level.
       setCategories((prev) =>
         prev
           .filter((c) => c.id !== cat.id)
-          .map((c) => (c.parentId === cat.id ? { ...c, parentId: null } : c))
+          .map((c) => (c.parentId === cat.id ? { ...c, parentId: cat.parentId } : c))
       );
       if (newParentId === cat.id) setNewParentId("");
       router.refresh();
@@ -620,7 +686,50 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
     }
   }
 
-  const selectedParentName = topLevelCategories.find((c) => c.id === newParentId)?.name;
+  const selectedParentName = flatCategories.find((c) => c.id === newParentId)?.name;
+
+  /** Renders `cat`'s row plus every descendant beneath it, recursively —
+   * this is what lets the tree go as deep as the data actually is (root ->
+   * topic -> country -> ... ) instead of a hard-coded two levels. */
+  function renderCategoryNode(cat: ToolCategoryRow, depth: number): React.ReactNode {
+    const excluded = new Set([cat.id, ...getDescendantIds(cat.id, childrenByParentId)]);
+    const parentOptions = flatCategories.filter((o) => !excluded.has(o.id));
+    return (
+      <div key={cat.id} className="space-y-2">
+        <CategoryRow
+          cat={cat}
+          depth={depth}
+          editingId={editingId}
+          editingName={editingName}
+          setEditingName={setEditingName}
+          editingHeroSubheading={editingHeroSubheading}
+          setEditingHeroSubheading={setEditingHeroSubheading}
+          editingHeroDescription={editingHeroDescription}
+          setEditingHeroDescription={setEditingHeroDescription}
+          editingParentId={editingParentId}
+          setEditingParentId={setEditingParentId}
+          parentOptions={parentOptions}
+          childCount={childrenByParentId.get(cat.id)?.length ?? 0}
+          savingId={savingId}
+          startEditing={startEditing}
+          handleRename={handleRename}
+          setEditingId={setEditingId}
+          seoOpenId={seoOpenId}
+          toggleSeo={toggleSeo}
+          seoDraft={seoDraft}
+          setSeoDraft={setSeoDraft}
+          savingSeoId={savingSeoId}
+          seoError={seoError}
+          handleSaveSeo={handleSaveSeo}
+          setSeoOpenId={setSeoOpenId}
+          deletingId={deletingId}
+          handleDelete={handleDelete}
+          onAddSubcategory={startAddSubcategory}
+        />
+        {(childrenByParentId.get(cat.id) ?? []).map((child) => renderCategoryNode(child, depth + 1))}
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -645,9 +754,10 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
             title="Make this a sub-category of..."
           >
             <option value="">-- Top-Level Category --</option>
-            {topLevelCategories.map((c) => (
-              <option key={c.id} value={c.id}>
-                Sub-category of: {c.name}
+            {flatCategories.map((o) => (
+              <option key={o.id} value={o.id}>
+                {"— ".repeat(o.depth)}
+                {o.name}
               </option>
             ))}
           </select>
@@ -676,72 +786,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
       {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
 
       <div className="mt-6 space-y-2">
-        {topLevelCategories.map((cat) => (
-          <div key={cat.id} className="space-y-2">
-            <CategoryRow
-              cat={cat}
-              isChild={false}
-              editingId={editingId}
-              editingName={editingName}
-              setEditingName={setEditingName}
-              editingHeroSubheading={editingHeroSubheading}
-              setEditingHeroSubheading={setEditingHeroSubheading}
-              editingHeroDescription={editingHeroDescription}
-              setEditingHeroDescription={setEditingHeroDescription}
-              editingParentId={editingParentId}
-              setEditingParentId={setEditingParentId}
-              parentOptions={topLevelCategories.filter((c) => c.id !== cat.id)}
-              childCount={childrenByParentId.get(cat.id)?.length ?? 0}
-              savingId={savingId}
-              startEditing={startEditing}
-              handleRename={handleRename}
-              setEditingId={setEditingId}
-              seoOpenId={seoOpenId}
-              toggleSeo={toggleSeo}
-              seoDraft={seoDraft}
-              setSeoDraft={setSeoDraft}
-              savingSeoId={savingSeoId}
-              seoError={seoError}
-              handleSaveSeo={handleSaveSeo}
-              setSeoOpenId={setSeoOpenId}
-              deletingId={deletingId}
-              handleDelete={handleDelete}
-              onAddSubcategory={startAddSubcategory}
-            />
-            {(childrenByParentId.get(cat.id) ?? []).map((child) => (
-              <CategoryRow
-                key={child.id}
-                cat={child}
-                isChild
-                editingId={editingId}
-                editingName={editingName}
-                setEditingName={setEditingName}
-                editingHeroSubheading={editingHeroSubheading}
-                setEditingHeroSubheading={setEditingHeroSubheading}
-                editingHeroDescription={editingHeroDescription}
-                setEditingHeroDescription={setEditingHeroDescription}
-                editingParentId={editingParentId}
-                setEditingParentId={setEditingParentId}
-                parentOptions={topLevelCategories.filter((c) => c.id !== child.id)}
-                childCount={childrenByParentId.get(child.id)?.length ?? 0}
-                savingId={savingId}
-                startEditing={startEditing}
-                handleRename={handleRename}
-                setEditingId={setEditingId}
-                seoOpenId={seoOpenId}
-                toggleSeo={toggleSeo}
-                seoDraft={seoDraft}
-                setSeoDraft={setSeoDraft}
-                savingSeoId={savingSeoId}
-                seoError={seoError}
-                handleSaveSeo={handleSaveSeo}
-                setSeoOpenId={setSeoOpenId}
-                deletingId={deletingId}
-                handleDelete={handleDelete}
-              />
-            ))}
-          </div>
-        ))}
+        {topLevelCategories.map((cat) => renderCategoryNode(cat, 0))}
 
         {categories.length === 0 ? (
           <p className="rounded-xl border border-dashed border-gray-200 px-4 py-8 text-center text-sm text-gray-400 dark:border-gray-800">
