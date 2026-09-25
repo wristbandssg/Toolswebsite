@@ -22,6 +22,10 @@
  *  - calc-engine-philippines.ts — Philippines, one national tool (no province income tax)
  *  - calc-engine-newzealand.ts — New Zealand, one national tool (no state income tax)
  *  - calc-engine-singapore.ts — Singapore, one national tool (no state income tax)
+ *  - calc-engine-us-tax-salary-calculators.ts — 30 US-federal-only "Tax
+ *    Calculators" SEO variants (income tax + salary/paycheck families),
+ *    filed directly under the Tax Calculators category as a
+ *    national-baseline complement to calc-engine-us.ts's 50 state tools
  * Adding a new country means adding one more calc-engine-<country>.ts file
  * and one more line below merging its map in — no existing country's file
  * is touched.
@@ -56,6 +60,7 @@ import { malaysiaCustomCalculators } from "./calc-engine-malaysia";
 import { philippinesCustomCalculators } from "./calc-engine-philippines";
 import { newZealandCustomCalculators } from "./calc-engine-newzealand";
 import { singaporeCustomCalculators } from "./calc-engine-singapore";
+import { usTaxSalaryCustomCalculators } from "./calc-engine-us-tax-salary-calculators";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -81,6 +86,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...philippinesCustomCalculators,
   ...newZealandCustomCalculators,
   ...singaporeCustomCalculators,
+  ...usTaxSalaryCustomCalculators,
 };
 
 export function runCalculator(

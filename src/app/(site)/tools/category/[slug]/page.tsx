@@ -9,11 +9,14 @@ export const dynamic = "force-dynamic";
 
 // A distinct visual identity from the Blog category page: a light hero
 // section with a gradient-accented headline (rather than a colored banner),
-// followed by EITHER a grid of tool cards OR a grid of sub-category cards —
-// never both. Categories now nest to arbitrary depth (Finance Calculators
-// -> Tax Calculators -> Pakistan Tax & Salary Calculators -> a tool), and
-// tools are meant to be filed at the leaf level only, so a category with
-// children browses to them; a category with none shows its tools.
+// followed by a grid of sub-category cards, a grid of the category's own
+// tool cards, or both. Categories nest to arbitrary depth (Finance
+// Calculators -> Tax Calculators -> Pakistan Tax & Salary Calculators -> a
+// tool), and most tools are filed at the leaf level — but "Tax Calculators"
+// itself now also holds 30 US-federal tools directly (alongside its 12
+// country/state sub-categories), so a category with children can no longer
+// assume it has no tools of its own: both sections render, each with its
+// own count-aware heading, whenever both exist.
 
 async function loadCategory(slug: string) {
   const category = await prisma.toolCategory.findUnique({
@@ -45,27 +48,27 @@ async function loadCategory(slug: string) {
     hops++;
   }
 
-  if (children.length > 0) {
-    // A category with sub-categories browses to them, not to tools — so
-    // for each child, work out how many published tools sit anywhere in
-    // ITS subtree (including further-nested grandchildren) for a
-    // meaningful count on the card.
-    const childrenWithCounts = await Promise.all(
-      children.map(async (child) => ({
-        id: child.id,
-        name: child.name,
-        slug: child.slug,
-        toolCount: await countPublishedToolsInSubtree(child.id),
-      }))
-    );
-    return { category, ancestors, children: childrenWithCounts, tools: null as null };
-  }
+  // For each child, work out how many published tools sit anywhere in ITS
+  // subtree (including further-nested grandchildren) for a meaningful count
+  // on the card.
+  const childrenWithCounts = await Promise.all(
+    children.map(async (child) => ({
+      id: child.id,
+      name: child.name,
+      slug: child.slug,
+      toolCount: await countPublishedToolsInSubtree(child.id),
+    }))
+  );
 
+  // A category's OWN directly-filed tools — fetched regardless of whether
+  // it also has children, since a hub category (like "Tax Calculators") can
+  // now hold both sub-categories AND its own tools at the same time.
   const tools = await prisma.tool.findMany({
     where: { status: "published", categoryId: category.id },
     orderBy: { title: "asc" },
   });
-  return { category, ancestors, children: null as null, tools };
+
+  return { category, ancestors, children: childrenWithCounts, tools };
 }
 
 /** Recursively sums published tools directly filed under `categoryId` and
@@ -94,7 +97,7 @@ export async function generateMetadata({
     fallbackDescription:
       data.category.heroDescription ||
       data.category.heroSubheading ||
-      (data.children
+      (data.children.length > 0
         ? `Browse every calculator under ${data.category.name}, organized by topic.`
         : `Every ${data.category.name} calculator on this site, in one place.`),
     path: `/tools/category/${data.category.slug}`,
@@ -110,24 +113,34 @@ export default async function ToolCategoryPage({
   const data = await loadCategory(slug);
   if (!data) notFound();
   const { category, ancestors, children, tools } = data;
+  const hasChildren = children.length > 0;
+  const hasTools = tools.length > 0;
 
   // Fallback copy for a category the admin hasn't filled the hero fields in
   // for yet — the page still reads well, and Edit → save on
   // /admin/tools/categories replaces these with the admin's own wording.
+  // A category can have BOTH sub-categories and its own tools (e.g. "Tax
+  // Calculators": 12 country sub-categories plus 30 US-federal tools filed
+  // directly on it) — the fallback copy says so rather than picking one.
   const heroSubheading =
     category.heroSubheading ||
-    (children
-      ? `Browse ${category.name.toLowerCase()} by topic — pick a category below to see its calculators.`
-      : `Free, fast, and accurate ${category.name.toLowerCase()} tools — no signup required.`);
+    (hasChildren && hasTools
+      ? `Browse ${category.name.toLowerCase()} by topic, or jump straight to a calculator below.`
+      : hasChildren
+        ? `Browse ${category.name.toLowerCase()} by topic — pick a category below to see its calculators.`
+        : `Free, fast, and accurate ${category.name.toLowerCase()} tools — no signup required.`);
   const heroDescription =
     category.heroDescription ||
-    (children
-      ? `${category.name} is organized into ${children.length} sub-categor${
-          children.length === 1 ? "y" : "ies"
-        } below — open one to see its calculators.`
-      : `Browse ${(tools ?? []).length} ${category.name.toLowerCase()} calculator${
-          (tools ?? []).length === 1 ? "" : "s"
-        } below. Each one runs instantly in your browser and gives you a clear, step-by-step breakdown of the result.`);
+    (hasChildren && hasTools
+      ? `${category.name} has ${children.length} sub-categor${children.length === 1 ? "y" : "ies"} below, ` +
+        `plus ${tools.length} calculator${tools.length === 1 ? "" : "s"} filed directly in ${category.name}.`
+      : hasChildren
+        ? `${category.name} is organized into ${children.length} sub-categor${
+            children.length === 1 ? "y" : "ies"
+          } below — open one to see its calculators.`
+        : `Browse ${tools.length} ${category.name.toLowerCase()} calculator${
+            tools.length === 1 ? "" : "s"
+          } below. Each one runs instantly in your browser and gives you a clear, step-by-step breakdown of the result.`);
 
   return (
     <div>
@@ -159,11 +172,18 @@ export default async function ToolCategoryPage({
         </div>
       </div>
 
-      {children ? (
-        /* Sub-category grid — this category is a hub (Finance Calculators,
-           Tax Calculators, ...), not a place tools are filed directly, so
-           it browses down into its children instead of listing tools. */
+      {hasChildren ? (
+        /* Sub-category grid — this category is (at least partly) a hub,
+           browsing down into topic sub-categories. A category can ALSO have
+           its own directly-filed tools (see below), so this section gets a
+           heading whenever both are present, to make clear it's browsing
+           further rather than listing this category's own calculators. */
         <div className="mx-auto max-w-6xl px-4 py-10">
+          {hasTools ? (
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+              Browse by Topic
+            </h2>
+          ) : null}
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
             {children.map((child) => (
               <Link
@@ -172,9 +192,9 @@ export default async function ToolCategoryPage({
                 className="group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
               >
                 <div className="min-w-0">
-                  <h2 className="truncate text-sm font-semibold text-gray-900 group-hover:text-indigo-600 dark:text-gray-100">
+                  <h3 className="truncate text-sm font-semibold text-gray-900 group-hover:text-indigo-600 dark:text-gray-100">
                     {child.name}
-                  </h2>
+                  </h3>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     {child.toolCount} calculator{child.toolCount === 1 ? "" : "s"}
                   </p>
@@ -188,14 +208,10 @@ export default async function ToolCategoryPage({
               </Link>
             ))}
           </div>
-
-          {children.length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-gray-200 px-4 py-12 text-center text-gray-400 dark:border-gray-800">
-              Nothing here yet.
-            </p>
-          ) : null}
         </div>
-      ) : (
+      ) : null}
+
+      {hasTools ? (
         /* Tool card grid — deliberately small and icon-free: 4 across on a
            wide screen rather than 3, tight padding, and each card's own
            resting height (with whatever empty space that leaves) is left
@@ -203,8 +219,13 @@ export default async function ToolCategoryPage({
            positioned overlay that slides up from the bottom edge on hover,
            so it never adds height or pushes anything at rest. */
         <div className="mx-auto max-w-6xl px-4 py-10">
+          {hasChildren ? (
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+              {category.name} Calculators
+            </h2>
+          ) : null}
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {(tools ?? []).map((tool) => (
+            {tools.map((tool) => (
               <Link
                 key={tool.id}
                 href={`/tools/${tool.slug}`}
@@ -215,13 +236,13 @@ export default async function ToolCategoryPage({
                     Popular
                   </span>
                 ) : null}
-                <h2
+                <h3
                   className={`text-sm font-semibold text-gray-900 group-hover:text-indigo-600 dark:text-gray-100 ${
                     tool.isPopular ? "pr-16" : ""
                   }`}
                 >
                   {tool.title}
-                </h2>
+                </h3>
                 {tool.description ? (
                   <p className="mt-1 text-xs text-gray-500 line-clamp-2 dark:text-gray-400">
                     {tool.description}
@@ -236,14 +257,16 @@ export default async function ToolCategoryPage({
               </Link>
             ))}
           </div>
-
-          {(tools ?? []).length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-gray-200 px-4 py-12 text-center text-gray-400 dark:border-gray-800">
-              No calculators in this category yet.
-            </p>
-          ) : null}
         </div>
-      )}
+      ) : null}
+
+      {!hasChildren && !hasTools ? (
+        <div className="mx-auto max-w-6xl px-4 py-10">
+          <p className="rounded-2xl border border-dashed border-gray-200 px-4 py-12 text-center text-gray-400 dark:border-gray-800">
+            Nothing here yet.
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
