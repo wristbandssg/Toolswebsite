@@ -29,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/search-console", label: "Search Console" },
   { href: "/admin/media", label: "Media Library" },
   { href: "/admin/settings", label: "Website Settings" },
+  { href: "/admin/ad-settings", label: "Ad Settings" },
 ];
 
 export default function AdminSidebar() {

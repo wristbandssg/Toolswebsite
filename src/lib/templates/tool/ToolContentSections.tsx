@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import type { ToolTemplateProps } from "./types";
 import { StateCalculatorGrid } from "./StateCalculatorGrid";
+import AdSlot from "@/components/AdSlot";
 
 /** Instructions/Examples/Assumptions are authored with the same rich-text
  * editor as Blog posts (see admin ToolForm → RichTextEditor) and stored as
@@ -64,6 +65,8 @@ export function ToolContentSections({
       {tool.instructions ? (
         <AccordionSection title="About This Calculator" html={tool.instructions} />
       ) : null}
+
+      <AdSlot placement="tool_content_top" />
 
       {tool.examples ? (
         <section>
@@ -133,6 +136,8 @@ export function ToolContentSections({
           </ul>
         </section>
       ) : null}
+
+      <AdSlot placement="tool_content_bottom" />
     </div>
   );
 }

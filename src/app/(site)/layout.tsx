@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import type { MenuItem } from "@/lib/menu/types";
 import { getSiteGeneralSettings } from "@/lib/site-config";
+import AdSlot from "@/components/AdSlot";
 
 // Header/Footer/Mega Menu are data-driven from the `menus` table (Section 9:
 // Header/Footer/Mega Menu Builder) — always fetch fresh so admin edits show
@@ -117,7 +118,15 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         </div>
       </header>
 
+      <div className="mx-auto w-full max-w-6xl px-4">
+        <AdSlot placement="site_header_bottom" />
+      </div>
+
       <main className="flex-1">{children}</main>
+
+      <div className="mx-auto w-full max-w-6xl px-4">
+        <AdSlot placement="site_footer_top" />
+      </div>
 
       <footer className="border-t border-gray-200 py-10 text-sm text-gray-500 dark:border-gray-800">
         <div className="mx-auto max-w-6xl px-4">

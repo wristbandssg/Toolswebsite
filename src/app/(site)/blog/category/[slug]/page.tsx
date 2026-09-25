@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
 import CategoryHeroSlider from "@/components/CategoryHeroSlider";
+import AdSlot from "@/components/AdSlot";
 
 // ক্যাটাগরি পেজও সবসময় সর্বশেষ Published Post দেখাবে, তাই Blog List-এর মতোই
 // Build-time Static Prerender বন্ধ রাখা হলো।
@@ -132,6 +133,8 @@ export default async function BlogCategoryPage({
       </div>
 
       <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+        <AdSlot placement="blog_category_top" />
+
         {blogs.length === 0 ? (
           <p className="mt-10 rounded-2xl border border-dashed border-gray-200 px-6 py-16 text-center text-gray-400 dark:border-gray-800">
             এই ক্যাটাগরিতে এখনো কোনো Blog Post Publish হয়নি।
@@ -242,6 +245,8 @@ export default async function BlogCategoryPage({
                 </Link>
               </div>
             ) : null}
+
+            <AdSlot placement="blog_category_bottom" />
           </>
         )}
       </div>

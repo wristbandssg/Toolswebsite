@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata } from "@/lib/seo";
+import AdSlot from "@/components/AdSlot";
 
 // Always reflect the latest published tools for this category.
 export const dynamic = "force-dynamic";
@@ -172,6 +173,10 @@ export default async function ToolCategoryPage({
         </div>
       </div>
 
+      <div className="mx-auto max-w-6xl px-4">
+        <AdSlot placement="category_top" />
+      </div>
+
       {hasChildren ? (
         /* Sub-category grid — this category is (at least partly) a hub,
            browsing down into topic sub-categories. A category can ALSO have
@@ -267,6 +272,10 @@ export default async function ToolCategoryPage({
           </p>
         </div>
       ) : null}
+
+      <div className="mx-auto max-w-6xl px-4">
+        <AdSlot placement="category_bottom" />
+      </div>
     </div>
   );
 }
