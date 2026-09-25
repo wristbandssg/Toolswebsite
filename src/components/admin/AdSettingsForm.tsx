@@ -57,31 +57,26 @@ export default function AdSettingsForm({ initial }: { initial: AdSettings }) {
           <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-400 dark:text-gray-500">
             {group}
           </h2>
-          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {placements.map((def) => {
               const config = values[def.key] ?? { enabled: false, network: "adsterra" as AdNetwork, code: "" };
               return (
                 <section
                   key={def.key}
-                  className={`rounded-2xl border bg-white p-5 shadow-sm transition-colors dark:bg-gray-900 ${
+                  className={`rounded-xl border bg-white p-3.5 shadow-sm transition-colors dark:bg-gray-900 ${
                     config.enabled
                       ? "border-indigo-200 dark:border-indigo-900"
                       : "border-gray-200 dark:border-gray-800"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-                            config.enabled ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
-                          }`}
-                        />
-                        <h3 className="font-semibold">{def.label}</h3>
-                      </div>
-                      <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-                        {def.description}
-                      </p>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                          config.enabled ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
+                        }`}
+                      />
+                      <h3 className="text-sm font-semibold">{def.label}</h3>
                     </div>
 
                     <label className="relative inline-flex shrink-0 cursor-pointer items-center">
@@ -91,29 +86,31 @@ export default function AdSettingsForm({ initial }: { initial: AdSettings }) {
                         onChange={(e) => updatePlacement(def.key, { enabled: e.target.checked })}
                         className="peer sr-only"
                       />
-                      <div className="h-6 w-11 rounded-full bg-gray-200 transition-colors peer-checked:bg-indigo-600 dark:bg-gray-700" />
-                      <div className="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform peer-checked:translate-x-5" />
+                      <div className="h-5 w-9 rounded-full bg-gray-200 transition-colors peer-checked:bg-indigo-600 dark:bg-gray-700" />
+                      <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform peer-checked:translate-x-4" />
                     </label>
                   </div>
 
-                  <div className="mt-4 flex items-center gap-3">
-                    <select
-                      className="rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium dark:border-gray-700 dark:bg-gray-800"
-                      value={config.network}
-                      onChange={(e) => updatePlacement(def.key, { network: e.target.value as AdNetwork })}
-                    >
-                      {Object.entries(NETWORK_LABELS).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <p className="mt-1 line-clamp-2 text-xs leading-snug text-gray-500 dark:text-gray-400">
+                    {def.description}
+                  </p>
+
+                  <select
+                    className="mt-2.5 w-full rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs font-medium dark:border-gray-700 dark:bg-gray-800"
+                    value={config.network}
+                    onChange={(e) => updatePlacement(def.key, { network: e.target.value as AdNetwork })}
+                  >
+                    {Object.entries(NETWORK_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
 
                   <textarea
-                    rows={4}
+                    rows={3}
                     spellCheck={false}
-                    className="mt-3 w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 font-mono text-xs text-gray-700 focus:bg-white dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300 dark:focus:bg-gray-900"
+                    className="mt-2 w-full rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-1.5 font-mono text-[11px] leading-snug text-gray-700 focus:bg-white dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300 dark:focus:bg-gray-900"
                     placeholder="Paste the ad code for this placement..."
                     value={config.code}
                     onChange={(e) => updatePlacement(def.key, { code: e.target.value })}
