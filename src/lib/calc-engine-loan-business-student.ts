@@ -2,7 +2,7 @@
  * Batch: "Loan Calculators" sub-batch E (Business & Student Loans, 11
  * tools). Part of the Loan Calculators tool-list build-out — see
  * calc-engine-loan-core.ts for the full batch context, the skipped
- * duplicate (business-loan-calculator, which stays under Business Finance),
+ * duplicate (business-loan-calculator, since moved into Loan Calculators),
  * and the other 4 sub-batches.
  *
  * Each tool models what is specific to that kind of borrowing, so none of

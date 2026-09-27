@@ -19,7 +19,24 @@ export const dynamic = "force-dynamic";
 // assume it has no tools of its own: both sections render, each with its
 // own count-aware heading, whenever both exist.
 
-async function loadCategory(slug: string) {
+// How many tool cards a category page shows at first, and how many more
+// each "Load More" click adds. Big categories (the US state tax category
+// holds ~740 tools) would otherwise render every card at once. "Load More"
+// is a plain link to ?show=<n> rather than client-side fetching, so it
+// works without JavaScript and crawlers can follow it; the page's canonical
+// URL stays the bare category URL (see buildSeoMetadata), so the ?show
+// variants don't compete with it in search.
+const TOOLS_PAGE_SIZE = 48;
+
+function parseShowCount(raw: string | string[] | undefined): number {
+  const n = Number.parseInt(Array.isArray(raw) ? raw[0] : (raw ?? ""), 10);
+  if (!Number.isFinite(n) || n <= TOOLS_PAGE_SIZE) return TOOLS_PAGE_SIZE;
+  // Round up to a whole number of pages, and cap it so a hand-typed huge
+  // value can't ask for an absurd query.
+  return Math.min(Math.ceil(n / TOOLS_PAGE_SIZE) * TOOLS_PAGE_SIZE, 5000);
+}
+
+async function loadCategory(slug: string, showCount = TOOLS_PAGE_SIZE) {
   const category = await prisma.toolCategory.findUnique({
     where: { slug },
     include: { seoMeta: true },
@@ -51,25 +68,37 @@ async function loadCategory(slug: string) {
 
   // For each child, work out how many published tools sit anywhere in ITS
   // subtree (including further-nested grandchildren) for a meaningful count
-  // on the card.
-  const childrenWithCounts = await Promise.all(
-    children.map(async (child) => ({
-      id: child.id,
-      name: child.name,
-      slug: child.slug,
-      toolCount: await countPublishedToolsInSubtree(child.id),
-    }))
-  );
+  // on the card. Sub-categories with no published tools yet (created ahead
+  // of time so tools can be filed there later) are left off the public
+  // page rather than shown as empty "0 calculators" cards; they still
+  // appear in /admin/tools/categories.
+  const childrenWithCounts = (
+    await Promise.all(
+      children.map(async (child) => ({
+        id: child.id,
+        name: child.name,
+        slug: child.slug,
+        toolCount: await countPublishedToolsInSubtree(child.id),
+      }))
+    )
+  ).filter((child) => child.toolCount > 0);
 
   // A category's OWN directly-filed tools — fetched regardless of whether
   // it also has children, since a hub category (like "Tax Calculators") can
-  // now hold both sub-categories AND its own tools at the same time.
-  const tools = await prisma.tool.findMany({
-    where: { status: "published", categoryId: category.id },
-    orderBy: { title: "asc" },
-  });
+  // now hold both sub-categories AND its own tools at the same time. Only
+  // the first `showCount` are loaded; `toolCount` is the full total.
+  const toolWhere = { status: "published" as const, categoryId: category.id };
+  const [tools, toolCount] = await Promise.all([
+    prisma.tool.findMany({
+      where: toolWhere,
+      orderBy: { title: "asc" },
+      take: showCount,
+      select: { id: true, slug: true, title: true, description: true, isPopular: true },
+    }),
+    prisma.tool.count({ where: toolWhere }),
+  ]);
 
-  return { category, ancestors, children: childrenWithCounts, tools };
+  return { category, ancestors, children: childrenWithCounts, tools, toolCount };
 }
 
 /** Recursively sums published tools directly filed under `categoryId` and
@@ -107,15 +136,19 @@ export async function generateMetadata({
 
 export default async function ToolCategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { slug } = await params;
-  const data = await loadCategory(slug);
+  const showCount = parseShowCount((await searchParams).show);
+  const data = await loadCategory(slug, showCount);
   if (!data) notFound();
-  const { category, ancestors, children, tools } = data;
+  const { category, ancestors, children, tools, toolCount } = data;
   const hasChildren = children.length > 0;
-  const hasTools = tools.length > 0;
+  const hasTools = toolCount > 0;
+  const remaining = toolCount - tools.length;
 
   // Fallback copy for a category the admin hasn't filled the hero fields in
   // for yet — the page still reads well, and Edit → save on
@@ -134,13 +167,13 @@ export default async function ToolCategoryPage({
     category.heroDescription ||
     (hasChildren && hasTools
       ? `${category.name} has ${children.length} sub-categor${children.length === 1 ? "y" : "ies"} below, ` +
-        `plus ${tools.length} calculator${tools.length === 1 ? "" : "s"} filed directly in ${category.name}.`
+        `plus ${toolCount} calculator${toolCount === 1 ? "" : "s"} filed directly in ${category.name}.`
       : hasChildren
         ? `${category.name} is organized into ${children.length} sub-categor${
             children.length === 1 ? "y" : "ies"
           } below — open one to see its calculators.`
-        : `Browse ${tools.length} ${category.name.toLowerCase()} calculator${
-            tools.length === 1 ? "" : "s"
+        : `Browse ${toolCount} ${category.name.toLowerCase()} calculator${
+            toolCount === 1 ? "" : "s"
           } below. Each one runs instantly in your browser and gives you a clear, step-by-step breakdown of the result.`);
 
   return (
@@ -262,6 +295,20 @@ export default async function ToolCategoryPage({
               </Link>
             ))}
           </div>
+          {remaining > 0 ? (
+            <div className="mt-8 flex flex-col items-center gap-2">
+              <Link
+                href={`/tools/category/${category.slug}?show=${tools.length + TOOLS_PAGE_SIZE}`}
+                scroll={false}
+                className="rounded-lg border border-indigo-200 bg-white px-5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 dark:border-indigo-900 dark:bg-gray-900 dark:text-indigo-400 dark:hover:bg-gray-800"
+              >
+                Load More ({Math.min(remaining, TOOLS_PAGE_SIZE)} more)
+              </Link>
+              <p className="text-xs text-gray-400">
+                Showing {tools.length} of {toolCount} calculators
+              </p>
+            </div>
+          ) : null}
         </div>
       ) : null}
 

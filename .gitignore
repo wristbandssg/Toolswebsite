@@ -43,3 +43,6 @@ next-env.d.ts
 # database (SQLite dev db — don't ship real data)
 /prisma/dev.db
 /prisma/dev.db-journal
+
+# category reorganization backups (prisma/organize-tool-categories.ts)
+/prisma/backups/

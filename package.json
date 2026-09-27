@@ -146,7 +146,8 @@
     "db:create-philippines-tool": "tsx prisma/create-philippines-tax-tool.ts",
     "db:create-new-zealand-tool": "tsx prisma/create-new-zealand-tax-tool.ts",
     "db:create-singapore-tool": "tsx prisma/create-singapore-tax-tool.ts",
-    "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts"
+    "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
+    "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

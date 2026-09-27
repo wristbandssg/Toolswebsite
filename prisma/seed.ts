@@ -17,54 +17,76 @@ async function main() {
     },
   });
 
-  // Tool category
+  // Tool category — the sample Percentage Calculator lives under the "Math
+  // Calculators" main category (moved out of Finance on 27 Sep 2026, see
+  // organize-tool-categories.ts). Finance Calculators and its
+  // sub-categories are set up by reparent-tool-categories-under-finance.ts.
   const category = await prisma.toolCategory.upsert({
-    where: { slug: "finance" },
+    where: { slug: "math-calculators" },
     update: {},
     create: {
-      name: "Finance Calculators",
-      slug: "finance",
+      name: "Math Calculators",
+      slug: "math-calculators",
       templateKey: "category-template-1",
       viewStyle: "grid",
     },
   });
 
   // Sample tool: Percentage Calculator (Phase 2 end-to-end validation tool,
-  // matches the plan doc's own worked example in Section 10).
+  // matches the plan doc's own worked example in Section 10). Its copy was
+  // originally written in Bengali; public tool pages are English-only (see
+  // AI_RULES.md), so it was rewritten in English on 27 Sep 2026. The upsert
+  // applies the copy on UPDATE too, so re-running `npm run db:seed` fixes an
+  // existing database — status and category are only set on create, so an
+  // admin's choices for those are never overwritten.
+  const percentageContent = {
+    title: "Percentage Calculator",
+    description: "Find what percentage one number is of another — for example, what percent 25 is of 200.",
+    calcType: "expression" as const,
+    calcFormula: "(part / whole) * 100",
+    calcInputs: JSON.stringify([
+      { key: "part", label: "Part (the smaller amount)", type: "number", required: true, default: 25 },
+      { key: "whole", label: "Whole (the total amount)", type: "number", required: true, default: 200 },
+    ]),
+    calcResult: JSON.stringify({ label: "Percentage", unit: "%", format: "percentage" }),
+    instructions:
+      "<p>Enter the part (the amount you want to express as a percentage) and the whole (the total it's part " +
+      "of), then press Calculate. The result shows what percentage the part is of the whole.</p>" +
+      "<p>For example, use it to find a test score as a percentage, what share of your budget one expense takes " +
+      "up, or how much of a goal you've reached so far.</p>",
+    examples:
+      "<p>Example: if the part is 25 and the whole is 200, the result is 12.5% — 25 is 12.5% of 200.</p>" +
+      "<p>Example: scoring 42 out of 50 on a test is 84%.</p>",
+    assumptions:
+      "<p>Percentage = (part ÷ whole) × 100. The whole can't be 0. If the part is larger than the whole, the " +
+      "result is more than 100%.</p>",
+    faq: JSON.stringify([
+      {
+        question: "How do you calculate a percentage?",
+        answer: "Divide the part by the whole, then multiply by 100. For example, 25 ÷ 200 = 0.125, and 0.125 × 100 = 12.5%.",
+      },
+      {
+        question: "Can a percentage be more than 100%?",
+        answer: "Yes. If the part is bigger than the whole — for example, 250 out of 200 — the result is 125%.",
+      },
+    ]),
+  };
+  const percentageSeo = {
+    contentType: "tool",
+    metaTitle: "Percentage Calculator — Free & Instant",
+    metaDescription: "Free percentage calculator. Enter a part and a whole to find what percentage one number is of another, with the formula explained.",
+    schemaType: "SoftwareApplication",
+  };
   await prisma.tool.upsert({
     where: { slug: "percentage-calculator" },
-    update: {},
+    update: { ...percentageContent, seoMeta: { upsert: { create: percentageSeo, update: percentageSeo } } },
     create: {
       slug: "percentage-calculator",
-      title: "Percentage Calculator",
-      description: "যেকোনো দুইটা সংখ্যার Percentage সহজে বের করুন।",
       templateKey: "tool-template-1",
       status: "published",
       categoryId: category.id,
-      calcType: "expression",
-      calcFormula: "(part / whole) * 100",
-      calcInputs: JSON.stringify([
-        { key: "part", label: "Part", type: "number", required: true },
-        { key: "whole", label: "Whole", type: "number", required: true },
-      ]),
-      calcResult: JSON.stringify({ label: "Percentage", unit: "%", format: "percentage" }),
-      instructions:
-        "Part এবং Whole সংখ্যা দুটো দিন, তারপর Calculate বাটনে ক্লিক করুন — Part, Whole-এর শতকরা কত তা দেখাবে।",
-      examples: "উদাহরণ: Part = 25, Whole = 200 হলে Result হবে 12.5%।",
-      faq: JSON.stringify([
-        {
-          question: "Percentage কীভাবে Calculate হয়?",
-          answer: "Formula: (Part ÷ Whole) × 100",
-        },
-      ]),
-      seoMeta: {
-        create: {
-          contentType: "tool",
-          metaTitle: "Percentage Calculator — সহজে Percentage বের করুন",
-          metaDescription: "Free Online Percentage Calculator। যেকোনো দুইটা সংখ্যার Percentage সহজে বের করুন।",
-          schemaType: "SoftwareApplication",
-        },
-      },
+      ...percentageContent,
+      seoMeta: { create: percentageSeo },
     },
   });
 

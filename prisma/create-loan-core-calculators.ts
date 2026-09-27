@@ -2,7 +2,7 @@
 // of the "Loan Calculators" sub-batch A (Payment & Cost). Part of the Loan
 // Calculators tool-list build-out: 54 tools in the source list, 1 skipped
 // as a duplicate (business-loan-calculator, which already exists under
-// Business Finance and is left there), 53 built across 5 sub-batches, all
+// Business Finance, since moved into Loan Calculators), 53 built across 5 sub-batches, all
 // filed under Finance Calculators > Loan Calculators:
 //   create-loan-core-calculators.ts (this file, 11 tools)
 //   create-loan-solve-calculators.ts (10 tools)

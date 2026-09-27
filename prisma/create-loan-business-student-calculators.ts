@@ -4,7 +4,8 @@
 // create-loan-core-calculators.ts for the full batch context. This is the
 // last of the 5 sub-batches (54 tools in the source list; 53 built across
 // all 5). The one skipped duplicate, business-loan-calculator, already
-// exists under Business Finance and was left there.
+// existed under Business Finance and has since been moved into Loan
+// Calculators (see organize-tool-categories.ts).
 //
 // See src/lib/calc-engine-loan-business-student.ts for the math and for
 // notes on what each business/student tool models beyond the general

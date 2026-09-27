@@ -4,22 +4,33 @@
 
 ## ▶️ Resume here
 
-Just finished building 53 new "Loan Calculators" tools (5 sub-batches: Payment & Cost,
-Solve for Amount/Term/Rate/Balance, Payoff/Refinance/Structures, Loan Types/Personal/Auto,
-Business & Student), all filed under Finance Calculators › Loan Calculators
-(`loan-calculators`, already existed but was empty). From the user's 54-tool list, 1 was
-skipped as a duplicate: `business-loan-calculator` (already under Business Finance — left
-there; moving it into Loan Calculators was offered but the user didn't choose, so it
-wasn't moved). Code is in this project folder but **not yet
-committed or deployed** — the user runs the git push + 5 `db:create-loan-*` seed scripts
-themselves (command given in chat when the batch finished).
+Just added `prisma/organize-tool-categories.ts` (`npm run db:organize-categories`) to put
+every tool into the user's final category structure (27 Sep 2026):
 
-The previous Investment Calculators batch (42 tools) was committed by the user as
-c0105e9; whether its seed scripts have been run on the live database isn't known.
+- **Finance Calculators** → exactly 12 sub-categories: Loan, Mortgage, Interest,
+  Investment, Savings, Retirement, Tax, Credit & Debt, Salary & Income, Business Finance,
+  Real Estate, Currency & Exchange (empty ones are kept, ready for future tools).
+- **Tax Calculators** keeps the 12 country/state categories (UK, Canada, US states =
+  "Tax & Paycheck", ...) as a third level — the user chose this ("Plan B") because Tax
+  holds ~950 tools.
+- New main category **Math Calculators**, holding the sample percentage-calculator.
+- Extra empty categories added at the user's request, for future tool batches: under
+  Finance — Budget & Personal Finance, Insurance, Auto & Car, Crypto (so Finance has 16
+  sub-categories); new main categories — Health & Fitness, Date & Time, Unit Conversion.
+  Public category pages hide sub-categories with 0 published tools, so these stay
+  invisible to visitors until they have tools.
+- business-loan-calculator moved from Business Finance to Loan Calculators.
 
-Likely next step: user deploys the Loan batch, publishes the new Draft tools in
-/admin/tools, decides whether to move `business-loan-calculator` into Loan Calculators, or
-gives the next keyword/tool list (per `TOOL_BUILD_WORKFLOW.md`).
+The script is REPORT-ONLY by default; `-- --apply` makes the changes after writing a
+backup to `prisma/backups/` (git-ignored). It deletes only EMPTY categories outside the
+structure; any unknown category that still holds tools is left alone and listed for the
+user to decide. It also lists deleted category URLs (for redirects) and menu links that
+point at them. Tested against in-memory fake databases (report mode changes nothing,
+apply works, re-running is a no-op). Also added "Load More" to category pages (48 tools
+at a time) and rewrote the Percentage Calculator in English (applied to the live site by
+re-running `npm run db:seed`). **Not yet run on the live database** — next step:
+the user runs report mode and shares the output; after they OK it, they run `--apply`,
+then send the list of deleted category URLs so redirects can be added.
 
 ## What the project is
 
@@ -77,6 +88,12 @@ keep that file in mind.
   the database.
 - Default admin password (`ChangeMe123!`) is public in the seed script — change it before
   or soon after going live.
+- US state tax category ("Tax & Paycheck Calculators") holds ~740 tools and the category page
+  has no pagination or search, so it renders every card at once — consider adding
+  "load more"/search. — DONE 27 Sep 2026: "Load More" added (48 at a time); search not added.
+- The sample percentage-calculator has Bengali description/instructions/FAQ, which breaks
+  the English-only rule for public tool pages (AI_RULES.md) — rewrite in English. — DONE
+  27 Sep 2026 in seed.ts (takes effect on the live site once `npm run db:seed` is re-run).
 - *(Add new to-dos here as they come up. Don't delete finished ones — just note in the
   session log below that they're done.)*
 
@@ -141,3 +158,22 @@ keep that file in mind.
   confirmed SEO lengths and uniqueness, that every input affects the result, and that
   example numbers match the default inputs; `tsc`/`lint`/`build` clean. Not yet committed
   or deployed.
+- 2026-09-27: Category reorganization per user request. Added
+  `prisma/organize-tool-categories.ts` + `db:organize-categories` script (report mode by
+  default, `--apply` with automatic backup). Updated `seed.ts` (percentage-calculator now
+  seeds into "Math Calculators") and `create-finance-business-calculators.ts` (per-tool
+  category override puts business-loan-calculator in Loan Calculators) so re-running seeds
+  doesn't undo the reorganization. Added `/prisma/backups/` to .gitignore. No app/page code
+  changed; tool URLs don't include the category, so no tool link changes. `tsc`/`lint`/
+  `build` clean. Not yet run on the live database.
+- 2026-09-27: Three follow-ups to the category reorganization, all requested by the user:
+  (1) "Load More" on `/tools/category/[slug]` — shows 48 tools, then a crawlable
+  `?show=<n>` link adds 48 more (canonical stays the bare category URL); the page now
+  fetches only the fields its cards need and hides sub-category cards with 0 published
+  tools. (2) Percentage Calculator rewritten in English in `seed.ts` (description,
+  instructions, examples, new assumptions, 2 FAQs, meta title/description); its upsert now
+  applies that copy on update too, but never changes status or category. (3) Added 4
+  empty Finance sub-categories (Budget & Personal Finance, Insurance, Auto & Car, Crypto)
+  and 3 empty main categories (Health & Fitness, Date & Time, Unit Conversion) to
+  `organize-tool-categories.ts`; re-tested against a fake database. `tsc`/`lint`/`build`
+  clean. Couldn't test the category page against real data (no database access here).
