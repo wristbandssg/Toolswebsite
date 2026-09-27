@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "db:push": "prisma db push",
+    "db:seo-audit": "tsx prisma/seo-audit.ts",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
