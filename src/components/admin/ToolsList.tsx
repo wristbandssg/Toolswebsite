@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { CategoryOptionGroup } from "@/lib/flattenCategoryTree";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Draft",
@@ -36,7 +37,7 @@ export default function ToolsList({
   categories,
 }: {
   tools: ToolRow[];
-  categories: { id: string; name: string }[];
+  categories: CategoryOptionGroup[];
 }) {
   const router = useRouter();
   const [tools, setTools] = useState(initialTools);
@@ -132,10 +133,14 @@ export default function ToolsList({
           className="shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
         >
           <option value="all">All Categories</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
+          {categories.map((group) => (
+            <optgroup key={group.label} label={group.label}>
+              {group.options.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
         {hasActiveFilters ? (

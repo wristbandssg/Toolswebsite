@@ -14,11 +14,17 @@ every tool into the user's final category structure (27 Sep 2026):
   "Tax & Paycheck", ...) as a third level — the user chose this ("Plan B") because Tax
   holds ~950 tools.
 - New main category **Math Calculators**, holding the sample percentage-calculator.
-- Extra empty categories added at the user's request, for future tool batches: under
-  Finance — Budget & Personal Finance, Insurance, Auto & Car, Crypto (so Finance has 16
-  sub-categories); new main categories — Health & Fitness, Date & Time, Unit Conversion.
-  Public category pages hide sub-categories with 0 published tools, so these stay
-  invisible to visitors until they have tools.
+- **Every category with no tools (in it or beneath it, drafts count) is deleted** — the
+  user's rule — including one of the 12 sub-categories if it's still empty, and a missing
+  one isn't created empty. (7 extra empty categories — Budget, Insurance, Auto & Car,
+  Crypto, Health & Fitness, Date & Time, Unit Conversion — were briefly added, then dropped
+  at the user's request.) NOTE for future batches: a `create-*-calculators.ts` script
+  whose category was deleted will ask you to run `db:setup-finance-categories`, which
+  re-creates ALL the standard sub-categories empty — run `db:organize-categories -- --apply`
+  again after the new tools are in, to clear out any that are still empty.
+- Admin category dropdowns (tool form + tools list filter) now group sub-categories under
+  their main category using <optgroup> headings (`groupCategoryTree` in
+  `src/lib/flattenCategoryTree.ts`).
 - business-loan-calculator moved from Business Finance to Loan Calculators.
 
 The script is REPORT-ONLY by default; `-- --apply` makes the changes after writing a
@@ -177,3 +183,13 @@ keep that file in mind.
   and 3 empty main categories (Health & Fitness, Date & Time, Unit Conversion) to
   `organize-tool-categories.ts`; re-tested against a fake database. `tsc`/`lint`/`build`
   clean. Couldn't test the category page against real data (no database access here).
+- 2026-09-27: Per the user: (1) the admin "Choose a category" dropdown in the tool form and
+  the category filter on the tools list now show each main category as an <optgroup>
+  heading with its sub-categories (and country folders, indented with "›") inside —
+  `groupCategoryTree` replaced the old `flattenCategoryTree` helper, which was removed.
+  (2) Dropped the 7 extra empty categories from `organize-tool-categories.ts`. (3) That
+  script now deletes EVERY category with no tools in its subtree (drafts count), not just
+  unknown ones, and never creates a category empty (only when a tool is moved into it).
+  Re-tested against a fake database (empty extras, an empty standard sub-category and an
+  empty country folder all deleted; no tool loses its category; re-run is a no-op).
+  `tsc`/`lint`/`build` clean. Still not run on the live database.

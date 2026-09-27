@@ -17,23 +17,21 @@
 //     +- Business Finance Calculators
 //     +- Real Estate Calculators
 //     +- Currency & Exchange Calculators
-//     +- Budget & Personal Finance Calculators   (new, empty for now)
-//     +- Insurance Calculators                   (new, empty for now)
-//     +- Auto & Car Calculators                  (new, empty for now)
-//     +- Crypto Calculators                      (new, empty for now)
 //   Math Calculators (main category, new — home of percentage-calculator)
-//   Health & Fitness Calculators (main category, new, empty for now)
-//   Date & Time Calculators (main category, new, empty for now)
-//   Unit Conversion Calculators (main category, new, empty for now)
-//
-// The "new, empty for now" categories were added at the user's request as
-// homes for future tool batches. Empty categories are hidden from public
-// category pages until they have a published tool (see
-// src/app/(site)/tools/category/[slug]/page.tsx).
 //
 // Plus two tool moves the user asked for: business-loan-calculator from
 // Business Finance to Loan Calculators, and the original sample
 // percentage-calculator (filed directly under Finance) to Math Calculators.
+//
+// EMPTY CATEGORIES ARE DELETED. Per the user (27 Sep 2026), any category
+// with no tools in it or anywhere beneath it is removed — including one of
+// the sub-categories listed above if it has no tools yet — and a missing
+// sub-category is not created empty. A category is only created when a tool
+// is moved into it. (A few extra empty categories — Budget, Insurance, Auto
+// & Car, Crypto, Health & Fitness, Date & Time, Unit Conversion — were
+// briefly part of this list and were dropped at the user's request; the
+// cleanup below removes them if they were ever created.) Tools in any
+// status, drafts included, count — a category holding only drafts is kept.
 //
 // SAFE BY DEFAULT
 //   npm run db:organize-categories            -> REPORT ONLY, changes nothing
@@ -45,8 +43,8 @@
 // What it will NOT do on its own: guess where a tool from an unknown
 // category belongs. Any category outside the taxonomy that still holds
 // tools (e.g. one created by hand in /admin) is left in place and listed in
-// the report, so the user can decide. Only EMPTY unknown categories are
-// deleted. Menu links pointing at a deleted category page are listed too.
+// the report, so the user can decide. Menu links pointing at a deleted
+// category page are listed too.
 //
 // Tool URLs (/tools/<slug>) don't include the category, so moving a tool
 // never changes its link. A deleted category's own page
@@ -75,10 +73,6 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Business Finance Calculators", slug: "business-finance-calculators" },
   { name: "Real Estate Calculators", slug: "real-estate-calculators" },
   { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
-  { name: "Budget & Personal Finance Calculators", slug: "budget-personal-finance-calculators" },
-  { name: "Insurance Calculators", slug: "insurance-calculators" },
-  { name: "Auto & Car Calculators", slug: "auto-car-calculators" },
-  { name: "Crypto Calculators", slug: "crypto-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a
@@ -99,12 +93,7 @@ const TAX_COUNTRY_SLUGS = [
 ];
 
 // Top-level categories besides Finance Calculators.
-const OTHER_MAIN_CATEGORIES: { name: string; slug: string }[] = [
-  { name: "Math Calculators", slug: "math-calculators" },
-  { name: "Health & Fitness Calculators", slug: "health-fitness-calculators" },
-  { name: "Date & Time Calculators", slug: "date-time-calculators" },
-  { name: "Unit Conversion Calculators", slug: "unit-conversion-calculators" },
-];
+const OTHER_MAIN_CATEGORIES: { name: string; slug: string }[] = [{ name: "Math Calculators", slug: "math-calculators" }];
 
 // tool slug -> category slug it must end up in.
 const TOOL_MOVES: Record<string, string> = {
@@ -141,9 +130,13 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
   let fakeId = 0;
   const bySlug = () => new Map(cats.map((c) => [c.slug, c]));
 
-  async function ensureCategory(name: string, slug: string, parentId: string | null): Promise<Cat> {
+  // Makes sure a category exists with this name and parent. A missing one is
+  // only created when `createIfMissing` is set — i.e. when something is
+  // about to be filed in it — so no empty categories are ever created.
+  async function ensureCategory(name: string, slug: string, parentId: string | null, createIfMissing: boolean): Promise<Cat | null> {
     const existing = bySlug().get(slug);
     if (!existing) {
+      if (!createIfMissing) return null;
       log(`${would}CREATE category "${name}" (${slug})`);
       const created: Cat = APPLY
         ? await prisma.toolCategory.create({
@@ -169,27 +162,42 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
     return existing;
   }
 
+  // Categories that must exist because a tool is about to be moved into them.
+  const moveTargets = new Set(
+    Object.entries(TOOL_MOVES)
+      .filter(([toolSlug]) => tools.some((t) => t.slug === toolSlug))
+      .map(([, catSlug]) => catSlug)
+  );
+  const anyCountryExists = TAX_COUNTRY_SLUGS.some((s) => bySlug().has(s));
+
   // 1. Main categories and their sub-categories.
   const financeExisting = FINANCE_SLUGS.map((s) => bySlug().get(s)).find(Boolean);
-  const finance = await ensureCategory(FINANCE_NAME, financeExisting?.slug ?? "finance-calculators", null);
+  const finance = (await ensureCategory(FINANCE_NAME, financeExisting?.slug ?? "finance-calculators", null, true))!;
   const otherMains: Cat[] = [];
-  for (const main of OTHER_MAIN_CATEGORIES) otherMains.push(await ensureCategory(main.name, main.slug, null));
+  for (const main of OTHER_MAIN_CATEGORIES) {
+    const c = await ensureCategory(main.name, main.slug, null, moveTargets.has(main.slug));
+    if (c) otherMains.push(c);
+  }
   const subBySlug = new Map<string, Cat>();
-  for (const sub of FINANCE_SUBCATEGORIES) subBySlug.set(sub.slug, await ensureCategory(sub.name, sub.slug, finance.id));
-  const tax = subBySlug.get("tax-calculators")!;
+  for (const sub of FINANCE_SUBCATEGORIES) {
+    const needed = moveTargets.has(sub.slug) || (sub.slug === "tax-calculators" && anyCountryExists);
+    const c = await ensureCategory(sub.name, sub.slug, finance.id, needed);
+    if (c) subBySlug.set(sub.slug, c);
+  }
+  const tax = subBySlug.get("tax-calculators");
   for (const slug of TAX_COUNTRY_SLUGS) {
     const c = bySlug().get(slug);
-    if (c) await ensureCategory(c.name, slug, tax.id);
+    if (c && tax) await ensureCategory(c.name, slug, tax.id, false);
   }
 
   // 2. The requested tool moves.
   for (const [toolSlug, catSlug] of Object.entries(TOOL_MOVES)) {
     const tool = tools.find((t) => t.slug === toolSlug);
-    const target = bySlug().get(catSlug)!;
     if (!tool) {
       log(`(tool ${toolSlug} not in the database — nothing to move)`);
       continue;
     }
+    const target = bySlug().get(catSlug)!;
     if (tool.categoryId === target.id) continue;
     const from = cats.find((c) => c.id === tool.categoryId)?.name ?? "no category";
     log(`${would}MOVE tool "${tool.title}" from "${from}" to "${target.name}"`);
@@ -205,14 +213,15 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
   }
   const unplaced = tools.filter((t) => !t.categoryId || !allowed.has(t.categoryId) || t.categoryId === finance.id);
 
-  // 4. Delete every category outside the taxonomy that ends up empty
-  //    (children first, repeating until nothing more can go).
+  // 4. Delete every category that ends up with no tools in it or beneath it
+  //    — whether or not it's part of the taxonomy — children first,
+  //    repeating until nothing more can go.
   const deleted: Cat[] = [];
   const keptUnknown: Cat[] = [];
   let progress = true;
   while (progress) {
     progress = false;
-    for (const c of cats.filter((c) => !allowed.has(c.id))) {
+    for (const c of [...cats]) {
       const hasTools = tools.some((t) => t.categoryId === c.id);
       const hasChildren = cats.some((k) => k.parentId === c.id);
       if (hasTools || hasChildren) continue;

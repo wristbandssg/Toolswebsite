@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
-import { flattenCategoryTree } from "@/lib/flattenCategoryTree";
+import { groupCategoryTree } from "@/lib/flattenCategoryTree";
 
 export default async function NewToolPage() {
   const categories = await prisma.toolCategory.findMany({ orderBy: { name: "asc" } });
@@ -12,7 +12,7 @@ export default async function NewToolPage() {
         Create a tool and set its template, calculation logic, and content.
       </p>
       <div className="mt-6">
-        <ToolForm mode="create" categories={flattenCategoryTree(categories)} />
+        <ToolForm mode="create" categories={groupCategoryTree(categories)} />
       </div>
     </div>
   );

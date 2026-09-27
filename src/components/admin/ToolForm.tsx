@@ -7,6 +7,7 @@ import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/l
 import { TOOL_TEMPLATES } from "@/lib/templates/registry";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import RichTextEditor from "./RichTextEditor";
+import type { CategoryOptionGroup } from "@/lib/flattenCategoryTree";
 
 export interface ToolFormValues {
   slug: string;
@@ -87,7 +88,7 @@ export default function ToolForm({
 }: {
   mode: "create" | "edit";
   initial?: Partial<ToolFormValues>;
-  categories: { id: string; name: string }[];
+  categories: CategoryOptionGroup[];
 }) {
   const router = useRouter();
   const [values, setValues] = useState<ToolFormValues>({ ...EMPTY, ...initial });
@@ -337,10 +338,14 @@ export default function ToolForm({
             onChange={(e) => update("categoryId", e.target.value)}
           >
             <option value="">-- None --</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
+            {categories.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.options.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </label>
