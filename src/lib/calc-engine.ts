@@ -255,6 +255,9 @@ import { financeCurrencyCustomCalculators } from "./calc-engine-finance-currency
 import { financeInvestmentCustomCalculators } from "./calc-engine-finance-investment";
 import { financeRetirementCustomCalculators } from "./calc-engine-finance-retirement";
 import { financeSavingsCustomCalculators } from "./calc-engine-finance-savings";
+import { mortgageCoreCustomCalculators } from "./calc-engine-mortgage-core";
+import { mortgagePaymentStrategiesCustomCalculators } from "./calc-engine-mortgage-payment-strategies";
+import { mortgageRefinanceProgramsCustomCalculators } from "./calc-engine-mortgage-refinance-programs";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -324,6 +327,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...financeInvestmentCustomCalculators,
   ...financeRetirementCustomCalculators,
   ...financeSavingsCustomCalculators,
+  ...mortgageCoreCustomCalculators,
+  ...mortgagePaymentStrategiesCustomCalculators,
+  ...mortgageRefinanceProgramsCustomCalculators,
 };
 
 export function runCalculator(
