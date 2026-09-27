@@ -92,6 +92,85 @@
  *    Tax, Real Property Tax (national statutory caps only, LGU rates
  *    vary), Dividend Tax, and Self Employed Tax comparing the 8% flat
  *    option against graduated rates + percentage tax)
+ *  - calc-engine-us-estate-inheritance-gift.ts — 18 US state tools under
+ *    the existing "Tax & Paycheck Calculators" category, first batch of
+ *    the 50-state audit (see state_tax_audit.xlsx, delivered 27 Sep 2026):
+ *    Gift Tax (Connecticut, the only US state with one), Inheritance Tax
+ *    (Kentucky, Maryland, Nebraska, New Jersey, Pennsylvania), and Estate
+ *    Tax (Connecticut, Hawaii, Illinois, Maine, Maryland, Massachusetts,
+ *    Minnesota, New York, Oregon, Rhode Island, Vermont, Washington) — see
+ *    that file's header for the disclosed graduated-schedule approximation
+ *    (`graduatedEstimate`) used throughout, since the audit only confirmed
+ *    each schedule's low/high rate, not every bracket edge
+ *  - calc-engine-us-capital-gains-extended.ts — 6 US state Capital Gains
+ *    Tax tools, second batch of the 50-state audit: Washington (unique
+ *    excise tax), Hawaii (7.25% cap), Massachusetts (short/long-term
+ *    split + surtax), Montana (distinct lower brackets), Maryland (new 2%
+ *    surcharge above $350k AGI, layered on ordinary tax), and Missouri
+ *    (honest $0 tool — first US state ever to repeal individual CGT)
+ *  - calc-engine-us-payroll-tax-extended.ts — 15 US state "Payroll Tax"
+ *    tools, third batch of the 50-state audit: every state with a genuine
+ *    state-level payroll premium beyond ordinary withholding and SUTA
+ *    (paid-family-leave/TDI/SDI-style programs) — AK, CA, CO, CT, DE, HI,
+ *    ME, MA, MN, NJ, NY, OR, RI, VT, WA. Maryland's FAMLI is enacted but
+ *    not yet collecting (delayed to 2027) so deliberately not built yet.
+ *  - calc-engine-us-other-business-tax.ts — 16 US state "Business Tax"
+ *    tools, fourth batch of the 50-state audit: a SECOND state-level
+ *    business levy beyond the corporate tax (franchise/gross-receipts/
+ *    net-worth/severance taxes) — AL, AR, CA, DE, GA, IL, KY, MA, MN, MS,
+ *    NV, NH, NC, OR, SC, WV
+ *  - calc-engine-us-transfer-tax.ts — 29 US state "Real Estate Transfer
+ *    Tax" tools (the US equivalent of "stamp duty"), fifth batch of the
+ *    50-state audit — every state with a genuine state-level transfer/
+ *    conveyance/deed/mansion tax
+ *  - calc-engine-us-corporate-tax.ts — 50 US state "Corporate Tax" tools,
+ *    sixth batch of the 50-state audit, one per state including the states
+ *    with no traditional corporate income tax (Nevada Commerce Tax, Ohio
+ *    CAT, Texas Franchise/Margin Tax, Washington B&O — all genuine
+ *    gross-receipts/margin substitutes) and the two states with no
+ *    state-level business income tax of any kind (South Dakota, Wyoming —
+ *    honest $0 tools, the "Missouri capital gains" precedent)
+ *  - calc-engine-us-sales-tax.ts — 50 US state "Sales Tax" tools, seventh
+ *    batch of the 50-state audit, one per state including the 4 states
+ *    with genuinely no state-level general sales tax (Delaware, Montana,
+ *    New Hampshire, Oregon — honest $0 tools), Alaska (no state rate but a
+ *    real average local rate), and the two states whose closest analog is
+ *    a different kind of levy (Hawaii's General Excise Tax, New Mexico's
+ *    Gross Receipts Tax) disclosed plainly as such rather than mislabeled
+ *  - calc-engine-us-property-tax.ts — 50 US state "Property Tax" tools,
+ *    eighth batch of the 50-state audit, one per state, using each state's
+ *    published average EFFECTIVE property tax rate (property tax paid as a
+ *    % of value) since property tax is overwhelmingly local/county-set in
+ *    the US with no single exact state rate — assumptions text discloses
+ *    this plainly, with extra notes for the handful of states with a
+ *    genuine small state-level component (Kentucky, Maryland, New
+ *    Hampshire's SWEPT, Vermont's state-set town rates, Washington's State
+ *    School Levy)
+ *  - calc-engine-us-suta.ts — 50 US state "Unemployment Tax" (SUTA) tools,
+ *    ninth batch of the 50-state audit, one per state: taxable wage base x
+ *    new-employer rate, per employee. Colorado/Michigan/Nebraska
+ *    (standard vs. construction), Mississippi (rate by employer year),
+ *    North Dakota (positive- vs. negative-balance), and Wisconsin (payroll
+ *    threshold) use a dropdown for their confirmed 2/3-way rate split; New
+ *    Jersey is the only state that also charges SUTA to employees, so its
+ *    tool returns a two-line employer/employee breakdown
+ *  - calc-engine-us-income-tax-rates.ts — shared state income-tax rate
+ *    table (each of the 41 income-tax states' confirmed flat/top marginal
+ *    rate) and marginal/effective/total-tax estimator math, used by all 14
+ *    files below. Per an explicit user decision (27 Sep 2026), this final
+ *    "income-tax-derived family" batch (tenth and last batch of the
+ *    50-state audit, 41 states x 14 SEO-angle variants = 574 tools) uses
+ *    this SIMPLIFIED REPRESENTATIVE RATE approach rather than refactoring
+ *    the existing 4000+ line calc-engine-us.ts to export its exact
+ *    bracket tables — every tool built from it discloses this in its
+ *    Assumptions text
+ *  - calc-engine-us-tax-bracket.ts / -marginal-tax-rate.ts /
+ *    -effective-tax-rate.ts / -tax-liability.ts / -tax-refund.ts /
+ *    -taxable-income.ts / -tax-withholding.ts / -withholding-tax.ts /
+ *    -bonus-tax.ts / -overtime-tax.ts / -commission-tax.ts /
+ *    -freelance-tax.ts / -contractor-tax.ts / -estimated-quarterly-tax.ts
+ *    — the 14 income-tax-derived family variants (41 tools each, one per
+ *    income-tax state), all built on calc-engine-us-income-tax-rates.ts
  * Adding a new country means adding one more calc-engine-<country>.ts file
  * and one more line below merging its map in — no existing country's file
  * is touched.
@@ -139,6 +218,29 @@ import { indiaExtendedCustomCalculators } from "./calc-engine-india-extended-cal
 import { hongKongExtendedCustomCalculators } from "./calc-engine-hongkong-extended-calculators";
 import { malaysiaExtendedCustomCalculators } from "./calc-engine-malaysia-extended-calculators";
 import { philippinesExtendedCustomCalculators } from "./calc-engine-philippines-extended-calculators";
+import { usEstateInheritanceGiftCustomCalculators } from "./calc-engine-us-estate-inheritance-gift";
+import { usCapitalGainsExtendedCustomCalculators } from "./calc-engine-us-capital-gains-extended";
+import { usPayrollTaxExtendedCustomCalculators } from "./calc-engine-us-payroll-tax-extended";
+import { usOtherBusinessTaxCustomCalculators } from "./calc-engine-us-other-business-tax";
+import { usTransferTaxCustomCalculators } from "./calc-engine-us-transfer-tax";
+import { usCorporateTaxCustomCalculators } from "./calc-engine-us-corporate-tax";
+import { usSalesTaxCustomCalculators } from "./calc-engine-us-sales-tax";
+import { usPropertyTaxCustomCalculators } from "./calc-engine-us-property-tax";
+import { usSutaCustomCalculators } from "./calc-engine-us-suta";
+import { usTaxBracketCustomCalculators } from "./calc-engine-us-tax-bracket";
+import { usMarginalTaxRateCustomCalculators } from "./calc-engine-us-marginal-tax-rate";
+import { usEffectiveTaxRateCustomCalculators } from "./calc-engine-us-effective-tax-rate";
+import { usTaxLiabilityCustomCalculators } from "./calc-engine-us-tax-liability";
+import { usTaxRefundCustomCalculators } from "./calc-engine-us-tax-refund";
+import { usTaxableIncomeCustomCalculators } from "./calc-engine-us-taxable-income";
+import { usTaxWithholdingCustomCalculators } from "./calc-engine-us-tax-withholding";
+import { usWithholdingTaxCustomCalculators } from "./calc-engine-us-withholding-tax";
+import { usBonusTaxCustomCalculators } from "./calc-engine-us-bonus-tax";
+import { usOvertimeTaxCustomCalculators } from "./calc-engine-us-overtime-tax";
+import { usCommissionTaxCustomCalculators } from "./calc-engine-us-commission-tax";
+import { usFreelanceTaxCustomCalculators } from "./calc-engine-us-freelance-tax";
+import { usContractorTaxCustomCalculators } from "./calc-engine-us-contractor-tax";
+import { usEstimatedQuarterlyTaxCustomCalculators } from "./calc-engine-us-estimated-quarterly-tax";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -177,6 +279,29 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...hongKongExtendedCustomCalculators,
   ...malaysiaExtendedCustomCalculators,
   ...philippinesExtendedCustomCalculators,
+  ...usEstateInheritanceGiftCustomCalculators,
+  ...usCapitalGainsExtendedCustomCalculators,
+  ...usPayrollTaxExtendedCustomCalculators,
+  ...usOtherBusinessTaxCustomCalculators,
+  ...usTransferTaxCustomCalculators,
+  ...usCorporateTaxCustomCalculators,
+  ...usSalesTaxCustomCalculators,
+  ...usPropertyTaxCustomCalculators,
+  ...usSutaCustomCalculators,
+  ...usTaxBracketCustomCalculators,
+  ...usMarginalTaxRateCustomCalculators,
+  ...usEffectiveTaxRateCustomCalculators,
+  ...usTaxLiabilityCustomCalculators,
+  ...usTaxRefundCustomCalculators,
+  ...usTaxableIncomeCustomCalculators,
+  ...usTaxWithholdingCustomCalculators,
+  ...usWithholdingTaxCustomCalculators,
+  ...usBonusTaxCustomCalculators,
+  ...usOvertimeTaxCustomCalculators,
+  ...usCommissionTaxCustomCalculators,
+  ...usFreelanceTaxCustomCalculators,
+  ...usContractorTaxCustomCalculators,
+  ...usEstimatedQuarterlyTaxCustomCalculators,
 };
 
 export function runCalculator(
