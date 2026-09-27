@@ -4,18 +4,22 @@
 
 ## ▶️ Resume here
 
-Just finished building 42 new "Investment Calculators" tools (4 sub-batches: Returns,
-Growth/Goals/Time Value, Stocks & Dividends, Portfolio/Fees/Inflation), all filed under
-Finance Calculators › Investment Calculators (`investment-calculators`, already existed).
-6 tools from the user's 48-tool list were skipped as duplicates (investment, CAGR,
-dollar-cost averaging, stock profit, dividend — all already in Investment Calculators —
-and ROI, already in Business Finance). Code is in this project folder but **not yet
-committed or deployed** — the user runs the git push + 4 `db:create-investment-*` seed
-scripts themselves (command given in chat when the batch finished).
+Just finished building 53 new "Loan Calculators" tools (5 sub-batches: Payment & Cost,
+Solve for Amount/Term/Rate/Balance, Payoff/Refinance/Structures, Loan Types/Personal/Auto,
+Business & Student), all filed under Finance Calculators › Loan Calculators
+(`loan-calculators`, already existed but was empty). From the user's 54-tool list, 1 was
+skipped as a duplicate: `business-loan-calculator` (already under Business Finance — left
+there; moving it into Loan Calculators was offered but the user didn't choose, so it
+wasn't moved). Code is in this project folder but **not yet
+committed or deployed** — the user runs the git push + 5 `db:create-loan-*` seed scripts
+themselves (command given in chat when the batch finished).
 
-Likely next step: user deploys the Investment Calculators batch (and the Interest batch,
-if not done yet), publishes the new Draft tools in /admin/tools, or gives a new
-keyword/tool list for the next batch (per `TOOL_BUILD_WORKFLOW.md`).
+The previous Investment Calculators batch (42 tools) was committed by the user as
+c0105e9; whether its seed scripts have been run on the live database isn't known.
+
+Likely next step: user deploys the Loan batch, publishes the new Draft tools in
+/admin/tools, decides whether to move `business-loan-calculator` into Loan Calculators, or
+gives the next keyword/tool list (per `TOOL_BUILD_WORKFLOW.md`).
 
 ## What the project is
 
@@ -121,3 +125,19 @@ keep that file in mind.
   independent reference implementation (plain Node.js — Python isn't installed on this PC):
   170 checks, 0 failures; SEO meta lengths/uniqueness checked; `tsc`/`lint`/`build` clean.
   Not yet committed or deployed.
+- 2026-09-27: Built the "Loan Calculators" batch from the user's 54-tool list: 53 new tools
+  across 5 self-contained sub-batches — `calc-engine-loan-core.ts` (11), `-solve.ts` (10),
+  `-payoff-refinance.ts` (11), `-types.ts` (10), `-business-student.ts` (11), each with a
+  matching `prisma/create-loan-*-calculators.ts` seed script and `db:create-loan-*` line in
+  `package.json`. 1 skipped as a duplicate (business-loan-calculator). This list had the
+  heaviest near-duplicate risk so far (about a dozen tools share the amortizing payment
+  formula), so each tool models something specific — e.g. EMI in rupees, Auto Loan with
+  trade-in and sales tax, Student Loan with in-school interest and grace period, Business
+  Loan APR as factor rate to APR, Loan Prepayment comparing "reduce term" vs "reduce
+  payment" (see each engine file's header). The two EMI tools output INR (`currency:
+  "INR"`). The widget formats plain numbers with thousands separators, so no tool outputs
+  a calendar year. Formulas cross-checked against an independent month-by-month
+  simulation plus Newton-method solver in Node.js: 234 checks, 0 failures; content check
+  confirmed SEO lengths and uniqueness, that every input affects the result, and that
+  example numbers match the default inputs; `tsc`/`lint`/`build` clean. Not yet committed
+  or deployed.
