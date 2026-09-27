@@ -4,21 +4,18 @@
 
 ## ▶️ Resume here
 
-Just added `TOOL_BUILD_WORKFLOW.md` (the standing keyword-to-built-batch pipeline —
-read it before building any new tool batch) and `SEO_CHECKLIST.md` +
-`prisma/seo-audit.ts` (a real, runnable SEO error checker — `npm run db:seo-audit`).
-No app code changed by this.
+Just finished building 42 new "Investment Calculators" tools (4 sub-batches: Returns,
+Growth/Goals/Time Value, Stocks & Dividends, Portfolio/Fees/Inflation), all filed under
+Finance Calculators › Investment Calculators (`investment-calculators`, already existed).
+6 tools from the user's 48-tool list were skipped as duplicates (investment, CAGR,
+dollar-cost averaging, stock profit, dividend — all already in Investment Calculators —
+and ROI, already in Business Finance). Code is in this project folder but **not yet
+committed or deployed** — the user runs the git push + 4 `db:create-investment-*` seed
+scripts themselves (command given in chat when the batch finished).
 
-Before that: finished building all 31 new "Interest Calculators" tools (3 sub-batches:
-Core/Compounding & Simple Interest, Rate Conversions, and Contributions/Withdrawals &
-Analysis). Code is committed into this project folder but **not yet deployed** — the
-user still needs to run the git push + db-seed command themselves (it was given to them
-in chat when the batch finished).
-
-Likely next step: user deploys the Interest Calculators batch, runs the new SEO audit
-script once to get a baseline, or gives a new keyword/topic for the next tool batch
-(per `TOOL_BUILD_WORKFLOW.md`, that's now all the input needed — no more back-and-forth
-on duplicates/categories before building).
+Likely next step: user deploys the Investment Calculators batch (and the Interest batch,
+if not done yet), publishes the new Draft tools in /admin/tools, or gives a new
+keyword/tool list for the next batch (per `TOOL_BUILD_WORKFLOW.md`).
 
 ## What the project is
 
@@ -113,3 +110,14 @@ keep that file in mind.
   too-long, too-short, or duplicated meta titles/descriptions, plus a couple of
   structured-data/canonical-URL warnings). `tsc`/`lint`/`build` all clean; no other app
   code changed.
+- 2026-09-27: Built the "Investment Calculators" batch from the user's 48-tool list: 42
+  new tools across 4 self-contained sub-batches — `calc-engine-investment-returns.ts` (11),
+  `-planning.ts` (10), `-stocks-dividends.ts` (9), `-portfolio-fees.ts` (12), each with a
+  matching `prisma/create-investment-*-calculators.ts` seed script and `db:create-investment-*`
+  line in `package.json`. 6 skipped as exact-slug duplicates (listed in Resume here).
+  Near-namesake tools deliberately differentiated (see each engine file's header), e.g.
+  Stock Cost Basis (FIFO/LIFO/average, no tax) vs the Tax category's Capital Gains Cost
+  Basis, Annualized Return (years+months+days) vs CAGR. Formulas cross-checked against an
+  independent reference implementation (plain Node.js — Python isn't installed on this PC):
+  170 checks, 0 failures; SEO meta lengths/uniqueness checked; `tsc`/`lint`/`build` clean.
+  Not yet committed or deployed.

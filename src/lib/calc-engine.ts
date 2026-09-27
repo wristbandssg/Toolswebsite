@@ -261,6 +261,10 @@ import { mortgageRefinanceProgramsCustomCalculators } from "./calc-engine-mortga
 import { interestCoreCustomCalculators } from "./calc-engine-interest-core";
 import { interestRatesCustomCalculators } from "./calc-engine-interest-rates";
 import { interestAnalysisCustomCalculators } from "./calc-engine-interest-analysis";
+import { investmentReturnsCustomCalculators } from "./calc-engine-investment-returns";
+import { investmentPlanningCustomCalculators } from "./calc-engine-investment-planning";
+import { investmentStocksDividendsCustomCalculators } from "./calc-engine-investment-stocks-dividends";
+import { investmentPortfolioFeesCustomCalculators } from "./calc-engine-investment-portfolio-fees";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -336,6 +340,10 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...interestCoreCustomCalculators,
   ...interestRatesCustomCalculators,
   ...interestAnalysisCustomCalculators,
+  ...investmentReturnsCustomCalculators,
+  ...investmentPlanningCustomCalculators,
+  ...investmentStocksDividendsCustomCalculators,
+  ...investmentPortfolioFeesCustomCalculators,
 };
 
 export function runCalculator(
