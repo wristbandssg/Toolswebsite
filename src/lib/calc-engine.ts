@@ -242,6 +242,20 @@ import { usFreelanceTaxCustomCalculators } from "./calc-engine-us-freelance-tax"
 import { usContractorTaxCustomCalculators } from "./calc-engine-us-contractor-tax";
 import { usEstimatedQuarterlyTaxCustomCalculators } from "./calc-engine-us-estimated-quarterly-tax";
 
+// --- Finance_Calculators_Topical_SEO_Master.xlsx batches (general/global,
+// not jurisdiction-specific) — filed under the pre-existing "Finance
+// Calculators" category tree (see reparent-tool-categories-under-finance.ts
+// for that tree). The Tax cluster from that same file was skipped: all 7 of
+// its tools were already built under "Tax Calculators". ---
+import { financeCreditDebtCustomCalculators } from "./calc-engine-finance-credit-debt";
+import { financeSalaryIncomeCustomCalculators } from "./calc-engine-finance-salary-income";
+import { financeBusinessCustomCalculators } from "./calc-engine-finance-business";
+import { financeRealEstateCustomCalculators } from "./calc-engine-finance-real-estate";
+import { financeCurrencyCustomCalculators } from "./calc-engine-finance-currency";
+import { financeInvestmentCustomCalculators } from "./calc-engine-finance-investment";
+import { financeRetirementCustomCalculators } from "./calc-engine-finance-retirement";
+import { financeSavingsCustomCalculators } from "./calc-engine-finance-savings";
+
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
 // "alabama-tax-calculator"; every other country uses a country/region
@@ -302,6 +316,14 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...usFreelanceTaxCustomCalculators,
   ...usContractorTaxCustomCalculators,
   ...usEstimatedQuarterlyTaxCustomCalculators,
+  ...financeCreditDebtCustomCalculators,
+  ...financeSalaryIncomeCustomCalculators,
+  ...financeBusinessCustomCalculators,
+  ...financeRealEstateCustomCalculators,
+  ...financeCurrencyCustomCalculators,
+  ...financeInvestmentCustomCalculators,
+  ...financeRetirementCustomCalculators,
+  ...financeSavingsCustomCalculators,
 };
 
 export function runCalculator(
