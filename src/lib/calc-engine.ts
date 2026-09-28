@@ -283,6 +283,15 @@ import { retirementWorkplacePlansCustomCalculators } from "./calc-engine-retirem
 import { retirementPensionSocialSecurityCustomCalculators } from "./calc-engine-retirement-pension-social-security";
 import { retirementFireTimingCustomCalculators } from "./calc-engine-retirement-fire-timing";
 import { retirementPortfolioCustomCalculators } from "./calc-engine-retirement-portfolio";
+import { salaryConversionsCustomCalculators } from "./calc-engine-salary-conversions";
+import { salaryPeriodConversionsCustomCalculators } from "./calc-engine-salary-period-conversions";
+import { salaryHoursOvertimeCustomCalculators } from "./calc-engine-salary-hours-overtime";
+import { salaryPremiumsCommissionCustomCalculators } from "./calc-engine-salary-premiums-commission";
+import { salaryRaisesCustomCalculators } from "./calc-engine-salary-raises";
+import { salaryIncomeSourcesCustomCalculators } from "./calc-engine-salary-income-sources";
+import { salarySelfEmployedCustomCalculators } from "./calc-engine-salary-self-employed";
+import { salaryRatesCustomCalculators } from "./calc-engine-salary-rates";
+import { salaryDeductionsNetCustomCalculators } from "./calc-engine-salary-deductions-net";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -380,6 +389,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...retirementPensionSocialSecurityCustomCalculators,
   ...retirementFireTimingCustomCalculators,
   ...retirementPortfolioCustomCalculators,
+  ...salaryConversionsCustomCalculators,
+  ...salaryPeriodConversionsCustomCalculators,
+  ...salaryHoursOvertimeCustomCalculators,
+  ...salaryPremiumsCommissionCustomCalculators,
+  ...salaryRaisesCustomCalculators,
+  ...salaryIncomeSourcesCustomCalculators,
+  ...salarySelfEmployedCustomCalculators,
+  ...salaryRatesCustomCalculators,
+  ...salaryDeductionsNetCustomCalculators,
 };
 
 export function runCalculator(

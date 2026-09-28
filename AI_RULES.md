@@ -43,6 +43,9 @@ written into the app — see "Content-language rules" below.
 - I run `git add/commit/push`, `npx prisma db push`, `npm run db:*` scripts, and the
   Render deploy myself. The AI's sandbox has no live database access — its verification
   is code review plus `tsc` / `lint` / `build` only, never a real DB check.
+- When I send a tool list to check ("ei goli ki age kora hoyche?"), answer SHORT: how many are
+  already built, how many new ones need to be built, and the main/sub category — no long tables
+  unless I ask for details. (Added 28 Sep 2026.)
 - Before every new batch of calculator tools, check candidate slugs against both the
   existing site inventory AND any tools already built earlier in the same session, since
   a static inventory snapshot won't include same-session work yet.

@@ -4,7 +4,19 @@
 
 ## ▶️ Resume here
 
-Just built the **Retirement Calculators** batch (28 Sep 2026) from the user's 76-tool list: 8
+Just built the **Salary & Income Calculators** batch (28 Sep 2026) from the user's 91-tool list:
+8 skipped as duplicates (salary, take-home-pay, hourly-to-salary, salary-to-hourly, overtime,
+paycheck, bonus, commission calculators), 83 new tools in 9 self-contained sub-batches under
+Finance Calculators > Salary & Income Calculators (`salary-income-calculators`): conversions
+(11), period-conversions (10), hours-overtime (11), premiums-commission (10), raises (8),
+income-sources (12), self-employed (6), rates (7), deductions-net (8). Most are gross-pay or
+user-entered-rate tools (any country); US-specific 2026 figures used: bonus supplemental
+withholding 22%/37%, SS wage base $184,500, Medicare 1.45% + 0.9% over $200k, SE tax 15.3% on
+92.35% of profit, FLSA regular-rate overtime, California-style daily overtime. All added to the
+live DB as Draft. User runs `git push` + Render **Manual Deploy** (auto-deploy seemed off), then
+asks for publishing.
+
+Before that (same day): built the **Retirement Calculators** batch (28 Sep 2026) from the user's 76-tool list: 8
 skipped as exact-slug duplicates (retirement, 401k, pension, social-security, retirement-withdrawal,
 ira, roth-ira calculators, plus retirement-savings-goal-calculator from the Savings batch — which
 the user asked to MOVE into Retirement Calculators; done via CATEGORY_OVERRIDES in
@@ -229,3 +241,9 @@ keep that file in mind.
   published SSA percentages such as 72.5%/128% for 1957 births and 32.5% spousal at 62), a content
   check, and a zero/max/random stress test. `tsc`/`lint`/`build` clean. Also added the savings
   and retirement batches to the live database as Draft (57 + 68 tools).
+- 2026-09-28: Built the "Salary & Income Calculators" batch: 83 new tools across 9 sub-batches, 8
+  skipped as duplicates. Verified with an independent check (97 checks, 0 failures — incl. FLSA
+  bonus-in-regular-rate overtime, California daily/weekly overtime, 2026 bonus withholding and
+  SE tax caps), a content check (SEO lengths/uniqueness, defaults match, example figures match)
+  and a stress test. `tsc`/`lint`/`build` clean. User rule added (AI_RULES.md + memory): when
+  checking a tool list, answer SHORT — how many already built, how many new.
