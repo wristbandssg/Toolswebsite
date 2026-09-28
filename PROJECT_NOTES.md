@@ -4,39 +4,36 @@
 
 ## ▶️ Resume here
 
-Just added `prisma/organize-tool-categories.ts` (`npm run db:organize-categories`) to put
-every tool into the user's final category structure (27 Sep 2026):
+Just built the **Savings Calculators** batch (28 Sep 2026) from the user's 60-tool list: 3 skipped
+as exact-slug duplicates (savings-calculator, savings-goal-calculator, emergency-fund-calculator),
+57 new tools across 6 self-contained sub-batches, all filed under Finance Calculators > Savings
+Calculators (`savings-calculators`, already existed):
 
-- **Finance Calculators** → exactly 12 sub-categories: Loan, Mortgage, Interest,
-  Investment, Savings, Retirement, Tax, Credit & Debt, Salary & Income, Business Finance,
-  Real Estate, Currency & Exchange (empty ones are kept, ready for future tools).
-- **Tax Calculators** keeps the 12 country/state categories (UK, Canada, US states =
-  "Tax & Paycheck", ...) as a third level — the user chose this ("Plan B") because Tax
-  holds ~950 tools.
-- New main category **Math Calculators**, holding the sample percentage-calculator.
-- **Every category with no tools (in it or beneath it, drafts count) is deleted** — the
-  user's rule — including one of the 12 sub-categories if it's still empty, and a missing
-  one isn't created empty. (7 extra empty categories — Budget, Insurance, Auto & Car,
-  Crypto, Health & Fitness, Date & Time, Unit Conversion — were briefly added, then dropped
-  at the user's request.) NOTE for future batches: a `create-*-calculators.ts` script
-  whose category was deleted will ask you to run `db:setup-finance-categories`, which
-  re-creates ALL the standard sub-categories empty — run `db:organize-categories -- --apply`
-  again after the new tools are in, to clear out any that are still empty.
-- Admin category dropdowns (tool form + tools list filter) now group sub-categories under
-  their main category using <optgroup> headings (`groupCategoryTree` in
-  `src/lib/flattenCategoryTree.ts`).
-- business-loan-calculator moved from Business Finance to Loan Calculators.
+- `calc-engine-savings-core.ts` (9) — interest, monthly savings, future value, rising deposits,
+  savings rate/percentage, balance with fees, deposit needed today, rate needed.
+- `-schedules.ts` (11) — Indian RD (INR), UK regular saver (GBP), weekly/52-week challenge,
+  biweekly, annual savings from cutting a cost, daily, two-phase contributions, with/without
+  monthly deposits, annual deposits start vs end, lump sum after tax, lump sum vs monthly.
+- `-accounts.ts` (9) — compounding side by side, interest paid out, APY earned (Reg DD formula),
+  APY→APR in dollars, account fees vs minimum balance, high-yield vs traditional, tiered money
+  market, CD early-withdrawal penalty (slug `cd-savings-calculator`), two-account comparison.
+- `-withdrawals-emergency.ts` (11) — max withdrawal, inflation-rising drawdown, yearly
+  withdrawals, inflation on idle cash, inflation-adjusted goal, real after-tax growth,
+  itemized emergency fund, fund months, fund contribution, rainy day fund, sinking fund.
+- `-goals.ts` (11) — vacation, travel habit, US home down payment (rising prices), UK house
+  deposit with Lifetime ISA bonus (GBP), car save vs finance, wedding, education, college (aid +
+  % covered), retirement nest egg, short-term and long-term goals.
+- `-goal-planning.ts` (6) — contribution at any frequency, time to target, target-date check,
+  progress check, split budget across 3 goals, 25/50/75/100% milestones.
 
-The script is REPORT-ONLY by default; `-- --apply` makes the changes after writing a
-backup to `prisma/backups/` (git-ignored). It deletes only EMPTY categories outside the
-structure; any unknown category that still holds tools is left alone and listed for the
-user to decide. It also lists deleted category URLs (for redirects) and menu links that
-point at them. Tested against in-memory fake databases (report mode changes nothing,
-apply works, re-running is a no-op). Also added "Load More" to category pages (48 tools
-at a time) and rewrote the Percentage Calculator in English (applied to the live site by
-re-running `npm run db:seed`). **Not yet run on the live database** — next step:
-the user runs report mode and shares the output; after they OK it, they run `--apply`,
-then send the list of deleted category URLs so redirects can be added.
+Each has a matching `prisma/create-savings-*-calculators.ts` + `db:create-savings-*-calculators`
+script. New tools are created as Draft. Near-namesakes (inside the list and against existing
+Interest/Investment/Retirement tools) are differentiated — see each engine file's header.
+
+Earlier (27 Sep): `prisma/organize-tool-categories.ts` (`npm run db:organize-categories`) was
+added to put every tool into the final category structure — **Finance Calculators** → 12
+sub-categories, **Tax Calculators** keeps its 12 country/state categories as a third level, empty
+categories are deleted. 53 Loan tools are in the live database but still Draft (28 Sep check).
 
 ## What the project is
 
@@ -198,3 +195,14 @@ keep that file in mind.
   clicking its arrow, the same way Tax Calculators opens its 12 country categories.
   Creating a sub-category opens its whole parent chain so the new row is visible.
   `tsc`/`lint` clean.
+- 2026-09-28: Built the "Savings Calculators" batch from the user's 60-tool list: 57 new tools
+  across 6 sub-batches (core 9, schedules 11, accounts 9, withdrawals-emergency 11, goals 11,
+  goal-planning 6), 3 skipped as duplicates. Currency-specific tools: Recurring Savings (Indian
+  RD, INR, quarterly compounding), Regular Savings (UK regular saver, GBP, simple interest per
+  deposit), House Deposit (GBP, Lifetime ISA: 25% bonus on up to £4,000/yr, £450,000 price cap).
+  Verified with an independent brute-force Node.js check (195 checks, 0 failures — 3 initial
+  misses were display rounding and confirmed exact unrounded), a content check (SEO lengths and
+  uniqueness vs every other seed script, result keys exist, every input changes the result,
+  form defaults = engine defaults, every example figure matches a default output) and a stress
+  test with zero/max/random inputs (no NaN/Infinity). `tsc`/`lint`/`build` clean. Also on
+  28 Sep: admin category page made main categories collapsible (committed separately).

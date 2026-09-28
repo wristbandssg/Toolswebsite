@@ -270,6 +270,12 @@ import { loanSolveCustomCalculators } from "./calc-engine-loan-solve";
 import { loanPayoffRefinanceCustomCalculators } from "./calc-engine-loan-payoff-refinance";
 import { loanTypesCustomCalculators } from "./calc-engine-loan-types";
 import { loanBusinessStudentCustomCalculators } from "./calc-engine-loan-business-student";
+import { savingsCoreCustomCalculators } from "./calc-engine-savings-core";
+import { savingsSchedulesCustomCalculators } from "./calc-engine-savings-schedules";
+import { savingsAccountsCustomCalculators } from "./calc-engine-savings-accounts";
+import { savingsWithdrawalsEmergencyCustomCalculators } from "./calc-engine-savings-withdrawals-emergency";
+import { savingsGoalsCustomCalculators } from "./calc-engine-savings-goals";
+import { savingsGoalPlanningCustomCalculators } from "./calc-engine-savings-goal-planning";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -354,6 +360,12 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...loanPayoffRefinanceCustomCalculators,
   ...loanTypesCustomCalculators,
   ...loanBusinessStudentCustomCalculators,
+  ...savingsCoreCustomCalculators,
+  ...savingsSchedulesCustomCalculators,
+  ...savingsAccountsCustomCalculators,
+  ...savingsWithdrawalsEmergencyCustomCalculators,
+  ...savingsGoalsCustomCalculators,
+  ...savingsGoalPlanningCustomCalculators,
 };
 
 export function runCalculator(
