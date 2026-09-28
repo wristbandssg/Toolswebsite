@@ -4,7 +4,22 @@
 
 ## ▶️ Resume here
 
-Just built the **Savings Calculators** batch (28 Sep 2026) from the user's 60-tool list: 3 skipped
+Just built the **Retirement Calculators** batch (28 Sep 2026) from the user's 76-tool list: 8
+skipped as exact-slug duplicates (retirement, 401k, pension, social-security, retirement-withdrawal,
+ira, roth-ira calculators, plus retirement-savings-goal-calculator from the Savings batch — which
+the user asked to MOVE into Retirement Calculators; done via CATEGORY_OVERRIDES in
+create-savings-goals-calculators.ts and TOOL_MOVES in organize-tool-categories.ts). 68 new tools in
+7 self-contained sub-batches under Finance Calculators > Retirement Calculators:
+planning (10), income (10), tax-ira (9), workplace-plans (9), pension-social-security (12),
+fire-timing (11), portfolio (7). Uses official **2026** figures, researched from IRS/SSA sources
+(see each calc-engine-retirement-*.ts header): tax brackets + standard deduction (Rev. Proc.
+2025-32), $6,000 senior deduction (2025–2028), 401(k) $24,500 / catch-up $8,000 / 60–63 $11,250,
+IRA $7,500 + $1,100, SIMPLE $17,000, 415(c) $72,000, IRA/Roth phase-outs, SS bend points
+$1,286/$7,749, earnings test $24,480/$65,160, taxable max $184,500, RMD Uniform Lifetime + Single
+Life tables (Treas. Reg. §1.401(a)(9)-9). **These must be updated each year** (new IRS/SSA figures
+come out every Oct/Nov). Pension Commutation is UK-style in GBP.
+
+Before that (same day): built the **Savings Calculators** batch (28 Sep 2026) from the user's 60-tool list: 3 skipped
 as exact-slug duplicates (savings-calculator, savings-goal-calculator, emergency-fund-calculator),
 57 new tools across 6 self-contained sub-batches, all filed under Finance Calculators > Savings
 Calculators (`savings-calculators`, already existed):
@@ -206,3 +221,11 @@ keep that file in mind.
   form defaults = engine defaults, every example figure matches a default output) and a stress
   test with zero/max/random inputs (no NaN/Infinity). `tsc`/`lint`/`build` clean. Also on
   28 Sep: admin category page made main categories collapsible (committed separately).
+- 2026-09-28: Built the "Retirement Calculators" batch from the user's 76-tool list: 68 new tools
+  across 7 sub-batches, 8 skipped as duplicates, and retirement-savings-goal-calculator moved from
+  Savings to Retirement (user request). Researched 2026 IRS/SSA figures online first (IRS news
+  releases, Notice 2025-67, Rev. Proc. 2025-32, SSA 2026 COLA figures, eCFR RMD tables). Verified
+  with an independent check (179 checks, 0 failures — incl. hand-worked 2026 tax returns and
+  published SSA percentages such as 72.5%/128% for 1957 births and 32.5% spousal at 62), a content
+  check, and a zero/max/random stress test. `tsc`/`lint`/`build` clean. Also added the savings
+  and retirement batches to the live database as Draft (57 + 68 tools).

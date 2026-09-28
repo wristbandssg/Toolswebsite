@@ -26,6 +26,14 @@ const prisma = new PrismaClient();
 
 const CATEGORY_SLUG = "savings-calculators";
 
+// Tools filed somewhere other than CATEGORY_SLUG. retirement-savings-goal-
+// calculator was moved to Retirement Calculators on 28 Sep 2026 (user
+// request, alongside the Retirement Calculators batch) — see
+// organize-tool-categories.ts.
+const CATEGORY_OVERRIDES: Record<string, string> = {
+  "retirement-savings-goal-calculator": "retirement-calculators",
+};
+
 function paragraphsToHtml(text: string): string {
   return text
     .split(/\n\s*\n/)
@@ -567,15 +575,27 @@ async function main() {
     );
   }
 
+  const overrideIds = new Map<string, string>();
+  for (const slug of new Set(Object.values(CATEGORY_OVERRIDES))) {
+    const override = await prisma.toolCategory.findUnique({ where: { slug } });
+    if (!override) {
+      throw new Error(
+        `The "${slug}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, then re-run this script.`
+      );
+    }
+    overrideIds.set(slug, override.id);
+  }
+
   let created = 0;
   let updated = 0;
 
   for (const def of TOOLS) {
+    const overrideSlug = CATEGORY_OVERRIDES[def.slug];
     const toolContent = {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: overrideSlug ? overrideIds.get(overrideSlug)! : category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -609,7 +629,10 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
+  console.log(
+    `Done: ${created} tool(s) created, ${updated} tool(s) updated, filed under "${category.name}" ` +
+      "(retirement-savings-goal-calculator under Retirement Calculators)."
+  );
   console.log(
     "New tools are created with status Draft — open them in /admin/tools, review, and set Status to Published " +
       "when you're happy with each one."

@@ -276,6 +276,13 @@ import { savingsAccountsCustomCalculators } from "./calc-engine-savings-accounts
 import { savingsWithdrawalsEmergencyCustomCalculators } from "./calc-engine-savings-withdrawals-emergency";
 import { savingsGoalsCustomCalculators } from "./calc-engine-savings-goals";
 import { savingsGoalPlanningCustomCalculators } from "./calc-engine-savings-goal-planning";
+import { retirementPlanningCustomCalculators } from "./calc-engine-retirement-planning";
+import { retirementIncomeCustomCalculators } from "./calc-engine-retirement-income";
+import { retirementTaxIraCustomCalculators } from "./calc-engine-retirement-tax-ira";
+import { retirementWorkplacePlansCustomCalculators } from "./calc-engine-retirement-workplace-plans";
+import { retirementPensionSocialSecurityCustomCalculators } from "./calc-engine-retirement-pension-social-security";
+import { retirementFireTimingCustomCalculators } from "./calc-engine-retirement-fire-timing";
+import { retirementPortfolioCustomCalculators } from "./calc-engine-retirement-portfolio";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -366,6 +373,13 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...savingsWithdrawalsEmergencyCustomCalculators,
   ...savingsGoalsCustomCalculators,
   ...savingsGoalPlanningCustomCalculators,
+  ...retirementPlanningCustomCalculators,
+  ...retirementIncomeCustomCalculators,
+  ...retirementTaxIraCustomCalculators,
+  ...retirementWorkplacePlansCustomCalculators,
+  ...retirementPensionSocialSecurityCustomCalculators,
+  ...retirementFireTimingCustomCalculators,
+  ...retirementPortfolioCustomCalculators,
 };
 
 export function runCalculator(

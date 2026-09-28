@@ -99,6 +99,8 @@ const OTHER_MAIN_CATEGORIES: { name: string; slug: string }[] = [{ name: "Math C
 const TOOL_MOVES: Record<string, string> = {
   "business-loan-calculator": "loan-calculators",
   "percentage-calculator": "math-calculators",
+  // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
+  "retirement-savings-goal-calculator": "retirement-calculators",
 };
 
 type Cat = { id: string; name: string; slug: string; parentId: string | null };
