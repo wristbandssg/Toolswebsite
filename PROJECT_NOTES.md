@@ -4,7 +4,19 @@
 
 ## ▶️ Resume here
 
-Just built the **Business Finance Calculators** batch (28 Sep 2026) from the user's 108-tool list: 17
+Just built the **Real Estate Calculators** batch (28 Sep 2026) from the user's 121-tool list: 9
+skipped as duplicates (8 already in Real Estate Calculators + property-tax-calculator in Tax
+Calculators), 112 new tools in 11 self-contained sub-batches (`calc-engine-realestate-*.ts` +
+`prisma/create-realestate-*-calculators.ts`), all under Finance Calculators > Real Estate
+Calculators (`real-estate-calculators`): rental-income (12), rental-ratios (11),
+value-appreciation (10), returns-equity-debt (10), strategies (11), flips (13), homebuying (10),
+selling-tax (9), mortgage-commercial (9), multifamily-land (9), short-term (8). 2026 US tax
+figures used: Section 121 exclusion $250k/$500k, depreciation 27.5/39 years (mid-month), recapture
+max 25%, $25k passive-loss allowance phased out $100k–$150k MAGI, SALT cap $40,400 cut by 30% of
+MAGI over $505k (floor $10k), standard deduction $16,100/$32,200. All added to the live DB as
+Draft. User runs `git push` + Render Manual Deploy, then asks for publishing.
+
+Before that (same day): built the **Business Finance Calculators** batch (28 Sep 2026) from the user's 108-tool list: 17
 skipped as duplicates (9 existing business tools + 8 existing business-loan tools), 91 new tools in 11
 self-contained sub-batches (`calc-engine-business-*.ts` + `prisma/create-business-*-calculators.ts`):
 profit (10), breakeven-margin (8), pricing (7), revenue (11), costs (7), unit-returns (9),
@@ -261,3 +273,9 @@ keep that file in mind.
   check (94 checks, 0 failures — incl. EOQ, DuPont ROE, high-low method, balloon via simulation,
   discounted payback, price/quantity variances), a content check and a stress test (found and fixed
   a 0 ÷ 0 in Average Order Value). `tsc`/`lint`/`build` clean.
+- 2026-09-28: Built the "Real Estate Calculators" batch: 112 new tools across 11 sub-batches, 9
+  skipped as duplicates. Near-namesakes (e.g. the three BRRRR tools, rental yield vs gross/net
+  yield, house-flip profit vs fix-and-flip) differentiated in each engine header. Verified with an
+  independent check (IRR via NPV = 0, PMI drop month by simulation, DSCR-limited loan, 28% rule
+  price, target cash-on-cash price, rent-vs-own brute force), a content check and a
+  zero/max/random stress test. `tsc`/`lint`/`build` clean.

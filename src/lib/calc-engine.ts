@@ -303,6 +303,17 @@ import { businessLoansCustomCalculators } from "./calc-engine-business-loans";
 import { businessInventoryReceivablesCustomCalculators } from "./calc-engine-business-inventory-receivables";
 import { businessValuationCustomCalculators } from "./calc-engine-business-valuation";
 import { businessGrowthVarianceCustomCalculators } from "./calc-engine-business-growth-variance";
+import { realestateRentalIncomeCustomCalculators } from "./calc-engine-realestate-rental-income";
+import { realestateRentalRatiosCustomCalculators } from "./calc-engine-realestate-rental-ratios";
+import { realestateValueAppreciationCustomCalculators } from "./calc-engine-realestate-value-appreciation";
+import { realestateReturnsEquityDebtCustomCalculators } from "./calc-engine-realestate-returns-equity-debt";
+import { realestateStrategiesCustomCalculators } from "./calc-engine-realestate-strategies";
+import { realestateFlipsCustomCalculators } from "./calc-engine-realestate-flips";
+import { realestateHomebuyingCustomCalculators } from "./calc-engine-realestate-homebuying";
+import { realestateSellingTaxCustomCalculators } from "./calc-engine-realestate-selling-tax";
+import { realestateMortgageCommercialCustomCalculators } from "./calc-engine-realestate-mortgage-commercial";
+import { realestateMultifamilyLandCustomCalculators } from "./calc-engine-realestate-multifamily-land";
+import { realestateShortTermCustomCalculators } from "./calc-engine-realestate-short-term";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -420,6 +431,17 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...businessInventoryReceivablesCustomCalculators,
   ...businessValuationCustomCalculators,
   ...businessGrowthVarianceCustomCalculators,
+  ...realestateRentalIncomeCustomCalculators,
+  ...realestateRentalRatiosCustomCalculators,
+  ...realestateValueAppreciationCustomCalculators,
+  ...realestateReturnsEquityDebtCustomCalculators,
+  ...realestateStrategiesCustomCalculators,
+  ...realestateFlipsCustomCalculators,
+  ...realestateHomebuyingCustomCalculators,
+  ...realestateSellingTaxCustomCalculators,
+  ...realestateMortgageCommercialCustomCalculators,
+  ...realestateMultifamilyLandCustomCalculators,
+  ...realestateShortTermCustomCalculators,
 };
 
 export function runCalculator(
