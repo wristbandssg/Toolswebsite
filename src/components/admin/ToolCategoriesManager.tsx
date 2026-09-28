@@ -201,13 +201,10 @@ function CategoryRow({
   // Whether `cat` has any sub-categories of its own — controls whether an
   // expand/collapse chevron renders at all.
   hasChildren: boolean;
-  // Whether `cat`'s children are currently shown below it. Root rows
-  // (depth 0) are always expanded — Finance Calculators and its direct
-  // topic sub-categories (Tax Calculators, Loan Calculators, ...) are the
-  // "main + sub-category" view that's always visible — so this only does
-  // anything for depth > 0, where a category's own children (e.g. the
-  // country categories under Tax Calculators) start collapsed and open on
-  // click, keeping a long list readable.
+  // Whether `cat`'s children are currently shown below it. Every level,
+  // root included, starts collapsed and opens on click — Finance
+  // Calculators' topic sub-categories open the same way as the country
+  // categories under Tax Calculators — keeping a long list readable.
   isExpanded: boolean;
   onToggleExpand: () => void;
   editingId: string | null;
@@ -249,7 +246,7 @@ function CategoryRow({
   handleDelete: (cat: ToolCategoryRow) => void;
   onAddSubcategory?: (cat: ToolCategoryRow) => void;
 }) {
-  const canToggle = depth > 0 && hasChildren;
+  const canToggle = hasChildren;
   return (
     <div style={depth > 0 ? { marginLeft: Math.min(depth, 6) * 28 } : undefined}>
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors hover:border-indigo-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900">
@@ -523,12 +520,10 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   const [seoError, setSeoError] = useState<string | null>(null);
 
   // Ids of categories whose children are currently expanded (visible) below
-  // them. Starts empty on purpose: a root category's own direct
-  // sub-categories are always shown regardless of this set (see
-  // renderCategoryNode), but anything nested deeper than that — e.g. the
-  // dozen country categories under "Tax Calculators" — stays collapsed
-  // until its parent's id is added here, so a long tree opens with just
-  // "main category + sub-category" visible instead of every leaf at once.
+  // them. Starts empty on purpose: every category — a main category like
+  // "Finance Calculators" as well as a sub-category like "Tax Calculators"
+  // — stays collapsed until its id is added here, so a long tree opens with
+  // just the main categories visible instead of every leaf at once.
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   function toggleExpand(id: string) {
@@ -540,8 +535,22 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
     });
   }
 
+  /** Expands `id` and every ancestor above it — since main categories start
+   * collapsed too, opening only `id` would leave it hidden inside a closed
+   * parent (e.g. Tax Calculators inside a collapsed Finance Calculators). */
   function expand(id: string) {
-    setExpandedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+    const parentById = new Map(categories.map((c) => [c.id, c.parentId]));
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      let cursor: string | null | undefined = id;
+      let hops = 0;
+      while (cursor && hops < 20) {
+        next.add(cursor);
+        cursor = parentById.get(cursor);
+        hops++;
+      }
+      return next;
+    });
   }
 
   const topLevelCategories = categories.filter((c) => !c.parentId);
@@ -768,11 +777,9 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
     const excluded = new Set([cat.id, ...getDescendantIds(cat.id, childrenByParentId)]);
     const parentOptions = flatCategories.filter((o) => !excluded.has(o.id));
     const children = childrenByParentId.get(cat.id) ?? [];
-    // Depth 0's children (the direct topic sub-categories under a root
-    // category) are always shown — that's the "main category + sub-category"
-    // baseline view. Anything deeper only shows once its parent has been
-    // expanded by a click.
-    const showChildren = depth === 0 || expandedIds.has(cat.id);
+    // Children at any depth only show once their parent has been expanded
+    // by a click.
+    const showChildren = expandedIds.has(cat.id);
     return (
       <div key={cat.id} className="space-y-2">
         <CategoryRow

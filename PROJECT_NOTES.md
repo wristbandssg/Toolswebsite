@@ -193,3 +193,8 @@ keep that file in mind.
   Re-tested against a fake database (empty extras, an empty standard sub-category and an
   empty country folder all deleted; no tool loses its category; re-run is a no-op).
   `tsc`/`lint`/`build` clean. Still not run on the live database.
+- 2026-09-28: Per the user, /admin/tools/categories now collapses main categories too:
+  Finance Calculators (and every other main category) shows its sub-categories only after
+  clicking its arrow, the same way Tax Calculators opens its 12 country categories.
+  Creating a sub-category opens its whole parent chain so the new row is visible.
+  `tsc`/`lint` clean.
