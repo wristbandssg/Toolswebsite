@@ -4,7 +4,15 @@
 
 ## ▶️ Resume here
 
-Just built the **Salary & Income Calculators** batch (28 Sep 2026) from the user's 91-tool list:
+Just built the **Business Finance Calculators** batch (28 Sep 2026) from the user's 108-tool list: 17
+skipped as duplicates (9 existing business tools + 8 existing business-loan tools), 91 new tools in 11
+self-contained sub-batches (`calc-engine-business-*.ts` + `prisma/create-business-*-calculators.ts`):
+profit (10), breakeven-margin (8), pricing (7), revenue (11), costs (7), unit-returns (9),
+liquidity-cash (12), loans (4 — filed under **Loan Calculators**, the rest under Business Finance
+Calculators), inventory-receivables (9), valuation (8), growth-variance (6). All added to the live DB
+as Draft. User runs `git push` + Render Manual Deploy, then asks for publishing.
+
+Before that (same day): built the **Salary & Income Calculators** batch (28 Sep 2026) from the user's 91-tool list:
 8 skipped as duplicates (salary, take-home-pay, hourly-to-salary, salary-to-hourly, overtime,
 paycheck, bonus, commission calculators), 83 new tools in 9 self-contained sub-batches under
 Finance Calculators > Salary & Income Calculators (`salary-income-calculators`): conversions
@@ -247,3 +255,9 @@ keep that file in mind.
   SE tax caps), a content check (SEO lengths/uniqueness, defaults match, example figures match)
   and a stress test. `tsc`/`lint`/`build` clean. User rule added (AI_RULES.md + memory): when
   checking a tool list, answer SHORT — how many already built, how many new.
+- 2026-09-28: Built the "Business Finance Calculators" batch: 91 new tools across 11 sub-batches, 17
+  skipped as duplicates (list had 108, not 109 as first said). Near-namesakes differentiated against
+  the existing business/loan/investment tools (see each engine header). Verified with an independent
+  check (94 checks, 0 failures — incl. EOQ, DuPont ROE, high-low method, balloon via simulation,
+  discounted payback, price/quantity variances), a content check and a stress test (found and fixed
+  a 0 ÷ 0 in Average Order Value). `tsc`/`lint`/`build` clean.

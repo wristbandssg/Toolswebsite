@@ -292,6 +292,17 @@ import { salaryIncomeSourcesCustomCalculators } from "./calc-engine-salary-incom
 import { salarySelfEmployedCustomCalculators } from "./calc-engine-salary-self-employed";
 import { salaryRatesCustomCalculators } from "./calc-engine-salary-rates";
 import { salaryDeductionsNetCustomCalculators } from "./calc-engine-salary-deductions-net";
+import { businessProfitCustomCalculators } from "./calc-engine-business-profit";
+import { businessBreakevenMarginCustomCalculators } from "./calc-engine-business-breakeven-margin";
+import { businessPricingCustomCalculators } from "./calc-engine-business-pricing";
+import { businessRevenueCustomCalculators } from "./calc-engine-business-revenue";
+import { businessCostsCustomCalculators } from "./calc-engine-business-costs";
+import { businessUnitReturnsCustomCalculators } from "./calc-engine-business-unit-returns";
+import { businessLiquidityCashCustomCalculators } from "./calc-engine-business-liquidity-cash";
+import { businessLoansCustomCalculators } from "./calc-engine-business-loans";
+import { businessInventoryReceivablesCustomCalculators } from "./calc-engine-business-inventory-receivables";
+import { businessValuationCustomCalculators } from "./calc-engine-business-valuation";
+import { businessGrowthVarianceCustomCalculators } from "./calc-engine-business-growth-variance";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -398,6 +409,17 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...salarySelfEmployedCustomCalculators,
   ...salaryRatesCustomCalculators,
   ...salaryDeductionsNetCustomCalculators,
+  ...businessProfitCustomCalculators,
+  ...businessBreakevenMarginCustomCalculators,
+  ...businessPricingCustomCalculators,
+  ...businessRevenueCustomCalculators,
+  ...businessCostsCustomCalculators,
+  ...businessUnitReturnsCustomCalculators,
+  ...businessLiquidityCashCustomCalculators,
+  ...businessLoansCustomCalculators,
+  ...businessInventoryReceivablesCustomCalculators,
+  ...businessValuationCustomCalculators,
+  ...businessGrowthVarianceCustomCalculators,
 };
 
 export function runCalculator(
