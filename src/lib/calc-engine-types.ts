@@ -60,6 +60,10 @@ export interface CalcResultConfig {
   // US tool (which predates this field) keeps rendering in dollars
   // unchanged.
   currency?: string;
+  // Most decimal places shown when format is "number" (e.g. 8 for a crypto
+  // amount, 4 for an exchange rate). Defaults to the browser's usual 3 when
+  // omitted, so every existing tool renders unchanged.
+  decimals?: number;
 }
 
 /** One line of a multi-line breakdown result (see Tool.calcResults). `key`
@@ -73,6 +77,8 @@ export interface CalcResultLineConfig {
   format?: "number" | "currency" | "percentage";
   // See CalcResultConfig.currency above — same default/behavior.
   currency?: string;
+  // See CalcResultConfig.decimals above — same default/behavior.
+  decimals?: number;
   highlight?: boolean;
 }
 

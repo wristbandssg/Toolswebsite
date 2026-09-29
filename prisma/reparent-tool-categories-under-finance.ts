@@ -87,6 +87,7 @@ const TOPIC_CATEGORIES: { name: string; slug: string }[] = [
   { name: "Business Finance Calculators", slug: "business-finance-calculators" },
   { name: "Real Estate Calculators", slug: "real-estate-calculators" },
   { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
+  { name: "Crypto Calculators", slug: "crypto-calculators" },
 ];
 
 const TAX_CALCULATORS_SLUG = "tax-calculators";

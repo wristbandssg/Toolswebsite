@@ -4,7 +4,21 @@
 
 ## ▶️ Resume here
 
-Just built the **Real Estate Calculators** batch (28 Sep 2026) from the user's 121-tool list: 9
+Just built the **Crypto Calculators** batch (29 Sep 2026) from the user's 89-tool currency/forex/crypto
+list: 3 already existed (currency-converter, forex-profit-loss-calculator, forex-position-size-calculator),
+86 new in 9 self-contained sub-batches (`calc-engine-currency-*.ts` + `prisma/create-currency-*-calculators.ts`):
+conversion (13), rate-changes (8), spreads-fees (10), travel-consumer (9), forex-trade (12),
+forex-costs-growth (11), forwards-parity (10), business-hedging (9), crypto-metals (4). The user asked for a
+new Finance sub-category named **Crypto Calculators** (`crypto-calculators`) holding the whole list, so the
+3 existing tools were moved there (TOOL_MOVES in organize-tool-categories.ts; create-finance-currency-
+calculators.ts now targets crypto-calculators) and the now-empty "Currency & Exchange Calculators" category
+was deleted (its URL /tools/category/currency-exchange-calculators is gone). All rates/prices are
+user-entered — nothing is fetched live. Also added an optional `decimals` field on result lines
+(CalcResultConfig / CalcResultLineConfig, used by CalculatorWidget for "number" format) so rates and crypto
+amounts can show 4–8 decimals. All 86 added to the live DB as Draft. User runs `git push` + Render Manual
+Deploy, then asks for publishing.
+
+Before that (same day): built the **Real Estate Calculators** batch (28 Sep 2026) from the user's 121-tool list: 9
 skipped as duplicates (8 already in Real Estate Calculators + property-tax-calculator in Tax
 Calculators), 112 new tools in 11 self-contained sub-batches (`calc-engine-realestate-*.ts` +
 `prisma/create-realestate-*-calculators.ts`), all under Finance Calculators > Real Estate
@@ -279,3 +293,10 @@ keep that file in mind.
   independent check (IRR via NPV = 0, PMI drop month by simulation, DSCR-limited loan, 28% rule
   price, target cash-on-cash price, rent-vs-own brute force), a content check and a
   zero/max/random stress test. `tsc`/`lint`/`build` clean.
+- 2026-09-29: Built the "Crypto Calculators" batch (currency, forex, forwards/parity, hedging, crypto and
+  precious metals): 86 new tools across 9 sub-batches, 3 existing currency tools moved into the new
+  crypto-calculators category, old Currency & Exchange category deleted. Added optional result-line
+  `decimals`. Verified with an independent check (forward rate via parity identity, covered-interest
+  arbitrage by cash flows, cross rate chain, pip value for a base-currency account, hedge ratio, account
+  growth loop, rollover, geometric NEER, stop-loss round trip, invoice target, gold value, Modified Dietz),
+  a content check and a zero/max/random stress test. `tsc`/`lint`/`build` clean.

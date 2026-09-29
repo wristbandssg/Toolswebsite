@@ -129,7 +129,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     }
   }
 
-  function formatValue(n: number, format?: "number" | "currency" | "percentage", currency?: string) {
+  function formatValue(n: number, format?: "number" | "currency" | "percentage", currency?: string, decimals?: number) {
     if (format === "currency") {
       const code = currency ?? "USD";
       const locale = CURRENCY_LOCALE[code] ?? "en-US";
@@ -138,11 +138,11 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     if (format === "percentage") {
       return `${n.toFixed(2)}%`;
     }
-    return n.toLocaleString();
+    return decimals === undefined ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: decimals });
   }
 
   function formatOutput(n: number) {
-    return formatValue(n, result?.format, result?.currency);
+    return formatValue(n, result?.format, result?.currency, result?.decimals);
   }
 
   // Drives the "$ Results" header symbol — the single-output `result`
@@ -263,7 +263,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                     {highlightLine.label}
                   </p>
                   <p className="mt-1 text-3xl font-bold">
-                    {formatValue(breakdown[highlightLine.key], highlightLine.format, highlightLine.currency)}
+                    {formatValue(breakdown[highlightLine.key], highlightLine.format, highlightLine.currency, highlightLine.decimals)}
                   </p>
                 </div>
               ) : null}
@@ -279,7 +279,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                           key={line.key}
                           className="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-400 dark:bg-gray-800/60"
                         >
-                          {line.label} — {formatValue(0, line.format, line.currency)}
+                          {line.label} — {formatValue(0, line.format, line.currency, line.decimals)}
                         </p>
                       );
                     }
@@ -289,7 +289,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600 dark:text-gray-300">{line.label}</span>
                           <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            {formatValue(value, line.format, line.currency)}
+                            {formatValue(value, line.format, line.currency, line.decimals)}
                           </span>
                         </div>
                         <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">

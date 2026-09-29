@@ -17,7 +17,9 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATEGORY_SLUG = "currency-exchange-calculators";
+// Moved to Crypto Calculators on 29 Sep 2026 (user request) — see
+// organize-tool-categories.ts.
+const CATEGORY_SLUG = "crypto-calculators";
 
 function paragraphsToHtml(text: string): string {
   return text

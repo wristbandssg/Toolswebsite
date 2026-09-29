@@ -73,6 +73,7 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Business Finance Calculators", slug: "business-finance-calculators" },
   { name: "Real Estate Calculators", slug: "real-estate-calculators" },
   { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
+  { name: "Crypto Calculators", slug: "crypto-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a
@@ -101,6 +102,11 @@ const TOOL_MOVES: Record<string, string> = {
   "percentage-calculator": "math-calculators",
   // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
   "retirement-savings-goal-calculator": "retirement-calculators",
+  // Moved 29 Sep 2026 with the Crypto Calculators batch (user request: the
+  // whole currency/forex/crypto list lives under Crypto Calculators).
+  "currency-converter": "crypto-calculators",
+  "forex-profit-loss-calculator": "crypto-calculators",
+  "forex-position-size-calculator": "crypto-calculators",
 };
 
 type Cat = { id: string; name: string; slug: string; parentId: string | null };

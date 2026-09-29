@@ -314,6 +314,15 @@ import { realestateSellingTaxCustomCalculators } from "./calc-engine-realestate-
 import { realestateMortgageCommercialCustomCalculators } from "./calc-engine-realestate-mortgage-commercial";
 import { realestateMultifamilyLandCustomCalculators } from "./calc-engine-realestate-multifamily-land";
 import { realestateShortTermCustomCalculators } from "./calc-engine-realestate-short-term";
+import { currencyConversionCustomCalculators } from "./calc-engine-currency-conversion";
+import { currencyRateChangesCustomCalculators } from "./calc-engine-currency-rate-changes";
+import { currencySpreadsFeesCustomCalculators } from "./calc-engine-currency-spreads-fees";
+import { currencyTravelConsumerCustomCalculators } from "./calc-engine-currency-travel-consumer";
+import { currencyForexTradeCustomCalculators } from "./calc-engine-currency-forex-trade";
+import { currencyForexCostsGrowthCustomCalculators } from "./calc-engine-currency-forex-costs-growth";
+import { currencyForwardsParityCustomCalculators } from "./calc-engine-currency-forwards-parity";
+import { currencyBusinessHedgingCustomCalculators } from "./calc-engine-currency-business-hedging";
+import { currencyCryptoMetalsCustomCalculators } from "./calc-engine-currency-crypto-metals";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -442,6 +451,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...realestateMortgageCommercialCustomCalculators,
   ...realestateMultifamilyLandCustomCalculators,
   ...realestateShortTermCustomCalculators,
+  ...currencyConversionCustomCalculators,
+  ...currencyRateChangesCustomCalculators,
+  ...currencySpreadsFeesCustomCalculators,
+  ...currencyTravelConsumerCustomCalculators,
+  ...currencyForexTradeCustomCalculators,
+  ...currencyForexCostsGrowthCustomCalculators,
+  ...currencyForwardsParityCustomCalculators,
+  ...currencyBusinessHedgingCustomCalculators,
+  ...currencyCryptoMetalsCustomCalculators,
 };
 
 export function runCalculator(
