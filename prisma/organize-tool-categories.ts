@@ -3,6 +3,12 @@
 //
 //   Finance Calculators (main category)
 //     +- Loan Calculators
+//     |    +- General Loan Calculators          (added 2 Oct 2026 — the user
+//     |    +- Personal Loan Calculators          asked for Loan Calculators to
+//     |    +- Auto & Vehicle Loan Calculators    be split into 5 sub-categories
+//     |    +- Home Improvement Loan Calculators  with the 98-tool loan
+//     |    +- Short-Term & High-Cost Loan        expansion; every existing loan
+//     |       Calculators                        tool moves into one of them)
 //     +- Mortgage Calculators
 //     +- Interest Calculators
 //     +- Investment Calculators
@@ -96,9 +102,55 @@ const TAX_COUNTRY_SLUGS = [
 // Top-level categories besides Finance Calculators.
 const OTHER_MAIN_CATEGORIES: { name: string; slug: string }[] = [{ name: "Math Calculators", slug: "math-calculators" }];
 
+// Sub-categories of Loan Calculators (added 2 Oct 2026). Tools are filed at
+// the leaf level, so once these exist Loan Calculators itself holds none.
+const LOAN_PARENT_SLUG = "loan-calculators";
+const LOAN_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "General Loan Calculators", slug: "general-loan-calculators" },
+  { name: "Personal Loan Calculators", slug: "personal-loan-calculators" },
+  { name: "Auto & Vehicle Loan Calculators", slug: "auto-vehicle-loan-calculators" },
+  { name: "Home Improvement Loan Calculators", slug: "home-improvement-loan-calculators" },
+  { name: "Short-Term & High-Cost Loan Calculators", slug: "short-term-loan-calculators" },
+];
+
+// Where each of the 58 loan tools that existed before the split goes. (The
+// 98 new loan tools are filed by their own create-loan-*-calculators.ts
+// scripts.)
+const LOAN_TOOL_GROUPS: Record<string, string[]> = {
+  "general-loan-calculators": [
+    // calc-engine-loan-core.ts
+    "loan-calculator", "loan-payment-calculator", "monthly-loan-payment-calculator", "emi-calculator",
+    "installment-loan-calculator", "loan-repayment-calculator", "amortization-calculator", "loan-interest-calculator",
+    "total-loan-cost-calculator", "simple-interest-loan-calculator", "compound-interest-loan-calculator",
+    // calc-engine-loan-solve.ts
+    "loan-amount-calculator", "loan-principal-calculator", "loan-term-calculator", "loan-rate-calculator",
+    "loan-apr-calculator", "loan-affordability-calculator", "loan-eligibility-calculator", "loan-balance-calculator",
+    "remaining-loan-balance-calculator", "loan-maturity-calculator",
+    // calc-engine-loan-payoff-refinance.ts
+    "loan-payoff-calculator", "extra-loan-payment-calculator", "early-loan-payoff-calculator", "loan-prepayment-calculator",
+    "loan-refinance-calculator", "loan-refinance-savings-calculator", "loan-break-even-calculator", "balloon-loan-calculator",
+    "interest-only-loan-calculator", "loan-comparison-calculator", "fixed-vs-variable-rate-loan-calculator",
+    // calc-engine-loan-types.ts (general ones)
+    "secured-vs-unsecured-loan-calculator", "long-term-loan-calculator",
+    // business & student loans
+    "business-loan-calculator", "business-loan-payment-calculator", "business-loan-interest-calculator",
+    "business-loan-payoff-calculator", "business-loan-apr-calculator", "business-loan-affordability-calculator",
+    "business-loan-emi-calculator", "working-capital-loan-calculator", "equipment-loan-calculator",
+    "student-loan-calculator", "student-loan-payoff-calculator", "student-loan-refinance-calculator",
+    "business-loan-amortization-calculator", "business-loan-comparison-calculator", "business-loan-refinance-calculator",
+    "commercial-loan-calculator",
+  ],
+  "personal-loan-calculators": [
+    "personal-loan-calculator", "personal-loan-refinance-calculator", "personal-loan-extra-payment-calculator",
+    "personal-loan-apr-calculator",
+  ],
+  "auto-vehicle-loan-calculators": ["auto-loan-calculator", "auto-loan-payoff-calculator", "auto-loan-refinance-calculator"],
+  "short-term-loan-calculators": ["short-term-loan-calculator"],
+};
+
 // tool slug -> category slug it must end up in.
 const TOOL_MOVES: Record<string, string> = {
-  "business-loan-calculator": "loan-calculators",
+  ...Object.fromEntries(Object.entries(LOAN_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   "percentage-calculator": "math-calculators",
   // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
   "retirement-savings-goal-calculator": "retirement-calculators",
@@ -188,9 +240,19 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
   }
   const subBySlug = new Map<string, Cat>();
   for (const sub of FINANCE_SUBCATEGORIES) {
-    const needed = moveTargets.has(sub.slug) || (sub.slug === "tax-calculators" && anyCountryExists);
+    const needed =
+      moveTargets.has(sub.slug) ||
+      (sub.slug === "tax-calculators" && anyCountryExists) ||
+      (sub.slug === LOAN_PARENT_SLUG && LOAN_SUBCATEGORIES.some((l) => moveTargets.has(l.slug)));
     const c = await ensureCategory(sub.name, sub.slug, finance.id, needed);
     if (c) subBySlug.set(sub.slug, c);
+  }
+  const loanParent = subBySlug.get(LOAN_PARENT_SLUG);
+  const loanSubs: Cat[] = [];
+  for (const sub of LOAN_SUBCATEGORIES) {
+    if (!loanParent) break;
+    const c = await ensureCategory(sub.name, sub.slug, loanParent.id, moveTargets.has(sub.slug));
+    if (c) loanSubs.push(c);
   }
   const tax = subBySlug.get("tax-calculators");
   for (const slug of TAX_COUNTRY_SLUGS) {
@@ -219,7 +281,13 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
     const c = bySlug().get(slug);
     if (c) allowed.add(c.id);
   }
-  const unplaced = tools.filter((t) => !t.categoryId || !allowed.has(t.categoryId) || t.categoryId === finance.id);
+  for (const c of loanSubs) allowed.add(c.id);
+  // Once Loan Calculators has sub-categories, a tool left directly in it
+  // needs a decision too (tools are filed at the leaf level).
+  const loanSplit = loanParent && loanSubs.length > 0 ? loanParent.id : null;
+  const unplaced = tools.filter(
+    (t) => !t.categoryId || !allowed.has(t.categoryId) || t.categoryId === finance.id || t.categoryId === loanSplit
+  );
 
   // 4. Delete every category that ends up with no tools in it or beneath it
   //    — whether or not it's part of the taxonomy — children first,

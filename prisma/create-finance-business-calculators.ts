@@ -23,7 +23,8 @@ const CATEGORY_SLUG = "business-finance-calculators";
 // was moved to Loan Calculators on 27 Sep 2026 (user request, alongside the
 // Loan Calculators batch) — see organize-tool-categories.ts.
 const CATEGORY_OVERRIDES: Record<string, string> = {
-  "business-loan-calculator": "loan-calculators",
+  // Loan Calculators was split into sub-categories on 2 Oct 2026.
+  "business-loan-calculator": "general-loan-calculators",
 };
 
 function paragraphsToHtml(text: string): string {
@@ -493,7 +494,7 @@ async function main() {
     const override = await prisma.toolCategory.findUnique({ where: { slug } });
     if (!override) {
       throw new Error(
-        `The "${slug}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, then re-run this script.`
+        `The "${slug}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, then re-run this script.`
       );
     }
     overrideIds.set(slug, override.id);

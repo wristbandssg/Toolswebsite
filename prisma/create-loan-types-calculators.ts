@@ -16,7 +16,21 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATEGORY_SLUG = "loan-calculators";
+// Re-pointed 2 Oct 2026: Loan Calculators was split into 5 sub-categories
+// (see organize-tool-categories.ts), and these tools now live in
+// Loan Calculators > General Loan Calculators, except the personal, auto and
+// short-term tools, which go to their own sub-categories.
+const CATEGORY_SLUG = "general-loan-calculators";
+const CATEGORY_OVERRIDES: Record<string, string> = {
+  "short-term-loan-calculator": "short-term-loan-calculators",
+  "personal-loan-calculator": "personal-loan-calculators",
+  "personal-loan-refinance-calculator": "personal-loan-calculators",
+  "personal-loan-extra-payment-calculator": "personal-loan-calculators",
+  "personal-loan-apr-calculator": "personal-loan-calculators",
+  "auto-loan-calculator": "auto-vehicle-loan-calculators",
+  "auto-loan-payoff-calculator": "auto-vehicle-loan-calculators",
+  "auto-loan-refinance-calculator": "auto-vehicle-loan-calculators",
+};
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -516,20 +530,32 @@ async function main() {
   const category = await prisma.toolCategory.findUnique({ where: { slug: CATEGORY_SLUG } });
   if (!category) {
     throw new Error(
-      `The "${CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, ` +
+      `The "${CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, ` +
         "then re-run this script."
     );
+  }
+
+  const overrideIds = new Map<string, string>();
+  for (const slug of new Set(Object.values(CATEGORY_OVERRIDES))) {
+    const override = await prisma.toolCategory.findUnique({ where: { slug } });
+    if (!override) {
+      throw new Error(
+        `The "${slug}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, then re-run this script.`
+      );
+    }
+    overrideIds.set(slug, override.id);
   }
 
   let created = 0;
   let updated = 0;
 
   for (const def of TOOLS) {
+    const overrideSlug = CATEGORY_OVERRIDES[def.slug];
     const toolContent = {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: overrideSlug ? overrideIds.get(overrideSlug)! : category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -563,7 +589,7 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
+  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated (filed under "${category.name}" and its sibling loan sub-categories).`);
   console.log(
     "New tools are created with status Draft — open them in /admin/tools, review, and set Status to Published " +
       "when you're happy with each one."

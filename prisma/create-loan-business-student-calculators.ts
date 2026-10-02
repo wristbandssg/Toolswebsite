@@ -20,7 +20,10 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATEGORY_SLUG = "loan-calculators";
+// Re-pointed 2 Oct 2026: Loan Calculators was split into 5 sub-categories
+// (see organize-tool-categories.ts), and these tools now live in
+// Loan Calculators > General Loan Calculators.
+const CATEGORY_SLUG = "general-loan-calculators";
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -580,7 +583,7 @@ async function main() {
   const category = await prisma.toolCategory.findUnique({ where: { slug: CATEGORY_SLUG } });
   if (!category) {
     throw new Error(
-      `The "${CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, ` +
+      `The "${CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, ` +
         "then re-run this script."
     );
   }

@@ -323,6 +323,16 @@ import { currencyForexCostsGrowthCustomCalculators } from "./calc-engine-currenc
 import { currencyForwardsParityCustomCalculators } from "./calc-engine-currency-forwards-parity";
 import { currencyBusinessHedgingCustomCalculators } from "./calc-engine-currency-business-hedging";
 import { currencyCryptoMetalsCustomCalculators } from "./calc-engine-currency-crypto-metals";
+import { loanDebtConsolidationCustomCalculators } from "./calc-engine-loan-debt-consolidation";
+import { loanMedicalDentalCustomCalculators } from "./calc-engine-loan-medical-dental";
+import { loanWeddingVacationCustomCalculators } from "./calc-engine-loan-wedding-vacation";
+import { loanHomeImprovementCustomCalculators } from "./calc-engine-loan-home-improvement";
+import { loanRenovationTimeshareCustomCalculators } from "./calc-engine-loan-renovation-timeshare";
+import { loanSolarCustomCalculators } from "./calc-engine-loan-solar";
+import { loanHighCostCustomCalculators } from "./calc-engine-loan-high-cost";
+import { loanMotorcycleCustomCalculators } from "./calc-engine-loan-motorcycle";
+import { loanBoatCustomCalculators } from "./calc-engine-loan-boat";
+import { loanRvCustomCalculators } from "./calc-engine-loan-rv";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -460,6 +470,16 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...currencyForwardsParityCustomCalculators,
   ...currencyBusinessHedgingCustomCalculators,
   ...currencyCryptoMetalsCustomCalculators,
+  ...loanDebtConsolidationCustomCalculators,
+  ...loanMedicalDentalCustomCalculators,
+  ...loanWeddingVacationCustomCalculators,
+  ...loanHomeImprovementCustomCalculators,
+  ...loanRenovationTimeshareCustomCalculators,
+  ...loanSolarCustomCalculators,
+  ...loanHighCostCustomCalculators,
+  ...loanMotorcycleCustomCalculators,
+  ...loanBoatCustomCalculators,
+  ...loanRvCustomCalculators,
 };
 
 export function runCalculator(

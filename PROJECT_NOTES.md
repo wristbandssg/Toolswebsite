@@ -4,7 +4,32 @@
 
 ## ▶️ Resume here
 
-Just built the **Crypto Calculators** batch (29 Sep 2026) from the user's 89-tool currency/forex/crypto
+Just built the **Loan Calculators expansion** (2 Oct 2026) from the user's 101-tool loan list (screenshot):
+no exact-slug duplicates, but 3 skipped — "Debt Consolidation Loan Calculator" (same tool as the existing
+debt-consolidation-calculator in Credit & Debt), "Debt Consolidation Loan Consolidation Calculator" (repeats
+it) and "Home Improvement Loan Consolidation Calculator" (too vague). 98 new tools in 10 self-contained
+sub-batches (`calc-engine-loan-*.ts` + `prisma/create-loan-*-calculators.ts`). At the user's request
+**Loan Calculators was split into 5 sub-categories** (tools are filed at the leaf level, so Loan Calculators
+itself now holds none):
+- General Loan Calculators (`general-loan-calculators`) — the 50 pre-existing general/business/student loan tools
+- Personal Loan Calculators (`personal-loan-calculators`) — 4 existing personal-loan tools + debt-consolidation
+  (12), medical-dental (11), wedding-vacation (11)
+- Auto & Vehicle Loan Calculators (`auto-vehicle-loan-calculators`) — 3 existing auto tools + motorcycle (7),
+  boat (7), rv (7)
+- Home Improvement Loan Calculators (`home-improvement-loan-calculators`) — home-improvement (13),
+  renovation-timeshare (11), solar (7)
+- Short-Term & High-Cost Loan Calculators (`short-term-loan-calculators`) — short-term-loan-calculator +
+  high-cost (12: payday, title, pawn)
+The 58 old tools are moved by `organize-tool-categories.ts` (LOAN_TOOL_GROUPS -> TOOL_MOVES); the old
+loan create scripts were re-pointed to the new sub-categories so re-running them won't undo it. New create
+scripts create their sub-category under Loan Calculators if it's missing. Facts used: the 30% federal
+residential solar credit (§25D) ended for systems installed after 31 Dec 2025 (OBBBA), so no solar tool
+assumes it; FHA annual MIP 0.55%, upfront 1.75%, min score 580 / LTV 96.5%; Rule of 78s banned on consumer
+loans > 61 months. The user said more keyword lists are coming — check each against these 98 + the rest.
+User runs git push + `npm run db:organize-categories -- --apply` + the 10 `db:create-loan-*` scripts + Render
+Manual Deploy, then asks for publishing.
+
+Before that: built the **Crypto Calculators** batch (29 Sep 2026) from the user's 89-tool currency/forex/crypto
 list: 3 already existed (currency-converter, forex-profit-loss-calculator, forex-position-size-calculator),
 86 new in 9 self-contained sub-batches (`calc-engine-currency-*.ts` + `prisma/create-currency-*-calculators.ts`):
 conversion (13), rate-changes (8), spreads-fees (10), travel-consumer (9), forex-trade (12),
@@ -300,3 +325,12 @@ keep that file in mind.
   arbitrage by cash flows, cross rate chain, pip value for a base-currency account, hedge ratio, account
   growth loop, rollover, geometric NEER, stop-loss round trip, invoice target, gold value, Modified Dietz),
   a content check and a zero/max/random stress test. `tsc`/`lint`/`build` clean.
+- 2026-10-02: Built the Loan Calculators expansion from the user's 101-tool list — 3 skipped (see
+  "Resume here"), 98 new tools in 10 sub-batches (debt-consolidation 12, medical-dental 11,
+  wedding-vacation 11, home-improvement 13, renovation-timeshare 11, solar 7, high-cost 12, motorcycle 7,
+  boat 7, rv 7). Split Loan Calculators into 5 sub-categories (General, Personal, Auto & Vehicle, Home
+  Improvement, Short-Term & High-Cost) and moved the 58 existing loan tools into them via
+  organize-tool-categories.ts (dry-run against the 29 Sep backup: 0 tools left in the parent, second run
+  a no-op). Every tool's default example numbers were checked against an independent month-by-month
+  implementation and an automated example-text checker; all 98 also run through runCalculator with
+  default/zero/min/max inputs with no NaN/Infinity. `tsc`/`lint`/`build` clean.
