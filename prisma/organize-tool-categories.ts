@@ -41,6 +41,12 @@
 //     |    +- Life Events & Travel Budget         their create scripts)
 //     |    +- Money-Saving & Spending
 //     |    +- Net Worth & Cost of Living
+//     +- Insurance Calculators                   (added 5 Oct 2026 with the
+//     |    +- Life Insurance                      73-tool insurance expansion;
+//     |    +- Health Insurance                    homeowners-insurance-calculator
+//     |    +- Auto & Vehicle Insurance            moves here from Real Estate)
+//     |    +- Home & Property Insurance
+//     |    +- Business & Specialty Insurance
 //   Math Calculators (main category, new — home of percentage-calculator)
 //
 // Plus two tool moves the user asked for: business-loan-calculator from
@@ -101,6 +107,8 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   // Added 5 Oct 2026 with the 84-tool budget expansion; its create scripts
   // make it (and its sub-categories) on first run.
   { name: "Budget Calculators", slug: "budget-calculators" },
+  // Added 5 Oct 2026 with the 73-tool insurance expansion.
+  { name: "Insurance Calculators", slug: "insurance-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a
@@ -279,12 +287,28 @@ const BUDGET_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Net Worth & Cost of Living Calculators", slug: "net-worth-cost-of-living-calculators" },
 ];
 
+// Sub-categories of Insurance Calculators (added 5 Oct 2026).
+const INSURANCE_PARENT_SLUG = "insurance-calculators";
+const INSURANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "Life Insurance Calculators", slug: "life-insurance-calculators" },
+  { name: "Health Insurance Calculators", slug: "health-insurance-calculators" },
+  { name: "Auto & Vehicle Insurance Calculators", slug: "auto-vehicle-insurance-calculators" },
+  { name: "Home & Property Insurance Calculators", slug: "home-property-insurance-calculators" },
+  { name: "Business & Specialty Insurance Calculators", slug: "business-specialty-insurance-calculators" },
+];
+
+// The one existing tool that moves into Insurance (from Real Estate).
+const INSURANCE_TOOL_GROUPS: Record<string, string[]> = {
+  "home-property-insurance-calculators": ["homeowners-insurance-calculator"],
+};
+
 // Finance sub-categories that are split one level further.
 const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] = [
   { parentSlug: LOAN_PARENT_SLUG, subs: LOAN_SUBCATEGORIES },
   { parentSlug: MORTGAGE_PARENT_SLUG, subs: MORTGAGE_SUBCATEGORIES },
   { parentSlug: INVESTMENT_PARENT_SLUG, subs: INVESTMENT_SUBCATEGORIES },
   { parentSlug: BUDGET_PARENT_SLUG, subs: BUDGET_SUBCATEGORIES },
+  { parentSlug: INSURANCE_PARENT_SLUG, subs: INSURANCE_SUBCATEGORIES },
 ];
 
 // tool slug -> category slug it must end up in.
@@ -292,6 +316,7 @@ const TOOL_MOVES: Record<string, string> = {
   ...Object.fromEntries(Object.entries(LOAN_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   ...Object.fromEntries(Object.entries(MORTGAGE_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   ...Object.fromEntries(Object.entries(INVESTMENT_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
+  ...Object.fromEntries(Object.entries(INSURANCE_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   "percentage-calculator": "math-calculators",
   // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
   "retirement-savings-goal-calculator": "retirement-calculators",

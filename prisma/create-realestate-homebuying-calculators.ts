@@ -30,6 +30,27 @@ const prisma = new PrismaClient();
 
 const CATEGORY_SLUG = "real-estate-calculators";
 
+// Moved 5 Oct 2026 (user request): the homeowners insurance tool now lives in
+// Finance > Insurance Calculators > Home & Property Insurance Calculators,
+// created here if it doesn't exist yet.
+const INSURANCE_TOOL_SLUG = "homeowners-insurance-calculator";
+const INSURANCE_PARENT = { name: "Insurance Calculators", slug: "insurance-calculators" };
+const INSURANCE_SUB = { name: "Home & Property Insurance Calculators", slug: "home-property-insurance-calculators" };
+
+async function ensureInsuranceCategory(financeParentId: string | null) {
+  const sub = await prisma.toolCategory.findUnique({ where: { slug: INSURANCE_SUB.slug } });
+  if (sub) return sub;
+  let parent = await prisma.toolCategory.findUnique({ where: { slug: INSURANCE_PARENT.slug } });
+  if (!parent) {
+    parent = await prisma.toolCategory.create({
+      data: { name: INSURANCE_PARENT.name, slug: INSURANCE_PARENT.slug, parentId: financeParentId, templateKey: "category-template-1", viewStyle: "grid" },
+    });
+  }
+  return prisma.toolCategory.create({
+    data: { name: INSURANCE_SUB.name, slug: INSURANCE_SUB.slug, parentId: parent.id, templateKey: "category-template-1", viewStyle: "grid" },
+  });
+}
+
 function paragraphsToHtml(text: string): string {
   return text
     .split(/\n\s*\n/)
@@ -401,6 +422,8 @@ async function main() {
     );
   }
 
+  const insuranceCategory = await ensureInsuranceCategory(category.parentId);
+
   let created = 0;
   let updated = 0;
 
@@ -409,7 +432,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: def.slug === INSURANCE_TOOL_SLUG ? insuranceCategory.id : category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -443,7 +466,7 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
+  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, filed under "${category.name}" (the homeowners insurance tool under "${INSURANCE_SUB.name}").`);
   console.log(
     "New tools are created with status Draft — open them in /admin/tools, review, and set Status to Published " +
       "when you're happy with each one."

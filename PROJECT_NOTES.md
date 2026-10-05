@@ -4,7 +4,22 @@
 
 ## ▶️ Resume here
 
-Just built the **Budget Calculators expansion** (5 Oct 2026) from the user's 147-keyword list: 15 already built
+Just built the **Insurance Calculators expansion** (5 Oct 2026) from the user's 119-keyword list: 1 already built
+(Home Insurance Premium = homeowners-insurance-calculator) and 45 merged (see calc-engine-ins-life-core.ts and each
+engine header — e.g. Jewelry/Fine Art/Collectibles/Instrument/Camera -> jewelry-insurance; Trip Cancellation/Cruise/
+Adventure/International Student -> travel-insurance; Multi-Car -> bundle discount; Grace Period -> lapse). 73 new tools
+in 11 batches (`ins-*`). **New Finance sub-category "Insurance Calculators"** (insurance-calculators) with 5
+sub-categories: Life (12), Health (14), Auto & Vehicle (15), Home & Property (19 + homeowners moved from Real
+Estate), Business & Specialty (13). The create-ins-* scripts create Insurance Calculators and their sub-category on
+first run (head-insurance/tail-insurance template); create-realestate-homebuying now files homeowners-insurance into
+Home & Property; organize-tool-categories.ts lists Insurance in FINANCE_SUBCATEGORIES, SPLITS and TOOL_MOVES (1 move).
+Premium tools take the user's quote/rate and apply documented factors. 2026 facts used: ACA applicable % 2.10–9.96%
+with the 400% FPL cliff, FPL $15,650 + $5,500/person; COBRA 102%; Medicare Part B $202.90, deductible $283; estate
+exemption $15M; NFIP $250k/$100k; crop subsidy 67%→38% (50–85% coverage, basic/optional units). User committed Budget
+as f0debf2. This deploy: commit, push, the 11 `db:create-ins-*` scripts, `npm run db:organize-categories -- --apply`
+(moves homeowners-insurance-calculator), Render Manual Deploy.
+
+Before that: Just built the **Budget Calculators expansion** (5 Oct 2026) from the user's 147-keyword list: 15 already built
 (Home Maintenance 1% = property-maintenance-cost; Home Renovation = renovation-cost; Budget Variance + Quarterly Review =
 budget-variance; Rent-to-Income; Debt Payment % = debt-to-income-ratio; Savings % = savings-rate; Side Hustle =
 freelance-income; Freelance Tax Set-Aside = self-employment-tax-estimator; 6 sinking funds = sinking-fund) and 48 merged
@@ -499,3 +514,7 @@ keep that file in mind.
 - 2026-10-05: Built the Budget expansion from the user's 147-keyword list — 15 already built, 48 merged; 84 new
   tools in 12 batches under a new Finance > Budget Calculators category with 5 sub-categories. 29 numbers
   re-derived independently; runCalculator finite on all 84. `tsc`/`lint`/`build` clean.
+- 2026-10-05: Built the Insurance expansion from the user's 119-keyword list — 1 already built, 45 merged; 73 new
+  tools in 11 batches under a new Finance > Insurance Calculators category with 5 sub-categories; homeowners
+  insurance moved there from Real Estate. 153 numbers re-derived independently; runCalculator finite on all 73;
+  organize dry run OK (homeowners moves, rerun 0). `tsc`/`lint`/`build` clean.

@@ -403,6 +403,17 @@ import { budgetSpendingAnalysisCustomCalculators } from "./calc-engine-budget-sp
 import { budgetShoppingSavingsCustomCalculators } from "./calc-engine-budget-shopping-savings";
 import { budgetHomeGreenSavingsCustomCalculators } from "./calc-engine-budget-home-green-savings";
 import { budgetNetWorthColCustomCalculators } from "./calc-engine-budget-net-worth-col";
+import { insLifeCoreCustomCalculators } from "./calc-engine-ins-life-core";
+import { insLifePlanningCustomCalculators } from "./calc-engine-ins-life-planning";
+import { insHealthPlansCustomCalculators } from "./calc-engine-ins-health-plans";
+import { insHealthCoverageCustomCalculators } from "./calc-engine-ins-health-coverage";
+import { insAutoCoreCustomCalculators } from "./calc-engine-ins-auto-core";
+import { insAutoSpecialtyCustomCalculators } from "./calc-engine-ins-auto-specialty";
+import { insHomePropertyCustomCalculators } from "./calc-engine-ins-home-property";
+import { insHomeValuablesCustomCalculators } from "./calc-engine-ins-home-valuables";
+import { insPolicyCostsCustomCalculators } from "./calc-engine-ins-policy-costs";
+import { insBusinessCustomCalculators } from "./calc-engine-ins-business";
+import { insSpecialtyPersonalCustomCalculators } from "./calc-engine-ins-specialty-personal";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -620,6 +631,17 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...budgetShoppingSavingsCustomCalculators,
   ...budgetHomeGreenSavingsCustomCalculators,
   ...budgetNetWorthColCustomCalculators,
+  ...insLifeCoreCustomCalculators,
+  ...insLifePlanningCustomCalculators,
+  ...insHealthPlansCustomCalculators,
+  ...insHealthCoverageCustomCalculators,
+  ...insAutoCoreCustomCalculators,
+  ...insAutoSpecialtyCustomCalculators,
+  ...insHomePropertyCustomCalculators,
+  ...insHomeValuablesCustomCalculators,
+  ...insPolicyCostsCustomCalculators,
+  ...insBusinessCustomCalculators,
+  ...insSpecialtyPersonalCustomCalculators,
 };
 
 export function runCalculator(
