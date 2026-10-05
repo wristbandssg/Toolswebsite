@@ -46,6 +46,14 @@ written into the app — see "Content-language rules" below.
 - When I send a tool list to check ("ei goli ki age kora hoyche?"), answer SHORT: how many are
   already built, how many new ones need to be built, and the main/sub category — no long tables
   unless I ask for details. (Added 28 Sep 2026.)
+- Keyword-list checks (standing rule, 3 Oct 2026): (1) drop anything already built; (2) drop
+  duplicates inside the new list; (3) drop or merge keywords with the same calculator purpose or
+  search intent (synonyms, singular/plural, wording variants — e.g. "signature loan" = personal
+  loan) and keep only the best one; (4) put each keyword in the one Category/Subcategory that
+  matches its main intent (what the user actually wants to calculate, not just its words);
+  (5) new subcategories only when needed — Loan Calculators may have at most 5 (it already has
+  General, Personal, Auto & Vehicle, Home Improvement, Short-Term & High-Cost); (6) move anything
+  that's in the wrong place; (7) give a clean final list. Still answer SHORT (see above).
 - Before every new batch of calculator tools, check candidate slugs against both the
   existing site inventory AND any tools already built earlier in the same session, since
   a static inventory snapshot won't include same-session work yet.

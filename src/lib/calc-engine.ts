@@ -333,6 +333,55 @@ import { loanHighCostCustomCalculators } from "./calc-engine-loan-high-cost";
 import { loanMotorcycleCustomCalculators } from "./calc-engine-loan-motorcycle";
 import { loanBoatCustomCalculators } from "./calc-engine-loan-boat";
 import { loanRvCustomCalculators } from "./calc-engine-loan-rv";
+import { loanLifeEventsCustomCalculators } from "./calc-engine-loan-life-events";
+import { loanJewelryFurnitureCustomCalculators } from "./calc-engine-loan-jewelry-furniture";
+import { loanApplianceElectronicsCustomCalculators } from "./calc-engine-loan-appliance-electronics";
+import { loanFarmEquipmentCustomCalculators } from "./calc-engine-loan-farm-equipment";
+import { loanCosignedJointCustomCalculators } from "./calc-engine-loan-cosigned-joint";
+import { mortgageConstructionCustomCalculators } from "./calc-engine-mortgage-construction";
+import { mortgageBridgeCustomCalculators } from "./calc-engine-mortgage-bridge";
+import { creditLineBuilderCustomCalculators } from "./calc-engine-credit-line-builder";
+import { loanSbaCustomCalculators } from "./calc-engine-loan-sba";
+import { loanSbaProgramsCustomCalculators } from "./calc-engine-loan-sba-programs";
+import { loanMicroloanCustomCalculators } from "./calc-engine-loan-microloan";
+import { loanPeerToPeerCustomCalculators } from "./calc-engine-loan-peer-to-peer";
+import { loanFranchiseCustomCalculators } from "./calc-engine-loan-franchise";
+import { loanInventoryFinancingCustomCalculators } from "./calc-engine-loan-inventory-financing";
+import { loanInvoiceMcaCustomCalculators } from "./calc-engine-loan-invoice-mca";
+import { loanAgriculturalCustomCalculators } from "./calc-engine-loan-agricultural";
+import { loanFleetCustomCalculators } from "./calc-engine-loan-fleet";
+import { loanTruckTrailerCustomCalculators } from "./calc-engine-loan-truck-trailer";
+import { mortgageCommercialRealEstateCustomCalculators } from "./calc-engine-mortgage-commercial-real-estate";
+import { loanPowersportsCustomCalculators } from "./calc-engine-loan-powersports";
+import { loanInstrumentLegalCustomCalculators } from "./calc-engine-loan-instrument-legal";
+import { loanCosmeticFertilityCustomCalculators } from "./calc-engine-loan-cosmetic-fertility";
+import { loanAdoptionTaxDebtCustomCalculators } from "./calc-engine-loan-adoption-tax-debt";
+import { loanMedicalEquipmentCustomCalculators } from "./calc-engine-loan-medical-equipment";
+import { loanStartupBusinessCustomCalculators } from "./calc-engine-loan-startup-business";
+import { loanTradePoTermCustomCalculators } from "./calc-engine-loan-trade-po-term";
+import { loanAssetBasedBridgeCustomCalculators } from "./calc-engine-loan-asset-based-bridge";
+import { loanPersonalCoreCustomCalculators } from "./calc-engine-loan-personal-core";
+import { loanSecuredPersonalCustomCalculators } from "./calc-engine-loan-secured-personal";
+import { loanBailHolidayCustomCalculators } from "./calc-engine-loan-bail-holiday";
+import { loanBadCreditEmergencyCustomCalculators } from "./calc-engine-loan-bad-credit-emergency";
+import { loanGreenEnergyCustomCalculators } from "./calc-engine-loan-green-energy";
+import { mortgageDownPaymentAssistanceCustomCalculators } from "./calc-engine-mortgage-down-payment-assistance";
+import { creditDebtSettlementTransferCustomCalculators } from "./calc-engine-credit-debt-settlement-transfer";
+import { loanStudentFederalCustomCalculators } from "./calc-engine-loan-student-federal";
+import { mortgageLoanTypesCustomCalculators } from "./calc-engine-mortgage-loan-types";
+import { mortgageRefinanceEquityCustomCalculators } from "./calc-engine-mortgage-refinance-equity";
+import { mortgageBuyerProgramsCustomCalculators } from "./calc-engine-mortgage-buyer-programs";
+import { mortgagePropertyTypesCustomCalculators } from "./calc-engine-mortgage-property-types";
+import { mortgageCostsInsuranceCustomCalculators } from "./calc-engine-mortgage-costs-insurance";
+import { interestMethodsCustomCalculators } from "./calc-engine-interest-methods";
+import { interestRateToolsCustomCalculators } from "./calc-engine-interest-rate-tools";
+import { savingsCdTypesCustomCalculators } from "./calc-engine-savings-cd-types";
+import { savingsIndiaSchemesCustomCalculators } from "./calc-engine-savings-india-schemes";
+import { savingsTaxAdvantagedCustomCalculators } from "./calc-engine-savings-tax-advantaged";
+import { investmentBondsCustomCalculators } from "./calc-engine-investment-bonds";
+import { loanBnplLayawayCustomCalculators } from "./calc-engine-loan-bnpl-layaway";
+import { retirementRrspCustomCalculators } from "./calc-engine-retirement-rrsp";
+import { salaryGratuityCustomCalculators } from "./calc-engine-salary-gratuity";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -480,6 +529,55 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...loanMotorcycleCustomCalculators,
   ...loanBoatCustomCalculators,
   ...loanRvCustomCalculators,
+  ...loanLifeEventsCustomCalculators,
+  ...loanJewelryFurnitureCustomCalculators,
+  ...loanApplianceElectronicsCustomCalculators,
+  ...loanFarmEquipmentCustomCalculators,
+  ...loanCosignedJointCustomCalculators,
+  ...mortgageConstructionCustomCalculators,
+  ...mortgageBridgeCustomCalculators,
+  ...creditLineBuilderCustomCalculators,
+  ...loanSbaCustomCalculators,
+  ...loanSbaProgramsCustomCalculators,
+  ...loanMicroloanCustomCalculators,
+  ...loanPeerToPeerCustomCalculators,
+  ...loanFranchiseCustomCalculators,
+  ...loanInventoryFinancingCustomCalculators,
+  ...loanInvoiceMcaCustomCalculators,
+  ...loanAgriculturalCustomCalculators,
+  ...loanFleetCustomCalculators,
+  ...loanTruckTrailerCustomCalculators,
+  ...mortgageCommercialRealEstateCustomCalculators,
+  ...loanPowersportsCustomCalculators,
+  ...loanInstrumentLegalCustomCalculators,
+  ...loanCosmeticFertilityCustomCalculators,
+  ...loanAdoptionTaxDebtCustomCalculators,
+  ...loanMedicalEquipmentCustomCalculators,
+  ...loanStartupBusinessCustomCalculators,
+  ...loanTradePoTermCustomCalculators,
+  ...loanAssetBasedBridgeCustomCalculators,
+  ...loanPersonalCoreCustomCalculators,
+  ...loanSecuredPersonalCustomCalculators,
+  ...loanBailHolidayCustomCalculators,
+  ...loanBadCreditEmergencyCustomCalculators,
+  ...loanGreenEnergyCustomCalculators,
+  ...mortgageDownPaymentAssistanceCustomCalculators,
+  ...creditDebtSettlementTransferCustomCalculators,
+  ...loanStudentFederalCustomCalculators,
+  ...mortgageLoanTypesCustomCalculators,
+  ...mortgageRefinanceEquityCustomCalculators,
+  ...mortgageBuyerProgramsCustomCalculators,
+  ...mortgagePropertyTypesCustomCalculators,
+  ...mortgageCostsInsuranceCustomCalculators,
+  ...interestMethodsCustomCalculators,
+  ...interestRateToolsCustomCalculators,
+  ...savingsCdTypesCustomCalculators,
+  ...savingsIndiaSchemesCustomCalculators,
+  ...savingsTaxAdvantagedCustomCalculators,
+  ...investmentBondsCustomCalculators,
+  ...loanBnplLayawayCustomCalculators,
+  ...retirementRrspCustomCalculators,
+  ...salaryGratuityCustomCalculators,
 };
 
 export function runCalculator(

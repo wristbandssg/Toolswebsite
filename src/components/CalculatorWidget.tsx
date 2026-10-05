@@ -133,10 +133,14 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     if (format === "currency") {
       const code = currency ?? "USD";
       const locale = CURRENCY_LOCALE[code] ?? "en-US";
-      return new Intl.NumberFormat(locale, { style: "currency", currency: code }).format(n);
+      return new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: code,
+        ...(decimals !== undefined ? { minimumFractionDigits: Math.min(2, decimals), maximumFractionDigits: decimals } : {}),
+      }).format(n);
     }
     if (format === "percentage") {
-      return `${n.toFixed(2)}%`;
+      return `${n.toFixed(decimals ?? 2)}%`;
     }
     return decimals === undefined ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: decimals });
   }

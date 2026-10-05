@@ -10,6 +10,12 @@
 //     |    +- Short-Term & High-Cost Loan        expansion; every existing loan
 //     |       Calculators                        tool moves into one of them)
 //     +- Mortgage Calculators
+//     |    +- Mortgage Payment & Type Calculators       (added 5 Oct 2026 —
+//     |    +- Refinance & Home Equity Calculators         the user approved
+//     |    +- Home Buyer Program Calculators              splitting Mortgage
+//     |    +- Property & Construction Mortgage            into 5 sub-categories
+//     |       Calculators                                 with the 37-tool
+//     |    +- Mortgage Cost & Insurance Calculators       mortgage expansion)
 //     +- Interest Calculators
 //     +- Investment Calculators
 //     +- Savings Calculators
@@ -148,9 +154,70 @@ const LOAN_TOOL_GROUPS: Record<string, string[]> = {
   "short-term-loan-calculators": ["short-term-loan-calculator"],
 };
 
+// Sub-categories of Mortgage Calculators (added 5 Oct 2026). As with Loan,
+// tools are filed at the leaf level once these exist.
+const MORTGAGE_PARENT_SLUG = "mortgage-calculators";
+const MORTGAGE_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "Mortgage Payment & Type Calculators", slug: "mortgage-payment-type-calculators" },
+  { name: "Refinance & Home Equity Calculators", slug: "refinance-home-equity-calculators" },
+  { name: "Home Buyer Program Calculators", slug: "home-buyer-program-calculators" },
+  { name: "Property & Construction Mortgage Calculators", slug: "property-construction-mortgage-calculators" },
+  { name: "Mortgage Cost & Insurance Calculators", slug: "mortgage-cost-insurance-calculators" },
+];
+
+// Where each of the 67 mortgage tools that existed before the split goes.
+// (The 37 new mortgage tools are filed by their own create scripts.)
+const MORTGAGE_TOOL_GROUPS: Record<string, string[]> = {
+  "mortgage-payment-type-calculators": [
+    "mortgage-calculator", "mortgage-interest-calculator", "home-loan-calculator", "mortgage-amortization-calculator",
+    "mortgage-payoff-calculator", "debt-to-income-dti-mortgage-calculator", "extra-mortgage-payment-calculator",
+    "mortgage-prepayment-calculator", "biweekly-mortgage-payment-calculator", "15-year-vs-30-year-mortgage-calculator",
+    "mortgage-term-comparison-calculator", "fixed-rate-mortgage-calculator", "adjustable-rate-mortgage-arm-calculator",
+    "fixed-rate-vs-arm-calculator", "interest-only-mortgage-calculator", "balloon-mortgage-calculator",
+    "jumbo-mortgage-calculator", "mortgage-comparison-calculator",
+  ],
+  "refinance-home-equity-calculators": [
+    "mortgage-refinance-calculator", "refinance-break-even-calculator", "cash-out-refinance-calculator",
+    "mortgage-recast-calculator",
+    "bridge-loan-calculator", "bridge-loan-payment-calculator", "bridge-loan-payoff-calculator",
+    "bridge-loan-interest-calculator", "bridge-loan-affordability-calculator", "bridge-loan-comparison-calculator",
+    "bridge-loan-eligibility-calculator",
+  ],
+  "home-buyer-program-calculators": [
+    "fha-loan-calculator", "va-loan-calculator", "usda-loan-calculator", "first-time-home-buyer-mortgage-calculator",
+    "down-payment-assistance-loan-calculator", "down-payment-assistance-loan-payment-calculator",
+    "down-payment-assistance-loan-payoff-calculator", "down-payment-assistance-loan-interest-calculator",
+    "down-payment-assistance-loan-affordability-calculator", "down-payment-assistance-loan-comparison-calculator",
+    "down-payment-assistance-loan-eligibility-calculator",
+  ],
+  "property-construction-mortgage-calculators": [
+    "construction-loan-calculator", "construction-loan-payment-calculator", "construction-loan-payoff-calculator",
+    "construction-loan-refinance-calculator", "construction-loan-apr-calculator", "construction-loan-affordability-calculator",
+    "construction-loan-eligibility-calculator", "construction-loan-interest-calculator",
+    "construction-loan-early-payoff-calculator", "construction-loan-comparison-calculator",
+    "construction-loan-amortization-calculator", "construction-loan-prequalification-calculator",
+    "construction-loan-total-cost-calculator",
+    "commercial-real-estate-loan-payment-calculator", "commercial-real-estate-loan-payoff-calculator",
+    "commercial-real-estate-loan-refinance-calculator", "commercial-real-estate-loan-apr-calculator",
+    "commercial-real-estate-loan-interest-calculator", "commercial-real-estate-loan-comparison-calculator",
+    "commercial-real-estate-loan-amortization-calculator", "commercial-real-estate-loan-total-cost-calculator",
+  ],
+  "mortgage-cost-insurance-calculators": [
+    "mortgage-apr-calculator", "mortgage-points-calculator", "mortgage-discount-points-break-even-calculator",
+    "private-mortgage-insurance-pmi-calculator", "loan-to-value-ltv-calculator", "mortgage-tax-deduction-calculator",
+  ],
+};
+
+// Finance sub-categories that are split one level further.
+const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] = [
+  { parentSlug: LOAN_PARENT_SLUG, subs: LOAN_SUBCATEGORIES },
+  { parentSlug: MORTGAGE_PARENT_SLUG, subs: MORTGAGE_SUBCATEGORIES },
+];
+
 // tool slug -> category slug it must end up in.
 const TOOL_MOVES: Record<string, string> = {
   ...Object.fromEntries(Object.entries(LOAN_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
+  ...Object.fromEntries(Object.entries(MORTGAGE_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   "percentage-calculator": "math-calculators",
   // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
   "retirement-savings-goal-calculator": "retirement-calculators",
@@ -243,16 +310,21 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
     const needed =
       moveTargets.has(sub.slug) ||
       (sub.slug === "tax-calculators" && anyCountryExists) ||
-      (sub.slug === LOAN_PARENT_SLUG && LOAN_SUBCATEGORIES.some((l) => moveTargets.has(l.slug)));
+      SPLITS.some((sp) => sp.parentSlug === sub.slug && sp.subs.some((l) => moveTargets.has(l.slug)));
     const c = await ensureCategory(sub.name, sub.slug, finance.id, needed);
     if (c) subBySlug.set(sub.slug, c);
   }
-  const loanParent = subBySlug.get(LOAN_PARENT_SLUG);
-  const loanSubs: Cat[] = [];
-  for (const sub of LOAN_SUBCATEGORIES) {
-    if (!loanParent) break;
-    const c = await ensureCategory(sub.name, sub.slug, loanParent.id, moveTargets.has(sub.slug));
-    if (c) loanSubs.push(c);
+  // parent id -> its sub-categories that exist
+  const splitSubs = new Map<string, Cat[]>();
+  for (const sp of SPLITS) {
+    const parent = subBySlug.get(sp.parentSlug);
+    if (!parent) continue;
+    const found: Cat[] = [];
+    for (const sub of sp.subs) {
+      const c = await ensureCategory(sub.name, sub.slug, parent.id, moveTargets.has(sub.slug));
+      if (c) found.push(c);
+    }
+    splitSubs.set(parent.id, found);
   }
   const tax = subBySlug.get("tax-calculators");
   for (const slug of TAX_COUNTRY_SLUGS) {
@@ -281,12 +353,12 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
     const c = bySlug().get(slug);
     if (c) allowed.add(c.id);
   }
-  for (const c of loanSubs) allowed.add(c.id);
-  // Once Loan Calculators has sub-categories, a tool left directly in it
-  // needs a decision too (tools are filed at the leaf level).
-  const loanSplit = loanParent && loanSubs.length > 0 ? loanParent.id : null;
+  for (const subs of splitSubs.values()) for (const c of subs) allowed.add(c.id);
+  // Once Loan or Mortgage Calculators has sub-categories, a tool left
+  // directly in it needs a decision too (tools are filed at the leaf level).
+  const splitParents = new Set([...splitSubs].filter(([, subs]) => subs.length > 0).map(([id]) => id));
   const unplaced = tools.filter(
-    (t) => !t.categoryId || !allowed.has(t.categoryId) || t.categoryId === finance.id || t.categoryId === loanSplit
+    (t) => !t.categoryId || !allowed.has(t.categoryId) || t.categoryId === finance.id || splitParents.has(t.categoryId)
   );
 
   // 4. Delete every category that ends up with no tools in it or beneath it

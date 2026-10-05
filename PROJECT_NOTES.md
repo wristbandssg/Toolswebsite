@@ -4,7 +4,105 @@
 
 ## ▶️ Resume here
 
-Just built the **Loan Calculators expansion** (2 Oct 2026) from the user's 101-tool loan list (screenshot):
+Just built the **Interest Calculators expansion** (5 Oct 2026) from the user's 67-keyword list: 13 already built
+(Savings Account, CD, Money Market, Credit Card, High-Yield Savings, Simple/Compound Interest Savings, Real Interest
+Rate, Interest Coverage Ratio, Jumbo CD = cd-calculator, Installment Plan, Post-Dated = daily-interest, Christmas
+Club = weekly-savings) and 8 merged (Promotional + Store Card -> Deferred Interest; Prime + SOFR -> Variable Rate;
+Floor -> Collar; Savings Bond -> Series EE; No-Penalty CD -> CD Early Withdrawal; Cooperative Society -> Fixed
+Deposit). 46 new tools in 9 batches, no new categories: `interest-methods` (9) + `interest-rate-tools` (9) ->
+Interest; `savings-cd-types` (6), `savings-india-schemes` (7, INR), `savings-tax-advantaged` (3: HSA USD, Cash
+ISA GBP, TFSA CAD) -> Savings; `investment-bonds` (7) -> Investment; `loan-bnpl-layaway` (3) -> Loan > Short-Term;
+`retirement-rrsp` (1, CAD) -> Retirement; `salary-gratuity` (1, INR) -> Salary & Income. Facts used: HSA 2026
+$4,400/$8,750 +$1,000; TFSA 2026 $7,000 ($109,000 cumulative); RRSP 2026 $33,810; ISA £20,000 (cash ISA £12,000 for
+under-65s announced from Apr 2027); gift/other rates are inputs. Savings Calculators now ~78 tools, still flat
+(user can ask for a 5-way split). Example placeholders now also support {r:} ₹, {g:} £, {c:} C$.
+Deploy now covers everything since 509994b: commit, push, all 49 `db:create-*` scripts, then
+`npm run db:organize-categories -- --apply`, Render Manual Deploy.
+
+Before that: Just built the **Mortgage Calculators expansion** (5 Oct 2026) from the user's 59-keyword list: 17 already built
+(5/1, 7/1, 10/1, Interest-Only ARM = ARM / interest-only-mortgage; Non-Conforming, Jumbo ARM, Super Jumbo =
+jumbo-mortgage; Construction-to-Permanent; Bridge; Investment Property; Rate-and-Term + Conventional Streamline =
+mortgage-refinance; MI Removal = PMI calculator; HOA Fee Impact; Pre-Approval = mortgage-affordability; State HFA =
+DPA tools; First-Generation = first-time-home-buyer) and 5 merged (Portfolio + No-Doc -> Non-QM, HomeStyle -> FHA
+203k, Home Possible -> HomeReady, Split MI -> Lender-Paid MI). 37 new tools, one per keyword, in 5 batches.
+**Mortgage Calculators is now split into 5 sub-categories** (user approved): Mortgage Payment & Type, Refinance &
+Home Equity, Home Buyer Program, Property & Construction Mortgage, Mortgage Cost & Insurance.
+organize-tool-categories.ts (SPLITS + MORTGAGE_TOOL_GROUPS) moves the 67 older mortgage tools; the 7 older
+create-mortgage-* scripts now file into the sub-categories and create a missing one. Dry run on the 2 Oct backup:
+32 moves, mortgage-calculators left with 0 direct tools, second run 0 changes.
+Deploy now covers Loan expansions 2–6 + this: commit, push, all 40 `db:create-*` scripts, then
+`npm run db:organize-categories -- --apply`, Render Manual Deploy.
+
+Before that: Just built **Loan Calculators expansion 6** (5 Oct 2026) from the user's 70-keyword list: 63 already built
+(Term Loan = business-loan-*, Unsecured Personal = personal-loan-*), none merged. 7 new Student Loan tools in
+`loan-student-federal`, filed under Loan > General Loan Calculators next to the existing student-loan-* tools
+(Loan already has its 5 sub-categories): graduate, Parent PLUS, private, federal (subsidized vs unsubsidized),
+forgiveness (PSLF/IBR/RAP), consolidation (weighted rate rounded up to 1/8%), income-driven repayment.
+Rules from the July 2025 law: Grad PLUS closed and Parent PLUS capped at $20,000/yr from 1 Jul 2026; RAP
+1–10% of AGI, -$50/dependent, $10 minimum; IDR forgiveness taxable from 2026. The poverty guideline input
+defaults to the 2025 HHS figure ($15,650) — update it when asked.
+Expansions 2–5 are STILL uncommitted (HEAD 509994b), so the deploy covers all five: `git commit -F
+.git/NEXT_COMMIT_MSG.txt`, push, all 35 `db:create-*` scripts, Render Manual Deploy, then publishing on request.
+
+Before that: built **Loan Calculators expansion 5** (4 Oct 2026) from the user's 150-keyword list: 25 already built
+under another name (Term Loan x9 = business-loan-*, Revolving Credit x7 = line-of-credit-*, 7 Unsecured
+Personal Loan tools = personal-loan-*/debt-consolidation, Secured Comparison = secured-vs-unsecured-loan,
+Co-Signer Release = cosigned-loan-payoff) and 24 merged (Prequalification/Early Payoff/Consolidation,
+No-Credit-Check -> Bad Credit, Same-Day -> Emergency, Christmas -> Holiday, Co-Signer Release Payment/Cost).
+The other Unsecured Personal Loan tools were built as personal-loan-* (stronger keyword, same intent).
+101 new tools in 10 sub-batches, no new categories:
+- Loan > General: `loan-startup-business` (11), `loan-trade-po-term` (10: trade credit 4, PO financing 4,
+  term loan eligibility + total cost), `loan-asset-based-bridge` (14: ABL 7, bridge business loan 7)
+- Loan > Personal: `loan-personal-core` (6 personal-loan-*), `loan-secured-personal` (10), `loan-bail-holiday` (8)
+- Loan > Short-Term & High-Cost: `loan-bad-credit-emergency` (14)
+- Loan > Home Improvement: `loan-green-energy` (7; efficiency upgrades — 25C/25D ended after 2025)
+- Mortgage: `mortgage-down-payment-assistance` (7); Credit & Debt: `credit-debt-settlement-transfer` (14)
+Expansions 2–4 were STILL uncommitted at that point (HEAD 509994b; the user's earlier commit attempts didn't go through),
+so the deploy covers all four: `git commit -F .git/NEXT_COMMIT_MSG.txt`, push, all 34 `db:create-*`
+scripts, Render Manual Deploy, then publishing on request.
+
+Before that: built **Loan Calculators expansion 4** (3 Oct 2026) from the user's 43-keyword list: none already built,
+none merged (each "Cost" tool answers a different question from its main calculator). 43 new tools in 5
+self-contained sub-batches, no new categories:
+- Loan > Auto & Vehicle Loan Calculators: `loan-powersports` (12: golf cart, ATV, snowmobile)
+- Loan > Personal Loan Calculators: `loan-instrument-legal` (8: musical instrument, legal fee incl.
+  pre-settlement funding), `loan-cosmetic-fertility` (8), `loan-adoption-tax-debt` (11; 2026 adoption
+  credit $17,670 / $5,120 refundable; IRS 7% interest, 0.25%/0.5% failure-to-pay, $50,000 online plan limit)
+- Loan > General Loan Calculators: `loan-medical-equipment` (4; practice equipment, Section 179 vs lease)
+Expansions 2 and 3 (below) were staged but still NOT committed (HEAD is still 509994b), so the deploy block
+covers all three: git push + all 24 `db:create-*` scripts + Render Manual Deploy, then publishing on request.
+
+Before that: built **Loan Calculators expansion 3** (3 Oct 2026) from the user's 106-keyword business/vehicle loan
+list: 3 already built (CRE Loan Calculator = commercial-loan-calculator; CRE Loan Affordability and
+Eligibility = commercial-property-loan-calculator) and 14 merged as the same calculator purpose (SBA Loan
+Prequalification/Consolidation/Early Payoff; SBA 7(a) Payment/Payoff/Interest/Affordability/Comparison/
+Eligibility = the SBA Loan tools; CRE Prequalification/Consolidation/Early Payoff; MCA Payment; Trailer
+Loan Cost). 89 new tools in 11 self-contained sub-batches, no new categories:
+- Loan > General Loan Calculators: `loan-sba` (11; FY2026 guaranty fees, max spreads, 5/3/1 prepayment
+  fee), `loan-sba-programs` (8: 7(a) blended-term calculator + 504 x7), `loan-microloan` (7),
+  `loan-franchise` (7), `loan-inventory-financing` (7), `loan-invoice-mca` (10: invoice 7, MCA 3),
+  `loan-agricultural` (7; farmland, operating loan, FSA Down Payment Loan, farm ratios)
+- Loan > Personal Loan Calculators: `loan-peer-to-peer` (7)
+- Loan > Auto & Vehicle Loan Calculators: `loan-fleet` (7), `loan-truck-trailer` (10: truck 7, trailer 3)
+- Mortgage Calculators: `mortgage-commercial-real-estate` (8; IO + balloon, step-down/yield maintenance)
+Expansion 2 (below) was still uncommitted, so the deploy block covers both: git push + all 19
+`db:create-*` scripts (8 from expansion 2, 11 new) + Render Manual Deploy, then the user asks for publishing.
+
+Before that: built **Loan Calculators expansion 2** (3 Oct 2026) from the user's 99-keyword list: no exact duplicates;
+19 dropped as the same calculator purpose (new standing rule in AI_RULES.md): Signature Loan x7 (= personal
+loan tools), Personal Line of Credit x7 (merged into Line of Credit), Tractor Loan x4 (merged into Farm
+Equipment) and Construction Loan Consolidation (vague). 80 new tools in 8 self-contained sub-batches:
+- Loan > Personal Loan Calculators: `loan-life-events` (12: funeral, moving, pet), `loan-jewelry-furniture` (8;
+  jewelry = gold-backed loan + purchase financing), `loan-appliance-electronics` (8)
+- Loan > General Loan Calculators: `loan-farm-equipment` (7; annual payments, Section 179, DSCR),
+  `loan-cosigned-joint` (14)
+- Mortgage Calculators: `mortgage-construction` (13), `mortgage-bridge` (7)
+- Credit & Debt Calculators: `credit-line-builder` (11: line of credit 7, credit builder 4)
+No new categories were needed. Also made CalculatorWidget honour a result line's `decimals` for "currency"
+and "percentage" formats (previously "number" only) — affects only 2 solar per-kWh lines and the LOC daily
+rate. User runs git push + the 8 new `db:create-*` scripts + Render Manual Deploy, then asks for publishing.
+
+Before that: built the **Loan Calculators expansion** (2 Oct 2026) from the user's 101-tool loan list (screenshot):
 no exact-slug duplicates, but 3 skipped — "Debt Consolidation Loan Calculator" (same tool as the existing
 debt-consolidation-calculator in Credit & Debt), "Debt Consolidation Loan Consolidation Calculator" (repeats
 it) and "Home Improvement Loan Consolidation Calculator" (too vague). 98 new tools in 10 self-contained
@@ -334,3 +432,36 @@ keep that file in mind.
   a no-op). Every tool's default example numbers were checked against an independent month-by-month
   implementation and an automated example-text checker; all 98 also run through runCalculator with
   default/zero/min/max inputs with no NaN/Infinity. `tsc`/`lint`/`build` clean.
+- 2026-10-03: Built Loan Calculators expansion 2 from the user's 99-keyword list — 19 merged/dropped (see
+  "Resume here"), 80 new tools in 8 sub-batches across Personal Loan, General Loan, Mortgage and Credit &
+  Debt Calculators. Added the user's standing keyword-check rules to AI_RULES.md. Widget now applies
+  `decimals` to currency/percentage result lines. Every default example checked against an independent
+  implementation and the automated example checker; all 80 run through runCalculator with default/zero/
+  min/max inputs. `tsc`/`lint`/`build` clean.
+- 2026-10-03: Built Loan Calculators expansion 3 from the user's 106-keyword list — 3 already built, 14
+  merged (see "Resume here"), 89 new tools in 11 sub-batches across General Loan, Personal Loan, Auto &
+  Vehicle Loan and Mortgage Calculators. Checked SBA's FY2026 7(a) fee schedule and the 504 alternative
+  size standard ($20M net worth / $6.5M net income) online. Example text is now filled from the engine's
+  own outputs, then checked by the automated example checker; 35 key numbers re-derived by an independent
+  month-by-month simulation; all 89 run through runCalculator with default/zero/min/max inputs.
+  `tsc`/`lint`/`build` clean.
+- 2026-10-03: Built Loan Calculators expansion 4 from the user's 43-keyword list — 0 already built, 0
+  merged; 43 new tools in 5 sub-batches (powersports 12, instrument-legal 8, cosmetic-fertility 8,
+  adoption-tax-debt 11, medical-equipment 4). Checked the 2026 adoption credit and the Q4 2026 IRS interest
+  rate online. Examples filled from engine outputs and checked; 15 key numbers re-derived by independent
+  simulation; all 43 run through runCalculator with default/zero/min/max inputs. `tsc`/`lint`/`build` clean.
+- 2026-10-04: Built Loan Calculators expansion 5 from the user's 150-keyword list — 25 already built, 24
+  merged; 101 new tools in 10 sub-batches. Examples filled from engine outputs and checked; 23 key numbers
+  re-derived by independent simulation; all 101 run through runCalculator with default/zero/min/max inputs.
+  `tsc`/`lint`/`build` clean. Commit message kept in .git/NEXT_COMMIT_MSG.txt (multi-line -m pastes failed).
+- 2026-10-05: Built Loan Calculators expansion 6 from the user's 70-keyword list — 63 already built; 7 new
+  Student Loan tools (`loan-student-federal`). Examples filled from engine outputs; 22 numbers re-derived
+  independently; runCalculator finite on all 7. `tsc`/`lint`/`build` clean. Added to NEXT_COMMIT_MSG.txt.
+- 2026-10-05: Built the Mortgage expansion from the user's 59-keyword list — 17 already built, 5 merged; 37 new
+  tools in 5 batches (`mortgage-loan-types`, `-refinance-equity`, `-buyer-programs`, `-property-types`,
+  `-costs-insurance`) and split Mortgage Calculators into 5 sub-categories. 26 numbers re-derived independently;
+  runCalculator finite on all 37; organize dry run OK. `tsc`/`lint`/`build` clean.
+- 2026-10-05: Built the Interest expansion from the user's 67-keyword list — 13 already built, 8 merged; 46 new
+  tools in 9 batches across Interest, Savings, Investment, Loan > Short-Term, Retirement and Salary & Income.
+  25 numbers re-derived independently (RD/NSC match published India Post figures); runCalculator finite on all
+  46. `tsc`/`lint`/`build` clean.

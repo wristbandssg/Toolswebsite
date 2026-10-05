@@ -62,7 +62,9 @@ export interface CalcResultConfig {
   currency?: string;
   // Most decimal places shown when format is "number" (e.g. 8 for a crypto
   // amount, 4 for an exchange rate). Defaults to the browser's usual 3 when
-  // omitted, so every existing tool renders unchanged.
+  // omitted, so every existing tool renders unchanged. Also honoured for
+  // "currency" (e.g. 3 for a cost per kWh like $0.122) and "percentage"
+  // (e.g. 4 for a daily rate like 0.0288%), which otherwise show 2.
   decimals?: number;
 }
 
