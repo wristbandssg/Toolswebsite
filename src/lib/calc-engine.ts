@@ -391,6 +391,18 @@ import { investmentAltPrivateCustomCalculators } from "./calc-engine-investment-
 import { investmentAltRealAssetsCustomCalculators } from "./calc-engine-investment-alt-real-assets";
 import { investmentAccountsCustomCalculators } from "./calc-engine-investment-accounts";
 import { retirementAnnuityCustomCalculators } from "./calc-engine-retirement-annuity";
+import { budgetMethodsCustomCalculators } from "./calc-engine-budget-methods";
+import { budgetPlanningToolsCustomCalculators } from "./calc-engine-budget-planning-tools";
+import { budgetHouseholdBillsCustomCalculators } from "./calc-engine-budget-household-bills";
+import { budgetChildrenCustomCalculators } from "./calc-engine-budget-children";
+import { budgetFamilyCareCustomCalculators } from "./calc-engine-budget-family-care";
+import { budgetCelebrationsCustomCalculators } from "./calc-engine-budget-celebrations";
+import { budgetLifeStagesCustomCalculators } from "./calc-engine-budget-life-stages";
+import { budgetTravelCustomCalculators } from "./calc-engine-budget-travel";
+import { budgetSpendingAnalysisCustomCalculators } from "./calc-engine-budget-spending-analysis";
+import { budgetShoppingSavingsCustomCalculators } from "./calc-engine-budget-shopping-savings";
+import { budgetHomeGreenSavingsCustomCalculators } from "./calc-engine-budget-home-green-savings";
+import { budgetNetWorthColCustomCalculators } from "./calc-engine-budget-net-worth-col";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -596,6 +608,18 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...investmentAltRealAssetsCustomCalculators,
   ...investmentAccountsCustomCalculators,
   ...retirementAnnuityCustomCalculators,
+  ...budgetMethodsCustomCalculators,
+  ...budgetPlanningToolsCustomCalculators,
+  ...budgetHouseholdBillsCustomCalculators,
+  ...budgetChildrenCustomCalculators,
+  ...budgetFamilyCareCustomCalculators,
+  ...budgetCelebrationsCustomCalculators,
+  ...budgetLifeStagesCustomCalculators,
+  ...budgetTravelCustomCalculators,
+  ...budgetSpendingAnalysisCustomCalculators,
+  ...budgetShoppingSavingsCustomCalculators,
+  ...budgetHomeGreenSavingsCustomCalculators,
+  ...budgetNetWorthColCustomCalculators,
 };
 
 export function runCalculator(

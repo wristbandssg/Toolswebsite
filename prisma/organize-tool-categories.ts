@@ -35,6 +35,12 @@
 //     +- Business Finance Calculators
 //     +- Real Estate Calculators
 //     +- Currency & Exchange Calculators
+//     +- Budget Calculators                      (added 5 Oct 2026 with the
+//     |    +- Budgeting Methods & Planning        84-tool budget expansion; all
+//     |    +- Household & Family Expense          its tools are new, filed by
+//     |    +- Life Events & Travel Budget         their create scripts)
+//     |    +- Money-Saving & Spending
+//     |    +- Net Worth & Cost of Living
 //   Math Calculators (main category, new — home of percentage-calculator)
 //
 // Plus two tool moves the user asked for: business-loan-calculator from
@@ -92,6 +98,9 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Real Estate Calculators", slug: "real-estate-calculators" },
   { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
   { name: "Crypto Calculators", slug: "crypto-calculators" },
+  // Added 5 Oct 2026 with the 84-tool budget expansion; its create scripts
+  // make it (and its sub-categories) on first run.
+  { name: "Budget Calculators", slug: "budget-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a
@@ -259,11 +268,23 @@ const INVESTMENT_TOOL_GROUPS: Record<string, string[]> = {
   ],
 };
 
+// Sub-categories of Budget Calculators (added 5 Oct 2026). No existing tool
+// moves here; the create-budget-* scripts file their tools directly.
+const BUDGET_PARENT_SLUG = "budget-calculators";
+const BUDGET_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "Budgeting Methods & Planning Calculators", slug: "budgeting-methods-calculators" },
+  { name: "Household & Family Expense Calculators", slug: "household-family-expense-calculators" },
+  { name: "Life Events & Travel Budget Calculators", slug: "life-events-travel-budget-calculators" },
+  { name: "Money-Saving & Spending Calculators", slug: "money-saving-calculators" },
+  { name: "Net Worth & Cost of Living Calculators", slug: "net-worth-cost-of-living-calculators" },
+];
+
 // Finance sub-categories that are split one level further.
 const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] = [
   { parentSlug: LOAN_PARENT_SLUG, subs: LOAN_SUBCATEGORIES },
   { parentSlug: MORTGAGE_PARENT_SLUG, subs: MORTGAGE_SUBCATEGORIES },
   { parentSlug: INVESTMENT_PARENT_SLUG, subs: INVESTMENT_SUBCATEGORIES },
+  { parentSlug: BUDGET_PARENT_SLUG, subs: BUDGET_SUBCATEGORIES },
 ];
 
 // tool slug -> category slug it must end up in.

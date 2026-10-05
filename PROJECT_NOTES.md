@@ -4,7 +4,21 @@
 
 ## ▶️ Resume here
 
-Just built the **Investment Calculators expansion** (5 Oct 2026) from the user's 69-keyword list: 16 already built
+Just built the **Budget Calculators expansion** (5 Oct 2026) from the user's 147-keyword list: 15 already built
+(Home Maintenance 1% = property-maintenance-cost; Home Renovation = renovation-cost; Budget Variance + Quarterly Review =
+budget-variance; Rent-to-Income; Debt Payment % = debt-to-income-ratio; Savings % = savings-rate; Side Hustle =
+freelance-income; Freelance Tax Set-Aside = self-employment-tax-estimator; 6 sinking funds = sinking-fund) and 48 merged
+(see calc-engine-budget-methods.ts and each engine header — e.g. all "% of budget" categories -> budget-percentage;
+70/20/10, 80/20, 60% -> 50/30/20). 84 new tools in 12 batches (`budget-*`). **New Finance sub-category "Budget
+Calculators"** (budget-calculators) with 5 sub-categories: Budgeting Methods & Planning, Household & Family Expense,
+Life Events & Travel Budget, Money-Saving & Spending, Net Worth & Cost of Living. The create-budget-* scripts create
+Budget Calculators and its sub-category on first run (head-budget/tail-budget template); organize-tool-categories.ts
+lists Budget in FINANCE_SUBCATEGORIES and SPLITS (no tool moves). 2026 facts used: dependent care FSA $7,500; 529 K-12
+$20,000/yr; charitable deduction $1,000/$2,000 for non-itemizers and 0.5% AGI floor for itemizers; GSA per diem
+$110/$68; SS COLA 2.8%. User committed the Investment round as 3cbe579. This deploy: commit, push, the 12
+`db:create-budget-*` scripts, Render Manual Deploy (organize --apply optional; nothing to move).
+
+Before that: Just built the **Investment Calculators expansion** (5 Oct 2026) from the user's 69-keyword list: 16 already built
 (Bond/Treasury/Corporate Bond = bond tools; Real Estate Investment; Forex; DRIP; Money Market Fund; Large/Mid/Small-Cap,
 Blue Chip, Fractional Share = stock-investment; Penny = stock-profit; Robo-Advisor = investment-fee-impact; DSPP = DCA;
 Balanced Fund = portfolio-expected-return) and 12 merged (Index -> ETF; Sector/ESG/Infrastructure -> Mutual Fund;
@@ -482,3 +496,6 @@ keep that file in mind.
 - 2026-10-05: Built the Investment expansion from the user's 69-keyword list — 16 already built, 12 merged; 41
   new tools in 9 batches, and split Investment Calculators into 5 sub-categories. 27 numbers re-derived
   independently; runCalculator finite on all 41; organize dry run OK. `tsc`/`lint`/`build` clean.
+- 2026-10-05: Built the Budget expansion from the user's 147-keyword list — 15 already built, 48 merged; 84 new
+  tools in 12 batches under a new Finance > Budget Calculators category with 5 sub-categories. 29 numbers
+  re-derived independently; runCalculator finite on all 84. `tsc`/`lint`/`build` clean.
