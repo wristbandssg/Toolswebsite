@@ -12,7 +12,10 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATEGORY = { name: "Investment Calculators", slug: "investment-calculators" };
+// Re-pointed 5 Oct 2026: Investment Calculators was split into 5 sub-categories
+// (see organize-tool-categories.ts); this script creates its sub-category if missing.
+const PARENT_CATEGORY_SLUG = "investment-calculators";
+const CATEGORY = { name: "Bond & Fixed Income Calculators", slug: "bond-fixed-income-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -423,13 +426,19 @@ const TOOLS: ToolDef[] = [
 ];
 
 async function ensureCategory() {
-  const category = await prisma.toolCategory.findUnique({ where: { slug: CATEGORY.slug } });
-  if (!category) {
+  const existing = await prisma.toolCategory.findUnique({ where: { slug: CATEGORY.slug } });
+  if (existing) return existing;
+  const parent = await prisma.toolCategory.findUnique({ where: { slug: PARENT_CATEGORY_SLUG } });
+  if (!parent) {
     throw new Error(
-      `The "${CATEGORY.slug}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, then re-run this script.`
+      `The "${PARENT_CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, ` +
+        "then re-run this script."
     );
   }
-  return category;
+  console.log(`Creating sub-category "${CATEGORY.name}" under "${parent.name}".`);
+  return prisma.toolCategory.create({
+    data: { name: CATEGORY.name, slug: CATEGORY.slug, parentId: parent.id, templateKey: "category-template-1", viewStyle: "grid" },
+  });
 }
 
 async function main() {

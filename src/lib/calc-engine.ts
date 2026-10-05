@@ -382,6 +382,15 @@ import { investmentBondsCustomCalculators } from "./calc-engine-investment-bonds
 import { loanBnplLayawayCustomCalculators } from "./calc-engine-loan-bnpl-layaway";
 import { retirementRrspCustomCalculators } from "./calc-engine-retirement-rrsp";
 import { salaryGratuityCustomCalculators } from "./calc-engine-salary-gratuity";
+import { investmentStocksCustomCalculators } from "./calc-engine-investment-stocks";
+import { investmentTradingCustomCalculators } from "./calc-engine-investment-trading";
+import { investmentEquityCompCustomCalculators } from "./calc-engine-investment-equity-comp";
+import { investmentBondTypesCustomCalculators } from "./calc-engine-investment-bond-types";
+import { investmentFundsCustomCalculators } from "./calc-engine-investment-funds";
+import { investmentAltPrivateCustomCalculators } from "./calc-engine-investment-alt-private";
+import { investmentAltRealAssetsCustomCalculators } from "./calc-engine-investment-alt-real-assets";
+import { investmentAccountsCustomCalculators } from "./calc-engine-investment-accounts";
+import { retirementAnnuityCustomCalculators } from "./calc-engine-retirement-annuity";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -578,6 +587,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...loanBnplLayawayCustomCalculators,
   ...retirementRrspCustomCalculators,
   ...salaryGratuityCustomCalculators,
+  ...investmentStocksCustomCalculators,
+  ...investmentTradingCustomCalculators,
+  ...investmentEquityCompCustomCalculators,
+  ...investmentBondTypesCustomCalculators,
+  ...investmentFundsCustomCalculators,
+  ...investmentAltPrivateCustomCalculators,
+  ...investmentAltRealAssetsCustomCalculators,
+  ...investmentAccountsCustomCalculators,
+  ...retirementAnnuityCustomCalculators,
 };
 
 export function runCalculator(

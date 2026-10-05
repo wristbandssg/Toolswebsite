@@ -4,7 +4,21 @@
 
 ## ▶️ Resume here
 
-Just built the **Interest Calculators expansion** (5 Oct 2026) from the user's 67-keyword list: 13 already built
+Just built the **Investment Calculators expansion** (5 Oct 2026) from the user's 69-keyword list: 16 already built
+(Bond/Treasury/Corporate Bond = bond tools; Real Estate Investment; Forex; DRIP; Money Market Fund; Large/Mid/Small-Cap,
+Blue Chip, Fractional Share = stock-investment; Penny = stock-profit; Robo-Advisor = investment-fee-impact; DSPP = DCA;
+Balanced Fund = portfolio-expected-return) and 12 merged (Index -> ETF; Sector/ESG/Infrastructure -> Mutual Fund;
+Silver -> Gold; Commodity -> Futures; Warrant -> Options; Puttable -> Callable; Angel -> VC; Wine -> Art; Inverse ->
+Leveraged ETF; Emerging -> International). 41 new tools in 9 batches. **Investment Calculators is now split into 5
+sub-categories** (user approved): Investment Returns & Planning, Stock & Options, Bond & Fixed Income, Fund & ETF,
+Alternative Investment. organize-tool-categories.ts (INVESTMENT_TOOL_GROUPS in SPLITS) moves the 56 older tools; the
+6 older investment create scripts now file into the sub-categories. Annuity Investment -> Retirement Calculators.
+Dry run on the 2 Oct backup: 81 moves (32 mortgage + 49 investment), parents left with 0 direct tools, rerun 0.
+The previous rounds were committed by the user as 216ea26 (403 tools). This deploy: commit, push, the 9 new
+`db:create-*` scripts (investment-* and retirement-annuity), then `npm run db:organize-categories -- --apply`
+(moves the old investment tools), Render Manual Deploy.
+
+Before that: Just built the **Interest Calculators expansion** (5 Oct 2026) from the user's 67-keyword list: 13 already built
 (Savings Account, CD, Money Market, Credit Card, High-Yield Savings, Simple/Compound Interest Savings, Real Interest
 Rate, Interest Coverage Ratio, Jumbo CD = cd-calculator, Installment Plan, Post-Dated = daily-interest, Christmas
 Club = weekly-savings) and 8 merged (Promotional + Store Card -> Deferred Interest; Prime + SOFR -> Variable Rate;
@@ -465,3 +479,6 @@ keep that file in mind.
   tools in 9 batches across Interest, Savings, Investment, Loan > Short-Term, Retirement and Salary & Income.
   25 numbers re-derived independently (RD/NSC match published India Post figures); runCalculator finite on all
   46. `tsc`/`lint`/`build` clean.
+- 2026-10-05: Built the Investment expansion from the user's 69-keyword list — 16 already built, 12 merged; 41
+  new tools in 9 batches, and split Investment Calculators into 5 sub-categories. 27 numbers re-derived
+  independently; runCalculator finite on all 41; organize dry run OK. `tsc`/`lint`/`build` clean.

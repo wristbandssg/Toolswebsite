@@ -18,6 +18,12 @@
 //     |    +- Mortgage Cost & Insurance Calculators       mortgage expansion)
 //     +- Interest Calculators
 //     +- Investment Calculators
+//     |    +- Investment Returns & Planning Calculators  (added 5 Oct 2026 —
+//     |    +- Stock & Options Calculators                  the user approved
+//     |    +- Bond & Fixed Income Calculators              splitting Investment
+//     |    +- Fund & ETF Calculators                       into 5 sub-categories
+//     |    +- Alternative Investment Calculators           with the 40-tool
+//     |                                                    investment expansion)
 //     +- Savings Calculators
 //     +- Retirement Calculators
 //     +- Tax Calculators
@@ -208,16 +214,63 @@ const MORTGAGE_TOOL_GROUPS: Record<string, string[]> = {
   ],
 };
 
+// Sub-categories of Investment Calculators (added 5 Oct 2026). As with Loan
+// and Mortgage, tools are filed at the leaf level once these exist.
+const INVESTMENT_PARENT_SLUG = "investment-calculators";
+const INVESTMENT_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" },
+  { name: "Stock & Options Calculators", slug: "stock-options-calculators" },
+  { name: "Bond & Fixed Income Calculators", slug: "bond-fixed-income-calculators" },
+  { name: "Fund & ETF Calculators", slug: "fund-etf-calculators" },
+  { name: "Alternative Investment Calculators", slug: "alternative-investment-calculators" },
+];
+
+// Where each of the 56 investment tools that existed before the split goes.
+// (The 40 new investment tools are filed by their own create scripts.)
+const INVESTMENT_TOOL_GROUPS: Record<string, string[]> = {
+  "investment-returns-planning-calculators": [
+    "investment-calculator", "compound-interest-calculator", "simple-interest-calculator", "cagr-calculator",
+    "dollar-cost-averaging-calculator", "compound-investment-calculator", "investment-growth-calculator",
+    "investment-goal-calculator", "investment-contribution-calculator", "investment-time-horizon-calculator",
+    "investment-future-value-calculator", "investment-present-value-calculator",
+    "lump-sum-vs-dollar-cost-averaging-calculator", "rule-of-72-calculator", "investment-doubling-time-calculator",
+    "portfolio-allocation-calculator", "portfolio-rebalancing-calculator", "weighted-portfolio-return-calculator",
+    "portfolio-expected-return-calculator", "portfolio-standard-deviation-calculator", "sharpe-ratio-calculator",
+    "investment-fee-calculator", "investment-fee-impact-calculator", "inflation-adjusted-return-calculator",
+    "real-rate-of-return-calculator", "nominal-vs-real-return-calculator", "investment-return-calculator",
+    "portfolio-return-calculator", "annualized-return-calculator", "holding-period-return-calculator",
+    "total-return-calculator", "average-annual-return-calculator", "expected-return-calculator",
+    "required-rate-of-return-calculator", "risk-adjusted-return-calculator",
+    "break-even-investment-return-calculator", "portfolio-growth-calculator",
+  ],
+  "stock-options-calculators": [
+    "dividend-calculator", "stock-profit-calculator", "stock-return-calculator", "stock-loss-calculator",
+    "stock-average-price-calculator", "stock-cost-basis-calculator", "stock-break-even-calculator",
+    "stock-investment-calculator", "dividend-yield-calculator", "dividend-reinvestment-calculator",
+    "dividend-growth-calculator",
+  ],
+  "fund-etf-calculators": [
+    "expense-ratio-calculator",
+  ],
+  "bond-fixed-income-calculators": [
+    "bond-interest-calculator", "treasury-bill-calculator", "bond-yield-to-maturity-calculator",
+    "interest-rate-sensitivity-calculator", "sukuk-profit-rate-calculator", "series-i-bond-calculator",
+    "series-ee-bond-calculator",
+  ],
+};
+
 // Finance sub-categories that are split one level further.
 const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] = [
   { parentSlug: LOAN_PARENT_SLUG, subs: LOAN_SUBCATEGORIES },
   { parentSlug: MORTGAGE_PARENT_SLUG, subs: MORTGAGE_SUBCATEGORIES },
+  { parentSlug: INVESTMENT_PARENT_SLUG, subs: INVESTMENT_SUBCATEGORIES },
 ];
 
 // tool slug -> category slug it must end up in.
 const TOOL_MOVES: Record<string, string> = {
   ...Object.fromEntries(Object.entries(LOAN_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   ...Object.fromEntries(Object.entries(MORTGAGE_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
+  ...Object.fromEntries(Object.entries(INVESTMENT_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   "percentage-calculator": "math-calculators",
   // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
   "retirement-savings-goal-calculator": "retirement-calculators",
@@ -354,7 +407,7 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
     if (c) allowed.add(c.id);
   }
   for (const subs of splitSubs.values()) for (const c of subs) allowed.add(c.id);
-  // Once Loan or Mortgage Calculators has sub-categories, a tool left
+  // Once Loan, Mortgage or Investment Calculators has sub-categories, a tool left
   // directly in it needs a decision too (tools are filed at the leaf level).
   const splitParents = new Set([...splitSubs].filter(([, subs]) => subs.length > 0).map(([id]) => id));
   const unplaced = tools.filter(

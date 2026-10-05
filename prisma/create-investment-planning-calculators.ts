@@ -18,7 +18,25 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATEGORY_SLUG = "investment-calculators";
+// Re-pointed 5 Oct 2026: Investment Calculators was split into 5 sub-categories
+// (see organize-tool-categories.ts). Each tool is filed in one of them; a
+// missing sub-category is created under Investment Calculators.
+const PARENT_CATEGORY_SLUG = "investment-calculators";
+const SUBCATEGORY_NAMES: Record<string, string> = {
+  "investment-returns-planning-calculators": "Investment Returns & Planning Calculators",
+};
+const TOOL_CATEGORY: Record<string, string> = {
+  "compound-investment-calculator": "investment-returns-planning-calculators",
+  "investment-growth-calculator": "investment-returns-planning-calculators",
+  "investment-goal-calculator": "investment-returns-planning-calculators",
+  "investment-contribution-calculator": "investment-returns-planning-calculators",
+  "investment-time-horizon-calculator": "investment-returns-planning-calculators",
+  "investment-future-value-calculator": "investment-returns-planning-calculators",
+  "investment-present-value-calculator": "investment-returns-planning-calculators",
+  "lump-sum-vs-dollar-cost-averaging-calculator": "investment-returns-planning-calculators",
+  "rule-of-72-calculator": "investment-returns-planning-calculators",
+  "investment-doubling-time-calculator": "investment-returns-planning-calculators",
+};
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -499,12 +517,23 @@ const TOOLS: ToolDef[] = [
 ];
 
 async function main() {
-  const category = await prisma.toolCategory.findUnique({ where: { slug: CATEGORY_SLUG } });
-  if (!category) {
+  const parent = await prisma.toolCategory.findUnique({ where: { slug: PARENT_CATEGORY_SLUG } });
+  if (!parent) {
     throw new Error(
-      `The "${CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, ` +
+      `The "${PARENT_CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:organize-categories -- --apply" first, ` +
         "then re-run this script."
     );
+  }
+  const categoryIds = new Map<string, string>();
+  for (const [slug, name] of Object.entries(SUBCATEGORY_NAMES)) {
+    const existing = await prisma.toolCategory.findUnique({ where: { slug } });
+    if (!existing) console.log(`Creating sub-category "${name}" under "${parent.name}".`);
+    const category =
+      existing ??
+      (await prisma.toolCategory.create({
+        data: { name, slug, parentId: parent.id, templateKey: "category-template-1", viewStyle: "grid" },
+      }));
+    categoryIds.set(slug, category.id);
   }
 
   let created = 0;
@@ -515,7 +544,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: categoryIds.get(TOOL_CATEGORY[def.slug])!,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -549,7 +578,7 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
+  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, filed under the Investment Calculators sub-categories.`);
   console.log(
     "New tools are created with status Draft — open them in /admin/tools, review, and set Status to Published " +
       "when you're happy with each one."
