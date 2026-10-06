@@ -452,11 +452,8 @@ export default function HomeDesign2Form({
         />
       </Card>
 
-      <Card title="FAQ" hint="Shown as cards, and added to the page as FAQ structured data for Google.">
+      <Card title="FAQ" hint="Shown full width as a numbered accordion (click a question to open its answer), and added to the page as FAQ structured data for Google.">
         <Toggle label="Show the FAQ" checked={d.showFaq} onChange={(v) => update("showFaq", v)} />
-        <Field label="Small Label Above the Heading" value={d.faqEyebrow} onChange={(v) => update("faqEyebrow", v)} />
-        <Field label="Heading" value={d.faqHeading} onChange={(v) => update("faqHeading", v)} />
-        <Field label="Text Under the Heading" value={d.faqText} onChange={(v) => update("faqText", v)} textarea rows={2} />
         <ListEditor
           items={d.faqs}
           onChange={(v) => update("faqs", v)}

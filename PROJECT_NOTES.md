@@ -600,3 +600,4 @@ keep that file in mind.
 - 2026-10-06: Design 2 blogs: BlogCard (equal height) + BlogSlider; settings blogLayout/blogAutoplay/blogExcerptWords.
 - 2026-10-06: Design 2 BlogCard compact: no date, 2-line text, hover-only button over the image.
 - 2026-10-06: Design 2 FAQ redesigned as numbered accordion with side heading.
+- 2026-10-06: Design 2 FAQ: removed side heading block (faqEyebrow/Heading/Text no longer shown or edited); accordion full width.

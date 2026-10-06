@@ -355,14 +355,8 @@ export default function HomeDesign2({
 
       {/* FAQ */}
       {c.showFaq && faqs.length > 0 ? (
-        <section className={`${CONTAINER} grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14`}>
-          {/* Heading on the left (stays in view on wide screens), questions as an accordion on the right. */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <SectionHeader eyebrow={fill(c.faqEyebrow)} heading={fill(c.faqHeading)} text={fill(c.faqText)} />
-            <div aria-hidden className="mt-8 hidden h-28 w-28 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-100 text-5xl lg:flex dark:from-blue-950 dark:to-indigo-950">
-              💬
-            </div>
-          </div>
+        <section className={`${CONTAINER} py-12 sm:py-16`}>
+          {/* Full-width numbered accordion (no heading block, per the admin's design). */}
           <div className="space-y-3">
             {faqs.map((f, i) => (
               <details
