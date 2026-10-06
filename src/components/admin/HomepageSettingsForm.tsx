@@ -7,6 +7,7 @@ import { HOME_ICONS } from "@/lib/home-icons";
 
 import {
   Card,
+  cardId,
   CategorySelect,
   Field,
   RowControls,
@@ -17,6 +18,22 @@ import {
   type CategoryGroup,
 } from "./HomepageFormParts";
 import HomeDesign2Form from "./HomeDesign2Form";
+
+// Card titles per design, for the side menu's jump links (must match the Card titles).
+const DESIGN1_SECTIONS = ["Top Section (Hero)", "Category Icon Tiles", "About Section", "Calculator Sections", "Featured In (Logos)", "SEO"];
+const DESIGN2_SECTIONS = [
+  "Top Section (Hero)",
+  "Feature Row",
+  "Category Cards",
+  "Popular Calculators",
+  "How-To Steps",
+  "Two Text Columns",
+  "Category Guides",
+  "Use Cases & Search Keywords",
+  "FAQ",
+  "Blogs",
+  "SEO (Design 2)",
+];
 
 export default function HomepageSettingsForm({
   initial,
@@ -115,7 +132,8 @@ export default function HomepageSettingsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]">
+    <form onSubmit={handleSubmit} className="min-w-0 space-y-6">
       <Card title="Active Design" hint="Only one design is live at a time. Designs that aren't built yet can't be selected.">
         <div className="grid gap-3 sm:grid-cols-3">
           {HOME_DESIGNS.map((design) => {
@@ -489,5 +507,40 @@ export default function HomepageSettingsForm({
         {error ? <span className="text-sm text-red-600">{error}</span> : null}
       </div>
     </form>
+
+      {/* Side menu: what's live, a link to the site, and jump links to each section. */}
+      <aside className="h-fit space-y-4 xl:sticky xl:top-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Live Now</p>
+          <p className="mt-1 font-semibold">{HOME_DESIGNS.find((x) => x.id === settings.activeDesign)?.name}</p>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 block rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            View Home Page ↗
+          </a>
+        </div>
+        <nav className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Design {editing} Sections</p>
+          <ul className="mt-3 space-y-0.5 text-sm">
+            {(editing === 2 ? DESIGN2_SECTIONS : DESIGN1_SECTIONS).map((title) => (
+              <li key={title}>
+                <a
+                  href={`#${cardId(title)}`}
+                  className="block rounded-lg px-2.5 py-1.5 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 dark:text-gray-300 dark:hover:bg-indigo-950/50"
+                >
+                  {title}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 border-t border-gray-100 pt-3 text-xs leading-relaxed text-gray-400 dark:border-gray-800">
+            Changes go live when you press <strong>Save Home Page</strong>.
+          </p>
+        </nav>
+      </aside>
+    </div>
   );
 }

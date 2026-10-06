@@ -61,10 +61,10 @@ export default function FooterSettingsForm({ initial, siteName }: { initial: Foo
   const preview = `linear-gradient(110deg, ${values.bgFrom}, ${values.bgTo})`;
 
   return (
-    <div className="max-w-4xl space-y-6">
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+    <div className="grid gap-6 xl:grid-cols-2">
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 xl:col-span-2 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="font-semibold">Colors</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-7">
           {COLOR_FIELDS.map((field) => (
             <label key={field.key} className="block text-sm">
               <span className="font-medium">{field.label}</span>
@@ -170,7 +170,7 @@ export default function FooterSettingsForm({ initial, siteName }: { initial: Foo
         </div>
       </section>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+      <section className="h-fit rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="font-semibold">Copyright Bar</h2>
         <label className="mt-4 block text-sm">
           <span className="font-medium">Text</span>
@@ -181,7 +181,7 @@ export default function FooterSettingsForm({ initial, siteName }: { initial: Foo
         </label>
       </section>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 xl:col-span-2">
         <button
           type="button"
           disabled={saving}

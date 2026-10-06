@@ -84,18 +84,18 @@ function MenuItemRow({
   const labels = allowMega && isMega ? MEGA_LEVEL_LABELS : LEVEL_LABELS;
   return (
     <div className="mt-2" style={{ marginLeft: depth * 24 }}>
-      <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900">
+      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900">
         <span className="w-24 flex-shrink-0 text-xs text-gray-400">
           {labels[Math.min(depth, labels.length - 1)]}
         </span>
         <input
-          className="w-40 rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+          className="min-w-[9rem] flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
           placeholder="Label"
           value={item.label}
           onChange={(e) => onChange(item.id, { label: e.target.value })}
         />
         <input
-          className="flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+          className="min-w-[14rem] flex-[2] rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
           placeholder="Link URL (e.g. /tools or https://...)"
           list={suggestions.length > 0 ? SUGGESTION_LIST_ID : undefined}
           value={item.href}
@@ -129,7 +129,7 @@ function MenuItemRow({
           </button>
           {depth < depthLimit - 1 && suggestions.length > 0 && onAddSuggestion ? (
             <select
-              className="max-w-[9rem] rounded-lg border border-gray-300 px-1.5 py-1 text-xs dark:border-gray-700 dark:bg-gray-800"
+              className="max-w-[11rem] rounded-lg border border-gray-300 px-1.5 py-1 text-xs dark:border-gray-700 dark:bg-gray-800"
               value=""
               onChange={(e) => {
                 const s = suggestions[Number(e.target.value)];
@@ -274,7 +274,7 @@ export default function MenuBuilder({
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="w-full">
       {suggestions.length > 0 ? (
         <datalist id={SUGGESTION_LIST_ID}>
           {suggestions.map((s, i) => (

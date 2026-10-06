@@ -7,9 +7,14 @@ export const inputClass =
 export const smallButton =
   "rounded-md border border-gray-300 px-2 py-1 text-xs hover:bg-gray-50 disabled:opacity-40 dark:border-gray-700 dark:hover:bg-gray-800";
 
+/** Anchor id for a form card, so the side menu can jump to it. */
+export function cardId(title: string) {
+  return "sec-" + title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export function Card({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+    <section id={cardId(title)} className="scroll-mt-6 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
       <h2 className="font-semibold">{title}</h2>
       {hint ? <p className="mt-1 text-xs text-gray-500">{hint}</p> : null}
       <div className="mt-4 space-y-4">{children}</div>

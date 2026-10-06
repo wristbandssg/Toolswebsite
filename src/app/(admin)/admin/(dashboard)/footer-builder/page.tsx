@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import MenuBuilder from "@/components/admin/MenuBuilder";
+import AdminHelpCard from "@/components/admin/AdminHelpCard";
 import FooterSettingsForm from "@/components/admin/FooterSettingsForm";
 import type { MenuItem } from "@/lib/menu/types";
 import { DEFAULT_FOOTER_COLUMNS } from "@/lib/menu/defaults";
@@ -35,17 +36,24 @@ export default async function FooterBuilderPage() {
       </div>
 
       <h2 className="mt-10 text-lg font-bold">Link Columns</h2>
-      <p className="mt-1 max-w-3xl text-sm text-gray-500">
-        Each top-level item is a column heading; its sub-items are the links in that column. Columns show left to right
-        in this order — use ↑ and ↓ to reorder. Use <strong>+ Add page…</strong> on a column to add any published page,
-        calculator category or blog category in one click, or type your own link (including mailto: for email).
-      </p>
-      <div className="mt-4">
+      <div className="mt-4 grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
         <MenuBuilder
           location="footer"
           initialItems={items.length > 0 ? items : DEFAULT_FOOTER_COLUMNS}
           maxDepth={2}
           suggestions={suggestions}
+        />
+        <AdminHelpCard
+          tips={[
+            <>Each top-level item is a column heading; its sub-items are the links in that column.</>,
+            <>Columns show left to right in this order — use ↑ and ↓ to reorder.</>,
+            <>
+              <strong>+ Add page…</strong> on a column adds any published page, calculator category or blog category in
+              one click.
+            </>,
+            <>You can also type your own link, including mailto: for email.</>,
+          ]}
+          link={{ href: "/", label: "View Live Site ↗" }}
         />
       </div>
     </div>

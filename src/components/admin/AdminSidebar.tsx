@@ -19,7 +19,6 @@ import {
   LogOut,
   Megaphone,
   Newspaper,
-  Palette,
   PanelBottom,
   PanelTop,
   Settings,
@@ -70,7 +69,6 @@ const SECTIONS: NavSection[] = [
       { href: "/admin/homepage", label: "Home Page", icon: House },
       { href: "/admin/header-builder", label: "Header Builder", icon: PanelTop },
       { href: "/admin/footer-builder", label: "Footer Builder", icon: PanelBottom },
-      { href: "/admin/templates", label: "Design Templates", icon: Palette },
     ],
   },
   {
