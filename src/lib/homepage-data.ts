@@ -146,7 +146,7 @@ export type D2Guide = {
   text: string;
   tools: { slug: string; title: string }[];
 };
-export type D2Blog = { slug: string; title: string; excerpt: string; image: string; category: string; date: string };
+export type D2Blog = { slug: string; title: string; excerpt: string; image: string; category: string };
 
 /** Plain-text summary of a post, cut to `maxWords` words ("…" when cut). */
 function blogSummary(excerpt: string | null, html: string, title: string, maxWords: number): string {
@@ -297,8 +297,6 @@ export async function loadDesign2Data(content: Design2Content) {
           excerpt: true,
           content: true,
           featuredImage: true,
-          publishedAt: true,
-          createdAt: true,
           categories: { select: { name: true }, take: 1 },
         },
       })
@@ -309,7 +307,6 @@ export async function loadDesign2Data(content: Design2Content) {
     excerpt: blogSummary(b.excerpt, b.content, b.title, content.blogExcerptWords),
     image: b.featuredImage ?? "",
     category: b.categories[0]?.name ?? "",
-    date: (b.publishedAt ?? b.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
   }));
 
   const totalTools = await prisma.tool.count({ where: { status: "published" } });

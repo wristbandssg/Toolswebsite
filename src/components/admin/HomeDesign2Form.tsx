@@ -471,12 +471,12 @@ export default function HomeDesign2Form({
         />
       </Card>
 
-      <Card title="Blogs" hint="The latest published blog posts, newest first. Every card has the same size: title up to 2 lines, text up to 3 lines.">
+      <Card title="Blogs" hint="The latest published blog posts, newest first. Every card has the same size: title up to 2 lines, text up to 2 lines. The button appears over the picture when the mouse is on a card.">
         <Toggle label="Show blogs" checked={d.showBlogs} onChange={(v) => update("showBlogs", v)} />
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Heading" value={d.blogsHeading} onChange={(v) => update("blogsHeading", v)} />
           <NumberField label="Number of Posts" min={1} max={24} value={d.blogCount} onChange={(v) => update("blogCount", v)} />
-          <Field label="Button Text" value={d.blogButtonText} onChange={(v) => update("blogButtonText", v)} />
+          <Field label="Button Text (on hover)" hint="Leave empty for no button." value={d.blogButtonText} onChange={(v) => update("blogButtonText", v)} />
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <label className="block text-sm">

@@ -598,3 +598,4 @@ keep that file in mind.
 - 2026-10-06: Home Design 2 (Category Showcase, allcalculatortools.com style) — design2 block in homepage-config, loadDesign2Data, HomeDesign2, HomeDesign2Form; admin tab switch Design 1/2.
 - 2026-10-06: Admin Home/Header/Footer builders full width (AdminHelpCard side card, home side menu with jump links); Design Templates page removed.
 - 2026-10-06: Design 2 blogs: BlogCard (equal height) + BlogSlider; settings blogLayout/blogAutoplay/blogExcerptWords.
+- 2026-10-06: Design 2 BlogCard compact: no date, 2-line text, hover-only button over the image.

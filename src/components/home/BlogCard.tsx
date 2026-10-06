@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { D2Blog } from "@/lib/homepage-data";
 
 /**
- * A blog card for home page Design 2. Every card has the same shape whatever
- * the post: fixed image ratio, title cut to 2 lines, summary to 3 lines (and
- * already trimmed to the admin's word limit), button pinned to the bottom.
+ * A compact blog card for home page Design 2. Every card has the same shape
+ * whatever the post: fixed image ratio, title cut to 2 lines, summary to 2
+ * lines (already trimmed to the admin's word limit). The button text only
+ * appears on hover, over the picture, so it never adds height.
  */
 export default function BlogCard({ blog, buttonText }: { blog: D2Blog; buttonText: string }) {
   return (
@@ -29,22 +30,19 @@ export default function BlogCard({ blog, buttonText }: { blog: D2Blog; buttonTex
             {blog.category}
           </span>
         ) : null}
-      </div>
-      <div className="flex flex-1 flex-col p-6">
-        <p className="text-xs font-medium text-blue-200/80">{blog.date}</p>
-        <h3 className="mt-2 line-clamp-2 min-h-[3rem] text-lg font-bold leading-6">{blog.title}</h3>
-        {blog.excerpt ? (
-          <p className="mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-6 text-blue-50/85">{blog.excerpt}</p>
-        ) : null}
         {buttonText ? (
-          <div className="mt-auto pt-6">
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold transition group-hover:bg-blue-500">
+          <span className="absolute inset-0 flex items-center justify-center bg-blue-950/45 opacity-0 transition duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+            <span className="inline-flex translate-y-2 items-center gap-1.5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold shadow-lg transition duration-300 group-hover:translate-y-0">
               {buttonText}
-              <span aria-hidden className="transition group-hover:translate-x-0.5">
-                →
-              </span>
+              <span aria-hidden>→</span>
             </span>
-          </div>
+          </span>
+        ) : null}
+      </div>
+      <div className="flex-1 px-5 pb-5 pt-4">
+        <h3 className="line-clamp-2 min-h-[3rem] text-lg font-bold leading-6 group-hover:text-blue-100">{blog.title}</h3>
+        {blog.excerpt ? (
+          <p className="mt-2 line-clamp-2 min-h-[3rem] text-sm leading-6 text-blue-50/80">{blog.excerpt}</p>
         ) : null}
       </div>
     </Link>
