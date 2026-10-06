@@ -593,3 +593,4 @@ keep that file in mind.
   admins at /pages/<slug> (noindex + banner). Page Template 2 still to be designed from the user's next screenshot.
 - 2026-10-06: Fixed /api/pages rejecting box sections (shared schema in src/lib/templates/page/schema.ts, PUT validated too); boxes collapsible with 'Start closed'; Omni-style restyle; 'Convert to Content Boxes' in PageBuilder.
 - 2026-10-06: Page Template 2 rebuilt as a document style (calculator-online.net Terms of Service look): blue title/headings, boxes render as heading + rich text, no cards.
+- 2026-10-06: Category page: 10 subcats / 40 tools then in-place Show more (ShowMoreGrid); ToolCategory.content rich text edited at /admin/tools/categories/[id]/content (needs prisma db push).

@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata } from "@/lib/seo";
 import AdSlot from "@/components/AdSlot";
+import ShowMoreGrid from "@/components/site/ShowMoreGrid";
+import { RICH_TEXT_CLASSES } from "@/lib/templates/page/ContentBox";
 
 // Always reflect the latest published tools for this category.
 export const dynamic = "force-dynamic";
@@ -19,24 +21,15 @@ export const dynamic = "force-dynamic";
 // assume it has no tools of its own: both sections render, each with its
 // own count-aware heading, whenever both exist.
 
-// How many tool cards a category page shows at first, and how many more
-// each "Load More" click adds. Big categories (the US state tax category
-// holds ~740 tools) would otherwise render every card at once. "Load More"
-// is a plain link to ?show=<n> rather than client-side fetching, so it
-// works without JavaScript and crawlers can follow it; the page's canonical
-// URL stays the bare category URL (see buildSeoMetadata), so the ?show
-// variants don't compete with it in search.
-const TOOLS_PAGE_SIZE = 48;
+// How many cards a category page shows before its "Show more" button: a
+// category with sub-categories shows its first 10 sub-category cards, and
+// calculators show 40. The button reveals the rest in place (ShowMoreGrid) —
+// every card is already in the HTML, so nothing navigates away and crawlers
+// still see every link.
+const SUBCATEGORIES_SHOWN = 10;
+const TOOLS_SHOWN = 40;
 
-function parseShowCount(raw: string | string[] | undefined): number {
-  const n = Number.parseInt(Array.isArray(raw) ? raw[0] : (raw ?? ""), 10);
-  if (!Number.isFinite(n) || n <= TOOLS_PAGE_SIZE) return TOOLS_PAGE_SIZE;
-  // Round up to a whole number of pages, and cap it so a hand-typed huge
-  // value can't ask for an absurd query.
-  return Math.min(Math.ceil(n / TOOLS_PAGE_SIZE) * TOOLS_PAGE_SIZE, 5000);
-}
-
-async function loadCategory(slug: string, showCount = TOOLS_PAGE_SIZE) {
+async function loadCategory(slug: string) {
   const category = await prisma.toolCategory.findUnique({
     where: { slug },
     include: { seoMeta: true },
@@ -85,18 +78,13 @@ async function loadCategory(slug: string, showCount = TOOLS_PAGE_SIZE) {
 
   // A category's OWN directly-filed tools — fetched regardless of whether
   // it also has children, since a hub category (like "Tax Calculators") can
-  // now hold both sub-categories AND its own tools at the same time. Only
-  // the first `showCount` are loaded; `toolCount` is the full total.
-  const toolWhere = { status: "published" as const, categoryId: category.id };
-  const [tools, toolCount] = await Promise.all([
-    prisma.tool.findMany({
-      where: toolWhere,
-      orderBy: { title: "asc" },
-      take: showCount,
-      select: { id: true, slug: true, title: true, description: true, isPopular: true },
-    }),
-    prisma.tool.count({ where: toolWhere }),
-  ]);
+  // now hold both sub-categories AND its own tools at the same time.
+  const tools = await prisma.tool.findMany({
+    where: { status: "published", categoryId: category.id },
+    orderBy: { title: "asc" },
+    select: { id: true, slug: true, title: true, description: true, isPopular: true },
+  });
+  const toolCount = tools.length;
 
   return { category, ancestors, children: childrenWithCounts, tools, toolCount };
 }
@@ -134,21 +122,13 @@ export async function generateMetadata({
   });
 }
 
-export default async function ToolCategoryPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function ToolCategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const showCount = parseShowCount((await searchParams).show);
-  const data = await loadCategory(slug, showCount);
+  const data = await loadCategory(slug);
   if (!data) notFound();
   const { category, ancestors, children, tools, toolCount } = data;
   const hasChildren = children.length > 0;
   const hasTools = toolCount > 0;
-  const remaining = toolCount - tools.length;
 
   // Fallback copy for a category the admin hasn't filled the hero fields in
   // for yet — the page still reads well, and Edit → save on
@@ -222,7 +202,11 @@ export default async function ToolCategoryPage({
               Browse by Topic
             </h2>
           ) : null}
-          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+          <ShowMoreGrid
+            initial={SUBCATEGORIES_SHOWN}
+            noun={["category", "categories"]}
+            className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {children.map((child) => (
               <Link
                 key={child.id}
@@ -245,7 +229,7 @@ export default async function ToolCategoryPage({
                 </span>
               </Link>
             ))}
-          </div>
+          </ShowMoreGrid>
         </div>
       ) : null}
 
@@ -262,7 +246,11 @@ export default async function ToolCategoryPage({
               {category.name} Calculators
             </h2>
           ) : null}
-          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <ShowMoreGrid
+            initial={TOOLS_SHOWN}
+            noun={["calculator", "calculators"]}
+            className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
             {tools.map((tool) => (
               <Link
                 key={tool.id}
@@ -294,21 +282,7 @@ export default async function ToolCategoryPage({
                 </span>
               </Link>
             ))}
-          </div>
-          {remaining > 0 ? (
-            <div className="mt-8 flex flex-col items-center gap-2">
-              <Link
-                href={`/tools/category/${category.slug}?show=${tools.length + TOOLS_PAGE_SIZE}`}
-                scroll={false}
-                className="rounded-lg border border-indigo-200 bg-white px-5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 dark:border-indigo-900 dark:bg-gray-900 dark:text-indigo-400 dark:hover:bg-gray-800"
-              >
-                Load More ({Math.min(remaining, TOOLS_PAGE_SIZE)} more)
-              </Link>
-              <p className="text-xs text-gray-400">
-                Showing {tools.length} of {toolCount} calculators
-              </p>
-            </div>
-          ) : null}
+          </ShowMoreGrid>
         </div>
       ) : null}
 
@@ -317,6 +291,16 @@ export default async function ToolCategoryPage({
           <p className="rounded-2xl border border-dashed border-gray-200 px-4 py-12 text-center text-gray-400 dark:border-gray-800">
             Nothing here yet.
           </p>
+        </div>
+      ) : null}
+
+      {category.content ? (
+        /* Long-form article written in the admin (Categories → Content), under the grids. */
+        <div className="mx-auto max-w-6xl px-4 pb-10">
+          <div
+            className={`${RICH_TEXT_CLASSES} rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10 dark:border-gray-800 dark:bg-gray-900`}
+            dangerouslySetInnerHTML={{ __html: category.content }}
+          />
         </div>
       ) : null}
 

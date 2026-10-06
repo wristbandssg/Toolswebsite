@@ -100,6 +100,11 @@ model ToolCategory {
   heroSubheading  String?
   heroDescription String?
 
+  // Long-form article (rich text HTML from the admin's editor, often 1,500+
+  // words) shown under the sub-category / calculator grid on the public
+  // category page. Edited at /admin/tools/categories/[id]/content.
+  content String?
+
   // Sub-categories: a category may optionally belong to one parent
   // category, and that parent may itself have a parent — arbitrary depth
   // is allowed (e.g. Finance Calculators -> Tax Calculators -> Pakistan

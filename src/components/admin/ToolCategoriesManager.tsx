@@ -379,6 +379,12 @@ function CategoryRow({
                   + Sub-Category
                 </button>
               ) : null}
+              <a
+                href={`/admin/tools/categories/${cat.id}/content`}
+                className="text-gray-500 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                Content
+              </a>
               <button
                 type="button"
                 onClick={() => toggleSeo(cat)}

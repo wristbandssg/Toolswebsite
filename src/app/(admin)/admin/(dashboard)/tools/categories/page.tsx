@@ -92,6 +92,10 @@ export default async function ToolCategoriesPage() {
                 them blank and the page fills in sensible copy on its own.
               </li>
               <li>
+                Open &quot;Content&quot; on a row to write the long article shown under the
+                category&apos;s sub-categories and calculators.
+              </li>
+              <li>
                 Open &quot;SEO&quot; on a row to set its meta title, description, canonical URL,
                 and indexing — right here, no separate page.
               </li>
