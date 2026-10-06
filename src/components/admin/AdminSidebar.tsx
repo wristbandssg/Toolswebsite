@@ -29,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/calendar", label: "Content Calendar" },
   { href: "/admin/search-console", label: "Search Console" },
   { href: "/admin/media", label: "Media Library" },
+  { href: "/admin/homepage", label: "Home Page" },
   { href: "/admin/settings", label: "Website Settings" },
 ];
 

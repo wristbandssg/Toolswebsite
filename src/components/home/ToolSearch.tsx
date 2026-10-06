@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
 /** Home page search box — queries /api/search as you type (debounced). */
-export default function ToolSearch() {
+export default function ToolSearch({ placeholder = "Search calculators…" }: { placeholder?: string }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ slug: string; title: string }[]>([]);
   const [open, setOpen] = useState(false);
@@ -40,7 +40,7 @@ export default function ToolSearch() {
         }}
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
-        placeholder="Search calculators, e.g. mortgage, BMI, tax…"
+        placeholder={placeholder}
         aria-label="Search calculators"
         className="w-full rounded-xl border border-gray-200 bg-white py-3.5 pl-12 pr-4 text-sm shadow-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 dark:border-gray-700 dark:bg-gray-900 dark:focus:ring-indigo-900/40"
       />

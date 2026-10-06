@@ -573,3 +573,7 @@ keep that file in mind.
 - 2026-10-06: Fixed /calculators showing no categories — `where: { parentId: null }` misses MongoDB docs with no
   parentId field (Finance was created without one). Filter top-level categories in code instead; never rely on a
   null filter for optional fields on MongoDB (use isSet: false or filter in code).
+- 2026-10-06: Home page = 3 switchable designs, all content admin-edited at /admin/homepage (site_settings key
+  "homepage": activeDesign + design1 content; src/lib/homepage-config.ts, homepage-data.ts, home-icons.ts,
+  components/home/designs/HomeDesign1.tsx). Design 1 built (calculator-online.net-style hub). Designs 2 and 3 come
+  later from the user's screenshots — add them as design2/design3 blocks + HomeDesign2/3, don't replace Design 1.
