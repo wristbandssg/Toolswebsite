@@ -25,12 +25,16 @@ function removeFromTree(items: MenuItem[], id: string): MenuItem[] {
     .map((item) => ({ ...item, children: removeFromTree(item.children, id) }));
 }
 
-function addChildInTree(items: MenuItem[], parentId: string): MenuItem[] {
+function addChildInTree(items: MenuItem[], parentId: string, child: MenuItem = emptyItem()): MenuItem[] {
   return items.map((item) => {
-    if (item.id === parentId) return { ...item, children: [...item.children, emptyItem()] };
-    return { ...item, children: addChildInTree(item.children, parentId) };
+    if (item.id === parentId) return { ...item, children: [...item.children, child] };
+    return { ...item, children: addChildInTree(item.children, parentId, child) };
   });
 }
+
+/** A ready-made link the admin can drop into the menu (site pages, categories, main sections). */
+export type LinkSuggestion = { group: string; label: string; href: string };
+const SUGGESTION_LIST_ID = "menu-link-suggestions";
 
 function moveInTree(items: MenuItem[], id: string, dir: -1 | 1): MenuItem[] {
   const index = items.findIndex((i) => i.id === id);
@@ -54,6 +58,8 @@ function MenuItemRow({
   onRemove,
   onAddChild,
   onMove,
+  onAddSuggestion,
+  suggestions = [],
   maxDepth,
   allowMega = false,
   rootMega = false,
@@ -64,6 +70,8 @@ function MenuItemRow({
   onRemove: (id: string) => void;
   onAddChild: (id: string) => void;
   onMove: (id: string, dir: -1 | 1) => void;
+  onAddSuggestion?: (parentId: string, s: LinkSuggestion) => void;
+  suggestions?: LinkSuggestion[];
   maxDepth: number;
   allowMega?: boolean;
   // Whether this row sits under (or is) a mega menu top-level item.
@@ -89,6 +97,7 @@ function MenuItemRow({
         <input
           className="flex-1 rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
           placeholder="Link URL (e.g. /tools or https://...)"
+          list={suggestions.length > 0 ? SUGGESTION_LIST_ID : undefined}
           value={item.href}
           onChange={(e) => onChange(item.id, { href: e.target.value })}
         />
@@ -118,6 +127,30 @@ function MenuItemRow({
           >
             ↓
           </button>
+          {depth < depthLimit - 1 && suggestions.length > 0 && onAddSuggestion ? (
+            <select
+              className="max-w-[9rem] rounded-lg border border-gray-300 px-1.5 py-1 text-xs dark:border-gray-700 dark:bg-gray-800"
+              value=""
+              onChange={(e) => {
+                const s = suggestions[Number(e.target.value)];
+                if (s) onAddSuggestion(item.id, s);
+              }}
+              title="Add a page or category as a link under this item"
+            >
+              <option value="">+ Add page…</option>
+              {Array.from(new Set(suggestions.map((s) => s.group))).map((group) => (
+                <optgroup key={group} label={group}>
+                  {suggestions.map((s, i) =>
+                    s.group === group ? (
+                      <option key={i} value={i}>
+                        {s.label}
+                      </option>
+                    ) : null
+                  )}
+                </optgroup>
+              ))}
+            </select>
+          ) : null}
           {depth < depthLimit - 1 ? (
             <button
               type="button"
@@ -145,6 +178,8 @@ function MenuItemRow({
           onRemove={onRemove}
           onAddChild={onAddChild}
           onMove={onMove}
+          onAddSuggestion={onAddSuggestion}
+          suggestions={suggestions}
           maxDepth={maxDepth}
           allowMega={allowMega}
           rootMega={isMega}
@@ -160,6 +195,7 @@ export default function MenuBuilder({
   maxDepth = 3,
   allowMega = false,
   clearLocationOnSave,
+  suggestions = [],
 }: {
   location: MenuLocation;
   initialItems: MenuItem[];
@@ -169,6 +205,8 @@ export default function MenuBuilder({
   // Another location to empty after a successful save (the header builder
   // clears the old separate "mega-menu" list once its items live in the header).
   clearLocationOnSave?: MenuLocation;
+  // Links offered in each item's "+ Add page…" picker and the URL autocomplete.
+  suggestions?: LinkSuggestion[];
 }) {
   const [items, setItems] = useState<MenuItem[]>(initialItems);
   const [saving, setSaving] = useState(false);
@@ -188,6 +226,11 @@ export default function MenuBuilder({
   function addChild(id: string) {
     setSaved(false);
     setItems((prev) => addChildInTree(prev, id));
+  }
+
+  function addSuggestion(parentId: string, s: LinkSuggestion) {
+    setSaved(false);
+    setItems((prev) => addChildInTree(prev, parentId, { id: newId(), label: s.label, href: s.href, children: [] }));
   }
 
   function moveItem(id: string, dir: -1 | 1) {
@@ -232,6 +275,15 @@ export default function MenuBuilder({
 
   return (
     <div className="max-w-3xl">
+      {suggestions.length > 0 ? (
+        <datalist id={SUGGESTION_LIST_ID}>
+          {suggestions.map((s, i) => (
+            <option key={i} value={s.href}>
+              {s.label}
+            </option>
+          ))}
+        </datalist>
+      ) : null}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         {items.map((item) => (
           <MenuItemRow
@@ -242,6 +294,8 @@ export default function MenuBuilder({
             onRemove={removeItem}
             onAddChild={addChild}
             onMove={moveItem}
+            onAddSuggestion={addSuggestion}
+            suggestions={suggestions}
             maxDepth={maxDepth}
             allowMega={allowMega}
           />

@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import type { MenuItem } from "@/lib/menu/types";
 import { DEFAULT_HEADER_ITEMS } from "@/lib/menu/defaults";
 import HeaderNavItem from "@/components/site/HeaderNavItem";
+import SiteFooter from "@/components/site/SiteFooter";
+import { getFooterSettings } from "@/lib/footer-config";
 import { getSiteGeneralSettings } from "@/lib/site-config";
 import AdSlot from "@/components/AdSlot";
 
@@ -31,11 +33,12 @@ async function loadMenu(location: string): Promise<MenuItem[]> {
 }
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const [headerItemsRaw, legacyMegaItems, footerItems, settings] = await Promise.all([
+  const [headerItemsRaw, legacyMegaItems, footerItems, settings, footerSettings] = await Promise.all([
     loadMenu("header"),
     loadMenu("mega-menu"),
     loadMenu("footer"),
     getSiteGeneralSettings(),
+    getFooterSettings(),
   ]);
   // Mega menus are now built in the Header Builder; items still in the old
   // separate "mega-menu" list show after the header items until the admin
@@ -75,33 +78,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         <AdSlot placement="site_footer_top" />
       </div>
 
-      <footer className="border-t border-gray-200 py-10 text-sm text-gray-500 dark:border-gray-800">
-        <div className="mx-auto max-w-6xl px-4">
-          {footerItems.length > 0 ? (
-            <div className="grid gap-8 sm:grid-cols-3">
-              {footerItems.map((col) => (
-                <div key={col.id}>
-                  <p className="mb-2 font-semibold text-gray-700 dark:text-gray-300">{col.label}</p>
-                  <div className="space-y-1.5">
-                    {col.children.map((link) => (
-                      <Link
-                        key={link.id}
-                        href={link.href || "#"}
-                        className="block hover:text-gray-900 dark:hover:text-white"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : null}
-          <p className="mt-8 text-center">
-            © {new Date().getFullYear()} {settings.siteName}
-          </p>
-        </div>
-      </footer>
+      <SiteFooter settings={footerSettings} columns={footerItems} siteName={settings.siteName} logoUrl={settings.logoUrl} />
     </div>
   );
 }

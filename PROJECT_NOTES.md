@@ -585,3 +585,6 @@ keep that file in mind.
 - 2026-10-06: Header is sticky; mega menus live in the Header Builder (MenuItem.mega on top-level items;
   components/site/HeaderNavItem.tsx). The old "mega-menu" location is read for backward compatibility and emptied
   when the Header Builder saves; /admin/mega-menu redirects there. Header defaults in src/lib/menu/defaults.ts.
+- 2026-10-06: Footer redesign — components/site/SiteFooter.tsx + SocialIcon.tsx (inline brand SVGs; lucide v1 has no
+  brand icons); colors/brand/socials/copyright in site_settings "footer" (src/lib/footer-config.ts), edited on the
+  Footer Builder with the link columns. Menu builders offer "+ Add page…" from src/lib/menu/suggestions.ts.

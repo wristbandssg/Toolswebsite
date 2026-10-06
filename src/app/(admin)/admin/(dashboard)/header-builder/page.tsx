@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import MenuBuilder from "@/components/admin/MenuBuilder";
 import type { MenuItem } from "@/lib/menu/types";
 import { DEFAULT_HEADER_ITEMS } from "@/lib/menu/defaults";
+import { getLinkSuggestions } from "@/lib/menu/suggestions";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +15,10 @@ function parse(structure: string | undefined): MenuItem[] {
 }
 
 export default async function HeaderBuilderPage() {
-  const [header, legacyMega] = await Promise.all([
+  const [header, legacyMega, suggestions] = await Promise.all([
     prisma.menu.findUnique({ where: { location: "header" } }),
     prisma.menu.findUnique({ where: { location: "mega-menu" } }),
+    getLinkSuggestions(),
   ]);
   const headerItems = parse(header?.structure);
   // Mega menus used to be built on a separate page; their items now live in
@@ -40,6 +42,7 @@ export default async function HeaderBuilderPage() {
           initialItems={items}
           maxDepth={2}
           allowMega
+          suggestions={suggestions}
           clearLocationOnSave={megaItems.length > 0 ? "mega-menu" : undefined}
         />
       </div>

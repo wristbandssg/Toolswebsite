@@ -6,3 +6,18 @@ export const DEFAULT_HEADER_ITEMS: MenuItem[] = [
   { id: "default-calculators", label: "Calculators", href: "/calculators", children: [] },
   { id: "default-blog", label: "Blog", href: "/blog", children: [] },
 ];
+
+// Shown in the site footer while no footer menu has been saved, and
+// pre-filled in the Footer Builder in that case.
+export const DEFAULT_FOOTER_COLUMNS: MenuItem[] = [
+  {
+    id: "default-links",
+    label: "Links",
+    href: "",
+    children: [
+      { id: "default-home", label: "Home", href: "/", children: [] },
+      { id: "default-calculators", label: "Calculators", href: "/calculators", children: [] },
+      { id: "default-blog", label: "Blog", href: "/blog", children: [] },
+    ],
+  },
+];
