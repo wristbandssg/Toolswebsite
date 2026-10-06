@@ -16,7 +16,7 @@ export default async function ToolsListPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Tools</h1>
+          <h1 className="text-2xl font-bold">All Calculators</h1>
           <p className="mt-1 text-sm text-gray-500">Create and edit all your calculator tools here.</p>
         </div>
         <div className="flex items-center gap-2">

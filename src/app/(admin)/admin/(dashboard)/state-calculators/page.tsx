@@ -16,7 +16,7 @@ export default async function StateCalculatorsPage() {
     <div>
       <p className="text-sm text-gray-500">
         <Link href="/admin/tools" className="hover:underline">
-          Tools
+          Calculators
         </Link>{" "}
         / State Calculators
       </p>

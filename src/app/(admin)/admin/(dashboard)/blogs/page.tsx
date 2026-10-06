@@ -15,7 +15,7 @@ export default async function BlogsListPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Blog Posts</h1>
+          <h1 className="text-2xl font-bold">All Blogs</h1>
           <p className="mt-1 text-sm text-gray-500">Create and edit all your blog posts here.</p>
         </div>
         <div className="flex items-center gap-2">

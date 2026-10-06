@@ -19,7 +19,7 @@ export default async function BlogCategoriesPage() {
     <div>
       <p className="text-sm text-gray-500">
         <Link href="/admin/blogs" className="hover:underline">
-          Blog Posts
+          Blog
         </Link>{" "}
         / Categories
       </p>

@@ -16,11 +16,11 @@ export default async function ToolCategoriesPage() {
     <div>
       <p className="text-sm text-gray-500">
         <Link href="/admin/tools" className="hover:underline">
-          Tools
+          Calculators
         </Link>{" "}
         / Categories
       </p>
-      <h1 className="mt-1 text-2xl font-bold">Tool Categories</h1>
+      <h1 className="mt-1 text-2xl font-bold">Calculator Categories</h1>
       <p className="mt-1 max-w-2xl text-sm text-gray-500">
         Add, edit, or remove the categories Tools can be filed under. Each one gets its own public
         listing page — Edit a row to set the hero headline&apos;s subheading and description shown
