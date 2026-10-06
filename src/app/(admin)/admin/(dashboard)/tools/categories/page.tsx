@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ToolCategoriesManager from "@/components/admin/ToolCategoriesManager";
+import CategoryPageSettingsForm from "@/components/admin/CategoryPageSettingsForm";
+import { getCategoryPageSettings } from "@/lib/category-page-config";
 
 export default async function ToolCategoriesPage() {
   const categories = await prisma.toolCategory.findMany({
     orderBy: { name: "asc" },
     include: { seoMeta: true, tools: { select: { status: true } } },
   });
+  const displaySettings = await getCategoryPageSettings();
 
   const totalTools = categories.reduce((sum, c) => sum + c.tools.length, 0);
   const emptyCount = categories.filter((c) => c.tools.length === 0).length;
@@ -54,6 +57,8 @@ export default async function ToolCategoriesPage() {
         </div>
 
         <div className="space-y-6 lg:sticky lg:top-6 lg:h-fit">
+          <CategoryPageSettingsForm initial={displaySettings} />
+
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="font-semibold">Overview</h2>
             <dl className="mt-4 space-y-3 text-sm">

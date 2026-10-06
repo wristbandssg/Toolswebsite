@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata } from "@/lib/seo";
 import AdSlot from "@/components/AdSlot";
 import ShowMoreGrid from "@/components/site/ShowMoreGrid";
+import { getCategoryPageSettings } from "@/lib/category-page-config";
 import { RICH_TEXT_CLASSES } from "@/lib/templates/page/ContentBox";
 
 // Always reflect the latest published tools for this category.
@@ -21,13 +22,11 @@ export const dynamic = "force-dynamic";
 // assume it has no tools of its own: both sections render, each with its
 // own count-aware heading, whenever both exist.
 
-// How many cards a category page shows before its "Show more" button: a
-// category with sub-categories shows its first 10 sub-category cards, and
-// calculators show 40. The button reveals the rest in place (ShowMoreGrid) —
-// every card is already in the HTML, so nothing navigates away and crawlers
-// still see every link.
-const SUBCATEGORIES_SHOWN = 10;
-const TOOLS_SHOWN = 40;
+// How many cards a category page shows before its "Show more" button comes
+// from the admin (Calculator Categories → Category Page Display; defaults:
+// 10 sub-categories, 40 calculators). The button reveals the rest in place
+// (ShowMoreGrid) — every card is already in the HTML, so nothing navigates
+// away and crawlers still see every link.
 
 async function loadCategory(slug: string) {
   const category = await prisma.toolCategory.findUnique({
@@ -124,7 +123,7 @@ export async function generateMetadata({
 
 export default async function ToolCategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const data = await loadCategory(slug);
+  const [data, display] = await Promise.all([loadCategory(slug), getCategoryPageSettings()]);
   if (!data) notFound();
   const { category, ancestors, children, tools, toolCount } = data;
   const hasChildren = children.length > 0;
@@ -203,7 +202,7 @@ export default async function ToolCategoryPage({ params }: { params: Promise<{ s
             </h2>
           ) : null}
           <ShowMoreGrid
-            initial={SUBCATEGORIES_SHOWN}
+            initial={display.subcategoriesShown}
             noun={["category", "categories"]}
             className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3"
           >
@@ -247,7 +246,7 @@ export default async function ToolCategoryPage({ params }: { params: Promise<{ s
             </h2>
           ) : null}
           <ShowMoreGrid
-            initial={TOOLS_SHOWN}
+            initial={display.toolsShown}
             noun={["calculator", "calculators"]}
             className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >

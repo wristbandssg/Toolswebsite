@@ -26,7 +26,7 @@
 //
 // HOW TO RUN
 // ----------
-//   npx tsx prisma/fix-seo-indexes.ts
+//   npm run db:fix-seo-index   (then: npx prisma db push)
 //
 // It's safe to run more than once — indexes that are already sparse are
 // left untouched.
@@ -35,7 +35,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const FK_FIELDS = ["toolId", "blogId", "pageId", "categoryId"] as const;
+// toolCategoryId (calculator category SEO) was added later — without it here,
+// `npx prisma db push` fails with "E11000 duplicate key … seo_meta_toolCategoryId_key".
+const FK_FIELDS = ["toolId", "blogId", "pageId", "categoryId", "toolCategoryId"] as const;
 const COLLECTION = "seo_meta";
 
 type RawIndex = {
@@ -59,6 +61,13 @@ async function main() {
   const indexes = listResult.cursor?.firstBatch ?? [];
 
   for (const field of FK_FIELDS) {
+    // A sparse index still counts an explicit `null` as a value, so clear
+    // those first (an absent field means the same thing to Prisma).
+    await prisma.$runCommandRaw({
+      update: COLLECTION,
+      updates: [{ q: { [field]: { $type: 10 } }, u: { $unset: { [field]: "" } }, multi: true }],
+    });
+
     // Find any index whose key is exactly { [field]: 1 } (Prisma always
     // creates single-field indexes this way for a scalar @unique field).
     const existing = indexes.find(

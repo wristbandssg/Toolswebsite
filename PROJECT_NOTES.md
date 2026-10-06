@@ -594,3 +594,4 @@ keep that file in mind.
 - 2026-10-06: Fixed /api/pages rejecting box sections (shared schema in src/lib/templates/page/schema.ts, PUT validated too); boxes collapsible with 'Start closed'; Omni-style restyle; 'Convert to Content Boxes' in PageBuilder.
 - 2026-10-06: Page Template 2 rebuilt as a document style (calculator-online.net Terms of Service look): blue title/headings, boxes render as heading + rich text, no cards.
 - 2026-10-06: Category page: 10 subcats / 40 tools then in-place Show more (ShowMoreGrid); ToolCategory.content rich text edited at /admin/tools/categories/[id]/content (needs prisma db push).
+- 2026-10-06: Category page counts from site setting 'category_page' (admin card on Calculator Categories). fix-seo-indexes.ts now includes toolCategoryId (db push E11000 fix): run npm run db:fix-seo-index then npx prisma db push.
