@@ -567,3 +567,6 @@ keep that file in mind.
 - 2026-10-06: New /calculators hub (main categories only, category-page styling); header default link and sitemap
   point to it; /tools 308-redirects to /calculators (next.config.ts). A header menu saved in /admin must have its
   Calculators link changed to /calculators by the user.
+- 2026-10-06: Real home page at src/app/(site)/page.tsx (the default starter src/app/page.tsx is deleted): hero
+  with search (/api/search) + scientific calculator (src/components/home), category blocks from the live tree,
+  Popular Calculators (isPopular), About (Website Settings). Not checked against live data (no DB in sandbox).
