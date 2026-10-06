@@ -582,3 +582,6 @@ keep that file in mind.
   avoids the live DB: temporary route rendering HomeDesign1 with mock data, `next dev` with DATABASE_URL overridden
   to mongodb://127.0.0.1:1/...?serverSelectionTimeoutMS=300, Edge headless screenshots (phone width via a
   same-origin 390px iframe page in public/, since headless Edge's minimum viewport is ~492px). Delete the temp files after.
+- 2026-10-06: Header is sticky; mega menus live in the Header Builder (MenuItem.mega on top-level items;
+  components/site/HeaderNavItem.tsx). The old "mega-menu" location is read for backward compatibility and emptied
+  when the Header Builder saves; /admin/mega-menu redirects there. Header defaults in src/lib/menu/defaults.ts.

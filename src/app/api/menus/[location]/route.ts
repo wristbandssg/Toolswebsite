@@ -9,12 +9,14 @@ const menuItemSchema: z.ZodType<{
   label: string;
   href: string;
   children: unknown[];
+  mega?: boolean;
 }> = z.lazy(() =>
   z.object({
     id: z.string(),
     label: z.string(),
     href: z.string(),
     children: z.array(menuItemSchema),
+    mega: z.boolean().optional(),
   })
 );
 

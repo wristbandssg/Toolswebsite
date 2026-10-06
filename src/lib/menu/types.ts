@@ -6,4 +6,7 @@ export interface MenuItem {
   label: string;
   href: string;
   children: MenuItem[];
+  // Header only, top-level items: true = mega menu (children are columns,
+  // their children the links); otherwise children are a simple dropdown.
+  mega?: boolean;
 }

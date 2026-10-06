@@ -45,6 +45,7 @@ function moveInTree(items: MenuItem[], id: string, dir: -1 | 1): MenuItem[] {
 }
 
 const LEVEL_LABELS = ["Top-level item", "Sub-item", "Link"];
+const MEGA_LEVEL_LABELS = ["Mega menu", "Column", "Link"];
 
 function MenuItemRow({
   item,
@@ -54,6 +55,8 @@ function MenuItemRow({
   onAddChild,
   onMove,
   maxDepth,
+  allowMega = false,
+  rootMega = false,
 }: {
   item: MenuItem;
   depth: number;
@@ -62,12 +65,20 @@ function MenuItemRow({
   onAddChild: (id: string) => void;
   onMove: (id: string, dir: -1 | 1) => void;
   maxDepth: number;
+  allowMega?: boolean;
+  // Whether this row sits under (or is) a mega menu top-level item.
+  rootMega?: boolean;
 }) {
+  const isMega = depth === 0 ? !!item.mega : rootMega;
+  // A mega menu goes 3 levels deep (item -> columns -> links); a plain
+  // dropdown uses the builder's own maxDepth.
+  const depthLimit = allowMega && isMega ? 3 : maxDepth;
+  const labels = allowMega && isMega ? MEGA_LEVEL_LABELS : LEVEL_LABELS;
   return (
     <div className="mt-2" style={{ marginLeft: depth * 24 }}>
       <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900">
         <span className="w-24 flex-shrink-0 text-xs text-gray-400">
-          {LEVEL_LABELS[Math.min(depth, LEVEL_LABELS.length - 1)]}
+          {labels[Math.min(depth, labels.length - 1)]}
         </span>
         <input
           className="w-40 rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
@@ -81,6 +92,15 @@ function MenuItemRow({
           value={item.href}
           onChange={(e) => onChange(item.id, { href: e.target.value })}
         />
+        {allowMega && depth === 0 ? (
+          <label
+            className="flex flex-shrink-0 items-center gap-1 text-xs text-gray-600 dark:text-gray-300"
+            title="Show this item's sub-items as columns in a large panel"
+          >
+            <input type="checkbox" checked={!!item.mega} onChange={(e) => onChange(item.id, { mega: e.target.checked })} />
+            Mega menu
+          </label>
+        ) : null}
         <div className="flex flex-shrink-0 items-center gap-1.5 text-sm">
           <button
             type="button"
@@ -98,13 +118,13 @@ function MenuItemRow({
           >
             ↓
           </button>
-          {depth < maxDepth - 1 ? (
+          {depth < depthLimit - 1 ? (
             <button
               type="button"
               onClick={() => onAddChild(item.id)}
               className="rounded-lg border border-gray-300 px-2 py-1 text-xs font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
             >
-              + Sub-item
+              {allowMega && isMega ? (depth === 0 ? "+ Column" : "+ Link") : "+ Sub-item"}
             </button>
           ) : null}
           <button
@@ -126,6 +146,8 @@ function MenuItemRow({
           onAddChild={onAddChild}
           onMove={onMove}
           maxDepth={maxDepth}
+          allowMega={allowMega}
+          rootMega={isMega}
         />
       ))}
     </div>
@@ -136,10 +158,17 @@ export default function MenuBuilder({
   location,
   initialItems,
   maxDepth = 3,
+  allowMega = false,
+  clearLocationOnSave,
 }: {
   location: MenuLocation;
   initialItems: MenuItem[];
   maxDepth?: number;
+  // Header only: top-level items can be switched to mega menus.
+  allowMega?: boolean;
+  // Another location to empty after a successful save (the header builder
+  // clears the old separate "mega-menu" list once its items live in the header).
+  clearLocationOnSave?: MenuLocation;
 }) {
   const [items, setItems] = useState<MenuItem[]>(initialItems);
   const [saving, setSaving] = useState(false);
@@ -186,6 +215,13 @@ export default function MenuBuilder({
         setError(data.error ?? "Could not save the menu.");
         return;
       }
+      if (clearLocationOnSave) {
+        await fetch(`/api/menus/${clearLocationOnSave}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ structure: [] }),
+        });
+      }
       setSaved(true);
     } catch {
       setError("Network error — please try again.");
@@ -207,6 +243,7 @@ export default function MenuBuilder({
             onAddChild={addChild}
             onMove={moveItem}
             maxDepth={maxDepth}
+            allowMega={allowMega}
           />
         ))}
         {items.length === 0 ? (

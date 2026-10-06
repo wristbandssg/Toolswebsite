@@ -23,7 +23,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/templates", label: "Design Templates" },
   { href: "/admin/header-builder", label: "Header Builder" },
   { href: "/admin/footer-builder", label: "Footer Builder" },
-  { href: "/admin/mega-menu", label: "Mega Menu Builder" },
   { href: "/admin/ai-planner", label: "AI Content Planner" },
   { href: "/admin/internal-linking", label: "Internal Linking" },
   { href: "/admin/calendar", label: "Content Calendar" },
