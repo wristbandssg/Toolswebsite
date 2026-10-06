@@ -332,14 +332,15 @@ export default function PageBuilder({
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-1 font-semibold">Page Builder</h2>
         <p className="mb-4 text-sm text-gray-500">
-          Add sections and arrange them in the order they should appear on the page. With Page Template 1, each
-          Content Box shows as its own card — numbered 1, 2, 3… in order unless you untick the number. Visitors can click
-          a box heading to open or close it; tick “Start closed” to show only the heading at first.
+          Add sections and arrange them in the order they should appear on the page.
+          {values.templateKey === "page-template-2"
+            ? " With Page Template 2, each Content Box is a blue heading with its text underneath (Terms / Policy style). Leave the heading empty for plain text such as the intro line. Numbers and “Start closed” are not used in this template."
+            : " With Page Template 1, each Content Box shows as its own card — numbered 1, 2, 3… in order unless you untick the number. Visitors can click a box heading to open or close it; tick “Start closed” to show only the heading at first."}
         </p>
 
-        {values.templateKey === "page-template-1" && values.sections.some((s) => s.type !== "box" && s.type !== "calculator_embed") ? (
+        {values.sections.some((s) => s.type !== "box" && s.type !== "calculator_embed") ? (
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-            <span>This page has older loose sections (headings, paragraphs…). Turn them into Content Boxes to get the boxed design and rich text editing.</span>
+            <span>This page has older loose sections (headings, paragraphs…). Turn them into Content Boxes to get the template&rsquo;s design and rich text editing.</span>
             <button
               type="button"
               onClick={() => setValues((v) => ({ ...v, sections: convertToBoxes(v.sections) }))}

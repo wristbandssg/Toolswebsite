@@ -41,7 +41,7 @@ export const PAGE_TEMPLATES: Record<
   { name: string; component: ComponentType<PageTemplateProps> }
 > = {
   "page-template-1": { name: "Page Template 1 — Boxed Sections", component: PageTemplate1 },
-  "page-template-2": { name: "Page Template 2 — Wide", component: PageTemplate2 },
+  "page-template-2": { name: "Page Template 2 — Document (Terms, Policy)", component: PageTemplate2 },
 };
 
 export const DEFAULT_TOOL_TEMPLATE = "tool-template-1";
