@@ -1,4 +1,5 @@
 import type { PageSection } from "./types";
+import ContentBox from "./ContentBox";
 
 /** Renders the Page Builder's section array (Section 8: Page Builder). Shared by both Page Templates. */
 export function SectionRenderer({ sections }: { sections: PageSection[] }) {
@@ -58,6 +59,13 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 <a href={`/tools/${section.toolSlug}`} className="text-indigo-600 hover:underline">
                   → Open {section.toolTitle}
                 </a>
+              </div>
+            );
+          case "box":
+            // Template 1 renders boxes itself (numbered); other templates show them as plain cards.
+            return (
+              <div key={i} className="mt-6">
+                <ContentBox heading={section.heading} lead={section.lead} html={section.html} />
               </div>
             );
           default:

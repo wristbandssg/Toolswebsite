@@ -40,7 +40,7 @@ export const PAGE_TEMPLATES: Record<
   string,
   { name: string; component: ComponentType<PageTemplateProps> }
 > = {
-  "page-template-1": { name: "Page Template 1 — Standard", component: PageTemplate1 },
+  "page-template-1": { name: "Page Template 1 — Boxed Sections", component: PageTemplate1 },
   "page-template-2": { name: "Page Template 2 — Wide", component: PageTemplate2 },
 };
 

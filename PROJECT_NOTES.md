@@ -588,3 +588,6 @@ keep that file in mind.
 - 2026-10-06: Footer redesign — components/site/SiteFooter.tsx + SocialIcon.tsx (inline brand SVGs; lucide v1 has no
   brand icons); colors/brand/socials/copyright in site_settings "footer" (src/lib/footer-config.ts), edited on the
   Footer Builder with the link columns. Menu builders offer "+ Add page…" from src/lib/menu/suggestions.ts.
+- 2026-10-06: Page Template 1 = boxed sections (src/lib/templates/page/ContentBox.tsx; PageSection type "box" with
+  heading/lead/html/showNumber, edited with RichTextEditor in PageBuilder). Draft pages previewable by logged-in
+  admins at /pages/<slug> (noindex + banner). Page Template 2 still to be designed from the user's next screenshot.

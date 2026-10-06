@@ -46,7 +46,7 @@ export default async function PagesListPage() {
             {pages.map((page) => (
               <tr key={page.id}>
                 <td className="px-4 py-3 font-medium">{page.title}</td>
-                <td className="px-4 py-3 text-gray-500">/{page.slug}</td>
+                <td className="px-4 py-3 text-gray-500">/pages/{page.slug}</td>
                 <td className="px-4 py-3 text-gray-500">{page.templateKey}</td>
                 <td className="px-4 py-3">
                   <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs dark:bg-gray-800">
@@ -55,6 +55,14 @@ export default async function PagesListPage() {
                 </td>
                 <td className="px-4 py-3 text-gray-500">{page.updatedAt.toLocaleDateString()}</td>
                 <td className="px-4 py-3 text-right">
+                  <a
+                    href={`/pages/${page.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mr-4 text-gray-500 hover:text-gray-900 hover:underline dark:hover:text-white"
+                  >
+                    View
+                  </a>
                   <Link href={`/admin/pages/${page.slug}`} className="text-indigo-600 hover:underline">
                     Edit
                   </Link>

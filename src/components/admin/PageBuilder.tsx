@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PageSection } from "@/lib/templates/page/types";
+import RichTextEditor from "./RichTextEditor";
 
 export interface PageSeoValues {
   metaTitle: string;
@@ -45,6 +46,7 @@ const EMPTY: PageFormValues = {
 };
 
 const SECTION_LABELS: Record<PageSection["type"], string> = {
+  box: "Content Box",
   heading: "Heading",
   paragraph: "Paragraph",
   image: "Image",
@@ -63,6 +65,8 @@ function slugify(text: string) {
 
 function defaultSectionFor(type: PageSection["type"]): PageSection {
   switch (type) {
+    case "box":
+      return { type: "box", heading: "", lead: "", html: "", showNumber: true };
     case "heading":
       return { type: "heading", text: "", level: 2 };
     case "paragraph":
@@ -95,7 +99,7 @@ export default function PageBuilder({
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
-  const [addType, setAddType] = useState<PageSection["type"]>("heading");
+  const [addType, setAddType] = useState<PageSection["type"]>("box");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pendingImageIndex = useRef<number | null>(null);
 
@@ -208,7 +212,7 @@ export default function PageBuilder({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
+    <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
       <input
         ref={fileInputRef}
         type="file"
@@ -283,7 +287,8 @@ export default function PageBuilder({
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-1 font-semibold">Page Builder</h2>
         <p className="mb-4 text-sm text-gray-500">
-          Add sections and arrange them in the order they should appear on the page.
+          Add sections and arrange them in the order they should appear on the page. With Page Template 1, each
+          Content Box shows as its own card — numbered 1, 2, 3… in order unless you untick the number.
         </p>
 
         <div className="space-y-4">
@@ -324,6 +329,34 @@ export default function PageBuilder({
                   </button>
                 </div>
               </div>
+
+              {section.type === "box" ? (
+                <div className="space-y-3">
+                  <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                    <input
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold dark:border-gray-700 dark:bg-gray-800"
+                      placeholder="Box heading, e.g. The Purpose"
+                      value={section.heading}
+                      onChange={(e) => updateSection(index, { heading: e.target.value })}
+                    />
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={section.showNumber !== false}
+                        onChange={(e) => updateSection(index, { showNumber: e.target.checked })}
+                      />
+                      Show number
+                    </label>
+                  </div>
+                  <input
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    placeholder="Bold lead line under the heading (optional)"
+                    value={section.lead ?? ""}
+                    onChange={(e) => updateSection(index, { lead: e.target.value })}
+                  />
+                  <RichTextEditor value={section.html} onChange={(html) => updateSection(index, { html })} />
+                </div>
+              ) : null}
 
               {section.type === "heading" ? (
                 <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -532,7 +565,7 @@ export default function PageBuilder({
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
           disabled={saving}
@@ -540,6 +573,19 @@ export default function PageBuilder({
         >
           {saving ? "Saving..." : mode === "create" ? "Create Page" : "Save Changes"}
         </button>
+        {mode === "edit" && values.slug ? (
+          <a
+            href={`/pages/${values.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            View Page ↗
+          </a>
+        ) : null}
+        {mode === "edit" ? (
+          <span className="text-xs text-gray-400">Save first to see your latest changes. Drafts are visible to you while logged in.</span>
+        ) : null}
       </div>
     </form>
   );
