@@ -561,3 +561,6 @@ keep that file in mind.
   tools in 8 batches, and split Crypto Calculators into 5 sub-categories (89 existing currency/crypto tools move;
   10 old currency scripts re-pointed). 54 numbers re-derived independently (Black-Scholes checked by numeric
   integration and put-call parity); runCalculator finite on all 60; organize dry run OK. `tsc`/`lint`/`build` clean.
+- 2026-10-06: Breadcrumbs drop the "Tools" root — category pages start at the top-level category, calculator
+  pages show Home / <category> / <title>; default header link label "Calculators" (href /tools). A header menu
+  saved in /admin overrides the default label, so rename it there too.

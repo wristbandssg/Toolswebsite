@@ -77,6 +77,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         assumptions: tool.assumptions,
         faq: tool.faq ? JSON.parse(tool.faq) : [],
         categoryName: tool.category?.name,
+        categorySlug: tool.category?.slug,
       }}
       relatedTools={relatedTools}
       supportBlogs={tool.blogRelations.map((r) => ({ slug: r.blog.slug, title: r.blog.title }))}

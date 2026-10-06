@@ -29,7 +29,7 @@ async function loadMenu(location: string): Promise<MenuItem[]> {
 }
 
 const DEFAULT_HEADER_ITEMS: MenuItem[] = [
-  { id: "default-tools", label: "Tools", href: "/tools", children: [] },
+  { id: "default-tools", label: "Calculators", href: "/tools", children: [] },
   { id: "default-blog", label: "Blog", href: "/blog", children: [] },
 ];
 

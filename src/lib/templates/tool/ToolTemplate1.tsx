@@ -12,7 +12,13 @@ export default function ToolTemplate1(props: ToolTemplateProps) {
     <div className="bg-gray-50 dark:bg-gray-950">
       <article className="mx-auto max-w-6xl px-4 py-8">
         <nav className="mb-4 text-sm text-gray-500">
-          <Link href="/">Home</Link> / <Link href="/tools">Tools</Link> / {tool.title}
+          <Link href="/">Home</Link> /{" "}
+          {tool.categorySlug && tool.categoryName ? (
+            <>
+              <Link href={`/tools/category/${tool.categorySlug}`}>{tool.categoryName}</Link> /{" "}
+            </>
+          ) : null}
+          {tool.title}
         </nav>
         <h1 className="text-3xl font-bold">{tool.title}</h1>
         <ToolDescription text={tool.description} className="mt-2 text-gray-600 dark:text-gray-300" />

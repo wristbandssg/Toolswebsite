@@ -22,6 +22,7 @@ export interface ToolTemplateProps {
     assumptions?: string | null;
     faq: { question: string; answer: string }[];
     categoryName?: string | null;
+    categorySlug?: string | null;
   };
   relatedTools: { slug: string; title: string }[];
   supportBlogs: { slug: string; title: string }[];

@@ -182,17 +182,17 @@ export default async function ToolCategoryPage({
           from /admin/tools/categories (see ToolCategoriesManager). */}
       <div className="bg-gray-50 px-4 py-16 text-center dark:bg-gray-900/40 sm:py-20">
         <div className="mx-auto max-w-3xl">
+          {/* Breadcrumb starts at the top-level category (no "Tools" root). */}
           <p className="text-sm text-gray-400">
-            Tools
             {ancestors.map((a) => (
               <span key={a.slug}>
-                {" "}
-                / <Link href={`/tools/category/${a.slug}`} className="hover:underline">
+                <Link href={`/tools/category/${a.slug}`} className="hover:underline">
                   {a.name}
-                </Link>
+                </Link>{" "}
+                /{" "}
               </span>
-            ))}{" "}
-            / {category.name}
+            ))}
+            {category.name}
           </p>
           <h1 className="mt-3 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
             {category.name}

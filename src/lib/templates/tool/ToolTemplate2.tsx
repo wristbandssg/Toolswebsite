@@ -10,7 +10,13 @@ export default function ToolTemplate2(props: ToolTemplateProps) {
   return (
     <article className="mx-auto max-w-6xl px-4 py-8">
       <nav className="mb-4 text-sm text-gray-500">
-        <Link href="/">Home</Link> / <Link href="/tools">Tools</Link> / {tool.title}
+        <Link href="/">Home</Link> /{" "}
+        {tool.categorySlug && tool.categoryName ? (
+          <>
+            <Link href={`/tools/category/${tool.categorySlug}`}>{tool.categoryName}</Link> /{" "}
+          </>
+        ) : null}
+        {tool.title}
       </nav>
       <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
         <div>
