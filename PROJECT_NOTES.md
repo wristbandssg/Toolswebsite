@@ -4,7 +4,25 @@
 
 ## ▶️ Resume here
 
-Just built the **Car & Vehicle Cost Calculators expansion** (6 Oct 2026) from the user's 131-keyword car list: 5
+Just built the **Crypto Calculators expansion** (6 Oct 2026) from the user's 116-keyword crypto list: 16 already built
+(crypto-capital-gains, crypto-to-fiat-converter, dollar-cost-averaging, portfolio-rebalancing, stock-cost-basis incl.
+tax lot method, stock-average-price, stock-break-even, sharpe-ratio, forex-drawdown, covered-call-options,
+remittance-fee, gifted-asset- and inherited-asset-capital-gains, ira-growth, loyalty-points-value-estimator) and 40
+merged (see calc-engine-crypto-trading.ts and each engine header — e.g. Bitcoin/Ethereum/Solana/XRP/BNB/Cardano/
+Dogecoin/Litecoin/Polkadot/Avalanche/Polygon/Chainlink P&L + ROI -> crypto-profit-and-loss with a coin dropdown;
+user was offered separate BTC/ETH pages and said start). 60 new tools in 8 batches (`crypto-*`). **Crypto
+Calculators is now split into 5 sub-categories** (user: "notun kore sub category kore start koro"): Currency Exchange &
+Forex (the 87 existing currency/forex/metal tools), Crypto Trading & Profit (16 + the 2 crypto converters), Crypto
+Fees, Payments & Loans (11), Crypto Staking, DeFi & Mining (14), Crypto Market, Tax & Security (19).
+organize-tool-categories.ts has CRYPTO_SUBCATEGORIES + CRYPTO_TOOL_GROUPS (89 moves); the 10 old currency scripts
+(create-currency-* and create-finance-currency) now file into Currency Exchange & Forex (crypto-metals sends the 2
+converters to Crypto Trading & Profit) and create the sub-category if missing. 2026 facts: crypto still outside
+the wash sale rule (crypto ETFs are not), Bitcoin subsidy 3.125 BTC (next halving ~2028), 0.5%-of-AGI charitable
+floor for itemizers. Dry run on the 2 Oct backup: 171 moves (incl. the 89 crypto/currency), parent left with 0
+direct tools, rerun 0. User committed the Car round as cdc0aa9. This deploy: commit, push, the 8
+`db:create-crypto-*` scripts, then `npm run db:organize-categories -- --apply` (moves the 89 tools), Render Manual Deploy.
+
+Before that: Just built the **Car & Vehicle Cost Calculators expansion** (6 Oct 2026) from the user's 131-keyword car list: 5
 already built (Rideshare + Food Delivery Driver Earnings = gig-income; Extended Car Warranty =
 extended-auto-warranty-vs-insurance; Daily Commute Cost = commuter-vs-remote-cost-comparison; Balloon Payment Car
 Finance = balloon-loan) and 37 merged (see calc-engine-car-buying.ts and each engine header — e.g. Truck/SUV/Minivan/
@@ -539,3 +557,7 @@ keep that file in mind.
   88 new tools in 9 batches under a new Finance > Car & Vehicle Cost Calculators category with 5 sub-categories,
   plus car-insurance-discount in Insurance > Auto & Vehicle. 56 numbers re-derived independently; runCalculator
   finite on all 89; organize dry run OK. `tsc`/`lint`/`build` clean.
+- 2026-10-06: Built the Crypto expansion from the user's 116-keyword list — 16 already built, 40 merged; 60 new
+  tools in 8 batches, and split Crypto Calculators into 5 sub-categories (89 existing currency/crypto tools move;
+  10 old currency scripts re-pointed). 54 numbers re-derived independently (Black-Scholes checked by numeric
+  integration and put-call parity); runCalculator finite on all 60; organize dry run OK. `tsc`/`lint`/`build` clean.

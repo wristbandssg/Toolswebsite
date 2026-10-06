@@ -423,6 +423,14 @@ import { carFuelEvCustomCalculators } from "./calc-engine-car-fuel-ev";
 import { carRepairCustomCalculators } from "./calc-engine-car-repair";
 import { carCareUpgradesCustomCalculators } from "./calc-engine-car-care-upgrades";
 import { carBusinessCustomCalculators } from "./calc-engine-car-business";
+import { cryptoTradingCustomCalculators } from "./calc-engine-crypto-trading";
+import { cryptoDerivativesCustomCalculators } from "./calc-engine-crypto-derivatives";
+import { cryptoFeesCustomCalculators } from "./calc-engine-crypto-fees";
+import { cryptoPaymentsLoansCustomCalculators } from "./calc-engine-crypto-payments-loans";
+import { cryptoStakingDefiCustomCalculators } from "./calc-engine-crypto-staking-defi";
+import { cryptoMiningCustomCalculators } from "./calc-engine-crypto-mining";
+import { cryptoMarketCustomCalculators } from "./calc-engine-crypto-market";
+import { cryptoTaxSecurityCustomCalculators } from "./calc-engine-crypto-tax-security";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -660,6 +668,14 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...carRepairCustomCalculators,
   ...carCareUpgradesCustomCalculators,
   ...carBusinessCustomCalculators,
+  ...cryptoTradingCustomCalculators,
+  ...cryptoDerivativesCustomCalculators,
+  ...cryptoFeesCustomCalculators,
+  ...cryptoPaymentsLoansCustomCalculators,
+  ...cryptoStakingDefiCustomCalculators,
+  ...cryptoMiningCustomCalculators,
+  ...cryptoMarketCustomCalculators,
+  ...cryptoTaxSecurityCustomCalculators,
 };
 
 export function runCalculator(

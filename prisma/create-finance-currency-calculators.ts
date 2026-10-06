@@ -17,9 +17,11 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Moved to Crypto Calculators on 29 Sep 2026 (user request) — see
-// organize-tool-categories.ts.
-const CATEGORY_SLUG = "crypto-calculators";
+// Since 6 Oct 2026 Crypto Calculators is split into sub-categories (see
+// organize-tool-categories.ts); these tools live under Currency Exchange & Forex
+// Calculators, which this script creates under Crypto Calculators if needed.
+const PARENT_SLUG = "crypto-calculators";
+const CATEGORY = { name: "Currency Exchange & Forex Calculators", slug: "currency-exchange-forex-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -226,14 +228,24 @@ const TOOLS: ToolDef[] = [
   },
 ];
 
-async function main() {
-  const category = await prisma.toolCategory.findUnique({ where: { slug: CATEGORY_SLUG } });
-  if (!category) {
+async function ensureCategory(cat: { name: string; slug: string }) {
+  const existing = await prisma.toolCategory.findUnique({ where: { slug: cat.slug } });
+  if (existing) return existing;
+  const parent = await prisma.toolCategory.findUnique({ where: { slug: PARENT_SLUG } });
+  if (!parent) {
     throw new Error(
-      `The "${CATEGORY_SLUG}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, ` +
+      `The "${PARENT_SLUG}" category doesn't exist yet — run "npm run db:setup-finance-categories" first, ` +
         "then re-run this script."
     );
   }
+  console.log(`Creating sub-category "${cat.name}" under "${parent.name}".`);
+  return prisma.toolCategory.create({
+    data: { name: cat.name, slug: cat.slug, parentId: parent.id, templateKey: "category-template-1", viewStyle: "grid" },
+  });
+}
+
+async function main() {
+  const category = await ensureCategory(CATEGORY);
 
   let created = 0;
   let updated = 0;

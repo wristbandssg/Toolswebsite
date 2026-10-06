@@ -53,6 +53,12 @@
 //     |    +- Car Ownership, Fuel & EV Cost       their create scripts)
 //     |    +- Car Maintenance, Repair & Upgrade
 //     |    +- Vehicle Business Use & Income
+//     +- Crypto Calculators                      (split 6 Oct 2026 with the
+//     |    +- Currency Exchange & Forex           60-tool crypto expansion; the
+//     |    +- Crypto Trading & Profit             89 currency/forex tools move
+//     |    +- Crypto Fees, Payments & Loans       into Currency Exchange & Forex)
+//     |    +- Crypto Staking, DeFi & Mining
+//     |    +- Crypto Market, Tax & Security
 //   Math Calculators (main category, new — home of percentage-calculator)
 //
 // Plus two tool moves the user asked for: business-loan-calculator from
@@ -321,6 +327,54 @@ const CAR_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Vehicle Business Use & Income Calculators", slug: "vehicle-business-use-income-calculators" },
 ];
 
+// Sub-categories of Crypto Calculators (added 6 Oct 2026 with the 60-tool
+// crypto expansion). The 89 currency/forex/metal tools already there move into
+// Currency Exchange & Forex, except the two crypto converters.
+const CRYPTO_PARENT_SLUG = "crypto-calculators";
+const CRYPTO_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "Currency Exchange & Forex Calculators", slug: "currency-exchange-forex-calculators" },
+  { name: "Crypto Trading & Profit Calculators", slug: "crypto-trading-profit-calculators" },
+  { name: "Crypto Fees, Payments & Loans Calculators", slug: "crypto-fees-payments-loans-calculators" },
+  { name: "Crypto Staking, DeFi & Mining Calculators", slug: "crypto-staking-defi-mining-calculators" },
+  { name: "Crypto Market, Tax & Security Calculators", slug: "crypto-market-tax-security-calculators" },
+];
+
+// Where each of the 89 tools that were in Crypto Calculators before the split goes.
+const CRYPTO_TOOL_GROUPS: Record<string, string[]> = {
+  "currency-exchange-forex-calculators": [
+    "currency-basket-calculator", "weighted-currency-basket-calculator", "currency-hedging-calculator",
+    "fx-hedge-ratio-calculator", "currency-exposure-calculator", "foreign-currency-invoice-calculator",
+    "import-cost-currency-calculator", "export-revenue-currency-calculator",
+    "foreign-investment-currency-return-calculator", "exchange-rate-calculator", "foreign-exchange-calculator",
+    "profit-loss-currency-calculator", "currency-conversion-calculator", "live-currency-converter",
+    "historical-currency-converter", "historical-exchange-rate-calculator", "cross-currency-rate-calculator",
+    "currency-cross-rate-calculator", "inverse-exchange-rate-calculator", "currency-pair-calculator",
+    "multi-currency-converter", "base-currency-calculator", "gold-currency-converter",
+    "precious-metal-currency-converter", "forex-break-even-calculator", "forex-commission-calculator",
+    "forex-spread-calculator", "forex-swap-calculator", "forex-rollover-calculator",
+    "forex-financing-cost-calculator", "forex-return-calculator", "forex-roi-calculator",
+    "forex-drawdown-calculator", "forex-account-growth-calculator", "forex-compounding-calculator",
+    "forex-calculator", "forex-profit-calculator", "forex-loss-calculator", "forex-pip-calculator",
+    "pip-value-calculator", "forex-lot-size-calculator", "forex-margin-calculator", "forex-leverage-calculator",
+    "forex-risk-calculator", "forex-risk-reward-calculator", "forex-stop-loss-calculator",
+    "forex-take-profit-calculator", "forward-exchange-rate-calculator", "forward-premium-calculator",
+    "forward-discount-calculator", "currency-forward-calculator", "covered-interest-parity-calculator",
+    "interest-rate-parity-calculator", "purchasing-power-parity-calculator", "real-exchange-rate-calculator",
+    "nominal-exchange-rate-calculator", "effective-exchange-rate-calculator", "exchange-rate-difference-calculator",
+    "exchange-rate-percentage-change-calculator", "currency-appreciation-calculator",
+    "currency-depreciation-calculator", "currency-gain-loss-calculator", "foreign-exchange-gain-loss-calculator",
+    "currency-return-calculator", "currency-performance-calculator", "currency-spread-calculator",
+    "bid-ask-spread-calculator", "exchange-rate-spread-calculator", "currency-exchange-fee-calculator",
+    "foreign-transaction-fee-calculator", "currency-conversion-fee-calculator",
+    "international-transfer-fee-calculator", "money-transfer-exchange-rate-calculator", "remittance-calculator",
+    "remittance-fee-calculator", "travel-money-calculator", "travel-currency-converter", "holiday-money-calculator",
+    "cash-exchange-calculator", "bank-exchange-rate-calculator", "credit-card-exchange-rate-calculator",
+    "paypal-currency-conversion-calculator", "international-price-converter", "foreign-salary-currency-converter",
+    "currency-converter", "forex-profit-loss-calculator", "forex-position-size-calculator",
+  ],
+  "crypto-trading-profit-calculators": ["crypto-to-fiat-converter", "fiat-to-crypto-converter"],
+};
+
 // Finance sub-categories that are split one level further.
 const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] = [
   { parentSlug: LOAN_PARENT_SLUG, subs: LOAN_SUBCATEGORIES },
@@ -329,6 +383,7 @@ const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] =
   { parentSlug: BUDGET_PARENT_SLUG, subs: BUDGET_SUBCATEGORIES },
   { parentSlug: INSURANCE_PARENT_SLUG, subs: INSURANCE_SUBCATEGORIES },
   { parentSlug: CAR_PARENT_SLUG, subs: CAR_SUBCATEGORIES },
+  { parentSlug: CRYPTO_PARENT_SLUG, subs: CRYPTO_SUBCATEGORIES },
 ];
 
 // tool slug -> category slug it must end up in.
@@ -337,14 +392,12 @@ const TOOL_MOVES: Record<string, string> = {
   ...Object.fromEntries(Object.entries(MORTGAGE_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   ...Object.fromEntries(Object.entries(INVESTMENT_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   ...Object.fromEntries(Object.entries(INSURANCE_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
+  ...Object.fromEntries(Object.entries(CRYPTO_TOOL_GROUPS).flatMap(([cat, slugs]) => slugs.map((slug) => [slug, cat]))),
   "percentage-calculator": "math-calculators",
   // Moved 28 Sep 2026 with the Retirement Calculators batch (user request).
   "retirement-savings-goal-calculator": "retirement-calculators",
-  // Moved 29 Sep 2026 with the Crypto Calculators batch (user request: the
-  // whole currency/forex/crypto list lives under Crypto Calculators).
-  "currency-converter": "crypto-calculators",
-  "forex-profit-loss-calculator": "crypto-calculators",
-  "forex-position-size-calculator": "crypto-calculators",
+  // (The 3 currency tools moved into Crypto Calculators on 29 Sep 2026 now go
+  // to its Currency Exchange & Forex sub-category via CRYPTO_TOOL_GROUPS.)
 };
 
 type Cat = { id: string; name: string; slug: string; parentId: string | null };
