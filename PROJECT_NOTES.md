@@ -597,3 +597,4 @@ keep that file in mind.
 - 2026-10-06: Category page counts from site setting 'category_page' (admin card on Calculator Categories). fix-seo-indexes.ts now includes toolCategoryId (db push E11000 fix): run npm run db:fix-seo-index then npx prisma db push.
 - 2026-10-06: Home Design 2 (Category Showcase, allcalculatortools.com style) — design2 block in homepage-config, loadDesign2Data, HomeDesign2, HomeDesign2Form; admin tab switch Design 1/2.
 - 2026-10-06: Admin Home/Header/Footer builders full width (AdminHelpCard side card, home side menu with jump links); Design Templates page removed.
+- 2026-10-06: Design 2 blogs: BlogCard (equal height) + BlogSlider; settings blogLayout/blogAutoplay/blogExcerptWords.

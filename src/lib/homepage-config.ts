@@ -278,6 +278,9 @@ export const design2Schema = z.object({
   blogsHeading: z.string().default("Blogs"),
   blogCount: z.number().int().min(1).max(24).default(6),
   blogButtonText: z.string().default("Learn more"),
+  blogLayout: z.enum(["slider", "grid"]).default("slider"),
+  blogAutoplay: z.boolean().default(true),
+  blogExcerptWords: z.number().int().min(0).max(80).default(20), // 0 = title only
   // SEO
   metaTitle: z.string().default(""),
   metaDescription: z.string().default(""),

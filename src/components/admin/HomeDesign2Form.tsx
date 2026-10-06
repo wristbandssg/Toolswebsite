@@ -471,12 +471,32 @@ export default function HomeDesign2Form({
         />
       </Card>
 
-      <Card title="Blogs" hint="The latest published blog posts, newest first.">
+      <Card title="Blogs" hint="The latest published blog posts, newest first. Every card has the same size: title up to 2 lines, text up to 3 lines.">
         <Toggle label="Show blogs" checked={d.showBlogs} onChange={(v) => update("showBlogs", v)} />
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Heading" value={d.blogsHeading} onChange={(v) => update("blogsHeading", v)} />
           <NumberField label="Number of Posts" min={1} max={24} value={d.blogCount} onChange={(v) => update("blogCount", v)} />
           <Field label="Button Text" value={d.blogButtonText} onChange={(v) => update("blogButtonText", v)} />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <label className="block text-sm">
+            <span className="font-medium">Layout</span>
+            <select className={inputClass} value={d.blogLayout} onChange={(e) => update("blogLayout", e.target.value as Design2Content["blogLayout"])}>
+              <option value="slider">Slider (arrows, dots, swipe)</option>
+              <option value="grid">Grid (all cards at once)</option>
+            </select>
+          </label>
+          <NumberField
+            label="Words in Each Card's Text"
+            hint="The text under the title stops after this many words (0 = title only). Uses the post's excerpt, or its content when there is none."
+            min={0}
+            max={80}
+            value={d.blogExcerptWords}
+            onChange={(v) => update("blogExcerptWords", v)}
+          />
+          <div className="pt-6">
+            <Toggle label="Slide automatically (every 5 seconds)" checked={d.blogAutoplay} onChange={(v) => update("blogAutoplay", v)} />
+          </div>
         </div>
       </Card>
 

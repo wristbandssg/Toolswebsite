@@ -146,7 +146,25 @@ export type D2Guide = {
   text: string;
   tools: { slug: string; title: string }[];
 };
-export type D2Blog = { slug: string; title: string; excerpt: string; image: string };
+export type D2Blog = { slug: string; title: string; excerpt: string; image: string; category: string; date: string };
+
+/** Plain-text summary of a post, cut to `maxWords` words ("…" when cut). */
+function blogSummary(excerpt: string | null, html: string, title: string, maxWords: number): string {
+  if (maxWords <= 0) return "";
+  // An excerpt that only repeats the title adds nothing — use the post's own text instead.
+  const base =
+    excerpt && excerpt.trim().toLowerCase() !== title.trim().toLowerCase()
+      ? excerpt
+      : html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ").replace(/<[^>]*>/g, " ");
+  const words = base
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&#39;|&rsquo;/g, "’")
+    .replace(/&quot;/g, '"')
+    .split(/\s+/)
+    .filter(Boolean);
+  return words.length > maxWords ? words.slice(0, maxWords).join(" ").replace(/[\s,.;:!?&—–-]+$/, "") + "…" : words.join(" ");
+}
 
 export async function loadDesign2Data(content: Design2Content) {
   const categories = await prisma.toolCategory.findMany({
@@ -273,14 +291,25 @@ export async function loadDesign2Data(content: Design2Content) {
         where: { status: "published" },
         orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
         take: content.blogCount,
-        select: { slug: true, title: true, excerpt: true, featuredImage: true },
+        select: {
+          slug: true,
+          title: true,
+          excerpt: true,
+          content: true,
+          featuredImage: true,
+          publishedAt: true,
+          createdAt: true,
+          categories: { select: { name: true }, take: 1 },
+        },
       })
     : [];
   const blogs: D2Blog[] = blogRows.map((b) => ({
     slug: b.slug,
     title: b.title,
-    excerpt: b.excerpt ?? "",
+    excerpt: blogSummary(b.excerpt, b.content, b.title, content.blogExcerptWords),
     image: b.featuredImage ?? "",
+    category: b.categories[0]?.name ?? "",
+    date: (b.publishedAt ?? b.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
   }));
 
   const totalTools = await prisma.tool.count({ where: { status: "published" } });

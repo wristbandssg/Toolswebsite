@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Design2Content, D2Chip } from "@/lib/homepage-config";
 import type { D2Blog, D2CategoryCard, D2Guide, D2PopularTool } from "@/lib/homepage-data";
+import BlogCard from "@/components/home/BlogCard";
+import BlogSlider from "@/components/home/BlogSlider";
 
 // Home page Design 2 — "Category Showcase" (modelled on allcalculatortools.com).
 // Every heading, text, list and toggle comes from the admin (/admin/homepage →
@@ -369,36 +371,25 @@ export default function HomeDesign2({
         </section>
       ) : null}
 
-      {/* Blogs */}
+      {/* Blogs — a slider or a grid (admin's choice); every card has the same shape. */}
       {c.showBlogs && blogs.length > 0 ? (
         <section className={`${CONTAINER} py-12 sm:py-16`}>
           {c.blogsHeading ? (
-            <h2 className="text-center text-3xl font-bold uppercase tracking-wide text-blue-700 dark:text-blue-400">{fill(c.blogsHeading)}</h2>
+            <div className="text-center">
+              <h2 className="text-3xl font-extrabold uppercase tracking-wide text-blue-700 dark:text-blue-400">{fill(c.blogsHeading)}</h2>
+              <span aria-hidden className="mx-auto mt-3 block h-1 w-14 rounded-full bg-blue-600" />
+            </div>
           ) : null}
-          <div className="mt-8 grid grid-cols-1 items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {blogs.map((b) => (
-              <Link
-                key={b.slug}
-                href={`/blog/${b.slug}`}
-                className="group overflow-hidden rounded-2xl bg-[#13307a] text-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
-              >
-                {b.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={b.image} alt="" loading="lazy" className="aspect-[16/9] w-full object-cover" />
-                ) : (
-                  <div className="flex aspect-[16/9] w-full items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-800 text-5xl">📰</div>
-                )}
-                <div className="p-6 sm:p-8">
-                  <h3 className="line-clamp-2 text-lg font-bold leading-snug">{b.title}</h3>
-                  {b.excerpt ? <p className="mt-4 line-clamp-3 text-[15px] leading-relaxed text-blue-50/90">{b.excerpt}</p> : null}
-                  {c.blogButtonText ? (
-                    <span className="mt-5 inline-block rounded-md bg-blue-600 px-6 py-2.5 text-sm font-medium transition group-hover:bg-blue-500">
-                      {fill(c.blogButtonText)}
-                    </span>
-                  ) : null}
-                </div>
-              </Link>
-            ))}
+          <div className="mt-10">
+            {c.blogLayout === "slider" ? (
+              <BlogSlider blogs={blogs} buttonText={fill(c.blogButtonText)} autoplay={c.blogAutoplay} />
+            ) : (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {blogs.map((b) => (
+                  <BlogCard key={b.slug} blog={b} buttonText={fill(c.blogButtonText)} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       ) : null}
