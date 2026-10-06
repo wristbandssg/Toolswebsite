@@ -80,7 +80,7 @@ export default function HomeDesign1({
           ) : null}
 
           {content.showSearch || exploreText ? (
-            <div className="mx-auto mt-12 max-w-2xl text-center sm:mt-16">
+            <div className="mt-12 text-center sm:mt-16">
               {content.showSearch ? <ToolSearch placeholder={content.searchPlaceholder} /> : null}
               {exploreText ? (
                 <p className="mt-5 text-base font-medium text-slate-700 dark:text-slate-200 sm:text-lg">
@@ -96,14 +96,15 @@ export default function HomeDesign1({
       {/* Category tiles */}
       {content.showIconGrid && tiles.length > 0 ? (
         <section className="mx-auto max-w-6xl px-4 pb-14 pt-2">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
+          {/* Flex-wrap (not grid) so a short last row — or only a few tiles — stays centered. */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             {tiles.map((tile, i) => {
               const Icon = homeIcon(tile.iconKey, tile.slug);
               return (
                 <Link
                   key={tile.slug}
                   href={`/tools/category/${tile.slug}`}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-5 text-center shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-900 dark:hover:shadow-none"
+                  className="group flex basis-[calc(50%-0.375rem)] flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-5 sm:basis-[calc(33.333%-0.667rem)] md:basis-[calc(25%-0.75rem)] lg:basis-[calc(20%-0.8rem)] text-center shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-900 dark:hover:shadow-none"
                 >
                   <span
                     className={`flex h-14 w-14 items-center justify-center rounded-2xl transition duration-200 group-hover:scale-110 ${
@@ -128,7 +129,7 @@ export default function HomeDesign1({
       {/* About band */}
       {content.showAbout ? (
         <section className="bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-14 dark:from-slate-900 dark:to-slate-900">
-          <div className="mx-auto max-w-4xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10 dark:border-slate-800 dark:bg-slate-950">
+          <div className="mx-auto max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10 dark:border-slate-800 dark:bg-slate-950">
             <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
               {content.aboutHeading || `About ${siteName}`}
             </h2>
