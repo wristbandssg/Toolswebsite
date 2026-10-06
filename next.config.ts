@@ -13,6 +13,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The calculators hub moved from /tools (which had no page) to /calculators.
+  // Only the bare path redirects — /tools/<slug> and /tools/category/<slug>
+  // are unchanged.
+  async redirects() {
+    return [{ source: "/tools", destination: "/calculators", permanent: true }];
+  },
   async headers() {
     return [
       {

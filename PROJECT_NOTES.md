@@ -564,3 +564,6 @@ keep that file in mind.
 - 2026-10-06: Breadcrumbs drop the "Tools" root — category pages start at the top-level category, calculator
   pages show Home / <category> / <title>; default header link label "Calculators" (href /tools). A header menu
   saved in /admin overrides the default label, so rename it there too.
+- 2026-10-06: New /calculators hub (main categories only, category-page styling); header default link and sitemap
+  point to it; /tools 308-redirects to /calculators (next.config.ts). A header menu saved in /admin must have its
+  Calculators link changed to /calculators by the user.
