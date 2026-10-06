@@ -414,6 +414,15 @@ import { insHomeValuablesCustomCalculators } from "./calc-engine-ins-home-valuab
 import { insPolicyCostsCustomCalculators } from "./calc-engine-ins-policy-costs";
 import { insBusinessCustomCalculators } from "./calc-engine-ins-business";
 import { insSpecialtyPersonalCustomCalculators } from "./calc-engine-ins-specialty-personal";
+import { carBuyingCustomCalculators } from "./calc-engine-car-buying";
+import { carSellingCustomCalculators } from "./calc-engine-car-selling";
+import { carLeaseCustomCalculators } from "./calc-engine-car-lease";
+import { carAlternativesCustomCalculators } from "./calc-engine-car-alternatives";
+import { carOwnershipCustomCalculators } from "./calc-engine-car-ownership";
+import { carFuelEvCustomCalculators } from "./calc-engine-car-fuel-ev";
+import { carRepairCustomCalculators } from "./calc-engine-car-repair";
+import { carCareUpgradesCustomCalculators } from "./calc-engine-car-care-upgrades";
+import { carBusinessCustomCalculators } from "./calc-engine-car-business";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -642,6 +651,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...insPolicyCostsCustomCalculators,
   ...insBusinessCustomCalculators,
   ...insSpecialtyPersonalCustomCalculators,
+  ...carBuyingCustomCalculators,
+  ...carSellingCustomCalculators,
+  ...carLeaseCustomCalculators,
+  ...carAlternativesCustomCalculators,
+  ...carOwnershipCustomCalculators,
+  ...carFuelEvCustomCalculators,
+  ...carRepairCustomCalculators,
+  ...carCareUpgradesCustomCalculators,
+  ...carBusinessCustomCalculators,
 };
 
 export function runCalculator(

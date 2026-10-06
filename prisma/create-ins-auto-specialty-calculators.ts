@@ -1,5 +1,5 @@
 // One-time (but safe to re-run) batch setup script: creates the Specialty Vehicle Insurance tools
-// (7) of the Insurance Calculators expansion, filed under Insurance Calculators >
+// (8) of the Insurance Calculators expansion, filed under Insurance Calculators >
 // Auto & Vehicle Insurance Calculators (both categories are created on first run).
 // See src/lib/calc-engine-ins-auto-specialty.ts for the math and
 // src/lib/calc-engine-ins-life-core.ts for the full batch context.
@@ -397,6 +397,55 @@ const TOOLS: ToolDef[] = [
       {
         question: "Do I need insurance to fly a drone commercially?",
         answer: "The FAA doesn't require it for Part 107 pilots, but most clients do, and liability coverage protects you from costly claims.",
+      },
+    ],
+  },
+  {
+    slug: "car-insurance-discount-calculator",
+    title: "Car Insurance Discount Calculator",
+    description: "Estimate how much a dash cam or an anti-theft device (alarm, immobilizer or GPS tracker) could cut your car insurance, and how long the device takes to pay for itself.",
+    metaTitle: "Car Insurance Discount Calculator — Dash Cam & Anti-Theft",
+    metaDescription: "Free car insurance discount calculator. Estimate dash cam and anti-theft device discounts and the payback on the device.",
+    calcInputs: [
+      currencyField("premium", "Yearly Car Insurance Premium", { default: 1800, max: 50000, step: 50 }),
+      percentField("comprehensiveSharePercent", "Comprehensive Share of the Premium", { default: 20, max: 100, step: 1 }),
+      percentField("dashCamDiscountPercent", "Dash Cam Discount (0 = None Offered)", { default: 5, max: 20, step: 1, required: false }),
+      {
+        key: "antiTheftDevice", label: "Anti-Theft Device", type: "dropdown", required: true, default: 2,
+        options: [
+          { label: "None", value: 0 },
+          { label: "Alarm (≈5% off Comprehensive)", value: 1 },
+          { label: "Immobilizer (≈10% off Comprehensive)", value: 2 },
+          { label: "GPS Tracking / Recovery (≈15% off Comprehensive)", value: 3 },
+        ],
+      },
+      currencyField("dashCamCost", "Dash Cam Cost", { default: 150, max: 2000, step: 10 }),
+      currencyField("antiTheftCost", "Anti-Theft Device Cost (Installed)", { default: 300, max: 5000, step: 10 }),
+    ],
+    calcResult: { label: "Yearly Savings", format: "currency" },
+    calcResults: [
+      { key: "dashCamSavings", label: "Dash Cam Savings", format: "currency" },
+      { key: "antiTheftSavings", label: "Anti-Theft Savings", format: "currency" },
+      { key: "totalYearlySavings", label: "Yearly Savings", format: "currency", highlight: true },
+      { key: "deviceCost", label: "Device Cost", format: "currency" },
+      { key: "paybackYears", label: "Years to Pay Back the Devices", format: "number" },
+    ],
+    instructions:
+      "Anti-theft devices usually earn a discount on the comprehensive part of your premium (the part covering theft), " +
+      "typically 5–25% depending on the device and state — trackers that help recover a stolen car often earn the most. " +
+      "Few US insurers discount dash cams directly, though some do and they're common in the UK; footage can also help " +
+      "prove you weren't at fault.\n\n" +
+      "Ask your insurer which devices qualify before buying. Set the dash cam discount to 0 if none is offered.",
+    examples:
+      "Example: on a $1,800 premium, a 5% dash cam discount saves $90 and an immobilizer saves " +
+      "$36 on the comprehensive part — $126 a year, paying back $450 of devices in about " +
+      "3.57 years.",
+    assumptions:
+      "Typical anti-theft discounts applied to the comprehensive premium only. " + GENERAL_DISCLAIMER,
+    faq: [
+      {
+        question: "Can dash cam footage be used in an insurance claim?",
+        answer: "Yes — clear footage can help establish fault and speed up claims, whether or not your insurer offers a discount.",
       },
     ],
   },

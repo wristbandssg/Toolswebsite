@@ -1,6 +1,6 @@
 /**
  * Batch: "Insurance Calculators" (5 Oct 2026), sub-batch 6 of 11 — Specialty
- * Vehicles (7 tools), filed under Insurance Calculators > Auto & Vehicle
+ * Vehicles (8 tools), filed under Insurance Calculators > Auto & Vehicle
  * Insurance Calculators. See calc-engine-ins-life-core.ts for the full batch
  * context. Premiums are a rate (% of insured value, from a quote) plus
  * liability — the usual way specialty insurers price these.
@@ -19,6 +19,10 @@
  *    and damage loss.
  *  - aviationInsurance (incl. drone): hull rate, low-hours loading,
  *    liability.
+ *  - carInsuranceDiscount (dash cam, anti-theft device; added 6 Oct 2026
+ *    with the Car & Vehicle Cost round): dash cam discount on the whole
+ *    premium, anti-theft discount on the comprehensive part; payback on the
+ *    devices.
  *
  * Self-contained: no imports from any other batch.
  *
@@ -180,6 +184,31 @@ export const aviationInsuranceCalculator: CustomCalculator = (values) => {
   };
 };
 
+// --- 8. Car Insurance Discount Calculator (dash cam, anti-theft) -----------------------
+export const carInsuranceDiscountCalculator: CustomCalculator = (values) => {
+  const premium = pos(values.premium, 1800);
+  const comprehensiveSharePercent = Math.min(100, pos(values.comprehensiveSharePercent, 20));
+  const dashCamDiscountPercent = Math.min(100, pos(values.dashCamDiscountPercent, 5));
+  const device = Math.round(safeNumber(values.antiTheftDevice, 2));
+  const antiTheftDevice = device >= 0 && device <= 3 ? device : 2;
+  const dashCamCost = pos(values.dashCamCost, 150);
+  const antiTheftCost = pos(values.antiTheftCost, 300);
+
+  const comprehensive = (premium * comprehensiveSharePercent) / 100;
+  const dashCam = (premium * dashCamDiscountPercent) / 100;
+  const antiTheft = (comprehensive * [0, 5, 10, 15][antiTheftDevice]) / 100;
+  const total = dashCam + antiTheft;
+  const cost = (dashCamDiscountPercent > 0 ? dashCamCost : 0) + (antiTheftDevice > 0 ? antiTheftCost : 0);
+
+  return {
+    dashCamSavings: round2(dashCam),
+    antiTheftSavings: round2(antiTheft),
+    totalYearlySavings: round2(total),
+    deviceCost: round2(cost),
+    paybackYears: round2(total > 0 ? cost / total : 0),
+  };
+};
+
 export const insAutoSpecialtyCustomCalculators: Record<string, CustomCalculator> = {
   "classic-car-insurance-calculator": classicCarInsuranceCalculator,
   "usage-based-insurance-savings-calculator": usageBasedInsuranceSavingsCalculator,
@@ -188,4 +217,5 @@ export const insAutoSpecialtyCustomCalculators: Record<string, CustomCalculator>
   "atv-insurance-calculator": atvInsuranceCalculator,
   "bicycle-insurance-calculator": bicycleInsuranceCalculator,
   "aviation-insurance-calculator": aviationInsuranceCalculator,
+  "car-insurance-discount-calculator": carInsuranceDiscountCalculator,
 };

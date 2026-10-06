@@ -47,6 +47,12 @@
 //     |    +- Auto & Vehicle Insurance            moves here from Real Estate)
 //     |    +- Home & Property Insurance
 //     |    +- Business & Specialty Insurance
+//     +- Car & Vehicle Cost Calculators          (added 6 Oct 2026 with the
+//     |    +- Car Buying & Selling                88-tool car cost expansion; all
+//     |    +- Car Lease, Rental & Transport       its tools are new, filed by
+//     |    +- Car Ownership, Fuel & EV Cost       their create scripts)
+//     |    +- Car Maintenance, Repair & Upgrade
+//     |    +- Vehicle Business Use & Income
 //   Math Calculators (main category, new — home of percentage-calculator)
 //
 // Plus two tool moves the user asked for: business-loan-calculator from
@@ -109,6 +115,8 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Budget Calculators", slug: "budget-calculators" },
   // Added 5 Oct 2026 with the 73-tool insurance expansion.
   { name: "Insurance Calculators", slug: "insurance-calculators" },
+  // Added 6 Oct 2026 with the 88-tool car cost expansion.
+  { name: "Car & Vehicle Cost Calculators", slug: "car-vehicle-cost-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a
@@ -302,6 +310,17 @@ const INSURANCE_TOOL_GROUPS: Record<string, string[]> = {
   "home-property-insurance-calculators": ["homeowners-insurance-calculator"],
 };
 
+// Sub-categories of Car & Vehicle Cost Calculators (added 6 Oct 2026). No
+// existing tool moves here; the create-car-* scripts file their tools directly.
+const CAR_PARENT_SLUG = "car-vehicle-cost-calculators";
+const CAR_SUBCATEGORIES: { name: string; slug: string }[] = [
+  { name: "Car Buying & Selling Calculators", slug: "car-buying-selling-calculators" },
+  { name: "Car Lease, Rental & Transport Calculators", slug: "car-lease-rental-transport-calculators" },
+  { name: "Car Ownership, Fuel & EV Cost Calculators", slug: "car-ownership-fuel-ev-cost-calculators" },
+  { name: "Car Maintenance, Repair & Upgrade Calculators", slug: "car-maintenance-repair-upgrade-calculators" },
+  { name: "Vehicle Business Use & Income Calculators", slug: "vehicle-business-use-income-calculators" },
+];
+
 // Finance sub-categories that are split one level further.
 const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] = [
   { parentSlug: LOAN_PARENT_SLUG, subs: LOAN_SUBCATEGORIES },
@@ -309,6 +328,7 @@ const SPLITS: { parentSlug: string; subs: { name: string; slug: string }[] }[] =
   { parentSlug: INVESTMENT_PARENT_SLUG, subs: INVESTMENT_SUBCATEGORIES },
   { parentSlug: BUDGET_PARENT_SLUG, subs: BUDGET_SUBCATEGORIES },
   { parentSlug: INSURANCE_PARENT_SLUG, subs: INSURANCE_SUBCATEGORIES },
+  { parentSlug: CAR_PARENT_SLUG, subs: CAR_SUBCATEGORIES },
 ];
 
 // tool slug -> category slug it must end up in.

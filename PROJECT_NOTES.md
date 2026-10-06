@@ -4,7 +4,24 @@
 
 ## ▶️ Resume here
 
-Just built the **Insurance Calculators expansion** (5 Oct 2026) from the user's 119-keyword list: 1 already built
+Just built the **Car & Vehicle Cost Calculators expansion** (6 Oct 2026) from the user's 131-keyword car list: 5
+already built (Rideshare + Food Delivery Driver Earnings = gig-income; Extended Car Warranty =
+extended-auto-warranty-vs-insurance; Daily Commute Cost = commuter-vs-remote-cost-comparison; Balloon Payment Car
+Finance = balloon-loan) and 37 merged (see calc-engine-car-buying.ts and each engine header — e.g. Truck/SUV/Minivan/
+Luxury/Sports/Compact/Hybrid/College Student TCO -> car-total-cost-of-ownership vehicle-type dropdown). 88 new tools
+in 9 batches (`car-*`) plus car-insurance-discount added to ins-auto-specialty (Insurance > Auto & Vehicle).
+**New Finance sub-category "Car & Vehicle Cost Calculators"** (car-vehicle-cost-calculators) with 5 sub-categories:
+Car Buying & Selling (16), Car Lease, Rental & Transport (14), Car Ownership, Fuel & EV Cost (22), Car Maintenance,
+Repair & Upgrade (28), Vehicle Business Use & Income (8). The create-car-* scripts create the parent and their
+sub-category on first run (head-car/tail-car template); organize-tool-categories.ts lists it in
+FINANCE_SUBCATEGORIES and SPLITS (no moves). 2026 facts used: IRS mileage 72.5¢ Jan–Jun, 76¢ Jul–Dec (mid-year
+increase); 280F first-year cap $20,300 with bonus / $12,300 without; heavy-SUV §179 cap $32,000, 100% bonus;
+federal EV credit ended for vehicles acquired after 30 Sep 2025; 30C charger credit ended 30 Jun 2026; 25D solar
+credit ended after 31 Dec 2025; UK EV BIK 4% (2026/27), Class 1A 15%; ATO novated-lease minimum residuals. User committed the Insurance round as
+9250a3d. This deploy: commit, push, the 9 `db:create-car-*` scripts plus `db:create-ins-auto-specialty-calculators`
+(adds car-insurance-discount), Render Manual Deploy (organize --apply optional; nothing to move).
+
+Before that: Just built the **Insurance Calculators expansion** (5 Oct 2026) from the user's 119-keyword list: 1 already built
 (Home Insurance Premium = homeowners-insurance-calculator) and 45 merged (see calc-engine-ins-life-core.ts and each
 engine header — e.g. Jewelry/Fine Art/Collectibles/Instrument/Camera -> jewelry-insurance; Trip Cancellation/Cruise/
 Adventure/International Student -> travel-insurance; Multi-Car -> bundle discount; Grace Period -> lapse). 73 new tools
@@ -518,3 +535,7 @@ keep that file in mind.
   tools in 11 batches under a new Finance > Insurance Calculators category with 5 sub-categories; homeowners
   insurance moved there from Real Estate. 153 numbers re-derived independently; runCalculator finite on all 73;
   organize dry run OK (homeowners moves, rerun 0). `tsc`/`lint`/`build` clean.
+- 2026-10-06: Built the Car & Vehicle Cost expansion from the user's 131-keyword list — 5 already built, 37 merged;
+  88 new tools in 9 batches under a new Finance > Car & Vehicle Cost Calculators category with 5 sub-categories,
+  plus car-insurance-discount in Insurance > Auto & Vehicle. 56 numbers re-derived independently; runCalculator
+  finite on all 89; organize dry run OK. `tsc`/`lint`/`build` clean.
