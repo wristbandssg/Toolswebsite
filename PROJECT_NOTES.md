@@ -570,3 +570,6 @@ keep that file in mind.
 - 2026-10-06: Real home page at src/app/(site)/page.tsx (the default starter src/app/page.tsx is deleted): hero
   with search (/api/search) + scientific calculator (src/components/home), category blocks from the live tree,
   Popular Calculators (isPopular), About (Website Settings). Not checked against live data (no DB in sandbox).
+- 2026-10-06: Fixed /calculators showing no categories — `where: { parentId: null }` misses MongoDB docs with no
+  parentId field (Finance was created without one). Filter top-level categories in code instead; never rely on a
+  null filter for optional fields on MongoDB (use isSet: false or filter in code).

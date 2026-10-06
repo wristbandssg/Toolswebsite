@@ -25,11 +25,15 @@ async function countPublishedToolsInSubtree(categoryId: string): Promise<number>
 }
 
 async function loadMainCategories() {
-  const mains = await prisma.toolCategory.findMany({
-    where: { parentId: null },
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, slug: true },
-  });
+  // Filter for top-level categories in code, not with `where: { parentId: null }`:
+  // on MongoDB that only matches an explicit null, and categories created
+  // without a parent (e.g. Finance Calculators) have no parentId field at all.
+  const mains = (
+    await prisma.toolCategory.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, slug: true, parentId: true },
+    })
+  ).filter((c) => !c.parentId);
   // Main categories with no published tools yet are left off, as on the
   // category pages.
   return (
