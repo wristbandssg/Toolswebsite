@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getHomepageSettings } from "@/lib/homepage-config";
-import { loadDesign1Data } from "@/lib/homepage-data";
+import { loadDesign1Data, loadDesign2Data } from "@/lib/homepage-data";
 import { groupCategoryTree } from "@/lib/flattenCategoryTree";
 import HomepageSettingsForm from "@/components/admin/HomepageSettingsForm";
 
@@ -21,13 +21,19 @@ export default async function HomepageSettingsPage() {
   }));
   // What "automatic" currently shows, so the admin can start from it.
   const auto = await loadDesign1Data({ ...settings.design1, iconItems: [], sections: [], autoSectionCount: 30 });
+  const auto2 = await loadDesign2Data({ ...settings.design2, categoryCards: [], popularTools: [], guideCards: [], showBlogs: false, autoGuideCount: 1, autoPopularCount: 1 });
+  const tools = await prisma.tool.findMany({
+    where: { status: "published" },
+    orderBy: { title: "asc" },
+    select: { slug: true, title: true },
+  });
 
   return (
     <div>
       <h1 className="text-2xl font-bold">Home Page</h1>
       <p className="mt-1 max-w-3xl text-sm text-gray-500">
         Choose which home page design is live and edit everything on it — headings, text, the calculator and search,
-        category tiles, calculator sections, and the &quot;Featured In&quot; logos. Changes show on the live home page as
+        category tiles and cards, calculator lists, FAQ and more. Changes show on the live home page as
         soon as you save.
       </p>
       <div className="mt-6">
@@ -36,6 +42,8 @@ export default async function HomepageSettingsPage() {
           categoryGroups={categoryGroups}
           autoTileSlugs={auto.tiles.map((t) => t.slug)}
           autoSectionSlugs={auto.sections.map((s) => s.slug)}
+          autoCategorySlugs2={auto2.autoCategorySlugs}
+          tools={tools}
         />
       </div>
     </div>

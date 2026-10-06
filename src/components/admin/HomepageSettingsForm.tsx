@@ -5,129 +5,33 @@ import { useRouter } from "next/navigation";
 import { HOME_DESIGNS, type Design1Content, type HomepageSettings } from "@/lib/homepage-config";
 import { HOME_ICONS } from "@/lib/home-icons";
 
-type CategoryGroup = { label: string; options: { slug: string; name: string }[] };
-
-const inputClass =
-  "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800";
-const smallButton =
-  "rounded-md border border-gray-300 px-2 py-1 text-xs hover:bg-gray-50 disabled:opacity-40 dark:border-gray-700 dark:hover:bg-gray-800";
-
-function Card({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-      <h2 className="font-semibold">{title}</h2>
-      {hint ? <p className="mt-1 text-xs text-gray-500">{hint}</p> : null}
-      <div className="mt-4 space-y-4">{children}</div>
-    </section>
-  );
-}
-
-function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <label className="flex items-center gap-2 text-sm font-medium">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
-      {label}
-    </label>
-  );
-}
-
-function Field({
-  label,
-  hint,
-  value,
-  onChange,
-  textarea,
-  rows = 3,
-}: {
-  label: string;
-  hint?: string;
-  value: string;
-  onChange: (v: string) => void;
-  textarea?: boolean;
-  rows?: number;
-}) {
-  return (
-    <label className="block text-sm">
-      <span className="font-medium">{label}</span>
-      {textarea ? (
-        <textarea className={inputClass} rows={rows} value={value} onChange={(e) => onChange(e.target.value)} />
-      ) : (
-        <input className={inputClass} value={value} onChange={(e) => onChange(e.target.value)} />
-      )}
-      {hint ? <span className="mt-1 block text-xs text-gray-400">{hint}</span> : null}
-    </label>
-  );
-}
-
-function CategorySelect({
-  groups,
-  value,
-  onChange,
-}: {
-  groups: CategoryGroup[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <select className={inputClass} value={value} onChange={(e) => onChange(e.target.value)}>
-      <option value="">— Choose a category —</option>
-      {groups.map((g) => (
-        <optgroup key={g.label} label={g.label}>
-          {g.options.map((o) => (
-            <option key={o.slug} value={o.slug}>
-              {o.name}
-            </option>
-          ))}
-        </optgroup>
-      ))}
-    </select>
-  );
-}
-
-/** Move/remove controls shared by the list editors. */
-function RowControls({
-  index,
-  length,
-  onMove,
-  onRemove,
-}: {
-  index: number;
-  length: number;
-  onMove: (from: number, to: number) => void;
-  onRemove: (index: number) => void;
-}) {
-  return (
-    <div className="flex gap-1">
-      <button type="button" className={smallButton} disabled={index === 0} onClick={() => onMove(index, index - 1)}>
-        ↑
-      </button>
-      <button type="button" className={smallButton} disabled={index === length - 1} onClick={() => onMove(index, index + 1)}>
-        ↓
-      </button>
-      <button type="button" className={`${smallButton} text-red-600`} onClick={() => onRemove(index)}>
-        Remove
-      </button>
-    </div>
-  );
-}
-
-function moveItem<T>(list: T[], from: number, to: number): T[] {
-  const next = [...list];
-  const [item] = next.splice(from, 1);
-  next.splice(to, 0, item);
-  return next;
-}
+import {
+  Card,
+  CategorySelect,
+  Field,
+  RowControls,
+  Toggle,
+  inputClass,
+  moveItem,
+  smallButton,
+  type CategoryGroup,
+} from "./HomepageFormParts";
+import HomeDesign2Form from "./HomeDesign2Form";
 
 export default function HomepageSettingsForm({
   initial,
   categoryGroups,
   autoTileSlugs,
   autoSectionSlugs,
+  autoCategorySlugs2,
+  tools,
 }: {
   initial: HomepageSettings;
   categoryGroups: CategoryGroup[];
   autoTileSlugs: string[];
   autoSectionSlugs: string[];
+  autoCategorySlugs2: string[];
+  tools: { slug: string; title: string }[];
 }) {
   const router = useRouter();
   const [settings, setSettings] = useState<HomepageSettings>(initial);
@@ -136,6 +40,8 @@ export default function HomepageSettingsForm({
   const [error, setError] = useState<string | null>(null);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const d = settings.design1;
+  // Which design's content the form is editing (starts on the live one).
+  const [editing, setEditing] = useState<1 | 2>(initial.activeDesign === 2 ? 2 : 1);
 
   function update<K extends keyof Design1Content>(key: K, value: Design1Content[K]) {
     setSaved(false);
@@ -177,6 +83,15 @@ export default function HomepageSettingsForm({
           ...d,
           iconItems: d.iconItems.filter((i) => i.categorySlug),
           sections: d.sections.filter((s) => s.categorySlug),
+        },
+        design2: {
+          ...settings.design2,
+          categoryCards: settings.design2.categoryCards.filter((c) => c.categorySlug),
+          popularTools: settings.design2.popularTools.filter((t) => t.toolSlug),
+          guideCards: settings.design2.guideCards.filter((g) => g.categorySlug),
+          heroChips: settings.design2.heroChips.filter((c) => c.text.trim()),
+          faqs: settings.design2.faqs.filter((f) => f.question.trim()),
+          useCases: settings.design2.useCases.map((u) => ({ ...u, bullets: u.bullets.map((b) => b.trim()).filter(Boolean) })),
         },
       };
       const res = await fetch("/api/homepage-settings", {
@@ -232,7 +147,39 @@ export default function HomepageSettingsForm({
         </div>
       </Card>
 
-      <h2 className="pt-2 text-lg font-bold">Design 1 Content</h2>
+      <div className="flex flex-wrap items-center gap-3 pt-2">
+        <h2 className="text-lg font-bold">Edit Content For</h2>
+        <div className="inline-flex rounded-lg border border-gray-200 p-0.5 dark:border-gray-700">
+          {([1, 2] as const).map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setEditing(n)}
+              className={`rounded-md px-4 py-1.5 text-sm font-medium ${
+                editing === n ? "bg-indigo-600 text-white" : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+              }`}
+            >
+              Design {n}
+              {settings.activeDesign === n ? " (live)" : ""}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {editing === 2 ? (
+        <HomeDesign2Form
+          value={settings.design2}
+          onChange={(next) => {
+            setSaved(false);
+            setSettings((s) => ({ ...s, design2: next }));
+          }}
+          categoryGroups={categoryGroups}
+          autoCategorySlugs={autoCategorySlugs2}
+          tools={tools}
+          onError={setError}
+        />
+      ) : (
+      <>
 
       <Card title="Top Section (Hero)">
         <Field label="Title" hint="Leave empty to use the site name." value={d.title} onChange={(v) => update("title", v)} />
@@ -526,6 +473,9 @@ export default function HomepageSettingsForm({
           rows={2}
         />
       </Card>
+
+      </>
+      )}
 
       <div className="sticky bottom-0 flex items-center gap-3 border-t border-gray-200 bg-white/90 py-3 backdrop-blur dark:border-gray-800 dark:bg-gray-950/90">
         <button
