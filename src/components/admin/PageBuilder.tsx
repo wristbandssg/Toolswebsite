@@ -82,6 +82,51 @@ function defaultSectionFor(type: PageSection["type"]): PageSection {
   }
 }
 
+function escapeHtml(text: string) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/**
+ * Turns an older page's loose sections into Content Boxes: every heading
+ * starts a new box, and the paragraphs, images and buttons under it become
+ * that box's rich text. Spacers are dropped; calculator embeds and existing
+ * boxes are kept as they are.
+ */
+function convertToBoxes(sections: PageSection[]): PageSection[] {
+  const out: PageSection[] = [];
+  let box: Extract<PageSection, { type: "box" }> | null = null;
+  const current = () => {
+    if (!box) {
+      box = { type: "box", heading: "", lead: "", html: "", showNumber: false };
+      out.push(box);
+    }
+    return box;
+  };
+  for (const s of sections) {
+    switch (s.type) {
+      case "heading":
+        box = { type: "box", heading: s.text, lead: "", html: "", showNumber: true };
+        out.push(box);
+        break;
+      case "paragraph":
+        current().html += `<p>${escapeHtml(s.text).replace(/\n/g, "<br>")}</p>`;
+        break;
+      case "image":
+        current().html += `<p><img src="${escapeHtml(s.url)}" alt="${escapeHtml(s.alt ?? "")}"></p>`;
+        break;
+      case "button":
+        current().html += `<p><a href="${escapeHtml(s.href)}">${escapeHtml(s.label)}</a></p>`;
+        break;
+      case "spacer":
+        break;
+      default:
+        box = null;
+        out.push(s);
+    }
+  }
+  return out;
+}
+
 export default function PageBuilder({
   mode,
   initial,
@@ -288,8 +333,22 @@ export default function PageBuilder({
         <h2 className="mb-1 font-semibold">Page Builder</h2>
         <p className="mb-4 text-sm text-gray-500">
           Add sections and arrange them in the order they should appear on the page. With Page Template 1, each
-          Content Box shows as its own card — numbered 1, 2, 3… in order unless you untick the number.
+          Content Box shows as its own card — numbered 1, 2, 3… in order unless you untick the number. Visitors can click
+          a box heading to open or close it; tick “Start closed” to show only the heading at first.
         </p>
+
+        {values.templateKey === "page-template-1" && values.sections.some((s) => s.type !== "box" && s.type !== "calculator_embed") ? (
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+            <span>This page has older loose sections (headings, paragraphs…). Turn them into Content Boxes to get the boxed design and rich text editing.</span>
+            <button
+              type="button"
+              onClick={() => setValues((v) => ({ ...v, sections: convertToBoxes(v.sections) }))}
+              className="rounded-lg bg-amber-600 px-3 py-1.5 font-medium text-white hover:bg-amber-700"
+            >
+              Convert to Content Boxes
+            </button>
+          </div>
+        ) : null}
 
         <div className="space-y-4">
           {values.sections.map((section, index) => (
@@ -298,8 +357,10 @@ export default function PageBuilder({
               className="rounded-xl border border-gray-200 p-4 dark:border-gray-700"
             >
               <div className="mb-3 flex items-center justify-between">
-                <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium dark:bg-gray-800">
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${section.type === "box" ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300" : "bg-gray-100 dark:bg-gray-800"}`}>
                   {SECTION_LABELS[section.type]}
+                  {section.type === "box" ? ` ${values.sections.slice(0, index + 1).filter((s) => s.type === "box").length}` : ""}
+                  {section.type === "box" && section.heading ? ` — ${section.heading}` : ""}
                 </span>
                 <div className="flex items-center gap-2 text-sm">
                   <button
@@ -339,14 +400,24 @@ export default function PageBuilder({
                       value={section.heading}
                       onChange={(e) => updateSection(index, { heading: e.target.value })}
                     />
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={section.showNumber !== false}
-                        onChange={(e) => updateSection(index, { showNumber: e.target.checked })}
-                      />
-                      Show number
-                    </label>
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={section.showNumber !== false}
+                          onChange={(e) => updateSection(index, { showNumber: e.target.checked })}
+                        />
+                        Show number
+                      </label>
+                      <label className="flex items-center gap-2 text-sm" title="Visitors click the heading to open it">
+                        <input
+                          type="checkbox"
+                          checked={section.collapsed === true}
+                          onChange={(e) => updateSection(index, { collapsed: e.target.checked })}
+                        />
+                        Start closed
+                      </label>
+                    </div>
                   </div>
                   <input
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"

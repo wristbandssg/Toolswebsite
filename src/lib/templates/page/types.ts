@@ -8,7 +8,8 @@ export type PageSection =
   // A content box (Page Template 1 renders each as its own white card):
   // heading, an optional bold lead line, and rich-text HTML from the same
   // editor blog posts use. showNumber (default true) prefixes "1.", "2."…
-  | { type: "box"; heading: string; lead?: string; html: string; showNumber?: boolean };
+  // Visitors can click the heading to fold a box; collapsed starts it folded.
+  | { type: "box"; heading: string; lead?: string; html: string; showNumber?: boolean; collapsed?: boolean };
 
 export interface PageTemplateProps {
   page: {

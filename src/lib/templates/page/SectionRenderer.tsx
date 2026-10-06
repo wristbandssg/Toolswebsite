@@ -65,7 +65,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             // Template 1 renders boxes itself (numbered); other templates show them as plain cards.
             return (
               <div key={i} className="mt-6">
-                <ContentBox heading={section.heading} lead={section.lead} html={section.html} />
+                <ContentBox heading={section.heading} lead={section.lead} html={section.html} collapsed={section.collapsed} />
               </div>
             );
           default:

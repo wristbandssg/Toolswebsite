@@ -27,13 +27,16 @@ export default function PageTemplate1({ page }: PageTemplateProps) {
   }
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-sky-50 via-indigo-50/60 to-rose-50/50 dark:from-gray-950 dark:via-gray-950 dark:to-gray-900">
-      <div aria-hidden className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-sky-200/40 blur-3xl dark:bg-sky-900/20" />
-      <div aria-hidden className="pointer-events-none absolute -right-32 top-40 h-96 w-96 rounded-full bg-rose-200/30 blur-3xl dark:bg-rose-900/10" />
-      <article className="relative mx-auto max-w-5xl px-4 py-12 sm:py-16">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">{page.title}</h1>
+    <div className="relative overflow-hidden bg-[#f6f7fb] dark:bg-gray-950">
+      {/* Soft pastel wash across the top, fading into the light grey page (like Omni's About page). */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[linear-gradient(100deg,#fbf3e4_0%,#fbe9ee_30%,#ebe9fb_60%,#e3e8fd_100%)] opacity-80 [mask-image:linear-gradient(to_bottom,black,transparent)] dark:opacity-10"
+      />
+      <article className="relative mx-auto max-w-6xl px-4 pb-16 pt-10 sm:pt-14">
+        <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-[28px] dark:text-white">{page.title}</h1>
         <AdSlot placement="page_top" />
-        <div className="mt-6 space-y-5">
+        <div className="mt-5 space-y-4">
           {groups.map((group, i) =>
             group.kind === "box" ? (
               <ContentBox
@@ -42,6 +45,7 @@ export default function PageTemplate1({ page }: PageTemplateProps) {
                 lead={group.section.lead}
                 html={group.section.html}
                 number={group.number}
+                collapsed={group.section.collapsed}
               />
             ) : (
               <ContentBox key={i}>

@@ -2,15 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { pageSectionsSchema } from "@/lib/templates/page/schema";
 
-const sectionSchema = z.union([
-  z.object({ type: z.literal("heading"), text: z.string(), level: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional() }),
-  z.object({ type: z.literal("paragraph"), text: z.string() }),
-  z.object({ type: z.literal("image"), url: z.string(), alt: z.string().optional() }),
-  z.object({ type: z.literal("button"), label: z.string(), href: z.string() }),
-  z.object({ type: z.literal("spacer"), size: z.enum(["sm", "md", "lg"]).optional() }),
-  z.object({ type: z.literal("calculator_embed"), toolSlug: z.string(), toolTitle: z.string() }),
-]);
 
 const pageSchema = z.object({
   slug: z
@@ -19,7 +12,7 @@ const pageSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   title: z.string().min(1),
   templateKey: z.string().default("page-template-1"),
-  sections: z.array(sectionSchema).default([]),
+  sections: pageSectionsSchema.default([]),
   status: z.enum(["draft", "in_review", "published", "needs_update"]).default("draft"),
 });
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { pageSectionsSchema } from "@/lib/templates/page/schema";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   // Admin-only: returns the page regardless of status — the public site
@@ -29,12 +30,24 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   const existing = await prisma.page.findUnique({ where: { slug } });
   if (!existing) return NextResponse.json({ error: "Page not found" }, { status: 404 });
 
+  let sections = existing.sections;
+  if (body.sections !== undefined) {
+    const parsed = pageSectionsSchema.safeParse(body.sections);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Some sections are not valid — check them and try again.", details: parsed.error.flatten() },
+        { status: 400 }
+      );
+    }
+    sections = JSON.stringify(parsed.data);
+  }
+
   const page = await prisma.page.update({
     where: { slug },
     data: {
       title: body.title ?? existing.title,
       templateKey: body.templateKey ?? existing.templateKey,
-      sections: body.sections ? JSON.stringify(body.sections) : existing.sections,
+      sections,
       status: body.status ?? existing.status,
     },
   });
