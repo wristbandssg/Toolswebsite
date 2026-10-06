@@ -355,14 +355,33 @@ export default function HomeDesign2({
 
       {/* FAQ */}
       {c.showFaq && faqs.length > 0 ? (
-        <section className={`${CONTAINER} py-12 sm:py-16`}>
-          <SectionHeader eyebrow={fill(c.faqEyebrow)} heading={fill(c.faqHeading)} text={fill(c.faqText)} />
-          <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <section className={`${CONTAINER} grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14`}>
+          {/* Heading on the left (stays in view on wide screens), questions as an accordion on the right. */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <SectionHeader eyebrow={fill(c.faqEyebrow)} heading={fill(c.faqHeading)} text={fill(c.faqText)} />
+            <div aria-hidden className="mt-8 hidden h-28 w-28 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-100 text-5xl lg:flex dark:from-blue-950 dark:to-indigo-950">
+              💬
+            </div>
+          </div>
+          <div className="space-y-3">
             {faqs.map((f, i) => (
-              <div key={i} className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-                <h3 className="font-bold">{fill(f.question)}</h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{fill(f.answer)}</p>
-              </div>
+              <details
+                key={i}
+                open={i === 0}
+                className="group rounded-2xl border border-gray-200 bg-white transition open:border-blue-200 open:bg-blue-50/40 open:shadow-sm hover:border-blue-200 dark:border-gray-800 dark:bg-gray-900 dark:open:border-blue-900 dark:open:bg-blue-950/20"
+              >
+                <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4 sm:px-6 [&::-webkit-details-marker]:hidden">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-xs font-bold text-blue-700 group-open:bg-blue-600 group-open:text-white dark:bg-blue-950 dark:text-blue-300">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="flex-1 text-[15px] font-semibold text-gray-900 sm:text-base dark:text-white">{fill(f.question)}</h3>
+                  <span
+                    aria-hidden
+                    className="relative h-5 w-5 shrink-0 text-blue-700 before:absolute before:left-0 before:top-1/2 before:h-0.5 before:w-5 before:-translate-y-1/2 before:rounded before:bg-current after:absolute after:left-1/2 after:top-0 after:h-5 after:w-0.5 after:-translate-x-1/2 after:rounded after:bg-current after:transition-transform group-open:after:scale-y-0 dark:text-blue-400"
+                  />
+                </summary>
+                <p className="px-5 pb-5 pl-[4.25rem] text-sm leading-relaxed text-gray-600 sm:px-6 sm:pl-[4.5rem] dark:text-gray-400">{fill(f.answer)}</p>
+              </details>
             ))}
           </div>
           {faqJsonLd ? (
