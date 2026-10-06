@@ -577,3 +577,8 @@ keep that file in mind.
   "homepage": activeDesign + design1 content; src/lib/homepage-config.ts, homepage-data.ts, home-icons.ts,
   components/home/designs/HomeDesign1.tsx). Design 1 built (calculator-online.net-style hub). Designs 2 and 3 come
   later from the user's screenshots — add them as design2/design3 blocks + HomeDesign2/3, don't replace Design 1.
+- 2026-10-06: Design 1 polish — full-width calculator (function + number pads; phone: number pad first, functions
+  behind a toggle), search moved lower, subtitle setting, card-style tiles/About/sections. Visual check method that
+  avoids the live DB: temporary route rendering HomeDesign1 with mock data, `next dev` with DATABASE_URL overridden
+  to mongodb://127.0.0.1:1/...?serverSelectionTimeoutMS=300, Edge headless screenshots (phone width via a
+  same-origin 390px iframe page in public/, since headless Edge's minimum viewport is ~492px). Delete the temp files after.

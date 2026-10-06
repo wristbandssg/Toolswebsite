@@ -11,7 +11,13 @@ import RawAdScript from "./RawAdScript";
  * component weren't here.
  */
 export default async function AdSlot({ placement }: { placement: string }) {
-  const settings = await getAdSettings();
+  // If ad settings can't be loaded, show no ad rather than failing the page.
+  let settings: Awaited<ReturnType<typeof getAdSettings>>;
+  try {
+    settings = await getAdSettings();
+  } catch {
+    return null;
+  }
   const config = settings[placement];
   if (!config?.enabled || !config.code.trim()) return null;
 

@@ -236,6 +236,7 @@ export default function HomepageSettingsForm({
 
       <Card title="Top Section (Hero)">
         <Field label="Title" hint="Leave empty to use the site name." value={d.title} onChange={(v) => update("title", v)} />
+        <Field label="Subtitle" hint="Short line under the title. Leave empty to hide it." value={d.subtitle} onChange={(v) => update("subtitle", v)} />
         <Toggle label="Show the scientific calculator" checked={d.showCalculator} onChange={(v) => update("showCalculator", v)} />
         <Field
           label="Calculator Input Placeholder"

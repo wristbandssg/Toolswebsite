@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight, Sparkles } from "lucide-react";
 import type { Design1Content } from "@/lib/homepage-config";
 import type { HomeSection, HomeTile } from "@/lib/homepage-data";
 import { homeIcon } from "@/lib/home-icons";
@@ -7,10 +7,11 @@ import AdSlot from "@/components/AdSlot";
 import ScientificCalculator from "@/components/home/ScientificCalculator";
 import ToolSearch from "@/components/home/ToolSearch";
 
-// Home page Design 1 — "Calculator Hub": centered title, scientific
-// calculator and search, a grid of category icon tiles, an About band, one
-// block of calculator links per category, and an optional "Featured In"
-// logo strip. All text and lists come from the admin (/admin/homepage).
+// Home page Design 1 — "Calculator Hub": title, a full-width scientific
+// calculator, search, category tiles, an About band, one block of calculator
+// links per category, and an optional "Featured In" logo strip. All text and
+// lists come from the admin (/admin/homepage). Layout is mobile-first: every
+// grid steps up from 1–2 columns on phones to its full width on desktop.
 
 const DEFAULT_ABOUT = (siteName: string) =>
   [
@@ -18,6 +19,18 @@ const DEFAULT_ABOUT = (siteName: string) =>
     "Every calculator explains how it works, shows a worked example and lists its assumptions, so you understand the result, not just the number. New calculators are added regularly and existing ones are kept up to date with current rules.",
     "If something doesn't look right or you'd like a calculator we don't have yet, let us know.",
   ].join("\n\n");
+
+// Soft color per tile, cycled.
+const TILE_COLORS = [
+  "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
+  "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300",
+  "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+  "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
+  "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300",
+  "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300",
+  "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300",
+];
 
 export default function HomeDesign1({
   content,
@@ -43,39 +56,68 @@ export default function HomeDesign1({
   return (
     <div className="bg-white dark:bg-gray-950">
       {/* Hero */}
-      <section className="px-4 pb-10 pt-8 text-center">
-        <h1 className="text-3xl font-bold text-sky-800 dark:text-sky-300 sm:text-4xl">{title}</h1>
-        {content.showCalculator ? (
-          <div className="mt-6">
-            <ScientificCalculator placeholder={content.calculatorPlaceholder} />
+      <section className="relative overflow-hidden bg-gradient-to-b from-sky-50 via-white to-white px-4 pb-14 pt-10 dark:from-slate-900 dark:via-gray-950 dark:to-gray-950 sm:pt-14">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[48rem] -translate-x-1/2 rounded-full bg-sky-200/40 blur-3xl dark:bg-sky-900/20"
+        />
+        <div className="relative mx-auto max-w-6xl">
+          <div className="text-center">
+            <h1 className="bg-gradient-to-r from-sky-700 via-sky-600 to-indigo-600 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-5xl">
+              {title}
+            </h1>
+            {content.subtitle ? (
+              <p className="mx-auto mt-3 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
+                {content.subtitle}
+              </p>
+            ) : null}
           </div>
-        ) : null}
-        {content.showSearch ? (
-          <div className="mx-auto mt-4 max-w-xl text-left">
-            <ToolSearch placeholder={content.searchPlaceholder} />
-          </div>
-        ) : null}
-        {exploreText ? <p className="mt-5 text-base text-gray-800 dark:text-gray-200 sm:text-lg">{exploreText}</p> : null}
+
+          {content.showCalculator ? (
+            <div className="mt-8 sm:mt-10">
+              <ScientificCalculator placeholder={content.calculatorPlaceholder} />
+            </div>
+          ) : null}
+
+          {content.showSearch || exploreText ? (
+            <div className="mx-auto mt-12 max-w-2xl text-center sm:mt-16">
+              {content.showSearch ? <ToolSearch placeholder={content.searchPlaceholder} /> : null}
+              {exploreText ? (
+                <p className="mt-5 text-base font-medium text-slate-700 dark:text-slate-200 sm:text-lg">
+                  <Sparkles aria-hidden className="mr-1.5 inline h-5 w-5 align-[-4px] text-amber-500" />
+                  {exploreText}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       </section>
 
-      {/* Category icon tiles */}
+      {/* Category tiles */}
       {content.showIconGrid && tiles.length > 0 ? (
-        <section className="mx-auto max-w-5xl px-4 pb-12">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-            {tiles.map((tile) => {
+        <section className="mx-auto max-w-6xl px-4 pb-14 pt-2">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
+            {tiles.map((tile, i) => {
               const Icon = homeIcon(tile.iconKey, tile.slug);
               return (
                 <Link
                   key={tile.slug}
                   href={`/tools/category/${tile.slug}`}
-                  className="group flex flex-col items-center gap-2 border-gray-200 px-3 py-5 text-center md:border-r md:[&:nth-child(5n)]:border-r-0 dark:border-gray-800"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-5 text-center shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-900 dark:hover:shadow-none"
                 >
-                  <Icon
-                    aria-hidden
-                    strokeWidth={1.5}
-                    className="h-12 w-12 text-gray-700 transition group-hover:scale-110 group-hover:text-sky-700 dark:text-gray-300"
-                  />
-                  <span className="text-xs text-gray-600 group-hover:text-sky-700 dark:text-gray-400">{tile.label}</span>
+                  <span
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl transition duration-200 group-hover:scale-110 ${
+                      TILE_COLORS[i % TILE_COLORS.length]
+                    }`}
+                  >
+                    <Icon aria-hidden strokeWidth={1.75} className="h-7 w-7" />
+                  </span>
+                  <span className="text-sm font-semibold leading-snug text-slate-800 group-hover:text-sky-700 dark:text-slate-100">
+                    {tile.label}
+                  </span>
+                  <span className="text-xs text-slate-500">
+                    {tile.toolCount.toLocaleString("en-US")} calculator{tile.toolCount === 1 ? "" : "s"}
+                  </span>
                 </Link>
               );
             })}
@@ -85,12 +127,13 @@ export default function HomeDesign1({
 
       {/* About band */}
       {content.showAbout ? (
-        <section className="bg-slate-100 px-4 py-10 dark:bg-gray-900">
-          <div className="mx-auto max-w-4xl">
-            <h2 className="text-center text-2xl font-semibold text-sky-800 dark:text-sky-300">
+        <section className="bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-14 dark:from-slate-900 dark:to-slate-900">
+          <div className="mx-auto max-w-4xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10 dark:border-slate-800 dark:bg-slate-950">
+            <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
               {content.aboutHeading || `About ${siteName}`}
             </h2>
-            <div className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+            <div className="mx-auto mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500" />
+            <div className="mt-6 space-y-4 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
               {aboutParagraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
@@ -99,38 +142,50 @@ export default function HomeDesign1({
         </section>
       ) : null}
 
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto max-w-6xl px-4">
         <AdSlot placement="category_top" />
       </div>
 
       {/* Calculator link sections */}
-      {content.showSections ? (
-        <div className="mx-auto max-w-5xl space-y-10 px-4 py-10">
+      {content.showSections && sections.length > 0 ? (
+        <div className="mx-auto max-w-6xl space-y-12 px-4 py-14">
           {sections.map((section) => (
             <section key={section.slug}>
-              <h2 className="text-center text-2xl font-semibold text-sky-800 dark:text-sky-300">
-                <Link href={`/tools/category/${section.slug}`} className="hover:underline">
-                  {section.heading}
+              <div className="flex flex-wrap items-end justify-between gap-2 border-b border-slate-200 pb-3 dark:border-slate-800">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
+                  <Link href={`/tools/category/${section.slug}`} className="hover:text-sky-700">
+                    {section.heading}
+                  </Link>
+                </h2>
+                <Link
+                  href={`/tools/category/${section.slug}`}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-sky-700 hover:text-sky-900 dark:text-sky-400"
+                >
+                  View all {section.toolCount.toLocaleString("en-US")}
+                  <ArrowRight aria-hidden className="h-4 w-4" />
                 </Link>
-              </h2>
+              </div>
               <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
                 {section.tools.map((tool) => (
                   <Link
                     key={tool.slug}
                     href={`/tools/${tool.slug}`}
-                    className="flex items-center justify-between gap-2 rounded bg-slate-100 px-3 py-2 text-xs text-gray-700 transition hover:bg-sky-50 hover:text-sky-800 dark:bg-gray-900 dark:text-gray-300"
+                    className="group flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 transition hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                   >
                     <span className="truncate">{tool.title}</span>
-                    <ChevronRight aria-hidden className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                    <ChevronRight
+                      aria-hidden
+                      className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-sky-600"
+                    />
                   </Link>
                 ))}
                 {section.toolCount > section.tools.length ? (
                   <Link
                     href={`/tools/category/${section.slug}`}
-                    className="flex items-center justify-between gap-2 rounded border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 transition hover:border-sky-300 hover:text-sky-800 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300"
+                    className="flex items-center justify-between gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                   >
                     See More
-                    <ChevronRight aria-hidden className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                    <ArrowRight aria-hidden className="h-4 w-4 shrink-0" />
                   </Link>
                 ) : null}
               </div>
@@ -141,29 +196,37 @@ export default function HomeDesign1({
 
       {/* Featured In */}
       {content.showFeatured && logos.length > 0 ? (
-        <section className="px-4 py-10">
-          <h2 className="text-center text-2xl font-semibold text-gray-900 dark:text-gray-100">{content.featuredHeading}</h2>
-          <div className="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-x-10 gap-y-6">
+        <section className="border-t border-slate-100 bg-slate-50/60 px-4 py-14 dark:border-slate-800 dark:bg-slate-900/40">
+          <h2 className="text-center text-sm font-bold uppercase tracking-[0.2em] text-slate-500">
+            {content.featuredHeading}
+          </h2>
+          <div className="mx-auto mt-8 grid max-w-5xl grid-cols-2 items-center gap-x-8 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
             {logos.map((logo, i) => {
               const inner = logo.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logo.imageUrl} alt={logo.name} className="h-8 w-auto max-w-[160px] object-contain" />
+                <img
+                  src={logo.imageUrl}
+                  alt={logo.name}
+                  className="mx-auto h-9 w-auto max-w-[150px] object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+                />
               ) : (
-                <span className="text-lg font-semibold text-gray-500">{logo.name}</span>
+                <span className="block text-center text-lg font-bold text-slate-400 transition hover:text-slate-700">
+                  {logo.name}
+                </span>
               );
               return logo.url ? (
-                <a key={i} href={logo.url} target="_blank" rel="noopener noreferrer nofollow">
+                <a key={i} href={logo.url} target="_blank" rel="noopener noreferrer nofollow" className="block">
                   {inner}
                 </a>
               ) : (
-                <span key={i}>{inner}</span>
+                <div key={i}>{inner}</div>
               );
             })}
           </div>
         </section>
       ) : null}
 
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="mx-auto max-w-6xl px-4">
         <AdSlot placement="category_bottom" />
       </div>
     </div>

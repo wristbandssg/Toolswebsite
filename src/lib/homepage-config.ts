@@ -36,6 +36,7 @@ const logoSchema = z.object({
 export const design1Schema = z.object({
   // Hero
   title: z.string().default(""), // "" = site name
+  subtitle: z.string().default("Free, fast and accurate calculators for money, math and everyday life."), // "" = hidden
   showCalculator: z.boolean().default(true),
   calculatorPlaceholder: z.string().default("Type your calculation, e.g. 25% of 480 or sin(30)"),
   showSearch: z.boolean().default(true),
