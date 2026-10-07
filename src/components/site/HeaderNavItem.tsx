@@ -11,18 +11,24 @@ export default function HeaderNavItem({ item }: { item: MenuItem }) {
     <div className={`group ${item.mega && hasChildren ? "" : "relative"}`}>
       <Link
         href={item.href || "#"}
-        className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 transition hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
+        className={`relative inline-flex items-center gap-1 rounded-lg px-2 py-1.5 transition hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white ${
+          hasChildren ? "after:absolute after:inset-x-0 after:top-full after:h-4 after:content-['']" : ""
+        }`}
       >
         {item.label}
         {hasChildren ? (
-          <span aria-hidden className="text-[10px] text-gray-400 transition group-hover:rotate-180">
+          <span aria-hidden className="text-[10px] text-gray-400 transition group-hover:rotate-180 group-focus-within:rotate-180">
             ▼
           </span>
         ) : null}
       </Link>
       {hasChildren && item.mega ? (
-        // pt-2 (not mt-2) keeps the hover area continuous from the trigger into the panel.
-        <div className="invisible absolute inset-x-4 top-full z-50 pt-1 opacity-0 transition group-hover:visible group-hover:opacity-100">
+        // The panel hangs from the bottom of the header row, so there is a gap
+        // between the item and the panel. The panel's own top padding reaches up
+        // over that gap across its full width (-mt-3 pt-4), and closing waits
+        // 300ms, so a quick or diagonal move into the panel never closes it.
+        // Opening is instant.
+        <div className="invisible absolute inset-x-4 top-full z-50 -mt-3 pt-4 opacity-0 transition-[opacity,visibility] duration-150 delay-300 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:delay-0 group-hover:visible group-hover:opacity-100 group-hover:delay-0">
           <div className="grid grid-cols-2 gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl sm:grid-cols-3 lg:grid-cols-4 dark:border-gray-800 dark:bg-gray-900">
             {item.children.map((col) =>
               col.children.length > 0 ? (
@@ -50,7 +56,7 @@ export default function HeaderNavItem({ item }: { item: MenuItem }) {
           </div>
         </div>
       ) : hasChildren ? (
-        <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition group-hover:visible group-hover:opacity-100">
+        <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-[opacity,visibility] duration-150 delay-300 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:delay-0 group-hover:visible group-hover:opacity-100 group-hover:delay-0">
           <div className="w-52 rounded-xl border border-gray-200 bg-white p-2 shadow-xl dark:border-gray-800 dark:bg-gray-900">
             {item.children.map((child) => (
               <Link
