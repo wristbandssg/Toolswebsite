@@ -6,6 +6,7 @@ import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
 import CategoryHeroSlider from "@/components/CategoryHeroSlider";
 import AdSlot from "@/components/AdSlot";
 import { blogCategoryUrl, blogUrl } from "@/lib/urls";
+import { RICH_TEXT_CLASSES } from "@/lib/templates/page/ContentBox";
 
 // ক্যাটাগরি পেজও সবসময় সর্বশেষ Published Post দেখাবে, তাই Blog List-এর মতোই
 // Build-time Static Prerender বন্ধ রাখা হলো।
@@ -250,6 +251,15 @@ export default async function BlogCategoryPage({
             <AdSlot placement="blog_category_bottom" />
           </>
         )}
+
+        {/* Long-form article written in the admin (Blog → Categories → Content), on
+            the first page only so it isn't repeated on every "Older Entries" page. */}
+        {category.content && currentPage === 1 ? (
+          <div
+            className={`${RICH_TEXT_CLASSES} mt-12 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10 dark:border-gray-800 dark:bg-gray-900`}
+            dangerouslySetInnerHTML={{ __html: category.content }}
+          />
+        ) : null}
       </div>
     </div>
   );

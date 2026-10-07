@@ -8,8 +8,8 @@ function countWords(html: string) {
   return text ? text.split(/\s+/).length : 0;
 }
 
-/** Rich text editor for a calculator category's long-form content (shown under its grid on the public page). */
-export default function CategoryContentForm({ id, publicHref, initial }: { id: string; publicHref: string; initial: string }) {
+/** Rich text editor for a category's long-form content (calculator or blog category), shown on its public page. */
+export default function CategoryContentForm({ saveUrl, publicHref, initial }: { saveUrl: string; publicHref: string; initial: string }) {
   const [content, setContent] = useState(initial);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -19,7 +19,7 @@ export default function CategoryContentForm({ id, publicHref, initial }: { id: s
     setSaving(true);
     setMessage(null);
     try {
-      const res = await fetch(`/api/tool-categories/${id}/content`, {
+      const res = await fetch(saveUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),

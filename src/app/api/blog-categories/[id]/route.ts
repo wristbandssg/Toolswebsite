@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { saveRedirect } from "@/lib/url-changes";
+import { blogCategoryUrl } from "@/lib/urls";
 
-const renameSchema = z.object({
+const updateSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
   description: z.string().trim().max(2000).optional(),
+  // URL slug set by hand. Omitted = unchanged, unless the name changed (then it follows the name).
+  slug: z.string().trim().optional(),
+  // Move under a top-level category, or back to top-level (null/""). Only
+  // applied when the key is present. Blog categories nest one level deep.
+  parentId: z.string().trim().optional().nullable(),
 });
 
 function slugify(text: string) {
@@ -13,7 +20,9 @@ function slugify(text: string) {
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 export async function PUT(
@@ -26,23 +35,49 @@ export async function PUT(
   }
   const { id } = await params;
   const body = await req.json();
-  const parsed = renameSchema.safeParse(body);
+  const parsed = updateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.issues[0]?.message ?? "Invalid category name" },
+      { error: parsed.error.issues[0]?.message ?? "Invalid category" },
       { status: 400 }
     );
   }
   const { name, description } = parsed.data;
-  const slug = slugify(name);
-  if (!slug) {
-    return NextResponse.json({ error: "That name doesn't produce a valid URL slug" }, { status: 400 });
-  }
 
   try {
+    const existing = await prisma.blogCategory.findUnique({ where: { id } });
+    if (!existing) return NextResponse.json({ error: "Category not found" }, { status: 404 });
+
+    // The slug (and so the URL) only changes when it is edited or the name changes.
+    const slug = parsed.data.slug ? slugify(parsed.data.slug) : existing.name === name ? existing.slug : slugify(name);
+    if (!slug) {
+      return NextResponse.json({ error: "That doesn't produce a valid URL slug" }, { status: 400 });
+    }
     const clashing = await prisma.blogCategory.findUnique({ where: { slug } });
     if (clashing && clashing.id !== id) {
-      return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
+      return NextResponse.json({ error: "Another category already uses this URL slug" }, { status: 409 });
+    }
+
+    const hasParentIdKey = Object.prototype.hasOwnProperty.call(body, "parentId");
+    const nextParentId = (parsed.data.parentId || null) as string | null;
+    if (hasParentIdKey && nextParentId && nextParentId !== existing.parentId) {
+      if (nextParentId === id) {
+        return NextResponse.json({ error: "A category can't be its own parent" }, { status: 400 });
+      }
+      const parent = await prisma.blogCategory.findUnique({ where: { id: nextParentId } });
+      if (!parent) return NextResponse.json({ error: "That parent category no longer exists" }, { status: 400 });
+      if (parent.parentId) {
+        return NextResponse.json(
+          { error: "Sub-categories can only be one level deep — pick a top-level category as the parent" },
+          { status: 400 }
+        );
+      }
+      if ((await prisma.blogCategory.count({ where: { parentId: id } })) > 0) {
+        return NextResponse.json(
+          { error: "This category has sub-categories of its own, so it has to stay top-level" },
+          { status: 400 }
+        );
+      }
     }
 
     const category = await prisma.blogCategory.update({
@@ -51,8 +86,11 @@ export async function PUT(
         name,
         slug,
         ...(description !== undefined ? { description: description || null } : {}),
+        ...(hasParentIdKey ? { parentId: nextParentId } : {}),
       },
     });
+    // A new slug is a new URL — the old one 301s to it.
+    if (slug !== existing.slug) await saveRedirect(blogCategoryUrl(existing.slug), blogCategoryUrl(slug));
     return NextResponse.json({ category });
   } catch (err) {
     console.error(`[api/blog-categories/${id}] PUT failed:`, err);

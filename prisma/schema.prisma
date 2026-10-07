@@ -253,6 +253,9 @@ model BlogCategory {
   // Short intro (~100–150 words) shown at the top of the public category
   // page, under the title — separate from the SEO meta description.
   description String?
+  // Long-form article (rich text HTML) shown under the post list on the
+  // public category page. Edited at /admin/blogs/categories/[id]/content.
+  content     String?
   createdAt   DateTime @default(now())
 
   // Sub-categories: a category may optionally belong to one parent

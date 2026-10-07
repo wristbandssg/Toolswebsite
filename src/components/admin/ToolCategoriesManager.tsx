@@ -390,8 +390,8 @@ function CategoryRow({
           </div>
         ) : (
           <>
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-medium">
+            <div className="min-w-[12rem] flex-1">
+              <p className="font-medium [overflow-wrap:anywhere]">
                 {cat.name}
                 {canToggle && !isExpanded ? (
                   <span className="ml-2 font-normal text-gray-400">
@@ -401,7 +401,7 @@ function CategoryRow({
               </p>
             </div>
             <ToolCountPills toolCount={cat.toolCount} publishedCount={cat.publishedCount} />
-            <div className="flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
+            <div className="ml-auto flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
               <a
                 href={publicHref}
                 target="_blank"
