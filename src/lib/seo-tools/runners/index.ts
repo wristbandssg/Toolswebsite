@@ -4,6 +4,9 @@ import * as A from "./technical-a";
 import * as B from "./technical-b";
 import * as C from "./content-a";
 import * as D from "./content-b";
+import * as E from "./keywords";
+import * as F from "./sitewide";
+import * as G from "./data";
 
 // Server side: which function runs each tool in the registry.
 export const RUNNERS: Record<string, Runner> = {
@@ -41,6 +44,27 @@ export const RUNNERS: Record<string, Runner> = {
   "content-length-benchmark": D.contentLengthBenchmark,
   "tfidf-terms": D.tfidfTerms,
   sentiment: D.sentiment,
+  "competitor-analysis": E.competitorAnalysis,
+  "content-brief": E.contentBrief,
+  "keyword-gap": E.keywordGap,
+  "lsi-keywords": E.lsiKeywords,
+  "keyword-difficulty": E.keywordDifficulty,
+  "keyword-intent": E.keywordIntent,
+  "competitor-strategy": E.competitorStrategy,
+  "content-calendar": E.contentCalendar,
+  "keyword-clustering": F.keywordClustering,
+  "entity-analysis": F.entityAnalysis,
+  "keyword-cannibalization": F.cannibalization,
+  "duplicate-content": F.duplicateContent,
+  "content-pruning": F.contentPruning,
+  "semantic-similarity": F.semanticSimilarity,
+  "topic-modeler": F.topicModeler,
+  "topic-authority": F.topicAuthority,
+  "content-gap-map": F.contentGapMapper,
+  "backlink-anchors": G.backlinkAnchors,
+  "toxic-backlinks": G.toxicBacklinks,
+  "search-console-insights": G.searchConsoleInsights,
+  "log-file-analyzer": G.logFileAnalyzer,
 };
 
 // Every generic tool in the registry must have a runner, and vice versa.

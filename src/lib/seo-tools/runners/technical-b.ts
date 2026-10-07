@@ -210,7 +210,7 @@ export const robotsTxt: Runner = async (input) => {
   };
 };
 
-async function loadSitemapUrls(sitemapUrl: string, limit = 2000): Promise<{ loc: string; lastmod: string; priority: string; changefreq: string }[]> {
+export async function loadSitemapUrls(sitemapUrl: string, limit = 2000): Promise<{ loc: string; lastmod: string; priority: string; changefreq: string }[]> {
   const page = await fetchPage(sitemapUrl);
   const xml = page.html;
   const tag = (block: string, name: string) => block.match(new RegExp(`<${name}>\\s*([^<]*?)\\s*</${name}>`, "i"))?.[1] ?? "";

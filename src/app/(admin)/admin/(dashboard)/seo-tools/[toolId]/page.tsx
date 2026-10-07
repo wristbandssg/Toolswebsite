@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getSeoTool } from "@/lib/seo-tools/registry";
 import { getSiteUrl } from "@/lib/seo";
 import ToolRunner from "@/components/admin/seo-tools/ToolRunner";
+import sitemap from "@/app/sitemap";
 
 export default async function SeoToolPage({ params }: { params: Promise<{ toolId: string }> }) {
   const { toolId } = await params;
@@ -15,6 +16,16 @@ export default async function SeoToolPage({ params }: { params: Promise<{ toolId
   for (const f of tool.fields) {
     if (f.name === "url" && f.type === "url" && f.required) defaults.url = f.label === "Sitemap URL" ? `${site}/sitemap.xml` : `${site}/`;
     if (f.name === "urls" && f.required) defaults.urls = `${site}/`;
+  }
+  // Site-wide tools start with a spread of this site's own pages.
+  if (tool.siteUrls && tool.fields.some((f) => f.name === "urls")) {
+    const urls = await sitemap()
+      .then((entries) => entries.map((e) => e.url))
+      .catch(() => [] as string[]);
+    if (urls.length) {
+      const step = Math.max(1, urls.length / tool.siteUrls);
+      defaults.urls = [...new Set(Array.from({ length: Math.min(tool.siteUrls, urls.length) }, (_, i) => urls[Math.floor(i * step)]))].join("\n");
+    }
   }
 
   return (

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { getSeoTool } from "@/lib/seo-tools/registry";
 import { RUNNERS } from "@/lib/seo-tools/runners";
 import { ToolInputError } from "@/lib/seo-tools/runners/util";
+import { AiNotConfiguredError, AiRequestError } from "@/lib/ai/provider";
 import { FetchPageError } from "@/lib/seo-tools/fetch-page";
 import type { ToolInput } from "@/lib/seo-tools/types";
 
@@ -24,14 +25,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ too
   for (const field of tool.fields) {
     const v = body?.input?.[field.name];
     if (v === undefined || v === null) continue;
-    input[field.name] = typeof v === "string" ? v.slice(0, field.type === "csv" ? 3_000_000 : 200_000) : v;
+    input[field.name] = typeof v === "string" ? v.slice(0, field.type === "csv" ? 10_000_000 : 200_000) : v;
   }
 
   try {
     const report = await run(input);
     return NextResponse.json({ report });
   } catch (err) {
-    if (err instanceof ToolInputError || err instanceof FetchPageError) {
+    if (err instanceof ToolInputError || err instanceof FetchPageError || err instanceof AiNotConfiguredError || err instanceof AiRequestError) {
       return NextResponse.json({ error: err.message }, { status: 400 });
     }
     console.error(`[api/seo-tools/${toolId}]`, err);

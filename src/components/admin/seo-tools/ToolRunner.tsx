@@ -234,6 +234,7 @@ function FieldInput({ field, value, onChange }: { field: ToolField; value: strin
         <input
           className={input}
           type={field.type === "number" ? "number" : "text"}
+          step={field.type === "number" ? "any" : undefined}
           min={field.min}
           max={field.max}
           placeholder={field.placeholder}

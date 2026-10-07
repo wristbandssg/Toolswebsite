@@ -37,6 +37,8 @@ export interface SeoToolInfo {
   fields: ToolField[];
   /** Short note on what was left out of the Python original, if anything. */
   limits?: string;
+  /** Pre-fill the "urls" field with up to this many of this site's own URLs (from the sitemap). */
+  siteUrls?: number;
   /** Tools with their own screen (not the generic form). */
   custom?: boolean;
 }
