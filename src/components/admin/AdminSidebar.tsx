@@ -7,31 +7,23 @@ import { signOut } from "next-auth/react";
 import type { LucideIcon } from "lucide-react";
 import {
   Calculator,
-  CalendarDays,
-  ChartLine,
   ChevronDown,
   ExternalLink,
-  Files,
   House,
   Image,
   LayoutDashboard,
-  Link2,
   LogOut,
   Megaphone,
   Newspaper,
-  Settings,
-  Sparkles,
-  UserRound,
 } from "lucide-react";
 
 type NavLink = { href: string; label: string };
 type NavEntry = NavLink & { icon: LucideIcon; children?: NavLink[] };
 type NavSection = { title: string; items: NavEntry[] };
 
-// Grouped admin navigation. "Calculators", "Blog" and "Home Page" (with the
-// Header and Footer Builders) are collapsible groups:
-// clicking the group opens its links, and a group starts open whenever one of
-// its pages is the current page.
+// Grouped admin navigation. "Calculators", "Blog", "Home Page" and
+// "Marketing" are collapsible groups: clicking the group opens its links, and
+// a group starts open whenever one of its pages is the current page.
 const SECTIONS: NavSection[] = [
   {
     title: "Overview",
@@ -59,8 +51,6 @@ const SECTIONS: NavSection[] = [
           { href: "/admin/blogs/categories", label: "Blog Categories" },
         ],
       },
-      { href: "/admin/authors", label: "Authors", icon: UserRound },
-      { href: "/admin/pages", label: "Pages", icon: Files },
       { href: "/admin/media", label: "Media Library", icon: Image },
     ],
   },
@@ -75,24 +65,28 @@ const SECTIONS: NavSection[] = [
           { href: "/admin/homepage", label: "Home Page Design" },
           { href: "/admin/header-builder", label: "Header Builder" },
           { href: "/admin/footer-builder", label: "Footer Builder" },
+          { href: "/admin/pages", label: "Pages" },
+          { href: "/admin/authors", label: "Authors" },
+          { href: "/admin/settings", label: "Website Settings" },
         ],
       },
     ],
   },
   {
-    title: "Growth",
+    title: "Marketing",
     items: [
-      { href: "/admin/ai-planner", label: "AI Content Planner", icon: Sparkles },
-      { href: "/admin/internal-linking", label: "Internal Linking", icon: Link2 },
-      { href: "/admin/calendar", label: "Content Calendar", icon: CalendarDays },
-      { href: "/admin/search-console", label: "Search Console", icon: ChartLine },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [
-      { href: "/admin/ad-settings", label: "Ad Settings", icon: Megaphone },
-      { href: "/admin/settings", label: "Website Settings", icon: Settings },
+      {
+        href: "/admin/ai-planner",
+        label: "Marketing",
+        icon: Megaphone,
+        children: [
+          { href: "/admin/ai-planner", label: "AI Content Planner" },
+          { href: "/admin/internal-linking", label: "Internal Linking" },
+          { href: "/admin/calendar", label: "Content Calendar" },
+          { href: "/admin/search-console", label: "Search Console" },
+          { href: "/admin/ad-settings", label: "Ad Settings" },
+        ],
+      },
     ],
   },
 ];
