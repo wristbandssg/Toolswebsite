@@ -178,6 +178,9 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
           >
             <TableOfContents headings={tocHeadings} />
 
+          {/* Article column: the post's white card, then the author box as its
+              own separate card underneath (same as on calculator pages). */}
+          <div className="min-w-0 space-y-6">
           {/* Its own white card — set apart from the TOC card next to it and
               from the shaded panel behind both, instead of blending into either. */}
           <article className="min-w-0 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-8">
@@ -206,18 +209,15 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
               </section>
             ) : null}
 
-            {authorProfile ? (
-              <div className="mt-10">
-                <AuthorBioBox author={authorProfile} />
-              </div>
-            ) : null}
-
             {/* Below `xl` the sidebar card has no room of its own, so it
                 drops in here instead of being squeezed into the grid. */}
             {relatedCard ? <div className="mt-10 xl:hidden">{relatedCard}</div> : null}
 
             <AdSlot placement="blog_bottom" />
           </article>
+
+          {authorProfile ? <AuthorBioBox author={authorProfile} /> : null}
+          </div>
 
           {relatedCard ? (
             <aside className="hidden xl:block">
