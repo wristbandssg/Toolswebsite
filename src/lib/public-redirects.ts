@@ -81,6 +81,23 @@ export function redirectKey(path: string) {
   return clean === "" ? "/" : clean;
 }
 
+/**
+ * Where an OLD slug lives now, from the redirects table: a stored row whose
+ * old URL ended in this slug (a renamed sub-category or calculator), or a
+ * "/old/*" row for a renamed main category. Lets old /tools/... URLs follow
+ * renames made after the move to the new URL structure.
+ */
+async function slugHistoryTarget(slug: string): Promise<string | null> {
+  const table = await redirectTable();
+  const lastSegment = (path: string) => path.split("/").filter(Boolean).pop();
+  for (const [from, to] of table.exact) if (lastSegment(from) === slug) return to;
+  for (const row of table.prefix) {
+    const base = row.fromPath.slice(0, -2);
+    if (lastSegment(base) === slug) return `${row.toPath.slice(0, -2)}/`;
+  }
+  return null;
+}
+
 async function legacyTarget(segments: string[]): Promise<string | null> {
   const [first, second, ...rest] = segments;
 
@@ -89,11 +106,13 @@ async function legacyTarget(segments: string[]): Promise<string | null> {
     const index = await loadCategoryIndex();
     if (second === "category") {
       const slug = [...rest].pop();
-      const category = slug ? index.bySlug.get(slug) : undefined;
-      return category ? index.categoryHref(category.id) : null;
+      if (!slug) return null;
+      const category = index.bySlug.get(slug);
+      return category ? index.categoryHref(category.id) : slugHistoryTarget(slug);
     }
     const tool = await prisma.tool.findUnique({ where: { slug: second }, select: { slug: true, categoryId: true, status: true } });
-    return tool && tool.status === "published" ? index.toolHref(tool) : null;
+    if (tool) return tool.status === "published" ? index.toolHref(tool) : null;
+    return slugHistoryTarget(second);
   }
 
   if (first === "pages" && second) {
@@ -110,8 +129,8 @@ async function legacyTarget(segments: string[]): Promise<string | null> {
   return null;
 }
 
-/** The URL `pathname` should 301 to, or null when it is already the right URL. */
-export async function publicRedirectTarget(pathname: string): Promise<string | null> {
+/** One redirect step for `pathname`, or null when it is already the right URL. */
+async function stepTarget(pathname: string): Promise<string | null> {
   const lower = pathname.toLowerCase();
   const segments = lower.split("/").filter(Boolean);
 
@@ -135,16 +154,25 @@ export async function publicRedirectTarget(pathname: string): Promise<string | n
         }
       }
     }
-    // The item may have moved again since that row was stored — go straight
-    // to where it is now, so a stored redirect never starts a chain.
-    if (target) {
-      const segs = target.split("/").filter(Boolean);
-      if (segs.length >= 2 && segs.length <= 4) target = (await catalogTarget(segs)) ?? target;
-    }
   }
   // An old /tools/ or /pages/ URL that matches nothing: let it 404 as it is
   // rather than redirecting once more first.
   if (!target && (segments[0] === "tools" || segments[0] === "pages")) return null;
   if (!target) target = lower.endsWith("/") ? lower : `${lower}/`;
   return target === pathname ? null : target;
+}
+
+/**
+ * The URL `pathname` should 301 to, or null when it is already the right
+ * URL. Follows every step (old format → renamed slug → moved item …) to the
+ * end, so a visitor always gets ONE redirect straight to the final URL.
+ */
+export async function publicRedirectTarget(pathname: string): Promise<string | null> {
+  let target = await stepTarget(pathname);
+  for (let hops = 0; target && hops < 5; hops++) {
+    const next = await stepTarget(target);
+    if (!next || next === target) break;
+    target = next;
+  }
+  return target;
 }

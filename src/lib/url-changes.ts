@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { loadCategoryIndex } from "@/lib/category-index";
 import { pageUrl, RESERVED_SLUGS } from "@/lib/urls";
 import { clearRedirectCache, redirectKey } from "@/lib/public-redirects";
+import { rewriteStoredLinks } from "@/lib/link-rewrite";
 
 // Keeps the URL structure (src/lib/urls.ts) safe while the admin edits:
 //  - slug rules, so two things never share one URL;
@@ -118,6 +119,9 @@ export async function recordUrlChanges(before: UrlSnapshot) {
   // A redirect must never hide a page that is live.
   await prisma.redirect.deleteMany({ where: { fromPath: { in: [...live] } } });
   clearRedirectCache();
+  // Menus, home page settings and content that linked to a moved URL now
+  // point straight at the new one.
+  await rewriteStoredLinks();
 }
 
 /** Stores one 301 (e.g. a deleted page → its nearest replacement). */
@@ -131,4 +135,5 @@ export async function saveRedirect(from: string, to: string) {
   });
   await prisma.redirect.updateMany({ where: { toPath: from }, data: { toPath: to } });
   clearRedirectCache();
+  await rewriteStoredLinks();
 }
