@@ -137,7 +137,7 @@ export async function runSiteAudit(rawUrl: string, keyword?: string): Promise<Si
 
   // CONTENT (main text only, like the original: no scripts, nav, header, footer)
   for (const el of root.querySelectorAll("script, style, noscript, nav, footer, header")) el.remove();
-  const text = root.querySelector("body")?.text.replace(/\s+/g, " ").trim() ?? "";
+  const text = root.querySelector("body")?.structuredText.replace(/\s+/g, " ").trim() ?? "";
   const words = text.match(WORD) ?? [];
   if (words.length < 300) issues.push(`Thin content (${words.length} words)`);
   else if (words.length >= 1000) passed.push(`Good content length (${words.length} words)`);

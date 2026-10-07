@@ -86,6 +86,7 @@ const SECTIONS: NavSection[] = [
           { href: "/admin/calendar", label: "Content Calendar" },
           { href: "/admin/search-console", label: "Search Console" },
           { href: "/admin/ad-settings", label: "Ad Settings" },
+          { href: "/admin/ai-settings", label: "AI Settings" },
         ],
       },
     ],

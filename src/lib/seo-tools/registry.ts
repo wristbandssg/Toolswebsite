@@ -15,6 +15,11 @@ const URLS = (label = "Page URLs", max = 20): ToolField => ({
 });
 const URL_FIELD = (label = "Page URL"): ToolField => ({ name: "url", label, type: "url", required: true, placeholder: "https://example.com/page" });
 const KEYWORD: ToolField = { name: "keyword", label: "Target keyword (optional)", type: "text", placeholder: "e.g. loan calculator" };
+/** A page to fetch, or text to paste instead. */
+const TEXT_SOURCE: ToolField[] = [
+  { name: "url", label: "Page URL", type: "url", placeholder: "https://example.com/page", hint: "Leave empty to analyse pasted text instead." },
+  { name: "text", label: "…or paste text", type: "textarea" },
+];
 
 export const SEO_TOOLS: SeoToolInfo[] = [
   {
@@ -198,6 +203,174 @@ export const SEO_TOOLS: SeoToolInfo[] = [
     description: "Name / address / phone, LocalBusiness schema, maps, opening hours, social profiles and NAP consistency.",
     sources: ["local_seo_auditor.py"],
     fields: [URLS("Page URLs", 10)],
+  },
+
+  // ---------------------------------------------------------------- On-Page & Content
+  {
+    id: "readability",
+    name: "Readability",
+    group: "On-Page & Content",
+    description: "Flesch, Flesch-Kincaid, Gunning Fog, Coleman-Liau, ARI and SMOG, plus sentence-length mix.",
+    sources: ["readability_analyzer.py"],
+    fields: TEXT_SOURCE,
+  },
+  {
+    id: "sentence-complexity",
+    name: "Sentence Complexity",
+    group: "On-Page & Content",
+    description: "Finds long, complex and passive-voice sentences to simplify.",
+    sources: ["sentence_complexity.py"],
+    fields: [...TEXT_SOURCE, { name: "threshold", label: "Flag sentences scoring at least", type: "number", default: 30, min: 0, max: 100 }],
+  },
+  {
+    id: "word-frequency",
+    name: "Word Frequency & Keyword Density",
+    group: "On-Page & Content",
+    description: "Top words and 2–5 word phrases, keyword density and prominence (title, H1, H2s, first paragraph).",
+    sources: ["word_frequency_analyzer.py", "ngram_analyzer.py"],
+    fields: [
+      ...TEXT_SOURCE,
+      { name: "keywords", label: "Keywords to check (optional)", type: "textarea", placeholder: "loan calculator\nmonthly payment", hint: "One per line." },
+      { name: "top", label: "Top results per list", type: "number", default: 30, min: 5, max: 100 },
+      { name: "maxN", label: "Longest phrase (words)", type: "number", default: 3, min: 1, max: 5 },
+    ],
+  },
+  {
+    id: "thin-content",
+    name: "Thin Content",
+    group: "On-Page & Content",
+    description: "Flags pages with too few words, little text vs code, few paragraphs or repeated sentences.",
+    sources: ["thin_content_detector.py"],
+    fields: [URLS("Page URLs", 30), { name: "minWords", label: "Minimum words", type: "number", default: 300, min: 50, max: 5000 }],
+  },
+  {
+    id: "content-freshness",
+    name: "Content Freshness",
+    group: "On-Page & Content",
+    description: "Scores freshness from date signals, current-year mentions and outdated references.",
+    sources: ["content_freshness_scorer.py"],
+    fields: [URLS()],
+  },
+  {
+    id: "content-optimizer",
+    name: "Content Optimizer",
+    group: "On-Page & Content",
+    description: "SEO score for a keyword: title, meta, H1, density, length, readability, headings, internal links and entities, plus TF-IDF terms.",
+    sources: ["content_optimizer.py"],
+    fields: [{ ...KEYWORD, label: "Target keyword", required: true }, ...TEXT_SOURCE],
+    limits: "Entity extraction uses your AI provider (Marketing → AI Settings). Without one, that check is skipped and the score uses the other checks.",
+  },
+  {
+    id: "question-finder",
+    name: "Question Finder (FAQ / People Also Ask)",
+    group: "On-Page & Content",
+    description: "Questions in the content and headings, plus suggested questions for an FAQ section.",
+    sources: ["question_extractor.py"],
+    fields: [...TEXT_SOURCE, KEYWORD],
+    limits: "Questions based on the page's entities and topics come from your AI provider; keyword-template questions work without one.",
+  },
+  {
+    id: "meta-description-generator",
+    name: "Meta Description Generator",
+    group: "On-Page & Content",
+    description: "Writes meta description options from the page's own content, checked for length and keyword.",
+    sources: ["meta_description_generator.py"],
+    fields: [URL_FIELD(), KEYWORD, { name: "variants", label: "Number of options", type: "number", default: 3, min: 1, max: 8 }],
+  },
+  {
+    id: "title-optimizer",
+    name: "Title Tag Optimizer",
+    group: "On-Page & Content",
+    description: "Scores titles for click-through potential (length, numbers, power words, year, keyword position) with suggestions.",
+    sources: ["title_tag_optimizer.py"],
+    fields: [
+      { name: "titles", label: "Titles", type: "textarea", placeholder: "10 Best Loan Calculators in 2026\nLoan Calculator", hint: "One per line — or score live pages below." },
+      { ...URLS("…or page URLs (their titles are scored)"), required: false },
+      KEYWORD,
+      { name: "suggest", label: "Show improvement suggestions", type: "checkbox", default: true },
+    ],
+  },
+  {
+    id: "faq-schema",
+    name: "FAQ Schema Generator",
+    group: "On-Page & Content",
+    description: "Finds Q&A pairs on a page (headings, <dl>, <details>) or takes your own, and writes FAQPage JSON-LD.",
+    sources: ["faq_schema_generator.py"],
+    fields: [
+      { ...URL_FIELD(), required: false },
+      { name: "manual", label: "…and/or your own pairs", type: "textarea", placeholder: "What is APR? | APR is the yearly cost of a loan…", hint: "One per line: Question | Answer" },
+    ],
+  },
+  {
+    id: "structured-data",
+    name: "Structured Data Generator",
+    group: "On-Page & Content",
+    description: "Writes Article, Product, LocalBusiness, HowTo or BreadcrumbList JSON-LD, filled from a page where possible.",
+    sources: ["structured_data_generator.py"],
+    fields: [
+      {
+        name: "type",
+        label: "Schema type",
+        type: "select",
+        default: "article",
+        options: [
+          { value: "article", label: "Article" },
+          { value: "product", label: "Product" },
+          { value: "local-business", label: "Local Business" },
+          { value: "howto", label: "HowTo" },
+          { value: "breadcrumbs", label: "Breadcrumbs" },
+        ],
+      },
+      { ...URL_FIELD("Page URL (optional — fills fields from it)"), required: false },
+      { name: "name", label: "Name / headline", type: "text" },
+      { name: "description", label: "Description", type: "text" },
+      { name: "author", label: "Author (Article)", type: "text" },
+      { name: "brand", label: "Brand / publisher", type: "text" },
+      { name: "price", label: "Price (Product)", type: "text" },
+      { name: "currency", label: "Currency (Product)", type: "text", placeholder: "USD" },
+      { name: "rating", label: "Rating (Product)", type: "text", placeholder: "4.6" },
+      { name: "address", label: "Address (Local Business)", type: "text" },
+      { name: "phone", label: "Phone (Local Business)", type: "text" },
+      { name: "breadcrumbs", label: "Breadcrumbs", type: "textarea", placeholder: "Home | https://example.com/\nFinance | https://example.com/finance/", hint: "One per line: Name | URL" },
+    ],
+  },
+  {
+    id: "content-repurposer",
+    name: "Content Repurposer",
+    group: "On-Page & Content",
+    description: "Turns a post into pull quotes, social posts, an email blurb and key takeaways.",
+    sources: ["content_repurposer.py"],
+    fields: [URL_FIELD()],
+  },
+  {
+    id: "content-length-benchmark",
+    name: "Content Length Benchmark",
+    group: "On-Page & Content",
+    description: "Compares words, headings, images, lists and tables with competitor pages and says what to add.",
+    sources: ["content_length_benchmarker.py"],
+    fields: [{ ...URL_FIELD("Your page URL"), name: "myUrl", required: false }, { ...URLS("Competitor URLs", 10), name: "competitorUrls" }],
+  },
+  {
+    id: "tfidf-terms",
+    name: "TF-IDF Terms",
+    group: "On-Page & Content",
+    description: "The terms that define each page's content (1–4 word n-grams), weighted against the other documents.",
+    sources: ["tfidf_extractor.py"],
+    fields: [
+      { ...URLS("Page URLs", 15), required: false },
+      { name: "text", label: "…or paste text", type: "textarea" },
+      { name: "top", label: "Terms per document", type: "number", default: 30, min: 5, max: 100 },
+      { name: "ngramMin", label: "Shortest phrase (words)", type: "number", default: 1, min: 1, max: 3 },
+      { name: "ngramMax", label: "Longest phrase (words)", type: "number", default: 3, min: 1, max: 4 },
+    ],
+  },
+  {
+    id: "sentiment",
+    name: "Sentiment",
+    group: "On-Page & Content",
+    description: "Tone of the page, title, headings and each paragraph (VADER, the same method as the Python script).",
+    sources: ["sentiment_analyzer.py"],
+    fields: TEXT_SOURCE,
   },
 ];
 

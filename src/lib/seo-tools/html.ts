@@ -23,7 +23,7 @@ export function parseHtml(html: string): HTMLElement {
 }
 
 export function cleanText(el: HTMLElement | null | undefined): string {
-  return (el?.text ?? "").replace(/\s+/g, " ").trim();
+  return (el?.structuredText ?? "").replace(/\s+/g, " ").trim();
 }
 
 /** Text of `html` with the given elements removed (default: scripts and styles only). */

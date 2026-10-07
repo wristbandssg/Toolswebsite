@@ -2,6 +2,8 @@ import { SEO_TOOLS } from "../registry";
 import type { Runner } from "./util";
 import * as A from "./technical-a";
 import * as B from "./technical-b";
+import * as C from "./content-a";
+import * as D from "./content-b";
 
 // Server side: which function runs each tool in the registry.
 export const RUNNERS: Record<string, Runner> = {
@@ -24,6 +26,21 @@ export const RUNNERS: Record<string, Runner> = {
   "content-ratio": B.contentRatio,
   hreflang: B.hreflang,
   "local-seo": B.localSeo,
+  readability: C.readabilityTool,
+  "sentence-complexity": C.sentenceComplexity,
+  "word-frequency": C.wordFrequency,
+  "thin-content": C.thinContent,
+  "content-freshness": C.contentFreshness,
+  "content-optimizer": C.contentOptimizer,
+  "question-finder": C.questionFinder,
+  "meta-description-generator": D.metaDescriptionGenerator,
+  "title-optimizer": D.titleOptimizer,
+  "faq-schema": D.faqSchema,
+  "structured-data": D.structuredData,
+  "content-repurposer": D.contentRepurposer,
+  "content-length-benchmark": D.contentLengthBenchmark,
+  "tfidf-terms": D.tfidfTerms,
+  sentiment: D.sentiment,
 };
 
 // Every generic tool in the registry must have a runner, and vice versa.
