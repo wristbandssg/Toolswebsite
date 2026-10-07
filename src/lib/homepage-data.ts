@@ -149,7 +149,7 @@ export type D2Guide = {
 export type D2Blog = { slug: string; title: string; excerpt: string; image: string; category: string };
 
 /** Plain-text summary of a post, cut to `maxWords` words ("…" when cut). */
-function blogSummary(excerpt: string | null, html: string, title: string, maxWords: number): string {
+export function blogSummary(excerpt: string | null, html: string, title: string, maxWords: number): string {
   if (maxWords <= 0) return "";
   // An excerpt that only repeats the title adds nothing — use the post's own text instead.
   const base =

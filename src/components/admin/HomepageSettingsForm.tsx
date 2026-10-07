@@ -18,6 +18,7 @@ import {
   type CategoryGroup,
 } from "./HomepageFormParts";
 import HomeDesign2Form from "./HomeDesign2Form";
+import HomeDesign3Form from "./HomeDesign3Form";
 
 // Card titles per design, for the side menu's jump links (must match the Card titles).
 const DESIGN1_SECTIONS = ["Top Section (Hero)", "Category Icon Tiles", "About Section", "Calculator Sections", "Featured In (Logos)", "SEO"];
@@ -33,6 +34,21 @@ const DESIGN2_SECTIONS = [
   "FAQ",
   "Blogs",
   "SEO (Design 2)",
+];
+const DESIGN3_SECTIONS = [
+  "Top Section (Hero)",
+  "Popular Calculators",
+  "Category Cards",
+  "Featured Hub",
+  "What Can You Calculate?",
+  "How-To Steps",
+  "Trending Calculators",
+  "Guides (Blog Posts)",
+  "Calculators by Country",
+  "Trust Row",
+  "FAQ",
+  "Call to Action",
+  "SEO (Design 3)",
 ];
 
 export default function HomepageSettingsForm({
@@ -58,7 +74,7 @@ export default function HomepageSettingsForm({
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const d = settings.design1;
   // Which design's content the form is editing (starts on the live one).
-  const [editing, setEditing] = useState<1 | 2>(initial.activeDesign === 2 ? 2 : 1);
+  const [editing, setEditing] = useState<1 | 2 | 3>(initial.activeDesign === 2 || initial.activeDesign === 3 ? initial.activeDesign : 1);
 
   function update<K extends keyof Design1Content>(key: K, value: Design1Content[K]) {
     setSaved(false);
@@ -109,6 +125,17 @@ export default function HomepageSettingsForm({
           heroChips: settings.design2.heroChips.filter((c) => c.text.trim()),
           faqs: settings.design2.faqs.filter((f) => f.question.trim()),
           useCases: settings.design2.useCases.map((u) => ({ ...u, bullets: u.bullets.map((b) => b.trim()).filter(Boolean) })),
+        },
+        design3: {
+          ...settings.design3,
+          heroChips: settings.design3.heroChips.filter((c) => c.text.trim()),
+          popularTools: settings.design3.popularTools.filter((t) => t.toolSlug),
+          trendingTools: settings.design3.trendingTools.filter((t) => t.toolSlug),
+          categoryCards: settings.design3.categoryCards.filter((c) => c.categorySlug),
+          hubItems: settings.design3.hubItems.filter((h) => h.title.trim()),
+          countries: settings.design3.countries.filter((c) => c.categorySlug || c.url.trim()),
+          faqs: settings.design3.faqs.filter((f) => f.question.trim()),
+          columns: settings.design3.columns.map((col) => ({ ...col, bullets: col.bullets.map((b) => b.trim()).filter(Boolean) })),
         },
       };
       const res = await fetch("/api/homepage-settings", {
@@ -168,7 +195,7 @@ export default function HomepageSettingsForm({
       <div className="flex flex-wrap items-center gap-3 pt-2">
         <h2 className="text-lg font-bold">Edit Content For</h2>
         <div className="inline-flex rounded-lg border border-gray-200 p-0.5 dark:border-gray-700">
-          {([1, 2] as const).map((n) => (
+          {([1, 2, 3] as const).map((n) => (
             <button
               key={n}
               type="button"
@@ -184,7 +211,18 @@ export default function HomepageSettingsForm({
         </div>
       </div>
 
-      {editing === 2 ? (
+      {editing === 3 ? (
+        <HomeDesign3Form
+          value={settings.design3}
+          onChange={(next) => {
+            setSaved(false);
+            setSettings((s) => ({ ...s, design3: next }));
+          }}
+          categoryGroups={categoryGroups}
+          autoCategorySlugs={autoCategorySlugs2}
+          tools={tools}
+        />
+      ) : editing === 2 ? (
         <HomeDesign2Form
           value={settings.design2}
           onChange={(next) => {
@@ -525,7 +563,7 @@ export default function HomepageSettingsForm({
         <nav className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Design {editing} Sections</p>
           <ul className="mt-3 space-y-0.5 text-sm">
-            {(editing === 2 ? DESIGN2_SECTIONS : DESIGN1_SECTIONS).map((title) => (
+            {(editing === 3 ? DESIGN3_SECTIONS : editing === 2 ? DESIGN2_SECTIONS : DESIGN1_SECTIONS).map((title) => (
               <li key={title}>
                 <a
                   href={`#${cardId(title)}`}

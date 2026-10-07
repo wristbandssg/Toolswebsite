@@ -12,7 +12,7 @@ const KEY = "homepage";
 export const HOME_DESIGNS = [
   { id: 1, name: "Design 1 — Calculator Hub", ready: true },
   { id: 2, name: "Design 2 — Category Showcase", ready: true },
-  { id: 3, name: "Design 3", ready: false },
+  { id: 3, name: "Design 3 — Clean Library", ready: true },
 ] as const;
 
 const iconItemSchema = z.object({
@@ -286,10 +286,207 @@ export const design2Schema = z.object({
   metaDescription: z.string().default(""),
 });
 
+// ---------------------------------------------------------------------------
+// Design 3 — "Clean Library" (from the admin's own HTML mockup): centered
+// hero with search + quick chips + stats, popular calculator cards, dark
+// category grid, featured hub, two "what can you calculate" boxes, 3 steps,
+// dark trending cards, guides (latest blogs), country hubs, trust row, FAQ and
+// a closing call-to-action. In any text, {siteName}, {count} (published
+// calculators) and {categoryCount} are filled in. Empty lists = automatic.
+
+const linkSchema = z.object({ text: z.string().default(""), url: z.string().default("") });
+const statSchema = z.object({ value: z.string().default(""), label: z.string().default("") });
+const d3ToolSchema = z.object({
+  toolSlug: z.string(),
+  icon: z.string().default(""), // "" = picked from the slug
+  badge: z.string().default(""), // e.g. "Popular" — "" = no badge
+  description: z.string().default(""), // "" = the calculator's own description
+});
+const d3CategorySchema = z.object({
+  categorySlug: z.string(),
+  icon: z.string().default(""),
+  title: z.string().default(""), // "" = category name
+  description: z.string().default(""), // "" = the category's hero text
+});
+const d3HubItemSchema = z.object({
+  title: z.string().default(""),
+  text: z.string().default(""),
+  url: z.string().default(""),
+});
+const d3ColumnSchema = z.object({
+  title: z.string().default(""),
+  text: z.string().default(""),
+  bullets: z.array(z.string()).default([]),
+});
+const d3StepSchema = z.object({ title: z.string().default(""), text: z.string().default("") });
+const d3CountrySchema = z.object({
+  flag: z.string().default(""),
+  label: z.string().default(""), // "" = category name
+  categorySlug: z.string().default(""), // links to this category…
+  url: z.string().default(""), // …or to this URL when no category is picked
+});
+
+export const design3Schema = z.object({
+  // Hero
+  heroBadge: z.string().default("Free calculators • Updated regularly"),
+  heroTitleLine1: z.string().default("Calculate Anything."),
+  heroTitleLine2: z.string().default("Understand Everything."), // gradient line
+  heroText: z
+    .string()
+    .default(
+      "A growing library of simple, practical calculators for money, home, business, math, health, time and everyday decisions."
+    ),
+  showSearch: z.boolean().default(true),
+  searchPlaceholder: z.string().default("What do you want to calculate? Try “mortgage payment”"),
+  searchButtonText: z.string().default("Search"),
+  heroChips: z.array(linkSchema).default([]), // [] = popular calculators automatically
+  autoChipCount: z.number().int().min(0).max(12).default(7),
+  heroStats: z.array(statSchema).default([
+    { value: "{count}+", label: "Free calculators" },
+    { value: "{categoryCount}", label: "Categories" },
+    { value: "100%", label: "Free core tools" },
+  ]),
+  // Popular calculators
+  showPopular: z.boolean().default(true),
+  popularHeading: z.string().default("Most Popular Calculators"),
+  popularText: z.string().default("Start with commonly used tools for money, planning and everyday calculations."),
+  popularLink: linkSchema.default({ text: "Explore all calculators →", url: "/calculators" }),
+  popularTools: z.array(d3ToolSchema).default([]),
+  autoPopularCount: z.number().int().min(1).max(40).default(8),
+  popularAutoBadge: z.string().default("Popular"), // badge on calculators marked Popular (automatic list)
+  popularCardLinkText: z.string().default("Calculate now →"),
+  // Category grid (dark)
+  showCategories: z.boolean().default(true),
+  categoriesHeading: z.string().default("Explore Calculator Categories"),
+  categoriesText: z.string().default("Clear topic hubs make every calculator easy to discover."),
+  categoriesLink: linkSchema.default({ text: "View all categories →", url: "/calculators" }),
+  categoryCards: z.array(d3CategorySchema).default([]),
+  autoCategoryCount: z.number().int().min(1).max(30).default(12),
+  categoryCountText: z.string().default("{n} calculators →"), // {n} = calculators in the category
+  // Featured hub
+  showHub: z.boolean().default(true),
+  hubHeading: z.string().default("Featured Calculator Hubs"),
+  hubText: z.string().default("Explore whole topics instead of single calculators."),
+  hubEyebrow: z.string().default("FEATURED HUB • FINANCE"),
+  hubTitle: z.string().default("Make better financial decisions with the right calculation."),
+  hubBody: z
+    .string()
+    .default("Explore payment, interest, savings, investment and loan tools in one organized finance hub."),
+  hubButton: linkSchema.default({ text: "Explore Finance Calculators →", url: "" }), // url "" = first category
+  hubItems: z.array(d3HubItemSchema).default([]), // [] = the next 3 categories automatically
+  // "What can you calculate?" boxes
+  showColumns: z.boolean().default(true),
+  columnsHeading: z.string().default("What Can You Calculate?"),
+  columnsText: z.string().default("From money to everyday decisions — here's what our calculators cover."),
+  columns: z.array(d3ColumnSchema).default([
+    {
+      title: "For your money",
+      text: "Financial calculators help you compare costs, plan payments and understand how numbers change over time.",
+      bullets: [
+        "Monthly loan and mortgage payments",
+        "Interest and amortization schedules",
+        "Take-home salary and taxes",
+        "Savings and compound growth",
+        "Profit, margin and business pricing",
+      ],
+    },
+    {
+      title: "For everyday decisions",
+      text: "Quick calculators turn common questions into clear numbers without complicated spreadsheets.",
+      bullets: [
+        "Percentages, discounts and markups",
+        "Age, dates and time differences",
+        "Unit and measurement conversions",
+        "BMI, calories and fitness estimates",
+        "Grades, GPA and academic calculations",
+      ],
+    },
+  ]),
+  // Steps
+  showSteps: z.boolean().default(true),
+  stepsHeading: z.string().default("How {siteName} Works"),
+  stepsText: z.string().default("Every tool follows a simple flow designed for speed and clarity."),
+  stepLabel: z.string().default("STEP"), // shown as "STEP 01"
+  steps: z.array(d3StepSchema).default([
+    { title: "Find a calculator", text: "Search by calculation, browse a category or start from a popular tool." },
+    { title: "Enter your numbers", text: "Use clearly labeled fields and practical input options." },
+    { title: "Understand the result", text: "Get the result with formulas, explanations and useful context." },
+  ]),
+  // Trending (dark)
+  showTrending: z.boolean().default(true),
+  trendingHeading: z.string().default("Trending Right Now"),
+  trendingText: z.string().default("Seasonal, high-interest and recently updated tools."),
+  trendingLink: linkSchema.default({ text: "See all calculators →", url: "/calculators" }),
+  trendingTools: z.array(d3ToolSchema).default([]), // [] = recently updated calculators
+  autoTrendingCount: z.number().int().min(1).max(40).default(4),
+  trendingBadge: z.string().default("Trending"),
+  trendingCardLinkText: z.string().default("Open tool →"),
+  // Guides (latest blog posts)
+  showGuides: z.boolean().default(true),
+  guidesHeading: z.string().default("Calculator Guides & Learning"),
+  guidesText: z.string().default("Guides that explain the formulas before or after you use a tool."),
+  guidesLink: linkSchema.default({ text: "Learning center →", url: "/blog" }),
+  guideCount: z.number().int().min(1).max(24).default(3),
+  guideExcerptWords: z.number().int().min(0).max(80).default(20),
+  guideLinkText: z.string().default("Read guide →"),
+  // Countries
+  showCountries: z.boolean().default(true),
+  countriesHeading: z.string().default("Calculators by Country"),
+  countriesText: z.string().default("Local tax, salary and financial calculators, organized by country."),
+  countriesLink: linkSchema.default({ text: "All calculators →", url: "/calculators" }),
+  countries: z.array(d3CountrySchema).default([]), // [] = country categories found automatically
+  // Trust row
+  showTrust: z.boolean().default(true),
+  trustHeading: z.string().default("Built for Clarity"),
+  trustText: z.string().default("Simple tools you can trust, on any device."),
+  trustItems: z.array(iconTextSchema).default([
+    { icon: "⚡", title: "Fast to use", text: "Simple inputs and quick results" },
+    { icon: "✓", title: "Clear formulas", text: "Explain what the result means" },
+    { icon: "🔒", title: "Privacy focused", text: "No unnecessary account required" },
+    { icon: "📱", title: "Mobile friendly", text: "Designed for every screen" },
+  ]),
+  // FAQ
+  showFaq: z.boolean().default(true),
+  faqHeading: z.string().default("Frequently Asked Questions"),
+  faqText: z.string().default("Common questions about our calculators."),
+  faqs: z.array(faqSchema).default([
+    {
+      question: "Are the calculators free?",
+      answer: "Yes. The core calculator tools are free to use, with no account required for standard calculations.",
+    },
+    {
+      question: "How many calculators are available?",
+      answer: "{siteName} has {count} calculators today and keeps growing across categories, countries and calculation types.",
+    },
+    {
+      question: "Can I search for a specific calculator?",
+      answer: "Yes. Search by calculator name, topic, calculation type or a common phrase.",
+    },
+    {
+      question: "Are there country-specific calculators?",
+      answer: "Yes. Country hubs organize local calculations such as tax, salary and other financial tools.",
+    },
+    {
+      question: "Can results be used for financial or health decisions?",
+      answer:
+        "Calculators give estimates based on the information and formulas used. Verify important financial, tax or health decisions with a qualified professional or an official source.",
+    },
+  ]),
+  // Call to action
+  showCta: z.boolean().default(true),
+  ctaHeading: z.string().default("Find the Number You Need."),
+  ctaText: z.string().default("Explore calculators designed to make complicated calculations easier to understand."),
+  ctaButton: linkSchema.default({ text: "Browse All Calculators →", url: "/calculators" }),
+  // SEO
+  metaTitle: z.string().default(""),
+  metaDescription: z.string().default(""),
+});
+
 export const homepageSchema = z.object({
   activeDesign: z.number().int().min(1).max(3).default(1),
   design1: design1Schema.default(design1Schema.parse({})),
   design2: design2Schema.default(design2Schema.parse({})),
+  design3: design3Schema.default(design3Schema.parse({})),
 });
 
 export type Design1Content = z.infer<typeof design1Schema>;
@@ -299,6 +496,7 @@ export type HomeSectionItem = z.infer<typeof sectionSchema>;
 export type HomeLogo = z.infer<typeof logoSchema>;
 export type Design2Content = z.infer<typeof design2Schema>;
 export type D2Chip = z.infer<typeof chipSchema>;
+export type Design3Content = z.infer<typeof design3Schema>;
 
 export async function getHomepageSettings(): Promise<HomepageSettings> {
   const stored = await getSiteSetting<unknown>(KEY);

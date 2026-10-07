@@ -5,8 +5,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 
-/** Home page search box — queries /api/search as you type (debounced); Enter opens the first match. */
-export default function ToolSearch({ placeholder = "Search calculators…" }: { placeholder?: string }) {
+/**
+ * Home page search box — queries /api/search as you type (debounced); Enter
+ * opens the first match. `buttonText` adds a Search button inside the box.
+ */
+export default function ToolSearch({
+  placeholder = "Search calculators…",
+  buttonText = "",
+}: {
+  placeholder?: string;
+  buttonText?: string;
+}) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ slug: string; title: string }[]>([]);
@@ -53,8 +62,16 @@ export default function ToolSearch({ placeholder = "Search calculators…" }: { 
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder={placeholder}
         aria-label="Search calculators"
-        className="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-14 pr-5 text-base shadow-lg shadow-slate-200/60 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-900 dark:shadow-none dark:focus:ring-sky-900/40"
+        className={`w-full rounded-2xl border border-slate-200 bg-white py-4 pl-14 ${buttonText ? "pr-32" : "pr-5"} text-base shadow-lg shadow-slate-200/60 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 dark:border-slate-700 dark:bg-slate-900 dark:shadow-none dark:focus:ring-sky-900/40`}
       />
+      {buttonText ? (
+        <button
+          type="submit"
+          className="absolute bottom-2 right-2 top-2 rounded-xl bg-[#3b5bfd] px-6 text-sm font-bold text-white transition hover:bg-[#2f4be0]"
+        >
+          {buttonText}
+        </button>
+      ) : null}
       {showDropdown ? (
         <div className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 text-left shadow-2xl dark:border-slate-800 dark:bg-slate-900">
           {results.length > 0 ? (

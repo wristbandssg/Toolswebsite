@@ -117,3 +117,83 @@ export function moveItem<T>(list: T[], from: number, to: number): T[] {
   next.splice(to, 0, item);
   return next;
 }
+
+export function NumberField({
+  label,
+  hint,
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  value: number;
+  min: number;
+  max: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <label className="block text-sm">
+      <span className="font-medium">{label}</span>
+      <input
+        type="number"
+        min={min}
+        max={max}
+        className={inputClass}
+        value={value}
+        onChange={(e) => onChange(Math.min(max, Math.max(min, Math.round(Number(e.target.value) || min))))}
+      />
+      {hint ? <span className="mt-1 block text-xs text-gray-400">{hint}</span> : null}
+    </label>
+  );
+}
+
+/** Generic list editor: one bordered row per item with move/remove controls, plus an Add button. */
+export function ListEditor<T>({
+  items,
+  onChange,
+  makeNew,
+  addLabel,
+  renderRow,
+}: {
+  items: T[];
+  onChange: (items: T[]) => void;
+  makeNew: () => T;
+  addLabel: string;
+  renderRow: (item: T, set: (patch: Partial<T>) => void, index: number) => React.ReactNode;
+}) {
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="space-y-2 rounded-xl border border-gray-200 p-3 dark:border-gray-700">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-gray-400">#{i + 1}</span>
+            <RowControls
+              index={i}
+              length={items.length}
+              onMove={(from, to) => onChange(moveItem(items, from, to))}
+              onRemove={(idx) => onChange(items.filter((_, j) => j !== idx))}
+            />
+          </div>
+          {renderRow(item, (patch) => onChange(items.map((x, j) => (j === i ? { ...x, ...patch } : x))), i)}
+        </div>
+      ))}
+      <button type="button" className={smallButton} onClick={() => onChange([...items, makeNew()])}>
+        {addLabel}
+      </button>
+    </div>
+  );
+}
+
+export function AutoButtons({ empty, onStart, onReset }: { empty: boolean; onStart: () => void; onReset: () => void }) {
+  return empty ? (
+    <button type="button" className={smallButton} onClick={onStart}>
+      Start from the automatic list
+    </button>
+  ) : (
+    <button type="button" className={smallButton} onClick={onReset}>
+      Back to automatic
+    </button>
+  );
+}
