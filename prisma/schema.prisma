@@ -88,11 +88,10 @@ model Author {
   shortBio  String? // plain text — the bio box under posts/calculators
   bio       String? // rich text HTML — the "About" section on the author page
   expertise String  @default("[]") // JSON string[]
-  email     String?
-  website   String?
-  linkedin  String?
-  twitter   String?
-  facebook  String?
+  // JSON [{ platform, url, label? }] — any number of links, in the admin's
+  // order. Platforms are listed in src/lib/author-social.ts; "custom" links
+  // carry their own label.
+  socialLinks String @default("[]")
   // Used for every blog post / calculator that has no author picked. Only
   // one author is the default at a time (enforced in the API).
   isDefault Boolean @default(false)

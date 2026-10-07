@@ -2,7 +2,10 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
 import RichTextEditor from "./RichTextEditor";
+import SocialIcon from "@/components/site/SocialIcon";
+import { AUTHOR_SOCIAL_PLATFORMS, type AuthorSocialLink, type AuthorSocialPlatform } from "@/lib/author-social";
 
 export interface AuthorFormValues {
   id: string; // empty until created
@@ -13,11 +16,7 @@ export interface AuthorFormValues {
   shortBio: string;
   bio: string;
   expertise: string; // comma-separated in the form, array on submit
-  email: string;
-  website: string;
-  linkedin: string;
-  twitter: string;
-  facebook: string;
+  socialLinks: AuthorSocialLink[];
   isDefault: boolean;
 }
 
@@ -30,11 +29,7 @@ const EMPTY: AuthorFormValues = {
   shortBio: "",
   bio: "",
   expertise: "",
-  email: "",
-  website: "",
-  linkedin: "",
-  twitter: "",
-  facebook: "",
+  socialLinks: [],
   isDefault: false,
 };
 
@@ -62,6 +57,35 @@ export default function AuthorForm({ mode, initial }: { mode: "create" | "edit";
 
   function update<K extends keyof AuthorFormValues>(key: K, val: AuthorFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
+  }
+
+  /** New link row — the first platform not used yet, or a custom link. */
+  function addLink(platform?: AuthorSocialPlatform) {
+    setValues((v) => {
+      const used = new Set(v.socialLinks.map((l) => l.platform));
+      const next =
+        platform ?? AUTHOR_SOCIAL_PLATFORMS.find((p) => p.key !== "custom" && !used.has(p.key))?.key ?? "custom";
+      return { ...v, socialLinks: [...v.socialLinks, { platform: next, url: "", label: "" }] };
+    });
+  }
+
+  function updateLink(i: number, patch: Partial<AuthorSocialLink>) {
+    setValues((v) => ({
+      ...v,
+      socialLinks: v.socialLinks.map((l, idx) => (idx === i ? { ...l, ...patch } : l)),
+    }));
+  }
+
+  function moveLink(i: number, dir: -1 | 1) {
+    setValues((v) => {
+      const list = [...v.socialLinks];
+      [list[i], list[i + dir]] = [list[i + dir], list[i]];
+      return { ...v, socialLinks: list };
+    });
+  }
+
+  function removeLink(i: number) {
+    setValues((v) => ({ ...v, socialLinks: v.socialLinks.filter((_, idx) => idx !== i) }));
   }
 
   async function handlePhotoUpload(file: File) {
@@ -219,28 +243,110 @@ export default function AuthorForm({ mode, initial }: { mode: "create" | "edit";
           </section>
 
           <section className={card}>
-            <h2 className="mb-4 font-semibold">Social Links</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {(
-                [
-                  ["website", "Website", "https://example.com"],
-                  ["linkedin", "LinkedIn", "https://linkedin.com/in/…"],
-                  ["twitter", "X (Twitter)", "https://x.com/…"],
-                  ["facebook", "Facebook", "https://facebook.com/…"],
-                  ["email", "Email", "name@example.com"],
-                ] as const
-              ).map(([key, label, placeholder]) => (
-                <label key={key} className="text-sm">
-                  <span className="font-medium">{label}</span>
-                  <input
-                    type={key === "email" ? "email" : "text"}
-                    className={input}
-                    placeholder={placeholder}
-                    value={values[key]}
-                    onChange={(e) => update(key, e.target.value)}
-                  />
-                </label>
-              ))}
+            <h2 className="mb-1 font-semibold">Social Links</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Add as many as you like, in the order they should appear. Pick &quot;Custom link&quot; for anything
+              not in the list and give it your own name.
+            </p>
+
+            {values.socialLinks.length > 0 ? (
+              <ul className="space-y-3">
+                {values.socialLinks.map((link, i) => {
+                  const platform = AUTHOR_SOCIAL_PLATFORMS.find((p) => p.key === link.platform);
+                  const isCustom = link.platform === "custom";
+                  return (
+                    <li
+                      key={i}
+                      className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 p-2 dark:border-gray-700 sm:flex-nowrap"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                        <SocialIcon platform={link.platform} className="h-4 w-4" />
+                      </span>
+                      <select
+                        aria-label="Platform"
+                        className="w-40 shrink-0 rounded-lg border border-gray-300 px-2 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                        value={link.platform}
+                        onChange={(e) => updateLink(i, { platform: e.target.value as AuthorSocialPlatform })}
+                      >
+                        {AUTHOR_SOCIAL_PLATFORMS.map((p) => (
+                          <option key={p.key} value={p.key}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                      {isCustom ? (
+                        <input
+                          aria-label="Link name"
+                          required
+                          maxLength={40}
+                          className="w-36 shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                          placeholder="Name, e.g. My Book"
+                          value={link.label ?? ""}
+                          onChange={(e) => updateLink(i, { label: e.target.value })}
+                        />
+                      ) : null}
+                      <input
+                        aria-label="URL"
+                        required
+                        type={link.platform === "email" ? "email" : "text"}
+                        className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                        placeholder={platform?.placeholder}
+                        value={link.url}
+                        onChange={(e) => updateLink(i, { url: e.target.value })}
+                      />
+                      <div className="flex shrink-0 items-center">
+                        <button
+                          type="button"
+                          title="Move up"
+                          disabled={i === 0}
+                          onClick={() => moveLink(i, -1)}
+                          className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30 dark:hover:bg-gray-800"
+                        >
+                          <ArrowUp aria-hidden className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          title="Move down"
+                          disabled={i === values.socialLinks.length - 1}
+                          onClick={() => moveLink(i, 1)}
+                          className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30 dark:hover:bg-gray-800"
+                        >
+                          <ArrowDown aria-hidden className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          title="Remove"
+                          onClick={() => removeLink(i)}
+                          className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+                        >
+                          <X aria-hidden className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="rounded-xl border border-dashed border-gray-300 p-4 text-center text-sm text-gray-400 dark:border-gray-700">
+                No links yet.
+              </p>
+            )}
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => addLink()}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+              >
+                <Plus aria-hidden className="h-4 w-4" /> Add Link
+              </button>
+              <button
+                type="button"
+                onClick={() => addLink("custom")}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+              >
+                <Plus aria-hidden className="h-4 w-4" /> Add Custom Link
+              </button>
             </div>
           </section>
 

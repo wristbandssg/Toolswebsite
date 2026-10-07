@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import AuthorForm from "@/components/admin/AuthorForm";
 import { parseExpertise } from "@/lib/authors";
+import { parseSocialLinks } from "@/lib/author-social";
 
 export default async function EditAuthorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -37,11 +38,7 @@ export default async function EditAuthorPage({ params }: { params: Promise<{ id:
             shortBio: author.shortBio ?? "",
             bio: author.bio ?? "",
             expertise: parseExpertise(author.expertise).join(", "),
-            email: author.email ?? "",
-            website: author.website ?? "",
-            linkedin: author.linkedin ?? "",
-            twitter: author.twitter ?? "",
-            facebook: author.facebook ?? "",
+            socialLinks: parseSocialLinks(author.socialLinks),
             isDefault: author.isDefault,
           }}
         />

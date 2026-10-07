@@ -1,5 +1,6 @@
 import type { Author } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { parseSocialLinks, type AuthorSocialLink } from "@/lib/author-social";
 
 /** The public shape of an author — what the bio box and author page render. */
 export interface AuthorProfile {
@@ -10,11 +11,7 @@ export interface AuthorProfile {
   shortBio: string | null;
   bio: string | null;
   expertise: string[];
-  email: string | null;
-  website: string | null;
-  linkedin: string | null;
-  twitter: string | null;
-  facebook: string | null;
+  socialLinks: AuthorSocialLink[];
 }
 
 export function parseExpertise(json: string | null | undefined): string[] {
@@ -35,11 +32,7 @@ export function toAuthorProfile(a: Author): AuthorProfile {
     shortBio: a.shortBio,
     bio: a.bio,
     expertise: parseExpertise(a.expertise),
-    email: a.email,
-    website: a.website,
-    linkedin: a.linkedin,
-    twitter: a.twitter,
-    facebook: a.facebook,
+    socialLinks: parseSocialLinks(a.socialLinks),
   };
 }
 

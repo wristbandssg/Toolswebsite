@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid author" }, { status: 400 });
   }
-  const { expertise, ...data } = parsed.data;
+  const { expertise, socialLinks, ...data } = parsed.data;
 
   if (data.slug !== existing.slug) {
     const clash = await prisma.author.findUnique({ where: { slug: data.slug } });
@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const author = await prisma.author.update({
     where: { id },
-    data: { ...data, expertise: JSON.stringify(expertise) },
+    data: { ...data, expertise: JSON.stringify(expertise), socialLinks: JSON.stringify(socialLinks) },
   });
   return NextResponse.json({ author });
 }

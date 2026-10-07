@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid author" }, { status: 400 });
   }
-  const { expertise, ...data } = parsed.data;
+  const { expertise, socialLinks, ...data } = parsed.data;
 
   if (await prisma.author.findUnique({ where: { slug: data.slug } })) {
     return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (isDefault) await prisma.author.updateMany({ where: { isDefault: true }, data: { isDefault: false } });
 
   const author = await prisma.author.create({
-    data: { ...data, isDefault, expertise: JSON.stringify(expertise) },
+    data: { ...data, isDefault, expertise: JSON.stringify(expertise), socialLinks: JSON.stringify(socialLinks) },
   });
   return NextResponse.json({ author }, { status: 201 });
 }

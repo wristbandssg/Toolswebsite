@@ -5,7 +5,7 @@ import { BookOpen, Calculator } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata, excerptFromHtml, getSiteUrl } from "@/lib/seo";
 import { toAuthorProfile } from "@/lib/authors";
-import { AuthorAvatar, AuthorSocialLinks, authorSocialLinks } from "@/components/author/AuthorParts";
+import { AuthorAvatar, AuthorSocialLinks, authorSocialHrefs } from "@/components/author/AuthorParts";
 
 export const dynamic = "force-dynamic";
 
@@ -84,9 +84,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
       description: author.shortBio || undefined,
       image: author.photo || undefined,
       knowsAbout: author.expertise.length > 0 ? author.expertise : undefined,
-      sameAs: authorSocialLinks(author)
-        .filter((l) => l.platform !== "email")
-        .map((l) => l.href),
+      sameAs: authorSocialHrefs(author),
     },
   };
 

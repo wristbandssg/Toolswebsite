@@ -1,5 +1,6 @@
 import SocialIcon from "@/components/site/SocialIcon";
 import { initialsFor, type AuthorProfile } from "@/lib/authors";
+import { platformLabel, socialHref } from "@/lib/author-social";
 
 /** Round author photo, or their initials on a gradient when no photo is set. */
 export function AuthorAvatar({ author, className = "h-16 w-16 text-lg" }: { author: AuthorProfile; className?: string }) {
@@ -19,21 +20,15 @@ export function AuthorAvatar({ author, className = "h-16 w-16 text-lg" }: { auth
   );
 }
 
-function normalizeUrl(url: string) {
-  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+/** All of an author's links as hrefs — used for schema.org `sameAs`. */
+export function authorSocialHrefs(author: AuthorProfile) {
+  return author.socialLinks.filter((l) => l.platform !== "email").map(socialHref);
 }
 
-/** The links an author has filled in, in a fixed order. */
-export function authorSocialLinks(author: AuthorProfile) {
-  const links: { platform: string; label: string; href: string }[] = [];
-  if (author.website) links.push({ platform: "website", label: "Website", href: normalizeUrl(author.website) });
-  if (author.linkedin) links.push({ platform: "linkedin", label: "LinkedIn", href: normalizeUrl(author.linkedin) });
-  if (author.twitter) links.push({ platform: "x", label: "X (Twitter)", href: normalizeUrl(author.twitter) });
-  if (author.facebook) links.push({ platform: "facebook", label: "Facebook", href: normalizeUrl(author.facebook) });
-  if (author.email) links.push({ platform: "email", label: "Email", href: `mailto:${author.email}` });
-  return links;
-}
-
+/**
+ * The author's links in the admin's order: brand icons in round buttons,
+ * and "custom" links as a small pill showing their own label.
+ */
 export function AuthorSocialLinks({
   author,
   className = "",
@@ -43,23 +38,29 @@ export function AuthorSocialLinks({
   className?: string;
   buttonClassName?: string;
 }) {
-  const links = authorSocialLinks(author);
-  if (links.length === 0) return null;
+  if (author.socialLinks.length === 0) return null;
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
-      {links.map((l) => (
-        <a
-          key={l.platform}
-          href={l.href}
-          target={l.platform === "email" ? undefined : "_blank"}
-          rel="noopener noreferrer"
-          title={l.label}
-          aria-label={`${author.name} on ${l.label}`}
-          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${buttonClassName}`}
-        >
-          <SocialIcon platform={l.platform} className="h-4 w-4" />
-        </a>
-      ))}
+    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+      {author.socialLinks.map((l, i) => {
+        const custom = l.platform === "custom";
+        const label = custom ? l.label || "Link" : platformLabel(l.platform);
+        return (
+          <a
+            key={`${l.platform}-${i}`}
+            href={socialHref(l)}
+            target={l.platform === "email" ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            title={label}
+            aria-label={`${author.name}: ${label}`}
+            className={`flex h-9 items-center justify-center gap-1.5 rounded-full border transition-colors ${
+              custom ? "px-3 text-sm font-medium" : "w-9"
+            } ${buttonClassName}`}
+          >
+            <SocialIcon platform={l.platform} className="h-4 w-4 shrink-0" />
+            {custom ? <span className="max-w-[10rem] truncate">{label}</span> : null}
+          </a>
+        );
+      })}
     </div>
   );
 }
