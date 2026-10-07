@@ -14,7 +14,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
   });
   if (!blog) notFound();
 
-  const [categories, tools, otherBlogs] = await Promise.all([
+  const [categories, tools, otherBlogs, authors] = await Promise.all([
     prisma.blogCategory.findMany({ orderBy: { name: "asc" } }),
     prisma.tool.findMany({ orderBy: { title: "asc" }, select: { id: true, title: true } }),
     prisma.blog.findMany({
@@ -22,6 +22,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
       orderBy: { title: "asc" },
       select: { id: true, title: true },
     }),
+    prisma.author.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, isDefault: true } }),
   ]);
 
   return (
@@ -38,6 +39,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
           categories={categories}
           tools={tools}
           otherBlogs={otherBlogs}
+          authors={authors}
           initial={{
             id: blog.id,
             slug: blog.slug,
@@ -51,6 +53,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
             categoryIds: blog.categoryIds,
             toolIds: blog.toolRelations.map((r) => r.toolId),
             relatedBlogIds: blog.relatedFrom.map((r) => r.relatedBlogId),
+            authorProfileId: blog.authorProfileId ?? "",
             seo: {
               metaTitle: blog.seoMeta?.metaTitle ?? "",
               metaDescription: blog.seoMeta?.metaDescription ?? "",

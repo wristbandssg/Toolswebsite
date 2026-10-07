@@ -23,6 +23,7 @@ import {
   PanelTop,
   Settings,
   Sparkles,
+  UserRound,
 } from "lucide-react";
 
 type NavLink = { href: string; label: string };
@@ -59,6 +60,7 @@ const SECTIONS: NavSection[] = [
           { href: "/admin/blogs/categories", label: "Blog Categories" },
         ],
       },
+      { href: "/admin/authors", label: "Authors", icon: UserRound },
       { href: "/admin/pages", label: "Pages", icon: Files },
       { href: "/admin/media", label: "Media Library", icon: Image },
     ],

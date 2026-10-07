@@ -75,6 +75,37 @@ model User {
   @@map("users")
 }
 
+// Public author profiles (managed at /admin/authors). Not tied to admin
+// logins — an author is just a person shown on the site. Their bio box only
+// appears on single blog posts and single calculator pages, and each one has
+// its own profile page at /authors/[slug].
+model Author {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  slug      String  @unique
+  name      String
+  jobTitle  String? // e.g. "Senior Financial Analyst"
+  photo     String?
+  shortBio  String? // plain text — the bio box under posts/calculators
+  bio       String? // rich text HTML — the "About" section on the author page
+  expertise String  @default("[]") // JSON string[]
+  email     String?
+  website   String?
+  linkedin  String?
+  twitter   String?
+  facebook  String?
+  // Used for every blog post / calculator that has no author picked. Only
+  // one author is the default at a time (enforced in the API).
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blogs Blog[] @relation("BlogAuthorProfile")
+  tools Tool[] @relation("ToolAuthorProfile")
+
+  @@map("authors")
+}
+
 // ---------------------------------------------------------------------------
 // Calculator Tools
 // ---------------------------------------------------------------------------
@@ -172,6 +203,11 @@ model Tool {
   assumptions String?
   faq         String? // JSON: [{ question, answer }]
 
+  // Public author profile shown in the "About the Author" box on this
+  // tool's page — see Author. Null = use the default Author.
+  authorProfileId String? @db.ObjectId
+  authorProfile   Author? @relation("ToolAuthorProfile", fields: [authorProfileId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -261,6 +297,12 @@ model Blog {
 
   authorId String? @db.ObjectId
   author   User?   @relation("BlogAuthor", fields: [authorId], references: [id])
+
+  // The public author profile shown in the "About the Author" box under the
+  // post and linked to /authors/[slug]. Separate from `author` above (the
+  // admin login that created the post). Null = use the default Author.
+  authorProfileId String? @db.ObjectId
+  authorProfile   Author? @relation("BlogAuthorProfile", fields: [authorProfileId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

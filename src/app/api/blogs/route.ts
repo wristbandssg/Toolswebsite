@@ -20,6 +20,8 @@ const blogSchema = z.object({
   newCategoryName: z.string().optional().nullable(),
   toolIds: z.array(z.string()).default([]),
   relatedBlogIds: z.array(z.string()).default([]),
+  // Public author profile — null = the default author.
+  authorProfileId: z.string().optional().nullable(),
 });
 
 function slugify(text: string) {
@@ -105,6 +107,7 @@ export async function POST(req: NextRequest) {
             : null,
       categories: { connect: categoryIds.map((id) => ({ id })) },
       authorId: authorId ?? undefined,
+      authorProfileId: data.authorProfileId || null,
       toolRelations: {
         create: data.toolIds.map((toolId) => ({ toolId })),
       },

@@ -3,7 +3,10 @@ import ToolForm from "@/components/admin/ToolForm";
 import { groupCategoryTree } from "@/lib/flattenCategoryTree";
 
 export default async function NewToolPage() {
-  const categories = await prisma.toolCategory.findMany({ orderBy: { name: "asc" } });
+  const [categories, authors] = await Promise.all([
+    prisma.toolCategory.findMany({ orderBy: { name: "asc" } }),
+    prisma.author.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, isDefault: true } }),
+  ]);
 
   return (
     <div>
@@ -12,7 +15,7 @@ export default async function NewToolPage() {
         Create a tool and set its template, calculation logic, and content.
       </p>
       <div className="mt-6">
-        <ToolForm mode="create" categories={groupCategoryTree(categories)} />
+        <ToolForm mode="create" categories={groupCategoryTree(categories)} authors={authors} />
       </div>
     </div>
   );

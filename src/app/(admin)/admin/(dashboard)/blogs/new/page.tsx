@@ -2,10 +2,11 @@ import { prisma } from "@/lib/prisma";
 import BlogForm from "@/components/admin/BlogForm";
 
 export default async function NewBlogPage() {
-  const [categories, tools, otherBlogs] = await Promise.all([
+  const [categories, tools, otherBlogs, authors] = await Promise.all([
     prisma.blogCategory.findMany({ orderBy: { name: "asc" } }),
     prisma.tool.findMany({ orderBy: { title: "asc" }, select: { id: true, title: true } }),
     prisma.blog.findMany({ orderBy: { title: "asc" }, select: { id: true, title: true } }),
+    prisma.author.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, isDefault: true } }),
   ]);
 
   return (
@@ -20,6 +21,7 @@ export default async function NewBlogPage() {
           categories={categories}
           tools={tools}
           otherBlogs={otherBlogs}
+          authors={authors}
         />
       </div>
     </div>

@@ -4,12 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { getToolTemplate } from "@/lib/templates/registry";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { buildSeoMetadata } from "@/lib/seo";
+import { resolveAuthorProfile } from "@/lib/authors";
 
 async function loadTool(slug: string) {
   const tool = await prisma.tool.findUnique({
     where: { slug },
     include: {
       category: true,
+      authorProfile: true,
       seoMeta: true,
       blogRelations: { include: { blog: true } },
     },
@@ -56,6 +58,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         )
       : [];
 
+  const authorProfile = await resolveAuthorProfile(tool.authorProfile);
   const { component: Template } = getToolTemplate(tool.templateKey);
 
   return (
@@ -80,6 +83,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         categorySlug: tool.category?.slug,
       }}
       relatedTools={relatedTools}
+      authorProfile={authorProfile}
       supportBlogs={tool.blogRelations.map((r) => ({ slug: r.blog.slug, title: r.blog.title }))}
       stateCalculators={stateCalculators.map((s) => ({
         stateName: s.stateName,

@@ -9,7 +9,10 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
   const tool = await prisma.tool.findUnique({ where: { slug }, include: { seoMeta: true } });
   if (!tool) notFound();
 
-  const categories = await prisma.toolCategory.findMany({ orderBy: { name: "asc" } });
+  const [categories, authors] = await Promise.all([
+    prisma.toolCategory.findMany({ orderBy: { name: "asc" } }),
+    prisma.author.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, isDefault: true } }),
+  ]);
 
   return (
     <div>
@@ -23,6 +26,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
         <ToolForm
           mode="edit"
           categories={groupCategoryTree(categories)}
+          authors={authors}
           initial={{
             slug: tool.slug,
             title: tool.title,
@@ -31,6 +35,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
             categoryId: tool.categoryId ?? "",
             status: tool.status as "draft" | "in_review" | "published" | "needs_update",
             isPopular: tool.isPopular,
+            authorProfileId: tool.authorProfileId ?? "",
             calcType: tool.calcType as "expression" | "custom",
             calcFormula: tool.calcFormula ?? "",
             calcInputs: JSON.parse(tool.calcInputs) as CalcInputField[],

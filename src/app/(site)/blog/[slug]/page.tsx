@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import BlogTemplate from "@/lib/templates/blog/BlogTemplate";
 import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
+import { resolveAuthorProfile } from "@/lib/authors";
 
 async function loadBlog(slug: string) {
   const blog = await prisma.blog.findUnique({
@@ -10,6 +11,7 @@ async function loadBlog(slug: string) {
     include: {
       categories: true,
       author: true,
+      authorProfile: true,
       seoMeta: true,
       toolRelations: { include: { tool: true } },
       relatedFrom: { include: { relatedBlog: { include: { categories: true } } } },
@@ -46,6 +48,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const blog = await loadBlog(slug);
   if (!blog) notFound();
+  const authorProfile = await resolveAuthorProfile(blog.authorProfile);
 
   return (
     <BlogTemplate
@@ -61,6 +64,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         authorName: blog.author?.name,
         categories: blog.categories.map((c) => ({ name: c.name, slug: c.slug })),
       }}
+      authorProfile={authorProfile}
       relatedTools={blog.toolRelations.map((r) => ({ slug: r.tool.slug, title: r.tool.title }))}
       relatedBlogs={blog.relatedFrom
         // A related post picked while it was still a draft shouldn't show

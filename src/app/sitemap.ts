@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
 
-  const [tools, blogs, pages] = await Promise.all([
+  const [tools, blogs, pages, authors] = await Promise.all([
     prisma.tool.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true, seoMeta: true },
@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       where: { status: "published" },
       select: { slug: true, updatedAt: true, seoMeta: true },
     }),
+    prisma.author.findMany({ select: { slug: true, updatedAt: true } }),
   ]);
 
   const indexable = (item: { seoMeta: { robotsIndex: boolean } | null }) =>
@@ -56,6 +57,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: page.updatedAt,
       changeFrequency: "monthly",
       priority: 0.6,
+    });
+  }
+
+  for (const author of authors) {
+    entries.push({
+      url: `${siteUrl}/authors/${author.slug}`,
+      lastModified: author.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.5,
     });
   }
 

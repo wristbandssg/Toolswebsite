@@ -7,6 +7,7 @@ import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/l
 import { TOOL_TEMPLATES } from "@/lib/templates/registry";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import RichTextEditor from "./RichTextEditor";
+import AuthorSelect, { type AuthorOption } from "./AuthorSelect";
 import type { CategoryOptionGroup } from "@/lib/flattenCategoryTree";
 
 export interface ToolFormValues {
@@ -18,6 +19,8 @@ export interface ToolFormValues {
   status: "draft" | "in_review" | "published" | "needs_update";
   // Shows a "POPULAR" badge on this tool's card on its category page.
   isPopular: boolean;
+  // Public author shown in the bio box on the tool page — "" = the default author.
+  authorProfileId: string;
   calcType: "expression" | "custom";
   calcFormula: string;
   calcInputs: CalcInputField[];
@@ -55,6 +58,7 @@ const EMPTY: ToolFormValues = {
   categoryId: "",
   status: "draft",
   isPopular: false,
+  authorProfileId: "",
   calcType: "expression",
   calcFormula: "",
   calcInputs: [],
@@ -85,10 +89,12 @@ export default function ToolForm({
   mode,
   initial,
   categories,
+  authors,
 }: {
   mode: "create" | "edit";
   initial?: Partial<ToolFormValues>;
   categories: CategoryOptionGroup[];
+  authors: AuthorOption[];
 }) {
   const router = useRouter();
   const [values, setValues] = useState<ToolFormValues>({ ...EMPTY, ...initial });
@@ -350,6 +356,9 @@ export default function ToolForm({
           </select>
         </label>
       </section>
+
+      {/* Author */}
+      <AuthorSelect authors={authors} value={values.authorProfileId} onChange={(id) => update("authorProfileId", id)} />
 
       {/* Calculation Logic */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">

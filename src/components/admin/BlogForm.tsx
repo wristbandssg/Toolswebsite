@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
+import AuthorSelect, { type AuthorOption } from "./AuthorSelect";
 
 export interface BlogSeoValues {
   metaTitle: string;
@@ -36,6 +37,7 @@ export interface BlogFormValues {
   categoryIds: string[];
   toolIds: string[];
   relatedBlogIds: string[];
+  authorProfileId: string; // "" = the default author
   seo: BlogSeoValues;
 }
 
@@ -52,6 +54,7 @@ const EMPTY: BlogFormValues = {
   categoryIds: [],
   toolIds: [],
   relatedBlogIds: [],
+  authorProfileId: "",
   seo: EMPTY_SEO,
 };
 
@@ -69,12 +72,14 @@ export default function BlogForm({
   categories,
   tools,
   otherBlogs,
+  authors,
 }: {
   mode: "create" | "edit";
   initial?: Partial<BlogFormValues>;
   categories: { id: string; name: string; parentId?: string | null }[];
   tools: { id: string; title: string }[];
   otherBlogs: { id: string; title: string }[];
+  authors: AuthorOption[];
 }) {
   const router = useRouter();
   const [values, setValues] = useState<BlogFormValues>({ ...EMPTY, ...initial });
@@ -153,6 +158,7 @@ export default function BlogForm({
         categoryIds: values.categoryIds,
         toolIds: values.toolIds,
         relatedBlogIds: values.relatedBlogIds,
+        authorProfileId: values.authorProfileId || null,
       };
       const res = await fetch(
         mode === "create" ? "/api/blogs" : `/api/blogs/${values.slug}`,
@@ -390,6 +396,12 @@ export default function BlogForm({
               </button>
             </div>
           </section>
+
+          <AuthorSelect
+            authors={authors}
+            value={values.authorProfileId}
+            onChange={(id) => update("authorProfileId", id)}
+          />
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="mb-4 font-semibold">Featured Image</h2>

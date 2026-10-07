@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import type { ToolTemplateProps } from "./types";
 import { StateCalculatorGrid } from "./StateCalculatorGrid";
 import AdSlot from "@/components/AdSlot";
+import AuthorBioBox from "@/components/author/AuthorBioBox";
 
 /** Instructions/Examples/Assumptions are authored with the same rich-text
  * editor as Blog posts (see admin ToolForm → RichTextEditor) and stored as
@@ -59,6 +60,7 @@ export function ToolContentSections({
   relatedTools,
   supportBlogs,
   stateCalculators,
+  authorProfile,
 }: ToolTemplateProps) {
   return (
     <div className="space-y-8">
@@ -136,6 +138,8 @@ export function ToolContentSections({
           </ul>
         </section>
       ) : null}
+
+      {authorProfile ? <AuthorBioBox author={authorProfile} /> : null}
 
       <AdSlot placement="tool_content_bottom" />
     </div>

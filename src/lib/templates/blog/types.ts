@@ -1,3 +1,5 @@
+import type { AuthorProfile } from "@/lib/authors";
+
 export interface BlogTemplateProps {
   blog: {
     slug: string;
@@ -12,6 +14,9 @@ export interface BlogTemplateProps {
     // A post can belong to more than one category at once.
     categories: { name: string; slug: string }[];
   };
+  // The post's public author (or the site default) — drives the byline and
+  // the "About the Author" box. Null when no author profile exists at all.
+  authorProfile?: AuthorProfile | null;
   relatedTools: { slug: string; title: string }[];
   relatedBlogs: {
     slug: string;

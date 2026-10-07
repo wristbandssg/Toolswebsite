@@ -61,6 +61,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       // Only touched when explicitly present so older callers that don't
       // send this field at all leave it untouched.
       ...(typeof body.isPopular === "boolean" ? { isPopular: body.isPopular } : {}),
+      ...(Object.prototype.hasOwnProperty.call(body, "authorProfileId")
+        ? { authorProfileId: body.authorProfileId || null }
+        : {}),
       calcType: body.calcType ?? existing.calcType,
       calcFormula: body.calcFormula ?? existing.calcFormula,
       calcInputs: body.calcInputs ? JSON.stringify(body.calcInputs) : existing.calcInputs,

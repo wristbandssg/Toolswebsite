@@ -85,6 +85,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
       // `set` (a full replace) rather than `connect` — connect only adds,
       // it would never let unchecking a category in the admin UI remove it.
       categories: { set: categoryIds.map((id) => ({ id })) },
+      ...(Object.prototype.hasOwnProperty.call(body, "authorProfileId")
+        ? { authorProfileId: body.authorProfileId || null }
+        : {}),
     },
   });
 

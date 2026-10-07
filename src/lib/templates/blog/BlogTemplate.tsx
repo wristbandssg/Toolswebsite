@@ -4,6 +4,7 @@ import TableOfContents from "@/components/TableOfContents";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import AdSlot from "@/components/AdSlot";
 import { extractTableOfContents, estimateReadingMinutes } from "@/lib/toc";
+import AuthorBioBox from "@/components/author/AuthorBioBox";
 
 // A small fixed palette so an author's initials-avatar color stays the same
 // every time their name appears (no photo field on the User model yet).
@@ -69,14 +70,14 @@ function RelatedPostRow({
  * hides below `lg`, the sidebar card drops beneath the article below `xl`
  * instead of being squeezed into a cramped third column.
  */
-export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogTemplateProps) {
+export default function BlogTemplate({ blog, authorProfile, relatedTools, relatedBlogs }: BlogTemplateProps) {
   const { html: contentHtml, headings } = extractTableOfContents(blog.content);
   // The sidebar TOC only lists top-level (H2) sections — H3s still get
   // anchor ids in the content above, but keeping them out of the list
   // keeps it short and scannable rather than a deep, nested outline.
   const tocHeadings = headings.filter((h) => h.level === 2);
   const readingMinutes = estimateReadingMinutes(blog.content);
-  const authorName = blog.authorName ?? "Editorial Team";
+  const authorName = authorProfile?.name ?? blog.authorName ?? "Editorial Team";
 
   const relatedCard =
     relatedBlogs.length > 0 ? (
@@ -126,14 +127,30 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
           ) : null}
 
           <div className="mt-6 flex items-center gap-3 border-t border-white/20 pt-6">
-            <span
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm ring-2 ring-white/40 ${avatarColorFor(authorName)}`}
-            >
-              {initialsFor(authorName)}
-            </span>
+            {authorProfile?.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={authorProfile.photo}
+                alt={authorName}
+                className="h-11 w-11 shrink-0 rounded-full object-cover shadow-sm ring-2 ring-white/40"
+              />
+            ) : (
+              <span
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm ring-2 ring-white/40 ${avatarColorFor(authorName)}`}
+              >
+                {initialsFor(authorName)}
+              </span>
+            )}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-indigo-100">
               <span>
-                By <span className="font-semibold text-white">{authorName}</span>
+                By{" "}
+                {authorProfile ? (
+                  <Link href={`/authors/${authorProfile.slug}`} className="font-semibold text-white hover:underline">
+                    {authorName}
+                  </Link>
+                ) : (
+                  <span className="font-semibold text-white">{authorName}</span>
+                )}
               </span>
               <span className="text-white/30">·</span>
               <span>Updated {new Date(blog.updatedAt).toLocaleDateString()}</span>
@@ -187,6 +204,12 @@ export default function BlogTemplate({ blog, relatedTools, relatedBlogs }: BlogT
                   ))}
                 </ul>
               </section>
+            ) : null}
+
+            {authorProfile ? (
+              <div className="mt-10">
+                <AuthorBioBox author={authorProfile} />
+              </div>
             ) : null}
 
             {/* Below `xl` the sidebar card has no room of its own, so it

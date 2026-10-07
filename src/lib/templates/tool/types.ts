@@ -1,5 +1,6 @@
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import type { StateCalculatorEntry } from "./StateCalculatorGrid";
+import type { AuthorProfile } from "@/lib/authors";
 
 export interface ToolTemplateProps {
   tool: {
@@ -30,4 +31,7 @@ export interface ToolTemplateProps {
   // state tax/paycheck calculator family (see the [slug]/page.tsx gating).
   // Empty/omitted on every other tool, so this is fully opt-in.
   stateCalculators?: StateCalculatorEntry[];
+  // The tool's author (or the site default) — shown in the "About the
+  // Author" box at the end of the content. Null/omitted = no box.
+  authorProfile?: AuthorProfile | null;
 }

@@ -28,6 +28,8 @@ const toolCreateSchema = z.object({
   // Shows a "POPULAR" badge on this tool's card on its category page — see
   // Tool.isPopular in schema.prisma.
   isPopular: z.boolean().optional().default(false),
+  // Public author profile — null/"" = the default author.
+  authorProfileId: z.string().optional().nullable(),
   calcType: z.enum(["expression", "custom"]).default("expression"),
   calcFormula: z.string().optional().nullable(),
   calcInputs: z.array(calcInputFieldSchema).default([]),
@@ -116,6 +118,7 @@ export async function POST(req: NextRequest) {
       status: data.status,
       categoryId: data.categoryId ?? undefined,
       isPopular: data.isPopular ?? false,
+      authorProfileId: data.authorProfileId || null,
       calcType: data.calcType,
       calcFormula: data.calcFormula,
       calcInputs: JSON.stringify(data.calcInputs),
