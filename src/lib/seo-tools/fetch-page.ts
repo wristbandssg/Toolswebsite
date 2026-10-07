@@ -6,7 +6,7 @@ import { isIP } from "node:net";
 // tool can never be pointed at the server's own network (localhost, private
 // ranges, cloud metadata).
 
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 15 * 1024 * 1024;
 const MAX_REDIRECTS = 5;
 const TIMEOUT_MS = 20_000;
 const USER_AGENT = "Mozilla/5.0 (compatible; CalcPlatform-SEO-Audit/1.0)";
@@ -32,7 +32,7 @@ function isPrivateAddress(ip: string): boolean {
   );
 }
 
-async function assertPublicUrl(raw: string): Promise<URL> {
+export async function assertPublicUrl(raw: string): Promise<URL> {
   let url: URL;
   try {
     url = new URL(raw);
@@ -83,7 +83,7 @@ export async function fetchPage(rawUrl: string): Promise<FetchedPage> {
     }
 
     const buffer = await res.arrayBuffer();
-    if (buffer.byteLength > MAX_BYTES) throw new FetchPageError("The page is larger than 5 MB.");
+    if (buffer.byteLength > MAX_BYTES) throw new FetchPageError("The page is larger than 15 MB.");
     return {
       requestedUrl: rawUrl.trim(),
       finalUrl: url.href,
@@ -95,4 +95,81 @@ export async function fetchPage(rawUrl: string): Promise<FetchedPage> {
       headers: res.headers,
     };
   }
+}
+
+export interface RedirectHop {
+  url: string;
+  status: number | string; // a number, or an error / "LOOP" note
+}
+
+/** One request with no redirect following (still public addresses only). */
+async function requestOnce(url: URL, method: "HEAD" | "GET"): Promise<Response> {
+  return fetch(url, {
+    method,
+    redirect: "manual",
+    headers: { "User-Agent": USER_AGENT },
+    signal: AbortSignal.timeout(10_000),
+  });
+}
+
+/** Follows a URL hop by hop, recording every status (redirect_chain_checker). */
+export async function traceRedirects(rawUrl: string, maxHops = 15): Promise<RedirectHop[]> {
+  const chain: RedirectHop[] = [];
+  const seen = new Set<string>();
+  let current: URL;
+  try {
+    current = await assertPublicUrl(rawUrl.trim());
+  } catch (e) {
+    return [{ url: rawUrl, status: `ERROR: ${(e as Error).message}` }];
+  }
+  for (let i = 0; i < maxHops; i++) {
+    if (seen.has(current.href)) {
+      chain.push({ url: current.href, status: "LOOP" });
+      break;
+    }
+    seen.add(current.href);
+    let res: Response;
+    try {
+      res = await requestOnce(current, "HEAD");
+      if (res.status === 405 || res.status === 501) res = await requestOnce(current, "GET");
+    } catch (e) {
+      chain.push({ url: current.href, status: `ERROR: ${(e as Error).name === "TimeoutError" ? "timeout" : "connection failed"}` });
+      break;
+    }
+    chain.push({ url: current.href, status: res.status });
+    const location = res.headers.get("location");
+    if (res.status >= 300 && res.status < 400 && location) {
+      try {
+        current = await assertPublicUrl(new URL(location, current).href);
+      } catch (e) {
+        chain.push({ url: new URL(location, current).href, status: `ERROR: ${(e as Error).message}` });
+        break;
+      }
+    } else break;
+  }
+  return chain;
+}
+
+/** Final status of a URL after redirects, plus how many redirects it took. */
+export async function checkStatus(rawUrl: string): Promise<{ status: number; redirects: number; finalUrl: string; error: string }> {
+  const chain = await traceRedirects(rawUrl, 8);
+  const last = chain[chain.length - 1];
+  const redirects = chain.filter((h) => typeof h.status === "number" && h.status >= 300 && h.status < 400).length;
+  return typeof last.status === "number"
+    ? { status: last.status, redirects, finalUrl: last.url, error: "" }
+    : { status: 0, redirects, finalUrl: last.url, error: String(last.status) };
+}
+
+/** Runs `fn` over `items` with at most `limit` running at once, keeping order. */
+export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, index: number) => Promise<R>): Promise<R[]> {
+  const out = new Array<R>(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
 }
