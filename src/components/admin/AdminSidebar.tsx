@@ -19,8 +19,6 @@ import {
   LogOut,
   Megaphone,
   Newspaper,
-  PanelBottom,
-  PanelTop,
   Settings,
   Sparkles,
   UserRound,
@@ -30,7 +28,8 @@ type NavLink = { href: string; label: string };
 type NavEntry = NavLink & { icon: LucideIcon; children?: NavLink[] };
 type NavSection = { title: string; items: NavEntry[] };
 
-// Grouped admin navigation. "Calculators" and "Blog" are collapsible groups:
+// Grouped admin navigation. "Calculators", "Blog" and "Home Page" (with the
+// Header and Footer Builders) are collapsible groups:
 // clicking the group opens its links, and a group starts open whenever one of
 // its pages is the current page.
 const SECTIONS: NavSection[] = [
@@ -68,9 +67,16 @@ const SECTIONS: NavSection[] = [
   {
     title: "Design",
     items: [
-      { href: "/admin/homepage", label: "Home Page", icon: House },
-      { href: "/admin/header-builder", label: "Header Builder", icon: PanelTop },
-      { href: "/admin/footer-builder", label: "Footer Builder", icon: PanelBottom },
+      {
+        href: "/admin/homepage",
+        label: "Home Page",
+        icon: House,
+        children: [
+          { href: "/admin/homepage", label: "Home Page Design" },
+          { href: "/admin/header-builder", label: "Header Builder" },
+          { href: "/admin/footer-builder", label: "Footer Builder" },
+        ],
+      },
     ],
   },
   {
