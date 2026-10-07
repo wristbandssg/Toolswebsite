@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { buildCategoryIndex } from "@/lib/category-tree";
 
 export interface ToolCategorySeo {
   metaTitle: string;
@@ -22,7 +23,7 @@ export interface ToolCategoryRow {
   // Calculators -> a tool) — see the ToolCategory.parentId comment in
   // schema.prisma for how cycles are prevented.
   parentId: string | null;
-  // Hero section content for this category's public /tools/category/[slug]
+  // Hero section content for this category's public category
   // page (see the page component) — both blank until the admin fills them
   // in below; the public page generates fallback copy until then.
   heroSubheading: string;
@@ -165,6 +166,7 @@ function ToolCountPills({ toolCount, publishedCount }: { toolCount: number; publ
  */
 function CategoryRow({
   cat,
+  publicHref,
   depth,
   hasChildren,
   isExpanded,
@@ -197,6 +199,7 @@ function CategoryRow({
   onAddSubcategory,
 }: {
   cat: ToolCategoryRow;
+  publicHref: string; // the category's public URL
   depth: number;
   // Whether `cat` has any sub-categories of its own — controls whether an
   // expand/collapse chevron renders at all.
@@ -363,7 +366,7 @@ function CategoryRow({
             <ToolCountPills toolCount={cat.toolCount} publishedCount={cat.publishedCount} />
             <div className="flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
               <a
-                href={`/tools/category/${cat.slug}`}
+                href={publicHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
@@ -500,6 +503,7 @@ function CategoryRow({
 export default function ToolCategoriesManager({ initial }: { initial: ToolCategoryRow[] }) {
   const router = useRouter();
   const [categories, setCategories] = useState<ToolCategoryRow[]>(initial);
+  const categoryIndex = buildCategoryIndex(categories);
   const [newName, setNewName] = useState("");
   // Empty string = new category will be top-level; otherwise the id of the
   // category it becomes a sub-category of (at any depth).
@@ -790,6 +794,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
       <div key={cat.id} className="space-y-2">
         <CategoryRow
           cat={cat}
+          publicHref={categoryIndex.categoryHref(cat.id)}
           depth={depth}
           hasChildren={children.length > 0}
           isExpanded={showChildren}

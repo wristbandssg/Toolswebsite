@@ -293,7 +293,7 @@ export default function HomeDesign3Form({
                 <>
                   <div className="grid gap-2 sm:grid-cols-2">
                     <input className={inputClass} placeholder="Title, e.g. Tax Calculators" value={h.title} onChange={(e) => set({ title: e.target.value })} />
-                    <input className={inputClass} placeholder="Link, e.g. /tools/category/tax-calculators" value={h.url} onChange={(e) => set({ url: e.target.value })} />
+                    <input className={inputClass} placeholder="Link, e.g. /finance/tax-calculators/" value={h.url} onChange={(e) => set({ url: e.target.value })} />
                   </div>
                   <input className={inputClass} placeholder="Short text" value={h.text} onChange={(e) => set({ text: e.target.value })} />
                 </>

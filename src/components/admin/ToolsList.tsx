@@ -15,6 +15,7 @@ const STATUS_LABEL: Record<string, string> = {
 export interface ToolRow {
   id: string;
   slug: string;
+  href: string; // public URL
   title: string;
   status: string;
   templateKey: string;
@@ -194,7 +195,7 @@ export default function ToolsList({
                   <div className="flex items-center justify-end gap-3">
                     {tool.status === "published" ? (
                       <a
-                        href={`/tools/${tool.slug}`}
+                        href={tool.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-gray-500 hover:text-gray-800 hover:underline dark:hover:text-gray-200"

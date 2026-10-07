@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { LinkSuggestion } from "@/components/admin/MenuBuilder";
+import { buildCategoryIndex } from "@/lib/category-index";
+import { blogCategoryUrl, pageUrl } from "@/lib/urls";
 
 /** Links the Header/Footer Builders offer in their "+ Add page…" pickers. */
 export async function getLinkSuggestions(): Promise<LinkSuggestion[]> {
@@ -9,17 +11,18 @@ export async function getLinkSuggestions(): Promise<LinkSuggestion[]> {
     prisma.blogCategory.findMany({ orderBy: { name: "asc" }, select: { name: true, slug: true, parentId: true } }),
   ]);
   // Main categories and the ones directly under them (deeper levels would make the list too long).
+  const index = buildCategoryIndex(toolCategories);
   const rootIds = new Set(toolCategories.filter((c) => !c.parentId).map((c) => c.id));
   const topCategories = toolCategories.filter((c) => !c.parentId || rootIds.has(c.parentId));
 
   return [
     { group: "Main", label: "Home", href: "/" },
-    { group: "Main", label: "Calculators", href: "/calculators" },
-    { group: "Main", label: "Blog", href: "/blog" },
-    ...pages.map((p) => ({ group: "Pages", label: p.title, href: `/pages/${p.slug}` })),
-    ...topCategories.map((c) => ({ group: "Calculator Categories", label: c.name, href: `/tools/category/${c.slug}` })),
+    { group: "Main", label: "Calculators", href: "/calculators/" },
+    { group: "Main", label: "Blog", href: "/blog/" },
+    ...pages.map((p) => ({ group: "Pages", label: p.title, href: pageUrl(p.slug) })),
+    ...topCategories.map((c) => ({ group: "Calculator Categories", label: c.name, href: index.categoryHref(c.id) })),
     ...blogCategories
       .filter((c) => !c.parentId)
-      .map((c) => ({ group: "Blog Categories", label: c.name, href: `/blog/category/${c.slug}` })),
+      .map((c) => ({ group: "Blog Categories", label: c.name, href: blogCategoryUrl(c.slug) })),
   ];
 }

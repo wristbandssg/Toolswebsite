@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { AuthorProfile } from "@/lib/authors";
 import { AuthorAvatar, AuthorSocialLinks } from "./AuthorParts";
+import { authorUrl } from "@/lib/urls";
 
 /**
  * "About the Author" card. Used ONLY on single blog posts (BlogTemplate) and
@@ -14,7 +15,7 @@ export default function AuthorBioBox({
   author: AuthorProfile;
   label?: string;
 }) {
-  const href = `/authors/${author.slug}`;
+  const href = authorUrl(author.slug);
   return (
     <section
       aria-label={label}

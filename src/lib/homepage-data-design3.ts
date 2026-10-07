@@ -1,13 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import type { Design3Content } from "@/lib/homepage-config";
 import { blogSummary, emojiForSlug, type D2Blog } from "@/lib/homepage-data";
+import { getCategoryIndex } from "@/lib/category-index";
 
 // Builds what home page Design 3 ("Clean Library") renders from the live
 // categories, published calculators and blog posts, following the admin's
 // settings. Empty admin lists mean "automatic".
 
-export type D3ToolCard = { slug: string; title: string; description: string; icon: string; badge: string };
-export type D3CategoryCard = { slug: string; icon: string; title: string; description: string; toolCount: number };
+export type D3ToolCard = { slug: string; href: string; title: string; description: string; icon: string; badge: string };
+export type D3CategoryCard = { slug: string; href: string; icon: string; title: string; description: string; toolCount: number };
 export type D3Link = { text: string; href: string };
 export type D3HubItem = { title: string; text: string; href: string };
 export type D3Country = { flag: string; label: string; href: string };
@@ -31,12 +32,13 @@ const COUNTRIES: { re: RegExp; flag: string; name: string }[] = [
   { re: /^france-/, flag: "🇫🇷", name: "France" },
 ];
 
-const categoryHref = (slug: string) => `/tools/category/${slug}`;
 
 type ToolRow = { slug: string; title: string; description: string | null; categoryId: string | null; isPopular: boolean };
 const toolSelect = { slug: true, title: true, description: true, categoryId: true, isPopular: true } as const;
 
 export async function loadDesign3Data(content: Design3Content) {
+  const index = await getCategoryIndex();
+  const categoryHref = (slug: string) => { const c = index.bySlug.get(slug); return c ? index.categoryHref(c.id) : "/calculators/"; };
   const categories = await prisma.toolCategory.findMany({
     select: { id: true, name: true, slug: true, parentId: true, heroSubheading: true, heroDescription: true },
     orderBy: { name: "asc" },
@@ -80,6 +82,7 @@ export async function loadDesign3Data(content: Design3Content) {
   ): Promise<D3ToolCard[]> {
     const toCard = (r: ToolRow, icon: string, badge: string, description: string): D3ToolCard => ({
       slug: r.slug,
+      href: index.toolHref(r),
       title: r.title,
       description: description || r.description || "",
       icon: icon || emojiForSlug(`${r.slug} ${r.categoryId ? (byId.get(r.categoryId)?.slug ?? "") : ""}`),
@@ -129,15 +132,15 @@ export async function loadDesign3Data(content: Design3Content) {
   // Quick chips under the search — the admin's links, or popular calculators.
   let chips: D3Link[];
   if (content.heroChips.length > 0) {
-    chips = content.heroChips.filter((c) => c.text.trim()).map((c) => ({ text: c.text, href: c.url || "/calculators" }));
+    chips = content.heroChips.filter((c) => c.text.trim()).map((c) => ({ text: c.text, href: c.url || "/calculators/" }));
   } else {
     const rows = await prisma.tool.findMany({
       where: { status: "published" },
       orderBy: [{ isPopular: "desc" }, { title: "asc" }],
       take: content.autoChipCount,
-      select: { slug: true, title: true },
+      select: { slug: true, title: true, categoryId: true },
     });
-    chips = rows.map((r) => ({ text: r.title.replace(/ Calculator$/i, ""), href: `/tools/${r.slug}` }));
+    chips = rows.map((r) => ({ text: r.title.replace(/ Calculator$/i, ""), href: index.toolHref(r) }));
   }
 
   // Category cards.
@@ -153,6 +156,7 @@ export async function loadDesign3Data(content: Design3Content) {
       const n = await countFor(c.id);
       return {
         slug: c.slug,
+        href: index.categoryHref(c.id),
         icon: card?.icon || emojiForSlug(c.slug),
         title: card?.title || c.name,
         description: card?.description || describe(c, n),
@@ -163,12 +167,12 @@ export async function loadDesign3Data(content: Design3Content) {
 
   // Featured hub: the button goes to the first category unless a URL is set;
   // the side links are the admin's, or the next 3 categories.
-  const hubButtonHref = content.hubButton.url || (auto[0] ? categoryHref(auto[0].slug) : "/calculators");
+  const hubButtonHref = content.hubButton.url || (auto[0] ? categoryHref(auto[0].slug) : "/calculators/");
   const hubItems: D3HubItem[] =
     content.hubItems.length > 0
       ? content.hubItems
           .filter((h) => h.title.trim())
-          .map((h) => ({ title: h.title, text: h.text, href: h.url || "/calculators" }))
+          .map((h) => ({ title: h.title, text: h.text, href: h.url || "/calculators/" }))
       : await Promise.all(
           auto.slice(1, 4).map(async (c) => ({
             title: c.name,

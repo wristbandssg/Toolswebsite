@@ -259,8 +259,7 @@ export default function ToolForm({
             />
             {mode === "edit" && values.slug !== originalSlug ? (
               <span className="mt-1 block text-xs text-amber-600 dark:text-amber-400">
-                Changing this changes the live URL (/tools/{values.slug}) — old links to /tools/{originalSlug} will
-                stop working after you save.
+                Changing this changes the live URL. The old URL will 301-redirect to the new one automatically.
               </span>
             ) : null}
           </label>
@@ -675,7 +674,7 @@ export default function ToolForm({
               <span className="font-medium">Canonical URL</span>
               <input
                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                placeholder={values.slug ? `/tools/${values.slug}` : ""}
+                placeholder="Leave blank to use this calculator's own URL"
                 value={values.seo.canonicalUrl}
                 onChange={(e) => update("seo", { ...values.seo, canonicalUrl: e.target.value })}
               />

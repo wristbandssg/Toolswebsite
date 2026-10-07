@@ -51,7 +51,10 @@ export function buildSeoMetadata({
 }): Metadata {
   const title = seoMeta?.metaTitle || fallbackTitle;
   const description = seoMeta?.metaDescription || fallbackDescription || undefined;
-  const canonical = seoMeta?.canonicalUrl || `${getSiteUrl()}${path}`;
+  // A custom canonical that points at an old /tools/ or /pages/ URL would
+  // send search engines to a redirect, so it is ignored.
+  const override = seoMeta?.canonicalUrl && !/\/(tools|pages)\//.test(seoMeta.canonicalUrl) ? seoMeta.canonicalUrl : "";
+  const canonical = override || `${getSiteUrl()}${path}`;
   const robotsIndex = seoMeta?.robotsIndex ?? true;
 
   return {

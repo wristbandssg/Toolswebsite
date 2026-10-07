@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata, excerptFromHtml, getSiteUrl } from "@/lib/seo";
 import { toAuthorProfile } from "@/lib/authors";
 import { AuthorAvatar, AuthorSocialLinks, authorSocialHrefs } from "@/components/author/AuthorParts";
+import { authorUrl, blogUrl } from "@/lib/urls";
+import { getCategoryIndex } from "@/lib/category-index";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     seoMeta: { ogImage: author.photo },
     fallbackTitle: author.jobTitle ? `${author.name}, ${author.jobTitle}` : author.name,
     fallbackDescription: author.shortBio || (author.bio ? excerptFromHtml(author.bio) : null),
-    path: `/authors/${author.slug}`,
+    path: authorUrl(author.slug),
   });
 }
 
@@ -48,6 +50,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
   if (!row) notFound();
   const author = toAuthorProfile(row);
 
+  const index = await getCategoryIndex();
   const [blogCount, toolCount, blogs, tools] = await Promise.all([
     prisma.blog.count({ where: { status: "published", ...creditedTo(row) } }),
     prisma.tool.count({ where: { status: "published", ...creditedTo(row) } }),
@@ -68,7 +71,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
       where: { status: "published", ...creditedTo(row) },
       orderBy: { title: "asc" },
       take: 60,
-      select: { slug: true, title: true, description: true, category: { select: { name: true } } },
+      select: { slug: true, title: true, description: true, categoryId: true, category: { select: { name: true } } },
     }),
   ]);
 
@@ -174,7 +177,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
               {blogs.map((b) => (
                 <Link
                   key={b.slug}
-                  href={`/blog/${b.slug}`}
+                  href={blogUrl(b.slug)}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
                 >
                   <div className="aspect-[16/9] overflow-hidden bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-950 dark:to-violet-950">
@@ -222,7 +225,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
               {tools.map((t) => (
                 <Link
                   key={t.slug}
-                  href={`/tools/${t.slug}`}
+                  href={index.toolHref(t)}
                   className="group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-indigo-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-700"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400">

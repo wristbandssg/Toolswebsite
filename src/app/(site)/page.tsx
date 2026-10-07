@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getSiteGeneralSettings } from "@/lib/site-config";
+import { getSiteUrl } from "@/lib/seo";
 import { getHomepageSettings, type HomepageSettings } from "@/lib/homepage-config";
 import { loadDesign1Data, loadDesign2Data } from "@/lib/homepage-data";
 import { loadDesign3Data } from "@/lib/homepage-data-design3";
@@ -23,7 +24,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: content.metaTitle || `${settings.siteName} — Free Online Calculators` },
     description: content.metaDescription || settings.siteDescription,
-    alternates: { canonical: "/" },
+    // Absolute and with the slash — "/" alone would be resolved to "https://host" (no slash).
+    alternates: { canonical: `${getSiteUrl()}/` },
+    openGraph: { url: `${getSiteUrl()}/` },
   };
 }
 

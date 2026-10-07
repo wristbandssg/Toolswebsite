@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { categorySlugError } from "@/lib/url-changes";
 
 const createSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
@@ -70,6 +71,9 @@ export async function POST(req: NextRequest) {
   if (existing) {
     return NextResponse.json({ error: "A category with this name already exists" }, { status: 409 });
   }
+
+  const slugError = await categorySlugError(slug, !parentId);
+  if (slugError) return NextResponse.json({ error: slugError }, { status: 409 });
 
   if (parentId) {
     const parent = await prisma.toolCategory.findUnique({ where: { id: parentId } });

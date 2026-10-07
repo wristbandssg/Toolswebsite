@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { blogUrl } from "@/lib/urls";
 
 export interface HeroSlide {
   slug: string;
@@ -49,7 +50,7 @@ export default function CategoryHeroSlider({ slides }: { slides: HeroSlide[] }) 
       {slides.map((slide, i) => (
         <Link
           key={slide.slug}
-          href={`/blog/${slide.slug}`}
+          href={blogUrl(slide.slug)}
           className={`absolute inset-0 transition-opacity duration-700 ${
             i === active ? "opacity-100" : "pointer-events-none opacity-0"
           }`}

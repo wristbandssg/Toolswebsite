@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata } from "@/lib/seo";
 import AdSlot from "@/components/AdSlot";
+import { getCategoryIndex } from "@/lib/category-index";
 
 // Always reflect the latest published tools.
 export const dynamic = "force-dynamic";
@@ -45,12 +46,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildSeoMetadata({
     fallbackTitle: "Calculators",
     fallbackDescription: "Browse every free online calculator on this site by category — finance, math and more.",
-    path: "/calculators",
+    path: "/calculators/",
   });
 }
 
 export default async function CalculatorsPage() {
-  const categories = await loadMainCategories();
+  const [categories, index] = await Promise.all([loadMainCategories(), getCategoryIndex()]);
   const total = categories.reduce((sum, c) => sum + c.toolCount, 0);
 
   return (
@@ -83,7 +84,7 @@ export default async function CalculatorsPage() {
             {categories.map((category) => (
               <Link
                 key={category.id}
-                href={`/tools/category/${category.slug}`}
+                href={index.categoryHref(category.id)}
                 className="group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
               >
                 <div className="min-w-0">

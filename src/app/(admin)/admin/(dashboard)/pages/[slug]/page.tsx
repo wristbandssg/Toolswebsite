@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import PageBuilder from "@/components/admin/PageBuilder";
 import { PAGE_TEMPLATES } from "@/lib/templates/registry";
 import type { PageSection } from "@/lib/templates/page/types";
+import { pageUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function EditPagePage({ params }: { params: Promise<{ slug:
     <div>
       <h1 className="text-2xl font-bold">Edit &quot;{page.title}&quot;</h1>
       <p className="mt-1 text-sm text-gray-500">
-        <a href={`/pages/${page.slug}`} target="_blank" className="text-indigo-600 hover:underline">
+        <a href={pageUrl(page.slug)} target="_blank" className="text-indigo-600 hover:underline">
           View Live Page →
         </a>
       </p>

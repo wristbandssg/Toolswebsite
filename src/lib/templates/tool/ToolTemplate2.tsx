@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import { ToolContentSections } from "./ToolContentSections";
 import { ToolDescription } from "./ToolDescription";
@@ -9,15 +9,7 @@ export default function ToolTemplate2(props: ToolTemplateProps) {
   const { tool } = props;
   return (
     <article className="mx-auto max-w-6xl px-4 py-8">
-      <nav className="mb-4 text-sm text-gray-500">
-        <Link href="/">Home</Link> /{" "}
-        {tool.categorySlug && tool.categoryName ? (
-          <>
-            <Link href={`/tools/category/${tool.categorySlug}`}>{tool.categoryName}</Link> /{" "}
-          </>
-        ) : null}
-        {tool.title}
-      </nav>
+      <Breadcrumbs items={props.breadcrumbs} className="mb-4 text-sm text-gray-500" />
       <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
         <div>
           <h1 className="text-3xl font-bold">{tool.title}</h1>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import CategoryContentForm from "@/components/admin/CategoryContentForm";
+import { getCategoryIndex } from "@/lib/category-index";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,7 @@ export default async function CategoryContentPage({ params }: { params: Promise<
         tables, links and images — 1,500+ words works well for SEO. Leave it empty to show no content section.
       </p>
       <div className="mt-6">
-        <CategoryContentForm id={category.id} slug={category.slug} initial={category.content ?? ""} />
+        <CategoryContentForm id={category.id} publicHref={(await getCategoryIndex()).categoryHref(category.id)} initial={category.content ?? ""} />
       </div>
     </div>
   );

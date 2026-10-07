@@ -3,6 +3,7 @@ import type { Design3Content } from "@/lib/homepage-config";
 import type { D2Blog } from "@/lib/homepage-data";
 import type { D3CategoryCard, D3Country, D3HubItem, D3Link, D3ToolCard } from "@/lib/homepage-data-design3";
 import ToolSearch from "@/components/home/ToolSearch";
+import { blogUrl } from "@/lib/urls";
 
 // Home page Design 3 — "Clean Library" (built from the admin's own HTML
 // mockup). Every heading, text, list and toggle comes from the admin
@@ -79,7 +80,7 @@ function Flag({ flag }: { flag: string }) {
 
 function ToolCard({ tool, linkText }: { tool: D3ToolCard; linkText: string }) {
   return (
-    <Link href={`/tools/${tool.slug}`} className={`${CARD} ${LIFT} block p-[21px]`}>
+    <Link href={tool.href} className={`${CARD} ${LIFT} block p-[21px]`}>
       <div className="flex justify-between gap-2">
         <span className={ICON} aria-hidden>
           {tool.icon}
@@ -131,7 +132,7 @@ export default function HomeDesign3({
       .replace(/\{siteName\}/g, siteName)
       .replace(/\{count\}/g, totalTools.toLocaleString("en-US"))
       .replace(/\{categoryCount\}/g, categoryCount.toLocaleString("en-US"));
-  const link = (l: { text: string; url: string }, fallback = "/calculators"): D3Link | null =>
+  const link = (l: { text: string; url: string }, fallback = "/calculators/"): D3Link | null =>
     l.text ? { text: fill(l.text), href: l.url || fallback } : null;
 
   const faqs = c.faqs.filter((f) => f.question.trim() && f.answer.trim());
@@ -228,7 +229,7 @@ export default function HomeDesign3({
               {categoryCards.map((cat) => (
                 <Link
                   key={cat.slug}
-                  href={`/tools/category/${cat.slug}`}
+                  href={cat.href}
                   className={`${CARD} ${LIFT} block p-[22px] text-[#101828] dark:text-white`}
                 >
                   <span className={ICON} aria-hidden>
@@ -354,10 +355,10 @@ export default function HomeDesign3({
       {c.showGuides && guides.length > 0 ? (
         <section className={SECTION}>
           <div className={WRAP}>
-            <Head heading={fill(c.guidesHeading)} text={fill(c.guidesText)} link={link(c.guidesLink, "/blog")} />
+            <Head heading={fill(c.guidesHeading)} text={fill(c.guidesText)} link={link(c.guidesLink, "/blog/")} />
             <div className="grid gap-[17px] md:grid-cols-3">
               {guides.map((g) => (
-                <Link key={g.slug} href={`/blog/${g.slug}`} className={`${CARD} ${LIFT} group block overflow-hidden`}>
+                <Link key={g.slug} href={blogUrl(g.slug)} className={`${CARD} ${LIFT} group block overflow-hidden`}>
                   <div className="grid h-[130px] place-items-center overflow-hidden bg-gradient-to-br from-[#e9edff] to-[#f8f9fc] text-[45px] dark:from-indigo-950 dark:to-gray-900">
                     {g.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -476,7 +477,7 @@ export default function HomeDesign3({
               {c.ctaText ? <p className="mx-auto mb-6 mt-2.5 max-w-[650px] text-sm text-[#b9c3d4]">{fill(c.ctaText)}</p> : null}
               {c.ctaButton.text ? (
                 <Link
-                  href={c.ctaButton.url || "/calculators"}
+                  href={c.ctaButton.url || "/calculators/"}
                   className="inline-block rounded-[11px] bg-white px-5 py-[13px] text-[13px] font-black text-[#2441c6] transition hover:bg-[#eef2ff]"
                 >
                   {fill(c.ctaButton.text)}

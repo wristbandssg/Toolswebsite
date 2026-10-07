@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { generateDraftContent } from "@/lib/ai-planner/generate-draft";
+import { loadCategoryIndex } from "@/lib/category-index";
 
 function slugify(text: string) {
   return text
@@ -39,6 +40,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     {
       title: tool.title,
       slug: tool.slug,
+      href: (await loadCategoryIndex()).toolHref(tool),
       description: tool.description,
       instructions: tool.instructions,
       examples: tool.examples,

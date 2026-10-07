@@ -56,7 +56,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 key={i}
                 className="mt-6 rounded-xl border border-dashed border-indigo-300 p-4 text-center dark:border-indigo-800"
               >
-                <a href={`/tools/${section.toolSlug}`} className="text-indigo-600 hover:underline">
+                <a href={section.toolHref ?? "/calculators/"} className="text-indigo-600 hover:underline">
                   → Open {section.toolTitle}
                 </a>
               </div>

@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/site/Breadcrumbs";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import { ToolContentSections } from "./ToolContentSections";
 import { ToolDescription } from "./ToolDescription";
@@ -8,6 +9,7 @@ export default function ToolTemplate5(props: ToolTemplateProps) {
   const { tool } = props;
   return (
     <article className="mx-auto max-w-xl px-4 py-6">
+      <Breadcrumbs items={props.breadcrumbs} className="mb-2 text-xs text-gray-500" />
       <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{tool.title}</h1>
       <ToolDescription text={tool.description} className="mt-1 text-sm text-gray-500" />
       <div className="mt-4">

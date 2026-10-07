@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { groupCategoryTree } from "@/lib/flattenCategoryTree";
+import { getCategoryIndex } from "@/lib/category-index";
 
 export default async function EditToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -18,7 +19,7 @@ export default async function EditToolPage({ params }: { params: Promise<{ slug:
     <div>
       <h1 className="text-2xl font-bold">Edit &quot;{tool.title}&quot;</h1>
       <p className="mt-1 text-sm text-gray-500">
-        <a href={`/tools/${tool.slug}`} target="_blank" className="text-indigo-600 hover:underline">
+        <a href={(await getCategoryIndex()).toolHref(tool)} target="_blank" className="text-indigo-600 hover:underline">
           View Live Page →
         </a>
       </p>

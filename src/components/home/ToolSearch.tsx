@@ -18,7 +18,7 @@ export default function ToolSearch({
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<{ slug: string; title: string }[]>([]);
+  const [results, setResults] = useState<{ slug: string; title: string; href: string }[]>([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function ToolSearch({
       className="relative"
       onSubmit={(e) => {
         e.preventDefault();
-        if (results[0]) router.push(`/tools/${results[0].slug}`);
+        if (results[0]) router.push(results[0].href);
       }}
     >
       <Search aria-hidden className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-sky-500" />
@@ -78,7 +78,7 @@ export default function ToolSearch({
             results.map((r) => (
               <Link
                 key={r.slug}
-                href={`/tools/${r.slug}`}
+                href={r.href}
                 className="group flex items-center justify-between gap-2 rounded-xl px-4 py-2.5 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-800 dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <span className="truncate">{r.title}</span>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { blogUrl } from "@/lib/urls";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Draft",
@@ -156,7 +157,7 @@ export default function BlogPostsList({
                   <div className="flex items-center justify-end gap-3">
                     {blog.status === "published" ? (
                       <a
-                        href={`/blog/${blog.slug}`}
+                        href={blogUrl(blog.slug)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-gray-500 hover:text-gray-800 hover:underline dark:hover:text-gray-200"

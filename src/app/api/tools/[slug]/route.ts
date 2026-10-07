@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { recordUrlChanges, saveRedirect, snapshotPublicUrls, toolSlugError } from "@/lib/url-changes";
+import { loadCategoryIndex } from "@/lib/category-index";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   // Admin-only: returns the tool regardless of status, including its
@@ -46,8 +48,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     if (clash) {
       return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
     }
+    const slugError = await toolSlugError(body.slug);
+    if (slugError) return NextResponse.json({ error: slugError }, { status: 409 });
     newSlug = body.slug;
   }
+
+  // A new slug or category moves the public URL — store a 301 from the old one.
+  const nextCategoryId = body.categoryId ?? existing.categoryId;
+  const urlMoves = newSlug !== existing.slug || nextCategoryId !== existing.categoryId;
+  const urlsBefore = urlMoves ? await snapshotPublicUrls() : null;
 
   const tool = await prisma.tool.update({
     where: { slug },
@@ -113,6 +122,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     },
   });
 
+  if (urlsBefore) await recordUrlChanges(urlsBefore);
   return NextResponse.json({ tool });
 }
 
@@ -122,6 +132,12 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
   const { slug } = await params;
+  // A deleted live calculator's URL 301s to its category page.
+  const doomed = await prisma.tool.findUnique({ where: { slug }, select: { slug: true, categoryId: true, status: true } });
+  if (doomed?.status === "published") {
+    const index = await loadCategoryIndex();
+    await saveRedirect(index.toolHref(doomed), doomed.categoryId ? index.categoryHref(doomed.categoryId) : "/calculators/");
+  }
   await prisma.tool.delete({ where: { slug } });
 
   // StateCalculatorLink.toolSlug is a plain string, not a relation, so

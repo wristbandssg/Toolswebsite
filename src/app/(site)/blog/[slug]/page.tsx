@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import BlogTemplate from "@/lib/templates/blog/BlogTemplate";
 import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
 import { resolveAuthorProfile } from "@/lib/authors";
+import { blogUrl } from "@/lib/urls";
+import { getCategoryIndex } from "@/lib/category-index";
 
 async function loadBlog(slug: string) {
   const blog = await prisma.blog.findUnique({
@@ -40,7 +42,7 @@ export async function generateMetadata({
     },
     fallbackTitle: blog.title,
     fallbackDescription: blog.excerpt || excerptFromHtml(blog.content),
-    path: `/blog/${blog.slug}`,
+    path: blogUrl(blog.slug),
   });
 }
 
@@ -48,7 +50,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const blog = await loadBlog(slug);
   if (!blog) notFound();
-  const authorProfile = await resolveAuthorProfile(blog.authorProfile);
+  const [authorProfile, index] = await Promise.all([resolveAuthorProfile(blog.authorProfile), getCategoryIndex()]);
 
   return (
     <BlogTemplate
@@ -65,7 +67,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         categories: blog.categories.map((c) => ({ name: c.name, slug: c.slug })),
       }}
       authorProfile={authorProfile}
-      relatedTools={blog.toolRelations.map((r) => ({ slug: r.tool.slug, title: r.tool.title }))}
+      relatedTools={blog.toolRelations
+        .filter((r) => r.tool.status === "published")
+        .map((r) => ({ slug: r.tool.slug, title: r.tool.title, href: index.toolHref(r.tool) }))}
       relatedBlogs={blog.relatedFrom
         // A related post picked while it was still a draft shouldn't show
         // up as a dead link once it's live — the public post page 404s on

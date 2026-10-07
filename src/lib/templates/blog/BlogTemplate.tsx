@@ -5,6 +5,7 @@ import ReadingProgressBar from "@/components/ReadingProgressBar";
 import AdSlot from "@/components/AdSlot";
 import { extractTableOfContents, estimateReadingMinutes } from "@/lib/toc";
 import AuthorBioBox from "@/components/author/AuthorBioBox";
+import { authorUrl, blogCategoryUrl, blogUrl } from "@/lib/urls";
 
 // A small fixed palette so an author's initials-avatar color stays the same
 // every time their name appears (no photo field on the User model yet).
@@ -36,7 +37,7 @@ function RelatedPostRow({
 }) {
   return (
     <a
-      href={`/blog/${blog.slug}`}
+      href={blogUrl(blog.slug)}
       className="block px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60"
     >
       {blog.categoryName ? (
@@ -107,7 +108,7 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
               {blog.categories.map((cat) => (
                 <Link
                   key={cat.slug}
-                  href={`/blog/category/${cat.slug}`}
+                  href={blogCategoryUrl(cat.slug)}
                   className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-inset ring-white/30 transition-colors hover:bg-white/25"
                 >
                   {cat.name}
@@ -145,7 +146,7 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
               <span>
                 By{" "}
                 {authorProfile ? (
-                  <Link href={`/authors/${authorProfile.slug}`} className="font-semibold text-white hover:underline">
+                  <Link href={authorUrl(authorProfile.slug)} className="font-semibold text-white hover:underline">
                     {authorName}
                   </Link>
                 ) : (
@@ -198,7 +199,7 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
                   {relatedTools.map((t) => (
                     <li key={t.slug}>
                       <a
-                        href={`/tools/${t.slug}`}
+                        href={t.href}
                         className="rounded-full border border-gray-300 bg-white px-3 py-1 text-sm transition-colors hover:border-indigo-300 hover:text-indigo-600 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-700"
                       >
                         {t.title}

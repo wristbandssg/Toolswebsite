@@ -9,7 +9,7 @@ function countWords(html: string) {
 }
 
 /** Rich text editor for a calculator category's long-form content (shown under its grid on the public page). */
-export default function CategoryContentForm({ id, slug, initial }: { id: string; slug: string; initial: string }) {
+export default function CategoryContentForm({ id, publicHref, initial }: { id: string; publicHref: string; initial: string }) {
   const [content, setContent] = useState(initial);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -54,7 +54,7 @@ export default function CategoryContentForm({ id, slug, initial }: { id: string;
           {saving ? "Saving..." : "Save Content"}
         </button>
         <a
-          href={`/tools/category/${slug}`}
+          href={publicHref}
           target="_blank"
           rel="noopener noreferrer"
           className="rounded-lg border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"

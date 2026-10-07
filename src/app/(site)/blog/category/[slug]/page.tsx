@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
 import CategoryHeroSlider from "@/components/CategoryHeroSlider";
 import AdSlot from "@/components/AdSlot";
+import { blogCategoryUrl, blogUrl } from "@/lib/urls";
 
 // ক্যাটাগরি পেজও সবসময় সর্বশেষ Published Post দেখাবে, তাই Blog List-এর মতোই
 // Build-time Static Prerender বন্ধ রাখা হলো।
@@ -59,7 +60,7 @@ export async function generateMetadata({
     fallbackTitle: `${data.category.name} — Blog`,
     fallbackDescription:
       data.category.description || `${data.category.name} বিষয়ক সব Article এখানে দেখুন।`,
-    path: `/blog/category/${data.category.slug}`,
+    path: blogCategoryUrl(data.category.slug),
   });
 }
 
@@ -105,13 +106,13 @@ export default async function BlogCategoryPage({
       <div className="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 dark:from-indigo-800 dark:via-blue-800 dark:to-indigo-900">
         <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:py-16">
           <p className="text-sm text-indigo-100">
-            <Link href="/blog" className="hover:underline">
+            <Link href="/blog/" className="hover:underline">
               Blog
             </Link>{" "}
             {category.parent ? (
               <>
                 /{" "}
-                <Link href={`/blog/category/${category.parent.slug}`} className="hover:underline">
+                <Link href={blogCategoryUrl(category.parent.slug)} className="hover:underline">
                   {category.parent.name}
                 </Link>{" "}
               </>
@@ -159,7 +160,7 @@ export default async function BlogCategoryPage({
                       return (
                         <Link
                           key={post.id}
-                          href={`/blog/${post.slug}`}
+                          href={blogUrl(post.slug)}
                           className="group flex gap-4 py-4 first:pt-0 last:pb-0"
                         >
                           <span className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-indigo-100 to-blue-100 dark:from-indigo-950 dark:to-blue-950">
@@ -199,7 +200,7 @@ export default async function BlogCategoryPage({
                   return (
                     <article key={post.id} className="flex flex-col">
                       <Link
-                        href={`/blog/${post.slug}`}
+                        href={blogUrl(post.slug)}
                         className="block aspect-video overflow-hidden rounded-xl bg-gradient-to-br from-indigo-100 to-blue-100 dark:from-indigo-950 dark:to-blue-950"
                       >
                         {post.featuredImage ? (
@@ -211,7 +212,7 @@ export default async function BlogCategoryPage({
                           />
                         ) : null}
                       </Link>
-                      <Link href={`/blog/${post.slug}`} className="mt-4">
+                      <Link href={blogUrl(post.slug)} className="mt-4">
                         <h2 className="font-semibold text-gray-900 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400">
                           {post.title}
                         </h2>
@@ -224,7 +225,7 @@ export default async function BlogCategoryPage({
                         {post.excerpt || excerptFromHtml(post.content, 140)}
                       </p>
                       <Link
-                        href={`/blog/${post.slug}`}
+                        href={blogUrl(post.slug)}
                         className="mt-2 text-sm font-semibold text-indigo-600 underline-offset-2 hover:underline dark:text-indigo-400"
                       >
                         read more
@@ -238,7 +239,7 @@ export default async function BlogCategoryPage({
             {hasOlderEntries ? (
               <div className="mt-12">
                 <Link
-                  href={`/blog/category/${category.slug}?page=${currentPage + 1}`}
+                  href={`${blogCategoryUrl(category.slug)}?page=${currentPage + 1}`}
                   className="text-sm font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                 >
                   « Older Entries

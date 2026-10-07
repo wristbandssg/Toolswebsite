@@ -5,8 +5,12 @@ import { getToolTemplate } from "@/lib/templates/registry";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import { buildSeoMetadata } from "@/lib/seo";
 import { resolveAuthorProfile } from "@/lib/authors";
+import { getCategoryIndex } from "@/lib/category-index";
 
-async function loadTool(slug: string) {
+// Public calculator page, served at /{category}/{calculator}/ — see
+// src/app/(site)/[first]/[second]. Only published calculators are public.
+
+export async function loadPublishedTool(slug: string) {
   const tool = await prisma.tool.findUnique({
     where: { slug },
     include: {
@@ -20,31 +24,27 @@ async function loadTool(slug: string) {
   return tool;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const tool = await loadTool(slug);
+export async function toolMetadata(slug: string): Promise<Metadata> {
+  const tool = await loadPublishedTool(slug);
   if (!tool) return {};
+  const index = await getCategoryIndex();
   return buildSeoMetadata({
     seoMeta: tool.seoMeta,
     fallbackTitle: tool.title,
     fallbackDescription: tool.description,
-    path: `/tools/${tool.slug}`,
+    path: index.toolHref(tool),
   });
 }
 
-export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const tool = await loadTool(slug);
+export default async function ToolView({ slug }: { slug: string }) {
+  const tool = await loadPublishedTool(slug);
   if (!tool) notFound();
+  const index = await getCategoryIndex();
 
   const relatedTools = await prisma.tool.findMany({
     where: { categoryId: tool.categoryId ?? undefined, NOT: { id: tool.id }, status: "published" },
     take: 6,
-    select: { slug: true, title: true },
+    select: { slug: true, title: true, categoryId: true },
   });
 
   // "Other state calculators" grid — only relevant for tools in the state
@@ -57,6 +57,20 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           (s) => s.toolSlug !== tool.slug
         )
       : [];
+  // Only states whose calculator is actually live get a link.
+  const stateToolRows = stateCalculators.some((s) => s.toolSlug)
+    ? await prisma.tool.findMany({
+        where: { status: "published", slug: { in: stateCalculators.flatMap((s) => (s.toolSlug ? [s.toolSlug] : [])) } },
+        select: { slug: true, categoryId: true },
+      })
+    : [];
+  const stateHref = new Map(stateToolRows.map((t) => [t.slug, index.toolHref(t)]));
+
+  const breadcrumbs = [
+    { name: "Home", href: "/" },
+    ...(tool.categoryId ? index.chainOf(tool.categoryId) : []).map((c) => ({ name: c.name, href: index.categoryHref(c.id) })),
+    { name: tool.title, href: index.toolHref(tool) },
+  ];
 
   const authorProfile = await resolveAuthorProfile(tool.authorProfile);
   const { component: Template } = getToolTemplate(tool.templateKey);
@@ -82,13 +96,18 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         categoryName: tool.category?.name,
         categorySlug: tool.category?.slug,
       }}
-      relatedTools={relatedTools}
+      breadcrumbs={breadcrumbs}
+      relatedTools={relatedTools.map((t) => ({ slug: t.slug, title: t.title, href: index.toolHref(t) }))}
       authorProfile={authorProfile}
-      supportBlogs={tool.blogRelations.map((r) => ({ slug: r.blog.slug, title: r.blog.title }))}
+      supportBlogs={tool.blogRelations
+        // A linked post that is still a draft would be a dead link.
+        .filter((r) => r.blog.status === "published")
+        .map((r) => ({ slug: r.blog.slug, title: r.blog.title }))}
       stateCalculators={stateCalculators.map((s) => ({
         stateName: s.stateName,
         abbreviation: s.abbreviation,
         toolSlug: s.toolSlug,
+        href: s.toolSlug ? (stateHref.get(s.toolSlug) ?? null) : null,
       }))}
     />
   );

@@ -218,7 +218,7 @@ export default function HomeDesign2({
               return (
                 <Link
                   key={card.slug}
-                  href={`/tools/category/${card.slug}`}
+                  href={card.href}
                   className={`group flex flex-col rounded-3xl border bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:bg-gray-900 ${t.border}`}
                 >
                   <span className={`flex h-12 w-12 items-center justify-center rounded-xl text-2xl ${t.iconBg}`}>{card.icon}</span>
@@ -243,7 +243,7 @@ export default function HomeDesign2({
             {popularTools.map((tool, i) => (
               <Link
                 key={tool.slug}
-                href={`/tools/${tool.slug}`}
+                href={tool.href}
                 className="group flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
               >
                 <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg ${theme(i).iconBg}`}>{tool.icon}</span>
@@ -302,13 +302,13 @@ export default function HomeDesign2({
                   {g.tools.map((tool) => (
                     <li key={tool.slug} className="flex gap-2">
                       <span aria-hidden className="text-blue-600">·</span>
-                      <Link href={`/tools/${tool.slug}`} className="text-gray-700 hover:text-blue-700 hover:underline dark:text-gray-300 dark:hover:text-blue-400">
+                      <Link href={tool.href} className="text-gray-700 hover:text-blue-700 hover:underline dark:text-gray-300 dark:hover:text-blue-400">
                         {tool.title}
                       </Link>
                     </li>
                   ))}
                 </ul>
-                <Link href={`/tools/category/${g.slug}`} className="mt-5 text-sm font-semibold text-blue-700 hover:underline dark:text-blue-400">
+                <Link href={g.href} className="mt-5 text-sm font-semibold text-blue-700 hover:underline dark:text-blue-400">
                   {fill(c.guidesLinkText).replace(/\{name\}/g, g.name)}
                 </Link>
               </div>

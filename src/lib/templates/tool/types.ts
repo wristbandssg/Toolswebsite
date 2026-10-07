@@ -1,6 +1,7 @@
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
 import type { StateCalculatorEntry } from "./StateCalculatorGrid";
 import type { AuthorProfile } from "@/lib/authors";
+import type { Crumb } from "@/components/site/Breadcrumbs";
 
 export interface ToolTemplateProps {
   tool: {
@@ -25,10 +26,13 @@ export interface ToolTemplateProps {
     categoryName?: string | null;
     categorySlug?: string | null;
   };
-  relatedTools: { slug: string; title: string }[];
+  // Home → main category → … → sub-category → this calculator. The URL
+  // skips the sub-category, so this is where the full hierarchy shows.
+  breadcrumbs: Crumb[];
+  relatedTools: { slug: string; title: string; href: string }[];
   supportBlogs: { slug: string; title: string }[];
   // "Other state calculators" directory — only populated for tools in the
-  // state tax/paycheck calculator family (see the [slug]/page.tsx gating).
+  // state tax/paycheck calculator family (see the gating in ToolView).
   // Empty/omitted on every other tool, so this is fully opt-in.
   stateCalculators?: StateCalculatorEntry[];
   // The tool's author (or the site default) — shown in the "About the

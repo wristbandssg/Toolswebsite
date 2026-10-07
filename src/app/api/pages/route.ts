@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { pageSectionsSchema } from "@/lib/templates/page/schema";
+import { pageSlugError } from "@/lib/url-changes";
 
 
 const pageSchema = z.object({
@@ -42,6 +43,9 @@ export async function POST(req: NextRequest) {
     );
   }
   const data = parsed.data;
+
+  const slugError = await pageSlugError(data.slug);
+  if (slugError) return NextResponse.json({ error: slugError }, { status: 409 });
 
   const existing = await prisma.page.findUnique({ where: { slug: data.slug } });
   if (existing) {

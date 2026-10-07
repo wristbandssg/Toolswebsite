@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import SeoForm from "@/components/admin/SeoForm";
 import { SEO_CONTENT_TYPES, type SeoContentType } from "@/lib/seo";
+import { getCategoryIndex } from "@/lib/category-index";
+import { blogUrl, pageUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +13,7 @@ async function loadContent(contentType: SeoContentType, id: string) {
     if (!tool) return null;
     return {
       title: tool.title,
-      publicHref: `/tools/${tool.slug}`,
+      publicHref: (await getCategoryIndex()).toolHref(tool),
       fallbackDescription: tool.description ?? undefined,
       seoMeta: tool.seoMeta,
     };
@@ -21,7 +23,7 @@ async function loadContent(contentType: SeoContentType, id: string) {
     if (!blog) return null;
     return {
       title: blog.title,
-      publicHref: `/blog/${blog.slug}`,
+      publicHref: blogUrl(blog.slug),
       fallbackDescription: undefined,
       seoMeta: blog.seoMeta,
     };
@@ -34,7 +36,7 @@ async function loadContent(contentType: SeoContentType, id: string) {
     if (!category) return null;
     return {
       title: category.name,
-      publicHref: `/tools/category/${category.slug}`,
+      publicHref: (await getCategoryIndex()).categoryHref(category.id),
       fallbackDescription: category.heroDescription ?? category.heroSubheading ?? undefined,
       seoMeta: category.seoMeta,
     };
@@ -43,7 +45,7 @@ async function loadContent(contentType: SeoContentType, id: string) {
   if (!page) return null;
   return {
     title: page.title,
-    publicHref: `/pages/${page.slug}`,
+    publicHref: pageUrl(page.slug),
     fallbackDescription: undefined,
     seoMeta: page.seoMeta,
   };

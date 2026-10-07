@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { pageUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +57,7 @@ export default async function PagesListPage() {
                 <td className="px-4 py-3 text-gray-500">{page.updatedAt.toLocaleDateString()}</td>
                 <td className="px-4 py-3 text-right">
                   <a
-                    href={`/pages/${page.slug}`}
+                    href={pageUrl(page.slug)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mr-4 text-gray-500 hover:text-gray-900 hover:underline dark:hover:text-white"

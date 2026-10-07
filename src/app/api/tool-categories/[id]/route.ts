@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { categorySlugError, recordUrlChanges, saveRedirect, snapshotPublicUrls } from "@/lib/url-changes";
 
 const renameSchema = z.object({
   name: z.string().trim().min(1, "Category name is required"),
-  // Hero section content for the public /tools/category/[slug] page —
+  // Hero section content for the public category page —
   // both optional, omitting a key leaves that field untouched so this
   // same endpoint still works for a plain rename.
   heroSubheading: z.string().trim().optional(),
@@ -47,7 +48,11 @@ export async function PUT(
     );
   }
   const name = parsed.data.name;
-  const slug = slugify(name);
+  const existing = await prisma.toolCategory.findUnique({ where: { id } });
+  if (!existing) return NextResponse.json({ error: "Category not found" }, { status: 404 });
+  // The slug (and so the URL) only changes when the name does — saving hero
+  // text or moving the category must not quietly change its URL.
+  const slug = existing.name === name ? existing.slug : slugify(name);
   if (!slug) {
     return NextResponse.json({ error: "That name doesn't produce a valid URL slug" }, { status: 400 });
   }
@@ -65,6 +70,11 @@ export async function PUT(
   // category ending up nested inside one of its own descendants.
   const hasParentIdKey = Object.prototype.hasOwnProperty.call(body, "parentId");
   const nextParentId = (parsed.data.parentId || null) as string | null;
+  const willBeMain = hasParentIdKey ? !nextParentId : !existing.parentId;
+  if (slug !== existing.slug || willBeMain !== !existing.parentId) {
+    const slugError = await categorySlugError(slug, willBeMain);
+    if (slugError) return NextResponse.json({ error: slugError }, { status: 409 });
+  }
   if (hasParentIdKey && nextParentId) {
     if (nextParentId === id) {
       return NextResponse.json({ error: "A category can't be its own parent" }, { status: 400 });
@@ -96,6 +106,8 @@ export async function PUT(
     }
   }
 
+  // Moving or renaming changes public URLs — store 301s from the old ones.
+  const urlsBefore = await snapshotPublicUrls();
   const category = await prisma.toolCategory.update({
     where: { id },
     data: {
@@ -114,6 +126,7 @@ export async function PUT(
       ...(hasParentIdKey ? { parentId: nextParentId } : {}),
     },
   });
+  await recordUrlChanges(urlsBefore);
   return NextResponse.json({ category });
 }
 
@@ -126,6 +139,9 @@ export async function DELETE(
     return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
   const { id } = await params;
+  // Deleting moves its calculators and sub-categories (new URLs), and its own
+  // page goes away — keep every old URL working with a 301.
+  const urlsBefore = await snapshotPublicUrls();
 
   // Mongo has no real foreign key — detach any tools pointing at this
   // category explicitly instead of leaving them with a dangling categoryId.
@@ -149,6 +165,12 @@ export async function DELETE(
   });
 
   await prisma.toolCategory.delete({ where: { id } });
+  await recordUrlChanges(urlsBefore);
+  const oldUrl = urlsBefore.urls.get(`category:${id}`);
+  if (oldUrl) {
+    const parentUrl = deleted?.parentId ? (await snapshotPublicUrls()).urls.get(`category:${deleted.parentId}`) : undefined;
+    await saveRedirect(oldUrl, parentUrl ?? "/calculators/");
+  }
 
   return NextResponse.json({
     ok: true,

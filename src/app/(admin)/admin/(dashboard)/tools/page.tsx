@@ -2,8 +2,10 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ToolsList from "@/components/admin/ToolsList";
 import { groupCategoryTree } from "@/lib/flattenCategoryTree";
+import { getCategoryIndex } from "@/lib/category-index";
 
 export default async function ToolsListPage() {
+  const index = await getCategoryIndex();
   const [tools, categories] = await Promise.all([
     prisma.tool.findMany({
       orderBy: { updatedAt: "desc" },
@@ -40,6 +42,7 @@ export default async function ToolsListPage() {
           tools={tools.map((tool) => ({
             id: tool.id,
             slug: tool.slug,
+            href: index.toolHref(tool),
             title: tool.title,
             status: tool.status,
             templateKey: tool.templateKey,

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PageSection } from "@/lib/templates/page/types";
 import RichTextEditor from "./RichTextEditor";
+import { pageUrl } from "@/lib/urls";
 
 export interface PageSeoValues {
   metaTitle: string;
@@ -608,7 +609,7 @@ export default function PageBuilder({
               <span className="font-medium">Canonical URL</span>
               <input
                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                placeholder={values.slug ? `/pages/${values.slug}` : "Leave blank to use this page's own URL"}
+                placeholder="Leave blank to use this page's own URL"
                 value={values.seo.canonicalUrl}
                 onChange={(e) => updateSeo("canonicalUrl", e.target.value)}
               />
@@ -647,7 +648,7 @@ export default function PageBuilder({
         </button>
         {mode === "edit" && values.slug ? (
           <a
-            href={`/pages/${values.slug}`}
+            href={pageUrl(values.slug)}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-lg border border-gray-300 px-5 py-2.5 font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"

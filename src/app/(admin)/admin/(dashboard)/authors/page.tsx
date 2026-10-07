@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { initialsFor } from "@/lib/authors";
+import { authorUrl } from "@/lib/urls";
 
 export default async function AuthorsListPage() {
   const authors = await prisma.author.findMany({
@@ -75,7 +76,7 @@ export default async function AuthorsListPage() {
                   Edit
                 </Link>
                 <a
-                  href={`/authors/${a.slug}`}
+                  href={authorUrl(a.slug)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"

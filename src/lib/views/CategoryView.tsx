@@ -7,9 +7,12 @@ import AdSlot from "@/components/AdSlot";
 import ShowMoreGrid from "@/components/site/ShowMoreGrid";
 import { getCategoryPageSettings } from "@/lib/category-page-config";
 import { RICH_TEXT_CLASSES } from "@/lib/templates/page/ContentBox";
+import { getCategoryIndex } from "@/lib/category-index";
+import { toolUrl } from "@/lib/urls";
+import Breadcrumbs from "@/components/site/Breadcrumbs";
 
-// Always reflect the latest published tools for this category.
-export const dynamic = "force-dynamic";
+// Public category page, served at /{category}/ (main category) or
+// /{category}/{sub}/ (sub-category) — see src/app/(site)/[first].
 
 // A distinct visual identity from the Blog category page: a light hero
 // section with a gradient-accented headline (rather than a colored banner),
@@ -40,23 +43,9 @@ async function loadCategory(slug: string) {
     orderBy: { name: "asc" },
   });
 
-  // Walk up the parent chain for the breadcrumb — categories can nest to
-  // any depth, so this can't assume just one level like a single `parent`
-  // include would.
-  const ancestors: { name: string; slug: string }[] = [];
-  let cursorId = category.parentId;
-  let hops = 0;
-  while (cursorId && hops < 10) {
-    const ancestor: { name: string; slug: string; parentId: string | null } | null =
-      await prisma.toolCategory.findUnique({
-        where: { id: cursorId },
-        select: { name: true, slug: true, parentId: true },
-      });
-    if (!ancestor) break;
-    ancestors.unshift({ name: ancestor.name, slug: ancestor.slug });
-    cursorId = ancestor.parentId;
-    hops++;
-  }
+  // Main category → … → this one, for the breadcrumb and the URLs.
+  const index = await getCategoryIndex();
+  const chain = index.chainOf(category.id);
 
   // For each child, work out how many published tools sit anywhere in ITS
   // subtree (including further-nested grandchildren) for a meaningful count
@@ -85,7 +74,7 @@ async function loadCategory(slug: string) {
   });
   const toolCount = tools.length;
 
-  return { category, ancestors, children: childrenWithCounts, tools, toolCount };
+  return { category, chain, index, children: childrenWithCounts, tools, toolCount };
 }
 
 /** Recursively sums published tools directly filed under `categoryId` and
@@ -100,12 +89,7 @@ async function countPublishedToolsInSubtree(categoryId: string): Promise<number>
   return ownCount + childCounts.reduce((sum, n) => sum + n, 0);
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
+export async function categoryMetadata(slug: string): Promise<Metadata> {
   const data = await loadCategory(slug);
   if (!data) return {};
   return buildSeoMetadata({
@@ -117,15 +101,15 @@ export async function generateMetadata({
       (data.children.length > 0
         ? `Browse every calculator under ${data.category.name}, organized by topic.`
         : `Every ${data.category.name} calculator on this site, in one place.`),
-    path: `/tools/category/${data.category.slug}`,
+    path: data.index.categoryHref(data.category.id),
   });
 }
 
-export default async function ToolCategoryPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function CategoryView({ slug }: { slug: string }) {
   const [data, display] = await Promise.all([loadCategory(slug), getCategoryPageSettings()]);
   if (!data) notFound();
-  const { category, ancestors, children, tools, toolCount } = data;
+  const { category, chain, index, children, tools, toolCount } = data;
+  const root = chain[0] ?? category;
   const hasChildren = children.length > 0;
   const hasTools = toolCount > 0;
 
@@ -161,18 +145,13 @@ export default async function ToolCategoryPage({ params }: { params: Promise<{ s
           from /admin/tools/categories (see ToolCategoriesManager). */}
       <div className="bg-gray-50 px-4 py-16 text-center dark:bg-gray-900/40 sm:py-20">
         <div className="mx-auto max-w-3xl">
-          {/* Breadcrumb starts at the top-level category (no "Tools" root). */}
-          <p className="text-sm text-gray-400">
-            {ancestors.map((a) => (
-              <span key={a.slug}>
-                <Link href={`/tools/category/${a.slug}`} className="hover:underline">
-                  {a.name}
-                </Link>{" "}
-                /{" "}
-              </span>
-            ))}
-            {category.name}
-          </p>
+          <Breadcrumbs
+            className="flex justify-center text-sm text-gray-400"
+            items={[
+              { name: "Home", href: "/" },
+              ...chain.map((c) => ({ name: c.name, href: index.categoryHref(c.id) })),
+            ]}
+          />
           <h1 className="mt-3 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
             {category.name}
           </h1>
@@ -209,7 +188,7 @@ export default async function ToolCategoryPage({ params }: { params: Promise<{ s
             {children.map((child) => (
               <Link
                 key={child.id}
-                href={`/tools/category/${child.slug}`}
+                href={index.categoryHref(child.id)}
                 className="group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
               >
                 <div className="min-w-0">
@@ -253,7 +232,7 @@ export default async function ToolCategoryPage({ params }: { params: Promise<{ s
             {tools.map((tool) => (
               <Link
                 key={tool.id}
-                href={`/tools/${tool.slug}`}
+                href={toolUrl(tool.slug, root.slug)}
                 className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
               >
                 {tool.isPopular ? (

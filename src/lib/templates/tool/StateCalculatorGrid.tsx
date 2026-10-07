@@ -4,6 +4,8 @@ export interface StateCalculatorEntry {
   stateName: string;
   abbreviation: string;
   toolSlug: string | null;
+  // Public URL of that state's calculator — null until it exists.
+  href: string | null;
 }
 
 /**
@@ -36,10 +38,10 @@ export function StateCalculatorGrid({ states }: { states: StateCalculatorEntry[]
       <h2 className="mb-4 text-2xl font-bold">Other State Calculators</h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {states.map((state) =>
-          state.toolSlug ? (
+          state.href ? (
             <Link
               key={state.abbreviation}
-              href={`/tools/${state.toolSlug}`}
+              href={state.href}
               className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-800 shadow-sm transition-colors hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/40"
             >
               {state.stateName} Income Tax

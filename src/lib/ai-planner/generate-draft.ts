@@ -16,6 +16,7 @@ export interface DraftContent {
 interface ToolInfo {
   title: string;
   slug: string;
+  href: string; // the calculator's public URL
   description?: string | null;
   instructions?: string | null;
   examples?: string | null;
@@ -79,7 +80,7 @@ export function generateDraftContent(tool: ToolInfo, topic: TopicInfo): DraftCon
   parts.push(`<h2>Try the ${tool.title} Calculator</h2>`);
   parts.push(
     paragraph(
-      `Ready to see your own numbers? <a href="/tools/${tool.slug}">Use the ${tool.title} Calculator now</a>.`
+      `Ready to see your own numbers? <a href="${tool.href}">Use the ${tool.title} Calculator now</a>.`
     )
   );
 

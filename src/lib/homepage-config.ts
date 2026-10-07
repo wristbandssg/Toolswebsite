@@ -350,7 +350,7 @@ export const design3Schema = z.object({
   showPopular: z.boolean().default(true),
   popularHeading: z.string().default("Most Popular Calculators"),
   popularText: z.string().default("Start with commonly used tools for money, planning and everyday calculations."),
-  popularLink: linkSchema.default({ text: "Explore all calculators →", url: "/calculators" }),
+  popularLink: linkSchema.default({ text: "Explore all calculators →", url: "/calculators/" }),
   popularTools: z.array(d3ToolSchema).default([]),
   autoPopularCount: z.number().int().min(1).max(40).default(8),
   popularAutoBadge: z.string().default("Popular"), // badge on calculators marked Popular (automatic list)
@@ -359,7 +359,7 @@ export const design3Schema = z.object({
   showCategories: z.boolean().default(true),
   categoriesHeading: z.string().default("Explore Calculator Categories"),
   categoriesText: z.string().default("Clear topic hubs make every calculator easy to discover."),
-  categoriesLink: linkSchema.default({ text: "View all categories →", url: "/calculators" }),
+  categoriesLink: linkSchema.default({ text: "View all categories →", url: "/calculators/" }),
   categoryCards: z.array(d3CategorySchema).default([]),
   autoCategoryCount: z.number().int().min(1).max(30).default(12),
   categoryCountText: z.string().default("{n} calculators →"), // {n} = calculators in the category
@@ -416,7 +416,7 @@ export const design3Schema = z.object({
   showTrending: z.boolean().default(true),
   trendingHeading: z.string().default("Trending Right Now"),
   trendingText: z.string().default("Seasonal, high-interest and recently updated tools."),
-  trendingLink: linkSchema.default({ text: "See all calculators →", url: "/calculators" }),
+  trendingLink: linkSchema.default({ text: "See all calculators →", url: "/calculators/" }),
   trendingTools: z.array(d3ToolSchema).default([]), // [] = recently updated calculators
   autoTrendingCount: z.number().int().min(1).max(40).default(4),
   trendingBadge: z.string().default("Trending"),
@@ -425,7 +425,7 @@ export const design3Schema = z.object({
   showGuides: z.boolean().default(true),
   guidesHeading: z.string().default("Calculator Guides & Learning"),
   guidesText: z.string().default("Guides that explain the formulas before or after you use a tool."),
-  guidesLink: linkSchema.default({ text: "Learning center →", url: "/blog" }),
+  guidesLink: linkSchema.default({ text: "Learning center →", url: "/blog/" }),
   guideCount: z.number().int().min(1).max(24).default(3),
   guideExcerptWords: z.number().int().min(0).max(80).default(20),
   guideLinkText: z.string().default("Read guide →"),
@@ -433,7 +433,7 @@ export const design3Schema = z.object({
   showCountries: z.boolean().default(true),
   countriesHeading: z.string().default("Calculators by Country"),
   countriesText: z.string().default("Local tax, salary and financial calculators, organized by country."),
-  countriesLink: linkSchema.default({ text: "All calculators →", url: "/calculators" }),
+  countriesLink: linkSchema.default({ text: "All calculators →", url: "/calculators/" }),
   countries: z.array(d3CountrySchema).default([]), // [] = country categories found automatically
   // Trust row
   showTrust: z.boolean().default(true),
@@ -476,7 +476,7 @@ export const design3Schema = z.object({
   showCta: z.boolean().default(true),
   ctaHeading: z.string().default("Find the Number You Need."),
   ctaText: z.string().default("Explore calculators designed to make complicated calculations easier to understand."),
-  ctaButton: linkSchema.default({ text: "Browse All Calculators →", url: "/calculators" }),
+  ctaButton: linkSchema.default({ text: "Browse All Calculators →", url: "/calculators/" }),
   // SEO
   metaTitle: z.string().default(""),
   metaDescription: z.string().default(""),

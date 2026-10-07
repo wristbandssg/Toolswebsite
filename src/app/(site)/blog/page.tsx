@@ -1,9 +1,20 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { blogCategoryUrl, blogIndexUrl, blogUrl } from "@/lib/urls";
+import type { Metadata } from "next";
+import { buildSeoMetadata } from "@/lib/seo";
 
 // Blog List সবসময় সর্বশেষ Published Post দেখাবে — তাই Build-time Static Prerender
 // বন্ধ রাখা হলো (Admin Dashboard-এর মতো একই কারণ, দেখুন সেই layout.tsx-এর কমেন্ট)।
 export const dynamic = "force-dynamic";
+
+export function generateMetadata(): Metadata {
+  return buildSeoMetadata({
+    fallbackTitle: "Blog",
+    fallbackDescription: "Guides, tips and explanations to help you get more from our calculators.",
+    path: blogIndexUrl(),
+  });
+}
 
 export default async function BlogListPage() {
   const blogs = await prisma.blog.findMany({
@@ -28,7 +39,7 @@ export default async function BlogListPage() {
                 {blog.categories.map((c) => (
                   <Link
                     key={c.slug}
-                    href={`/blog/category/${c.slug}`}
+                    href={blogCategoryUrl(c.slug)}
                     className="text-xs font-medium text-indigo-600 hover:underline"
                   >
                     {c.name}
@@ -36,7 +47,7 @@ export default async function BlogListPage() {
                 ))}
               </div>
             ) : null}
-            <Link href={`/blog/${blog.slug}`} className="block">
+            <Link href={blogUrl(blog.slug)} className="block">
               <h2 className="mt-1 text-lg font-semibold">{blog.title}</h2>
               {blog.excerpt ? (
                 <p className="mt-1 line-clamp-2 text-sm text-gray-500">{blog.excerpt}</p>

@@ -3,6 +3,7 @@ import type { ToolTemplateProps } from "./types";
 import { StateCalculatorGrid } from "./StateCalculatorGrid";
 import AdSlot from "@/components/AdSlot";
 import AuthorBioBox from "@/components/author/AuthorBioBox";
+import { blogUrl } from "@/lib/urls";
 
 /** Instructions/Examples/Assumptions are authored with the same rich-text
  * editor as Blog posts (see admin ToolForm → RichTextEditor) and stored as
@@ -113,7 +114,7 @@ export function ToolContentSections({
             {relatedTools.map((t) => (
               <li key={t.slug}>
                 <a
-                  href={`/tools/${t.slug}`}
+                  href={t.href}
                   className="rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                 >
                   {t.title}
@@ -130,7 +131,7 @@ export function ToolContentSections({
           <ul className="space-y-2">
             {supportBlogs.map((b) => (
               <li key={b.slug}>
-                <a href={`/blog/${b.slug}`} className="text-indigo-600 hover:underline">
+                <a href={blogUrl(b.slug)} className="text-indigo-600 hover:underline">
                   {b.title}
                 </a>
               </li>

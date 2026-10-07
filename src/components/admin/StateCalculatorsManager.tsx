@@ -27,7 +27,7 @@ export default function StateCalculatorsManager({
   tools,
 }: {
   initial: StateCalculatorRow[];
-  tools: { slug: string; title: string }[];
+  tools: { slug: string; title: string; href: string }[];
 }) {
   const router = useRouter();
   const [rows, setRows] = useState<StateCalculatorRow[]>(initial);
@@ -262,7 +262,7 @@ export default function StateCalculatorsManager({
                   <td className="px-4 py-3">
                     {row.toolSlug ? (
                       <a
-                        href={`/tools/${row.toolSlug}`}
+                        href={tools.find((t) => t.slug === row.toolSlug)?.href ?? "/calculators/"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-indigo-600 hover:underline"

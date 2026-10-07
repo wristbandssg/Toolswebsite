@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { D2Blog } from "@/lib/homepage-data";
+import { blogUrl } from "@/lib/urls";
 
 /**
  * A compact blog card for home page Design 2. Every card has the same shape
@@ -10,7 +11,7 @@ import type { D2Blog } from "@/lib/homepage-data";
 export default function BlogCard({ blog, buttonText }: { blog: D2Blog; buttonText: string }) {
   return (
     <Link
-      href={`/blog/${blog.slug}`}
+      href={blogUrl(blog.slug)}
       className="group flex h-full flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#16378a] to-[#102a6b] text-white shadow-lg shadow-blue-950/15 ring-1 ring-white/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/25"
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-blue-900">

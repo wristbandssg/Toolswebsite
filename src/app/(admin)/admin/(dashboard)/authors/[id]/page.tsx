@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import AuthorForm from "@/components/admin/AuthorForm";
 import { parseExpertise } from "@/lib/authors";
 import { parseSocialLinks } from "@/lib/author-social";
+import { authorUrl } from "@/lib/urls";
 
 export default async function EditAuthorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,7 +23,7 @@ export default async function EditAuthorPage({ params }: { params: Promise<{ id:
       </p>
       <h1 className="mt-1 text-2xl font-bold">Edit &quot;{author.name}&quot;</h1>
       <p className="mt-1 text-sm text-gray-500">
-        <a href={`/authors/${author.slug}`} target="_blank" className="text-indigo-600 hover:underline">
+        <a href={authorUrl(author.slug)} target="_blank" className="text-indigo-600 hover:underline">
           View Profile Page →
         </a>
       </p>

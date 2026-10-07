@@ -103,7 +103,7 @@ export default function HomeDesign1({
               return (
                 <Link
                   key={tile.slug}
-                  href={`/tools/category/${tile.slug}`}
+                  href={tile.href}
                   className="group flex basis-[calc(50%-0.375rem)] flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-5 sm:basis-[calc(33.333%-0.667rem)] md:basis-[calc(25%-0.75rem)] lg:basis-[calc(20%-0.8rem)] text-center shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-900 dark:hover:shadow-none"
                 >
                   <span
@@ -154,12 +154,12 @@ export default function HomeDesign1({
             <section key={section.slug}>
               <div className="flex flex-wrap items-end justify-between gap-2 border-b border-slate-200 pb-3 dark:border-slate-800">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
-                  <Link href={`/tools/category/${section.slug}`} className="hover:text-sky-700">
+                  <Link href={section.href} className="hover:text-sky-700">
                     {section.heading}
                   </Link>
                 </h2>
                 <Link
-                  href={`/tools/category/${section.slug}`}
+                  href={section.href}
                   className="inline-flex items-center gap-1 text-sm font-semibold text-sky-700 hover:text-sky-900 dark:text-sky-400"
                 >
                   View all {section.toolCount.toLocaleString("en-US")}
@@ -170,7 +170,7 @@ export default function HomeDesign1({
                 {section.tools.map((tool) => (
                   <Link
                     key={tool.slug}
-                    href={`/tools/${tool.slug}`}
+                    href={tool.href}
                     className="group flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 transition hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                   >
                     <span className="truncate">{tool.title}</span>
@@ -182,7 +182,7 @@ export default function HomeDesign1({
                 ))}
                 {section.toolCount > section.tools.length ? (
                   <Link
-                    href={`/tools/category/${section.slug}`}
+                    href={section.href}
                     className="flex items-center justify-between gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                   >
                     See More

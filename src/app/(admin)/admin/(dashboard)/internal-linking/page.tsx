@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import InternalLinkingList from "@/components/admin/InternalLinkingList";
 import type { LinkSuggestion } from "@/components/admin/InternalLinkingList";
+import { getCategoryIndex } from "@/lib/category-index";
+import { blogUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
@@ -10,11 +12,12 @@ export default async function InternalLinkingPage() {
     include: {
       sourceTool: { select: { title: true, slug: true } },
       sourceBlog: { select: { title: true, slug: true } },
-      targetTool: { select: { title: true, slug: true } },
+      targetTool: { select: { title: true, slug: true, categoryId: true } },
       targetBlog: { select: { title: true, slug: true } },
     },
   });
 
+  const index = await getCategoryIndex();
   const items: LinkSuggestion[] = suggestions.map((s) => ({
     id: s.id,
     anchorText: s.anchorText,
@@ -29,11 +32,11 @@ export default async function InternalLinkingPage() {
           },
     target:
       s.targetType === "tool" && s.targetTool
-        ? { type: "tool", title: s.targetTool.title, viewHref: `/tools/${s.targetTool.slug}` }
+        ? { type: "tool", title: s.targetTool.title, viewHref: index.toolHref(s.targetTool) }
         : {
             type: "blog",
             title: s.targetBlog?.title ?? "Unknown",
-            viewHref: `/blog/${s.targetBlog?.slug ?? ""}`,
+            viewHref: s.targetBlog ? blogUrl(s.targetBlog.slug) : "/blog/",
           },
   }));
 

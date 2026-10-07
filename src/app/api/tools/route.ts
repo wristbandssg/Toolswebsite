@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toolSlugError } from "@/lib/url-changes";
 
 const calcInputFieldSchema = z.object({
   key: z.string().min(1),
@@ -108,6 +109,8 @@ export async function POST(req: NextRequest) {
   if (existing) {
     return NextResponse.json({ error: "This slug is already in use" }, { status: 409 });
   }
+  const slugError = await toolSlugError(data.slug);
+  if (slugError) return NextResponse.json({ error: slugError }, { status: 409 });
 
   const tool = await prisma.tool.create({
     data: {

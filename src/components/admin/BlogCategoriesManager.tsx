@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { blogCategoryUrl } from "@/lib/urls";
 
 export interface BlogCategorySeo {
   metaTitle: string;
@@ -163,7 +164,7 @@ function CategoryRow({
             </span>
             <div className="flex w-full shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-gray-200 pl-12 text-sm sm:w-auto sm:border-l sm:pl-3 dark:border-gray-800">
               <a
-                href={`/blog/category/${cat.slug}`}
+                href={blogCategoryUrl(cat.slug)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"

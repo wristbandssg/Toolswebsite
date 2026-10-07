@@ -7,6 +7,7 @@
     "build": "prisma generate && next build",
     "db:push": "prisma db push",
     "db:seo-audit": "tsx prisma/seo-audit.ts",
+    "db:migrate-url-structure": "tsx prisma/migrate-url-structure.ts",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",

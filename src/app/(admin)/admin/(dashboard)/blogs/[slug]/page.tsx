@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import BlogForm from "@/components/admin/BlogForm";
+import { blogUrl } from "@/lib/urls";
 
 export default async function EditBlogPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -29,7 +30,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ slug:
     <div>
       <h1 className="text-2xl font-bold">Edit &quot;{blog.title}&quot;</h1>
       <p className="mt-1 text-sm text-gray-500">
-        <a href={`/blog/${blog.slug}`} target="_blank" className="text-indigo-600 hover:underline">
+        <a href={blogUrl(blog.slug)} target="_blank" className="text-indigo-600 hover:underline">
           View Live Page →
         </a>
       </p>

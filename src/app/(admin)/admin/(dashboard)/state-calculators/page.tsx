@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import StateCalculatorsManager from "@/components/admin/StateCalculatorsManager";
+import { getCategoryIndex } from "@/lib/category-index";
 
 export default async function StateCalculatorsPage() {
+  const index = await getCategoryIndex();
   const [links, tools] = await Promise.all([
     prisma.stateCalculatorLink.findMany({ orderBy: { order: "asc" } }),
     prisma.tool.findMany({
       where: { status: "published" },
       orderBy: { title: "asc" },
-      select: { slug: true, title: true },
+      select: { slug: true, title: true, categoryId: true },
     }),
   ]);
 
@@ -35,7 +37,7 @@ export default async function StateCalculatorsPage() {
             toolSlug: l.toolSlug,
             order: l.order,
           }))}
-          tools={tools}
+          tools={tools.map((t) => ({ slug: t.slug, title: t.title, href: index.toolHref(t) }))}
         />
       </div>
     </div>

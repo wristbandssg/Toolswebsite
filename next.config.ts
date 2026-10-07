@@ -13,12 +13,13 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // The calculators hub moved from /tools (which had no page) to /calculators.
-  // Only the bare path redirects — /tools/<slug> and /tools/category/<slug>
-  // are unchanged.
-  async redirects() {
-    return [{ source: "/tools", destination: "/calculators", permanent: true }];
-  },
+  // Public URLs all end with a slash (src/lib/urls.ts). Next.js would add
+  // it with a 308; src/proxy.ts does it instead with a 301, in the same single
+  // hop that moves old /tools/ and /pages/ URLs to the new ones.
+  skipTrailingSlashRedirect: true,
+  // Still needed so the URLs Next.js writes itself (canonical, og:url) get
+  // the slash too — it no longer redirects anything (see above).
+  trailingSlash: true,
   async headers() {
     return [
       {

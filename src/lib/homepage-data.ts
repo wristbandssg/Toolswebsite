@@ -1,21 +1,24 @@
 import { prisma } from "@/lib/prisma";
 import type { Design1Content, Design2Content } from "@/lib/homepage-config";
 import { iconKeyForSlug } from "@/lib/home-icons";
+import { getCategoryIndex } from "@/lib/category-index";
 
 // Builds what Design 1 renders from the live category tree + published tools,
 // following the admin's homepage settings. Empty admin lists mean "automatic".
 
 type CategoryRow = { id: string; name: string; slug: string; parentId: string | null };
 
-export type HomeTile = { slug: string; label: string; iconKey: string; toolCount: number };
+export type HomeTile = { slug: string; href: string; label: string; iconKey: string; toolCount: number };
 export type HomeSection = {
   slug: string;
+  href: string;
   heading: string;
   toolCount: number;
-  tools: { slug: string; title: string }[];
+  tools: { slug: string; title: string; href: string }[];
 };
 
 export async function loadDesign1Data(content: Design1Content) {
+  const index = await getCategoryIndex();
   const categories: CategoryRow[] = await prisma.toolCategory.findMany({
     select: { id: true, name: true, slug: true, parentId: true },
     orderBy: { name: "asc" },
@@ -63,6 +66,7 @@ export async function loadDesign1Data(content: Design1Content) {
   const tiles: HomeTile[] = await Promise.all(
     tileSources.map(async ({ c, label, icon }) => ({
       slug: c.slug,
+      href: index.categoryHref(c.id),
       label: label || c.name,
       iconKey: icon || iconKeyForSlug(c.slug),
       toolCount: await countFor(c),
@@ -83,7 +87,7 @@ export async function loadDesign1Data(content: Design1Content) {
       const pinnedTools = pinned.length
         ? await prisma.tool.findMany({
             where: { status: "published", slug: { in: pinned } },
-            select: { slug: true, title: true },
+            select: { slug: true, title: true, categoryId: true },
           })
         : [];
       const pinnedOrdered = pinned.flatMap((slug) => pinnedTools.filter((t) => t.slug === slug));
@@ -91,13 +95,14 @@ export async function loadDesign1Data(content: Design1Content) {
         where: { status: "published", categoryId: { in: ids }, slug: { notIn: pinnedOrdered.map((t) => t.slug) } },
         orderBy: [{ isPopular: "desc" }, { title: "asc" }],
         take: Math.max(0, content.linksPerSection - pinnedOrdered.length),
-        select: { slug: true, title: true },
+        select: { slug: true, title: true, categoryId: true },
       });
       return {
         slug: c.slug,
+        href: index.categoryHref(c.id),
         heading: heading || c.name,
         toolCount: await countFor(c),
-        tools: [...pinnedOrdered, ...fill].slice(0, content.linksPerSection),
+        tools: [...pinnedOrdered, ...fill].slice(0, content.linksPerSection).map((t) => ({ slug: t.slug, title: t.title, href: index.toolHref(t) })),
       };
     })
   );
@@ -136,15 +141,16 @@ export function emojiForSlug(slug: string): string {
   return EMOJI_RULES.find(([re]) => re.test(slug))?.[1] ?? "🧮";
 }
 
-export type D2CategoryCard = { slug: string; icon: string; title: string; description: string; toolCount: number };
-export type D2PopularTool = { slug: string; title: string; icon: string; categoryName: string };
+export type D2CategoryCard = { slug: string; href: string; icon: string; title: string; description: string; toolCount: number };
+export type D2PopularTool = { slug: string; href: string; title: string; icon: string; categoryName: string };
 export type D2Guide = {
   slug: string;
+  href: string;
   name: string;
   icon: string;
   title: string;
   text: string;
-  tools: { slug: string; title: string }[];
+  tools: { slug: string; title: string; href: string }[];
 };
 export type D2Blog = { slug: string; title: string; excerpt: string; image: string; category: string };
 
@@ -167,6 +173,7 @@ export function blogSummary(excerpt: string | null, html: string, title: string,
 }
 
 export async function loadDesign2Data(content: Design2Content) {
+  const index = await getCategoryIndex();
   const categories = await prisma.toolCategory.findMany({
     select: { id: true, name: true, slug: true, parentId: true, heroSubheading: true, heroDescription: true },
     orderBy: { name: "asc" },
@@ -215,6 +222,7 @@ export async function loadDesign2Data(content: Design2Content) {
       const n = await countFor(c.id);
       return {
         slug: c.slug,
+        href: index.categoryHref(c.id),
         icon: card?.icon || emojiForSlug(c.slug),
         title: card?.title || c.name,
         description: card?.description || describe(c, n),
@@ -248,6 +256,7 @@ export async function loadDesign2Data(content: Design2Content) {
     const cat = r.categoryId ? byId.get(r.categoryId) : undefined;
     return {
       slug: r.slug,
+      href: index.toolHref(r),
       title: r.title,
       icon: r.icon || emojiForSlug(`${r.slug} ${cat?.slug ?? ""}`),
       categoryName: cat?.name.replace(/ Calculators?$/, "") ?? "",
@@ -266,22 +275,23 @@ export async function loadDesign2Data(content: Design2Content) {
     guideSources.map(async ({ c, g }) => {
       const pinned = g?.toolSlugs ?? [];
       const pinnedRows = pinned.length
-        ? await prisma.tool.findMany({ where: { status: "published", slug: { in: pinned } }, select: { slug: true, title: true } })
+        ? await prisma.tool.findMany({ where: { status: "published", slug: { in: pinned } }, select: { slug: true, title: true, categoryId: true } })
         : [];
       const pinnedOrdered = pinned.flatMap((slug) => pinnedRows.filter((t) => t.slug === slug));
       const fill = await prisma.tool.findMany({
         where: { status: "published", categoryId: { in: subtree(c.id) }, slug: { notIn: pinnedOrdered.map((t) => t.slug) } },
         orderBy: [{ isPopular: "desc" }, { title: "asc" }],
         take: Math.max(0, content.guideToolsPerCard - pinnedOrdered.length),
-        select: { slug: true, title: true },
+        select: { slug: true, title: true, categoryId: true },
       });
       return {
         slug: c.slug,
+        href: index.categoryHref(c.id),
         name: c.name,
         icon: g?.icon || emojiForSlug(c.slug),
         title: g?.title || c.name,
         text: g?.text || describe(c, await countFor(c.id)),
-        tools: [...pinnedOrdered, ...fill].slice(0, content.guideToolsPerCard),
+        tools: [...pinnedOrdered, ...fill].slice(0, content.guideToolsPerCard).map((t) => ({ slug: t.slug, title: t.title, href: index.toolHref(t) })),
       };
     })
   );
