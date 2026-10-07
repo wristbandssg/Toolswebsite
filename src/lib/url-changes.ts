@@ -70,9 +70,11 @@ export async function snapshotPublicUrls(): Promise<UrlSnapshot> {
 }
 
 /**
- * Compares the URLs now with a snapshot taken before a change and stores a
- * 301 for every one that moved. A main category that was renamed gets one
- * "/old/*" row covering everything under it. Existing redirects that pointed
+ * Compares the URLs now with a snapshot taken before a change and stores the
+ * 301s the redirect rules can't work out alone. A category or calculator
+ * that only MOVED keeps its slug, and src/lib/public-redirects.ts already
+ * sends its old path to the new one (rule 3) — so rows are stored only when
+ * a slug itself changed, plus one "/old/*" row for a renamed main category. Existing redirects that pointed
  * at a moved URL are updated to the new one (no chains), and redirects whose
  * old URL is live again are removed (no loops).
  */
@@ -89,9 +91,10 @@ export async function recordUrlChanges(before: UrlSnapshot) {
   const coveredByPrefix = (from: string, to: string) =>
     prefixMoves.some((p) => from.startsWith(p.from) && to === p.to + from.slice(p.from.length));
 
+  const lastSegment = (url: string) => url.split("/").filter(Boolean).pop();
   for (const [key, from] of before.urls) {
     const to = after.urls.get(key);
-    if (to && to !== from && !coveredByPrefix(from, to)) moves.push({ from, to });
+    if (to && to !== from && lastSegment(to) !== lastSegment(from) && !coveredByPrefix(from, to)) moves.push({ from, to });
   }
   if (moves.length === 0 && prefixMoves.length === 0) return;
 

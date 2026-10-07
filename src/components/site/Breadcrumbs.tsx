@@ -6,8 +6,8 @@ export type Crumb = { name: string; href: string };
 /**
  * Visible breadcrumb trail plus schema.org BreadcrumbList structured data.
  * `items` runs from Home to the current page; the last item is shown as
- * plain text. Calculator URLs skip the sub-category (see src/lib/urls.ts),
- * so this trail is where the full hierarchy shows.
+ * plain text. Categories can nest deeper than the URL shows (see
+ * src/lib/urls.ts), so this trail is where the full hierarchy shows.
  */
 export default function Breadcrumbs({
   items,

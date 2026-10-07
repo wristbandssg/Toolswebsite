@@ -28,6 +28,8 @@ export interface ToolCategoryRow {
   // in below; the public page generates fallback copy until then.
   heroSubheading: string;
   heroDescription: string;
+  // Shorter name for breadcrumbs; "" = the name.
+  breadcrumbName: string;
   toolCount: number;
   // Of toolCount, how many are status "published" — the rest (draft,
   // in_review, needs_update) are shown together as "draft" since that's
@@ -174,6 +176,10 @@ function CategoryRow({
   editingId,
   editingName,
   setEditingName,
+  editingSlug,
+  setEditingSlug,
+  editingBreadcrumbName,
+  setEditingBreadcrumbName,
   editingHeroSubheading,
   setEditingHeroSubheading,
   editingHeroDescription,
@@ -213,6 +219,10 @@ function CategoryRow({
   editingId: string | null;
   editingName: string;
   setEditingName: (v: string) => void;
+  editingSlug: string;
+  setEditingSlug: (v: string) => void;
+  editingBreadcrumbName: string;
+  setEditingBreadcrumbName: (v: string) => void;
   editingHeroSubheading: string;
   setEditingHeroSubheading: (v: string) => void;
   editingHeroDescription: string;
@@ -292,6 +302,33 @@ function CategoryRow({
                 }}
               />
             </label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <label className="block text-xs">
+                <span className="font-medium text-gray-500">URL Slug</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-1.5 font-mono text-sm dark:border-gray-700 dark:bg-gray-800"
+                  placeholder="e.g. finance"
+                  value={editingSlug}
+                  onChange={(e) => setEditingSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"))}
+                />
+                <span className="mt-1 block text-gray-400">
+                  Now: <span className="font-mono">{publicHref}</span>
+                  {editingSlug.trim() && editingSlug.trim() !== cat.slug
+                    ? " — the old URL (and its calculators' URLs) will 301-redirect to the new one."
+                    : ""}
+                </span>
+              </label>
+              <label className="block text-xs">
+                <span className="font-medium text-gray-500">Breadcrumb Name</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  placeholder={editingName || "e.g. Finance"}
+                  value={editingBreadcrumbName}
+                  onChange={(e) => setEditingBreadcrumbName(e.target.value)}
+                />
+                <span className="mt-1 block text-gray-400">Shorter name in breadcrumbs. Empty = the name.</span>
+              </label>
+            </div>
             <label className="block text-xs">
               <span className="font-medium text-gray-500">Hero Subheading</span>
               <input
@@ -427,7 +464,7 @@ function CategoryRow({
             </label>
             <input
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
-              placeholder={`${cat.name} Calculators`}
+              placeholder={/calculators?$/i.test(cat.name.trim()) ? cat.name.trim() : `${cat.name.trim()} Calculators`}
               value={seoDraft.metaTitle}
               onChange={(e) => setSeoDraft((s) => ({ ...s, metaTitle: e.target.value }))}
             />
@@ -514,6 +551,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [editingSlug, setEditingSlug] = useState("");
+  const [editingBreadcrumbName, setEditingBreadcrumbName] = useState("");
   const [editingHeroSubheading, setEditingHeroSubheading] = useState("");
   const [editingHeroDescription, setEditingHeroDescription] = useState("");
   // "" = top-level; otherwise the id of the category this row is being
@@ -631,6 +670,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
   function startEditing(cat: ToolCategoryRow) {
     setEditingId(cat.id);
     setEditingName(cat.name);
+    setEditingSlug(cat.slug);
+    setEditingBreadcrumbName(cat.breadcrumbName ?? "");
     setEditingHeroSubheading(cat.heroSubheading);
     setEditingHeroDescription(cat.heroDescription);
     setEditingParentId(cat.parentId ?? "");
@@ -648,6 +689,8 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: editingName.trim(),
+          slug: editingSlug.trim(),
+          breadcrumbName: editingBreadcrumbName.trim(),
           heroSubheading: editingHeroSubheading.trim(),
           heroDescription: editingHeroDescription.trim(),
           parentId: editingParentId || null,
@@ -665,6 +708,7 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
               ? {
                   ...c,
                   name: data.category.name,
+                  breadcrumbName: data.category.breadcrumbName ?? "",
                   slug: data.category.slug,
                   heroSubheading: data.category.heroSubheading ?? "",
                   heroDescription: data.category.heroDescription ?? "",
@@ -802,6 +846,10 @@ export default function ToolCategoriesManager({ initial }: { initial: ToolCatego
           editingId={editingId}
           editingName={editingName}
           setEditingName={setEditingName}
+          editingSlug={editingSlug}
+          setEditingSlug={setEditingSlug}
+          editingBreadcrumbName={editingBreadcrumbName}
+          setEditingBreadcrumbName={setEditingBreadcrumbName}
           editingHeroSubheading={editingHeroSubheading}
           setEditingHeroSubheading={setEditingHeroSubheading}
           editingHeroDescription={editingHeroDescription}

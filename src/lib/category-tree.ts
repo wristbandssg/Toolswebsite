@@ -4,7 +4,13 @@ import { categoryUrl, toolUrl } from "@/lib/urls";
 // public URL of any category or calculator (see src/lib/urls.ts). Pure and
 // client-safe — src/lib/category-index.ts loads it from the database.
 
-export type CategoryNode = { id: string; name: string; slug: string; parentId: string | null };
+export type CategoryNode = {
+  id: string;
+  name: string;
+  slug: string;
+  parentId: string | null;
+  breadcrumbName?: string | null; // shorter name for breadcrumbs
+};
 
 export interface CategoryIndex {
   byId: Map<string, CategoryNode>;
@@ -14,7 +20,9 @@ export interface CategoryIndex {
   /** Main category → … → this category. */
   chainOf(id: string): CategoryNode[];
   categoryHref(id: string): string;
-  /** A calculator's public URL. Uncategorized calculators live under /calculators/. */
+  /** The name shown in breadcrumbs: the short breadcrumb name, else the category name. */
+  crumbName(id: string): string;
+  /** A calculator's public URL: its category's URL + its slug. Uncategorized ones live under /calculators/. */
   toolHref(tool: { slug: string; categoryId: string | null }): string;
 }
 
@@ -33,19 +41,25 @@ export function buildCategoryIndex(rows: CategoryNode[]): CategoryIndex {
     return chain;
   }
   const rootOf = (id: string) => chainOf(id)[0];
+  const categoryHref = (id: string) => {
+    const node = byId.get(id);
+    return node ? categoryUrl(node.slug, rootOf(id)?.slug) : "/calculators/";
+  };
 
   return {
     byId,
     bySlug,
     rootOf,
     chainOf,
-    categoryHref(id) {
+    categoryHref,
+    crumbName(id) {
       const node = byId.get(id);
-      return node ? categoryUrl(node.slug, rootOf(id)?.slug) : "/calculators/";
+      return node?.breadcrumbName || node?.name || "";
     },
     toolHref(tool) {
-      const root = tool.categoryId ? rootOf(tool.categoryId) : undefined;
-      return root ? toolUrl(tool.slug, root.slug) : `/calculators/${tool.slug}/`;
+      return tool.categoryId && byId.has(tool.categoryId)
+        ? toolUrl(tool.slug, categoryHref(tool.categoryId))
+        : `/calculators/${tool.slug}/`;
     },
   };
 }

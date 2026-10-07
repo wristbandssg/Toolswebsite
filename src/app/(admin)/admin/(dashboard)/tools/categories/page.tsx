@@ -43,6 +43,7 @@ export default async function ToolCategoriesPage() {
               parentId: c.parentId,
               heroSubheading: c.heroSubheading ?? "",
               heroDescription: c.heroDescription ?? "",
+              breadcrumbName: c.breadcrumbName ?? "",
               toolCount: c.tools.length,
               publishedCount: c.tools.filter((t) => t.status === "published").length,
               seo: {

@@ -8,7 +8,6 @@ import ShowMoreGrid from "@/components/site/ShowMoreGrid";
 import { getCategoryPageSettings } from "@/lib/category-page-config";
 import { RICH_TEXT_CLASSES } from "@/lib/templates/page/ContentBox";
 import { getCategoryIndex } from "@/lib/category-index";
-import { toolUrl } from "@/lib/urls";
 import Breadcrumbs from "@/components/site/Breadcrumbs";
 
 // Public category page, served at /{category}/ (main category) or
@@ -89,12 +88,17 @@ async function countPublishedToolsInSubtree(categoryId: string): Promise<number>
   return ownCount + childCounts.reduce((sum, n) => sum + n, 0);
 }
 
+/** "Finance" → "Finance Calculators"; a name that already says "Calculator(s)" is kept as it is. */
+export function categoryTitle(name: string) {
+  return /calculators?$/i.test(name.trim()) ? name.trim() : `${name.trim()} Calculators`;
+}
+
 export async function categoryMetadata(slug: string): Promise<Metadata> {
   const data = await loadCategory(slug);
   if (!data) return {};
   return buildSeoMetadata({
     seoMeta: data.category.seoMeta,
-    fallbackTitle: `${data.category.name} Calculators`,
+    fallbackTitle: categoryTitle(data.category.name),
     fallbackDescription:
       data.category.heroDescription ||
       data.category.heroSubheading ||
@@ -109,7 +113,6 @@ export default async function CategoryView({ slug }: { slug: string }) {
   const [data, display] = await Promise.all([loadCategory(slug), getCategoryPageSettings()]);
   if (!data) notFound();
   const { category, chain, index, children, tools, toolCount } = data;
-  const root = chain[0] ?? category;
   const hasChildren = children.length > 0;
   const hasTools = toolCount > 0;
 
@@ -149,7 +152,7 @@ export default async function CategoryView({ slug }: { slug: string }) {
             className="flex justify-center text-sm text-gray-400"
             items={[
               { name: "Home", href: "/" },
-              ...chain.map((c) => ({ name: c.name, href: index.categoryHref(c.id) })),
+              ...chain.map((c) => ({ name: index.crumbName(c.id), href: index.categoryHref(c.id) })),
             ]}
           />
           <h1 className="mt-3 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
@@ -232,7 +235,7 @@ export default async function CategoryView({ slug }: { slug: string }) {
             {tools.map((tool) => (
               <Link
                 key={tool.id}
-                href={toolUrl(tool.slug, root.slug)}
+                href={index.toolHref({ slug: tool.slug, categoryId: category.id })}
                 className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-900"
               >
                 {tool.isPopular ? (

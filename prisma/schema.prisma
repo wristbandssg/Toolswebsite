@@ -130,6 +130,10 @@ model ToolCategory {
   heroSubheading  String?
   heroDescription String?
 
+  // Shorter name for breadcrumbs (e.g. "Finance" for "Finance Calculators").
+  // Empty = the category name.
+  breadcrumbName String?
+
   // Long-form article (rich text HTML from the admin's editor, often 1,500+
   // words) shown under the sub-category / calculator grid on the public
   // category page. Edited at /admin/tools/categories/[id]/content.

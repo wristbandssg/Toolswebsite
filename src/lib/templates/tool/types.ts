@@ -26,8 +26,8 @@ export interface ToolTemplateProps {
     categoryName?: string | null;
     categorySlug?: string | null;
   };
-  // Home → main category → … → sub-category → this calculator. The URL
-  // skips the sub-category, so this is where the full hierarchy shows.
+  // Home → main category → … → sub-category → this calculator — the full
+  // hierarchy, even where the URL is shorter (src/lib/urls.ts).
   breadcrumbs: Crumb[];
   relatedTools: { slug: string; title: string; href: string }[];
   supportBlogs: { slug: string; title: string }[];

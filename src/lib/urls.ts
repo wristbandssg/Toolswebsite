@@ -5,8 +5,9 @@
 //   /{page}/                   normal page (about-us, privacy-policy…)
 //   /{category}/               main (top-level) category
 //   /{category}/{sub}/         any sub-category, at any depth, under its main category
-//   /{category}/{calculator}/  calculator, under its main category (the
-//                              sub-category shows in breadcrumbs, not the URL)
+//   /{category}/{calculator}/        calculator filed directly in a main category
+//   /{category}/{sub}/{calculator}/  calculator filed in a sub-category: its
+//                                    category's URL + its own slug
 //   /blog/  /blog/{post}/  /blog/category/{slug}/
 //   /calculators/  /authors/{slug}/
 //
@@ -41,7 +42,7 @@ export function categoryUrl(slug: string, rootSlug: string | null | undefined) {
   return rootSlug && rootSlug !== slug ? `/${rootSlug}/${slug}/` : `/${slug}/`;
 }
 
-/** A calculator's URL, under its main category. */
-export function toolUrl(slug: string, rootSlug: string) {
-  return `/${rootSlug}/${slug}/`;
+/** A calculator's URL: the URL of the category it is filed in, plus its own slug. */
+export function toolUrl(slug: string, categoryHref: string) {
+  return `${categoryHref}${slug}/`;
 }

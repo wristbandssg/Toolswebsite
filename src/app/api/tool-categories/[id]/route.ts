@@ -20,6 +20,11 @@ const renameSchema = z.object({
   // the admin UI — previously that was only possible when a sub-category
   // was first created via POST /api/tool-categories.
   parentId: z.string().trim().optional().nullable(),
+  // The URL slug, set by hand. Omitted = unchanged, unless the name changed
+  // (then it follows the name, as before).
+  slug: z.string().trim().optional(),
+  // Shorter name for breadcrumbs ("Finance" for "Finance Calculators"); "" = the name.
+  breadcrumbName: z.string().trim().max(60, "Breadcrumb name should be 60 characters or less").optional(),
 });
 
 function slugify(text: string) {
@@ -52,7 +57,8 @@ export async function PUT(
   if (!existing) return NextResponse.json({ error: "Category not found" }, { status: 404 });
   // The slug (and so the URL) only changes when the name does — saving hero
   // text or moving the category must not quietly change its URL.
-  const slug = existing.name === name ? existing.slug : slugify(name);
+  const requestedSlug = parsed.data.slug ? slugify(parsed.data.slug).replace(/-+/g, "-").replace(/^-|-$/g, "") : "";
+  const slug = requestedSlug || (existing.name === name ? existing.slug : slugify(name));
   if (!slug) {
     return NextResponse.json({ error: "That name doesn't produce a valid URL slug" }, { status: 400 });
   }
@@ -124,6 +130,9 @@ export async function PUT(
         ? { heroDescription: parsed.data.heroDescription || null }
         : {}),
       ...(hasParentIdKey ? { parentId: nextParentId } : {}),
+      ...(Object.prototype.hasOwnProperty.call(body, "breadcrumbName")
+        ? { breadcrumbName: parsed.data.breadcrumbName || null }
+        : {}),
     },
   });
   await recordUrlChanges(urlsBefore);

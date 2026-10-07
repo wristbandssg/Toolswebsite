@@ -9,7 +9,7 @@ export { buildCategoryIndex, type CategoryIndex, type CategoryNode } from "@/lib
 
 export async function loadCategoryIndex(): Promise<CategoryIndex> {
   const rows = await prisma.toolCategory.findMany({
-    select: { id: true, name: true, slug: true, parentId: true },
+    select: { id: true, name: true, slug: true, parentId: true, breadcrumbName: true },
     orderBy: { name: "asc" },
   });
   return buildCategoryIndex(rows);

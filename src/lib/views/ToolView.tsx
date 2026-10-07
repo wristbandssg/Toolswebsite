@@ -68,7 +68,7 @@ export default async function ToolView({ slug }: { slug: string }) {
 
   const breadcrumbs = [
     { name: "Home", href: "/" },
-    ...(tool.categoryId ? index.chainOf(tool.categoryId) : []).map((c) => ({ name: c.name, href: index.categoryHref(c.id) })),
+    ...(tool.categoryId ? index.chainOf(tool.categoryId) : []).map((c) => ({ name: index.crumbName(c.id), href: index.categoryHref(c.id) })),
     { name: tool.title, href: index.toolHref(tool) },
   ];
 
