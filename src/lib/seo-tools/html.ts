@@ -116,19 +116,3 @@ export function urlList(value: unknown, max = 20): string[] {
   const list = (Array.isArray(value) ? value : String(value ?? "").split(/[\n,]+/)).map((s) => String(s).trim()).filter(Boolean);
   return [...new Set(list)].slice(0, max);
 }
-
-/** A page's date signals: <time datetime>, article/og meta dates, HTTP Last-Modified. */
-export function dateSignals(root: HTMLElement, headers: Headers): { source: string; date: Date }[] {
-  const out: { source: string; date: Date }[] = [];
-  const push = (source: string, raw: string | null | undefined) => {
-    if (!raw) return;
-    const d = new Date(raw);
-    if (!Number.isNaN(d.getTime())) out.push({ source, date: d });
-  };
-  push("<time> tag", root.querySelector("time[datetime]")?.getAttribute("datetime"));
-  for (const name of ["article:published_time", "article:modified_time", "og:updated_time"]) {
-    push(name, root.querySelector(`meta[property="${name}"], meta[name="${name}"]`)?.getAttribute("content"));
-  }
-  push("HTTP Last-Modified", headers.get("last-modified"));
-  return out;
-}

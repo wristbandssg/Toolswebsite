@@ -92,63 +92,6 @@ function rng(seed = 42) {
   };
 }
 
-/** k-means (k-means++ init, cosine-friendly when rows are l2-normalised). */
-export function kmeans(rows: number[][], k: number, iterations = 50): { labels: number[]; centroids: number[][] } {
-  const rand = rng();
-  const dist = (a: number[], b: number[]) => a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0);
-  const centroids: number[][] = [rows[Math.floor(rand() * rows.length)]];
-  while (centroids.length < k) {
-    const d = rows.map((r) => Math.min(...centroids.map((c) => dist(r, c))));
-    const sum = d.reduce((a, b) => a + b, 0);
-    let pick = rand() * sum;
-    let idx = 0;
-    while (idx < d.length - 1 && (pick -= d[idx]) > 0) idx++;
-    centroids.push(rows[idx]);
-  }
-  let labels = new Array(rows.length).fill(0);
-  for (let it = 0; it < iterations; it++) {
-    const next = rows.map((r) => {
-      let best = 0;
-      let bestD = Infinity;
-      centroids.forEach((c, j) => {
-        const dd = dist(r, c);
-        if (dd < bestD) (bestD = dd), (best = j);
-      });
-      return best;
-    });
-    const changed = next.some((l, i) => l !== labels[i]);
-    labels = next;
-    for (let j = 0; j < k; j++) {
-      const members = rows.filter((_, i) => labels[i] === j);
-      if (members.length) centroids[j] = columnMeans(members);
-    }
-    if (!changed && it > 0) break;
-  }
-  return { labels, centroids };
-}
-
-/** Mean silhouette score (cosine distance), sampled for speed. */
-export function silhouette(rows: number[][], labels: number[], sample = 400): number {
-  const idx = rows.map((_, i) => i).slice(0, sample);
-  const d = (a: number[], b: number[]) => 1 - cosine(a, b);
-  let total = 0;
-  let n = 0;
-  for (const i of idx) {
-    const own = idx.filter((j) => j !== i && labels[j] === labels[i]);
-    if (!own.length) continue;
-    const a = own.reduce((s, j) => s + d(rows[i], rows[j]), 0) / own.length;
-    const others = [...new Set(labels)].filter((l) => l !== labels[i]);
-    if (!others.length) continue;
-    const b = Math.min(...others.map((l) => {
-      const m = idx.filter((j) => labels[j] === l);
-      return m.reduce((s, j) => s + d(rows[i], rows[j]), 0) / Math.max(m.length, 1);
-    }));
-    total += (b - a) / Math.max(a, b);
-    n++;
-  }
-  return n ? total / n : 0;
-}
-
 /** Non-negative matrix factorisation (multiplicative updates): X ≈ W·H. */
 export function nmf(X: number[][], k: number, iterations = 200): { W: number[][]; H: number[][] } {
   const rand = rng();

@@ -12,11 +12,6 @@ export function tokens(text: string): string[] {
   return text.toLowerCase().match(/[\p{L}\p{N}_]{2,}/gu) ?? [];
 }
 
-/** All words, any length, letters only (for readability maths). */
-export function letterWords(text: string): string[] {
-  return text.match(/\p{L}+/gu) ?? [];
-}
-
 export function wordCount(text: string): number {
   return (text.match(/[\p{L}\p{N}]+/gu) ?? []).length;
 }
@@ -28,86 +23,7 @@ export function sentences(text: string, minLength = 4): string[] {
     .filter((s) => s.length >= minLength);
 }
 
-export function syllables(word: string): number {
-  const w = word.toLowerCase();
-  if (w.length <= 2) return 1;
-  let count = (w.match(/[aeiouy]+/g) ?? []).length;
-  if (w.endsWith("e")) count--;
-  return Math.max(count, 1);
-}
-
 export function round(n: number, digits = 1): number {
   const f = 10 ** digits;
   return Math.round(n * f) / f;
-}
-
-export interface Readability {
-  words: number;
-  sentences: number;
-  syllables: number;
-  avgSentenceLength: number;
-  avgSyllablesPerWord: number;
-  complexWordsPct: number;
-  longWordsPct: number;
-  fleschReadingEase: number;
-  fleschKincaidGrade: number;
-  gunningFog: number;
-  colemanLiau: number;
-  ari: number;
-  smog: number;
-}
-
-/** Flesch, Flesch-Kincaid, Gunning Fog, Coleman-Liau, ARI and SMOG (readability_analyzer.py). */
-export function readability(text: string): Readability | null {
-  const sents = sentences(text, 4);
-  const words = letterWords(text);
-  if (!sents.length || !words.length) return null;
-  const syl = words.map(syllables);
-  const totalSyl = syl.reduce((a, b) => a + b, 0);
-  const complex = syl.filter((s) => s >= 3).length;
-  const long = words.filter((w) => w.length > 6).length;
-  const chars = words.reduce((a, w) => a + w.length, 0);
-  const asl = words.length / sents.length;
-  const asw = totalSyl / words.length;
-  return {
-    words: words.length,
-    sentences: sents.length,
-    syllables: totalSyl,
-    avgSentenceLength: round(asl),
-    avgSyllablesPerWord: round(asw, 2),
-    complexWordsPct: round((complex / words.length) * 100),
-    longWordsPct: round((long / words.length) * 100),
-    fleschReadingEase: round(206.835 - 1.015 * asl - 84.6 * asw),
-    fleschKincaidGrade: round(0.39 * asl + 11.8 * asw - 15.59),
-    gunningFog: round(0.4 * (asl + (100 * complex) / words.length)),
-    colemanLiau: round(0.0588 * ((chars / words.length) * 100) - 0.296 * ((sents.length / words.length) * 100) - 15.8),
-    ari: round(4.71 * (chars / words.length) + 0.5 * asl - 21.43),
-    smog: sents.length >= 3 ? round(1.043 * Math.sqrt(complex * (30 / sents.length)) + 3.1291) : 0,
-  };
-}
-
-export function gradeLabel(fk: number): string {
-  if (fk <= 6) return "Easy (6th grade)";
-  if (fk <= 8) return "Fairly easy (8th grade)";
-  if (fk <= 10) return "Standard (10th grade)";
-  if (fk <= 12) return "Fairly difficult (12th grade)";
-  return "Difficult (college level)";
-}
-
-/** Counts of n-grams of size n, stop words dropped for n = 1 and all-stop-word n-grams skipped. */
-export function ngramCounts(text: string, n: number, keepStopWords = false): Map<string, number> {
-  let words: string[] = text.toLowerCase().match(/\p{L}+/gu) ?? [];
-  if (n === 1 && !keepStopWords) words = words.filter((w) => !STOP_WORDS.has(w) && w.length > 2);
-  const counts = new Map<string, number>();
-  for (let i = 0; i + n <= words.length; i++) {
-    const gram = words.slice(i, i + n);
-    if (n > 1 && !keepStopWords && gram.every((w) => STOP_WORDS.has(w))) continue;
-    const key = gram.join(" ");
-    counts.set(key, (counts.get(key) ?? 0) + 1);
-  }
-  return counts;
-}
-
-export function topEntries<K>(map: Map<K, number>, n: number): [K, number][] {
-  return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, n);
 }

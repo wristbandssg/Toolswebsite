@@ -1,11 +1,9 @@
-import { getAiConfig, aiJson, aiCanEmbed, aiEmbed, AI_PROVIDERS } from "@/lib/ai/provider";
-import { STOP_WORDS, tokens } from "./text";
-import { tfidf } from "./vectors";
+import { getAiConfig, aiJson, AI_PROVIDERS } from "@/lib/ai/provider";
+import { STOP_WORDS } from "./text";
 
-// The language-understanding parts of the Python toolkit (spaCy entities,
-// sentence-transformer embeddings), done with the AI provider set at
-// Marketing → AI Settings — or, when none is set (or it fails), with a
-// built-in method so every tool still gives a result.
+// Named entities (the spaCy part of the Python toolkit) and CSV parsing.
+// Entities come from the AI provider set at Marketing → AI Settings — or,
+// when none is set (or it fails), from a built-in method.
 
 export interface Entity {
   entity: string;
@@ -61,39 +59,6 @@ export async function extractEntities(text: string, max = 50): Promise<{ entitie
   return { entities: heuristicEntities(text, max), method: "Built-in proper-noun detection — add an AI key in AI Settings for spaCy-style entities" };
 }
 
-/** Word + character-4-gram TF-IDF: a usable stand-in for embeddings on short texts like keywords. */
-function charTfidf(texts: string[]): number[][] {
-  // Character 4-grams become pseudo-words ("zq_lo", "zqloan"…) so the word TF-IDF can weigh them.
-  const expanded = texts.map((t) => {
-    const words = tokens(t);
-    const grams = words.flatMap((w) => {
-      const p = `_${w}_`;
-      return p.length <= 4 ? [`zq${p}`] : Array.from({ length: p.length - 3 }, (_, i) => `zq${p.slice(i, i + 4)}`);
-    });
-    return [...words, ...grams].join(" ");
-  });
-  return tfidf(expanded, { maxFeatures: 5000 }).matrix;
-}
-
-/**
- * Vectors for similarity / clustering. AI embeddings when the provider offers
- * them; otherwise TF-IDF (word n-grams for long texts, char n-grams for short).
- */
-export async function embedTexts(texts: string[], opts: { short?: boolean } = {}): Promise<{ vectors: number[][]; method: string; ai: boolean }> {
-  const config = await getAiConfig();
-  if (config && (await aiCanEmbed(config))) {
-    try {
-      return { vectors: await aiEmbed(texts, config), method: `AI embeddings (${AI_PROVIDERS[config.provider].label})`, ai: true };
-    } catch (e) {
-      const fallback = opts.short ? charTfidf(texts) : tfidf(texts, { ngramMin: 1, ngramMax: 2, maxFeatures: 5000 }).matrix;
-      return { vectors: fallback, method: `TF-IDF (AI embeddings failed: ${(e as Error).message.slice(0, 120)})`, ai: false };
-    }
-  }
-  const note = config ? `${AI_PROVIDERS[config.provider].label} has no embeddings` : "add an AI key in AI Settings for semantic embeddings";
-  const vectors = opts.short ? charTfidf(texts) : tfidf(texts, { ngramMin: 1, ngramMax: 2, maxFeatures: 5000 }).matrix;
-  return { vectors, method: `TF-IDF, built-in (${note})`, ai: false };
-}
-
 /** Minimal RFC-4180 CSV parser → rows of cells. */
 export function parseCsv(text: string, maxRows = 100_000): string[][] {
   const rows: string[][] = [];
@@ -135,21 +100,4 @@ export function csvRecords(text: string): { headers: string[]; records: Record<s
 /** First header matching any of the names (exact, then partial). */
 export function findColumn(headers: string[], names: string[]): string | undefined {
   return headers.find((h) => names.includes(h)) ?? headers.find((h) => names.some((n) => h.includes(n)));
-}
-
-/** Keywords from a textarea (one per line / comma) plus an optional CSV's keyword column. */
-export function keywordList(textarea: unknown, csv: unknown, max = 2000): string[] {
-  const out = String(textarea ?? "")
-    .split(/\r?\n/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const csvText = String(csv ?? "");
-  if (csvText.trim()) {
-    const { headers, records } = csvRecords(csvText);
-    const col = findColumn(headers, ["keyword", "keywords", "query", "top queries", "term", "topic"]) ?? headers[0];
-    // A one-column file without a header: the "header" is a keyword too.
-    if (col && !findColumn(headers, ["keyword", "keywords", "query", "top queries", "term", "topic"]) && headers.length === 1) out.push(col);
-    for (const r of records) if (col && r[col]) out.push(r[col]);
-  }
-  return [...new Set(out.map((k) => k.replace(/\s+/g, " ")))].slice(0, max);
 }
