@@ -431,6 +431,9 @@ import { cryptoStakingDefiCustomCalculators } from "./calc-engine-crypto-staking
 import { cryptoMiningCustomCalculators } from "./calc-engine-crypto-mining";
 import { cryptoMarketCustomCalculators } from "./calc-engine-crypto-market";
 import { cryptoTaxSecurityCustomCalculators } from "./calc-engine-crypto-tax-security";
+import { fantasyTradeScoringCustomCalculators } from "./calc-engine-fantasy-trade-scoring";
+import { fantasyDraftPlayoffsCustomCalculators } from "./calc-engine-fantasy-draft-playoffs";
+import { fantasyPayoutsPoolsCustomCalculators } from "./calc-engine-fantasy-payouts-pools";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -676,6 +679,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...cryptoMiningCustomCalculators,
   ...cryptoMarketCustomCalculators,
   ...cryptoTaxSecurityCustomCalculators,
+  ...fantasyTradeScoringCustomCalculators,
+  ...fantasyDraftPlayoffsCustomCalculators,
+  ...fantasyPayoutsPoolsCustomCalculators,
 };
 
 export function runCalculator(

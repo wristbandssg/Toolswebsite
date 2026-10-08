@@ -4,7 +4,9 @@
 
 ## ▶️ Resume here
 
-Just built the **Crypto Calculators expansion** (6 Oct 2026) from the user's 116-keyword crypto list: 16 already built
+Just built the **Fantasy Sports Calculators** (8 Oct 2026) from the user's 28-keyword fantasy list: 0 already built, 2 merged as same-intent (NFL Fantasy Score -> fantasy-football-points-calculator, NBA Fantasy Score -> fantasy-basketball-points-calculator). 26 new tools in 3 batches (`fantasy-trade-scoring` 12, `fantasy-draft-playoffs` 9, `fantasy-payouts-pools` 5) under Sports Calculators, in 6 new sub-categories created by the scripts: Fantasy Trade, Fantasy Points & Scoring, Fantasy Draft & Roster, Fantasy Playoff & Standings, Fantasy Payout, Bracket & Survivor Pool (sub-categories sit directly under Sports — URLs only allow /{category}/{sub}/{tool}/). The 3 db scripts were already run (tools are Draft — publish in /admin/tools). PrizePicks/Underdog multipliers are 'typical' values with an override field.
+
+Before that: Just built the **Crypto Calculators expansion** (6 Oct 2026) from the user's 116-keyword crypto list: 16 already built
 (crypto-capital-gains, crypto-to-fiat-converter, dollar-cost-averaging, portfolio-rebalancing, stock-cost-basis incl.
 tax lot method, stock-average-price, stock-break-even, sharpe-ratio, forex-drawdown, covered-call-options,
 remittance-fee, gifted-asset- and inherited-asset-capital-gains, ira-growth, loyalty-points-value-estimator) and 40
@@ -601,3 +603,4 @@ keep that file in mind.
 - 2026-10-06: Design 2 BlogCard compact: no date, 2-line text, hover-only button over the image.
 - 2026-10-06: Design 2 FAQ redesigned as numbered accordion with side heading.
 - 2026-10-06: Design 2 FAQ: removed side heading block (faqEyebrow/Heading/Text no longer shown or edited); accordion full width.
+- 2026-10-08: Fantasy Sports Calculators — 26 tools (calc-engine-fantasy-trade-scoring/draft-playoffs/payouts-pools + matching create-fantasy-* scripts), 6 sub-categories under Sports Calculators; seeded as Draft.
