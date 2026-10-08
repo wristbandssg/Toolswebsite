@@ -14,10 +14,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PARENT_SLUG = "sports-calculators";
-const CATEGORIES = {
-  payouts: { name: "Fantasy Payout Calculators", slug: "fantasy-payout-calculators" },
-  pools: { name: "Bracket & Survivor Pool Calculators", slug: "bracket-survivor-pool-calculators" },
-} as const;
+const CATEGORY = { name: "Fantasy Sports Calculators", slug: "fantasy-sports-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -71,9 +68,7 @@ const PICKS: [string, number][] = [
 ];
 
 interface ToolDef {
-  slug: string;
-  category: keyof typeof CATEGORIES;
-  title: string;
+  slug: string;  title: string;
   description: string;
   metaTitle: string;
   metaDescription: string;
@@ -97,9 +92,7 @@ const PICKEM_RESULTS = [
 
 const TOOLS: ToolDef[] = [
   {
-    slug: "prizepicks-payout-calculator",
-    category: "payouts",
-    title: "PrizePicks Payout Calculator",
+    slug: "prizepicks-payout-calculator",    title: "PrizePicks Payout Calculator",
     description: "Calculate PrizePicks payouts for Power Play and Flex Play entries of 2 to 6 picks, with expected value and the win rate you need per pick to break even.",
     metaTitle: "PrizePicks Payout Calculator — Power & Flex",
     metaDescription: "Free PrizePicks payout calculator. See Power Play and Flex Play payouts for 2–6 picks, expected value and the break-even win rate per pick.",
@@ -125,9 +118,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "underdog-fantasy-payout-calculator",
-    category: "payouts",
-    title: "Underdog Fantasy Payout Calculator",
+    slug: "underdog-fantasy-payout-calculator",    title: "Underdog Fantasy Payout Calculator",
     description: "Calculate Underdog Fantasy Pick'em payouts for Standard and Insured entries, including Underdog's boosted or discounted pick multipliers, expected value and break-even rate.",
     metaTitle: "Underdog Fantasy Payout Calculator — Pick'em",
     metaDescription: "Free Underdog Fantasy payout calculator. Standard and Insured Pick'em payouts, pick multipliers, expected value and break-even win rate.",
@@ -154,9 +145,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-football-payout-calculator",
-    category: "payouts",
-    title: "Fantasy Football Payout Calculator",
+    slug: "fantasy-football-payout-calculator",    title: "Fantasy Football Payout Calculator",
     description: "Split your fantasy football league's prize pool: buy-ins, platform fees, weekly high-score prizes, a points-champion prize and the top-place payouts.",
     metaTitle: "Fantasy Football Payout Calculator — League",
     metaDescription: "Free fantasy football payout calculator. Split the league pot into 1st, 2nd, 3rd and 4th place, weekly high scores and a points champion.",
@@ -200,9 +189,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "bracket-odds-calculator",
-    category: "pools",
-    title: "Bracket Odds Calculator",
+    slug: "bracket-odds-calculator",    title: "Bracket Odds Calculator",
     description: "Calculate the odds of a perfect bracket — March Madness or any knockout bracket — from the number of games and how often you pick winners correctly.",
     metaTitle: "Bracket Odds Calculator — Perfect Bracket",
     metaDescription: "Free bracket odds calculator. Find the odds of a perfect March Madness bracket from games and pick accuracy, for one or many brackets.",
@@ -230,9 +217,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "survivor-pool-calculator",
-    category: "pools",
-    title: "Survivor Pool Calculator",
+    slug: "survivor-pool-calculator",    title: "Survivor Pool Calculator",
     description: "Estimate your chance of winning a survivor (last man standing) pool and your expected share of the pot, from your weekly picks and the rest of the field.",
     metaTitle: "Survivor Pool Calculator — Odds & EV",
     metaDescription: "Free survivor pool calculator. Your chance of outlasting the field, expected survivors and expected winnings from weekly pick win rates.",
@@ -276,8 +261,7 @@ async function ensureCategory(cat: { name: string; slug: string }) {
 }
 
 async function main() {
-  const categoryIds: Record<string, string> = {};
-  for (const [key, cat] of Object.entries(CATEGORIES)) categoryIds[key] = (await ensureCategory(cat)).id;
+  const category = await ensureCategory(CATEGORY);
 
   let created = 0;
   let updated = 0;
@@ -287,7 +271,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: categoryIds[def.category],
+      categoryId: category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -321,7 +305,7 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated.`);
+  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
   console.log("New tools are created with status Draft — review them in /admin/tools and publish when ready.");
 }
 

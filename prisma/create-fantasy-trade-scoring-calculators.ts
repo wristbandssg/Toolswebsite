@@ -3,8 +3,8 @@
 // Scoring). Part of the fantasy sports tool-list build-out: 28 keywords in
 // the source list, 2 merged as same-intent duplicates (NFL Fantasy Score →
 // Fantasy Football Points, NBA Fantasy Score → Fantasy Basketball Points),
-// 26 built across 3 sub-batches — all under Sports Calculators, in 6
-// sub-categories:
+// 26 built across 3 sub-batches — all under Sports Calculators >
+// Fantasy Sports Calculators:
 //   create-fantasy-trade-scoring-calculators.ts (12 tools)
 //   create-fantasy-draft-playoffs-calculators.ts (9 tools)
 //   create-fantasy-payouts-pools-calculators.ts (5 tools)
@@ -22,10 +22,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PARENT_SLUG = "sports-calculators";
-const CATEGORIES = {
-  trade: { name: "Fantasy Trade Calculators", slug: "fantasy-trade-calculators" },
-  points: { name: "Fantasy Points & Scoring Calculators", slug: "fantasy-points-scoring-calculators" },
-} as const;
+const CATEGORY = { name: "Fantasy Sports Calculators", slug: "fantasy-sports-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -78,9 +75,7 @@ const DISCLAIMER =
   "and the projections you enter — check your platform's official scoring settings. It isn't betting advice.";
 
 interface ToolDef {
-  slug: string;
-  category: keyof typeof CATEGORIES;
-  title: string;
+  slug: string;  title: string;
   description: string;
   metaTitle: string;
   metaDescription: string;
@@ -96,9 +91,7 @@ interface ToolDef {
 const TOOLS: ToolDef[] = [
   // ---------------------------------------------------------------- Trades
   {
-    slug: "fantasy-football-trade-calculator",
-    category: "trade",
-    title: "Fantasy Football Trade Calculator",
+    slug: "fantasy-football-trade-calculator",    title: "Fantasy Football Trade Calculator",
     description: "Find out who wins a redraft fantasy football trade. Compare up to three players on each side by rest-of-season points over a waiver replacement.",
     metaTitle: "Fantasy Football Trade Calculator — Who Wins?",
     metaDescription: "Free fantasy football trade calculator. Compare up to 3 players per side by rest-of-season points over replacement and see who wins the trade.",
@@ -135,9 +128,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "dynasty-trade-calculator",
-    category: "trade",
-    title: "Dynasty Trade Calculator",
+    slug: "dynasty-trade-calculator",    title: "Dynasty Trade Calculator",
     description: "Value a dynasty fantasy football trade over several seasons. Accounts for each player's age and position aging curve, future-year discounting, and rookie draft picks.",
     metaTitle: "Dynasty Trade Calculator — Fantasy Football",
     metaDescription: "Free dynasty trade calculator for fantasy football. Value players by age, position aging curve and rookie picks over 1–10 seasons.",
@@ -182,9 +173,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-basketball-trade-calculator",
-    category: "trade",
-    title: "Fantasy Basketball Trade Calculator",
+    slug: "fantasy-basketball-trade-calculator",    title: "Fantasy Basketball Trade Calculator",
     description: "Evaluate a redraft fantasy basketball trade using each player's fantasy points per game and his own games remaining, measured over a waiver replacement.",
     metaTitle: "Fantasy Basketball Trade Calculator — NBA",
     metaDescription: "Free fantasy basketball trade calculator. Compare players by fantasy points per game and games remaining over a waiver replacement.",
@@ -221,9 +210,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "dynasty-basketball-trade-calculator",
-    category: "trade",
-    title: "Dynasty Basketball Trade Calculator",
+    slug: "dynasty-basketball-trade-calculator",    title: "Dynasty Basketball Trade Calculator",
     description: "Value a dynasty fantasy basketball trade across several seasons, using an NBA aging curve that rises to the late 20s and declines after 30.",
     metaTitle: "Dynasty Basketball Trade Calculator — NBA",
     metaDescription: "Free dynasty fantasy basketball trade calculator. Compare players over 1–10 seasons with an NBA aging curve and future-season discount.",
@@ -258,9 +245,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-baseball-trade-calculator",
-    category: "trade",
-    title: "Fantasy Baseball Trade Calculator",
+    slug: "fantasy-baseball-trade-calculator",    title: "Fantasy Baseball Trade Calculator",
     description: "Compare hitters and pitchers in a fantasy baseball points-league trade. Converts points per game or per start into points per week by role, over a waiver replacement.",
     metaTitle: "Fantasy Baseball Trade Calculator — Points",
     metaDescription: "Free fantasy baseball trade calculator. Compare hitters, starting pitchers and relievers by weekly points over replacement for the rest of the season.",
@@ -297,9 +282,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-hockey-trade-calculator",
-    category: "trade",
-    title: "Fantasy Hockey Trade Calculator",
+    slug: "fantasy-hockey-trade-calculator",    title: "Fantasy Hockey Trade Calculator",
     description: "Evaluate a fantasy hockey trade between skaters and goalies, with separate waiver replacement levels for each and each player's games remaining.",
     metaTitle: "Fantasy Hockey Trade Calculator — NHL",
     metaDescription: "Free fantasy hockey trade calculator. Compare skaters and goalies by fantasy points per game and games remaining over position replacement levels.",
@@ -338,9 +321,7 @@ const TOOLS: ToolDef[] = [
   },
   // ---------------------------------------------------------------- Points
   {
-    slug: "fantasy-football-points-calculator",
-    category: "points",
-    title: "Fantasy Football Points Calculator",
+    slug: "fantasy-football-points-calculator",    title: "Fantasy Football Points Calculator",
     description: "Calculate fantasy football points for any player in Standard, Half PPR or PPR scoring, with 4- or 6-point passing touchdowns — also known as an NFL fantasy score calculator.",
     metaTitle: "Fantasy Football Points Calculator — PPR",
     metaDescription: "Free fantasy football points calculator for NFL players. Standard, Half PPR and PPR scoring with passing, rushing and receiving breakdown.",
@@ -377,9 +358,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "draftkings-points-calculator",
-    category: "points",
-    title: "DraftKings Points Calculator",
+    slug: "draftkings-points-calculator",    title: "DraftKings Points Calculator",
     description: "Calculate DraftKings NFL fantasy points with Classic scoring — full PPR, 0.04 per passing yard and 3-point yardage bonuses — plus points per $1,000 of salary.",
     metaTitle: "DraftKings Points Calculator — NFL DFS",
     metaDescription: "Free DraftKings points calculator for NFL DFS. Classic scoring with 300/100-yard bonuses and points per $1K salary value.",
@@ -418,9 +397,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-basketball-points-calculator",
-    category: "points",
-    title: "Fantasy Basketball Points Calculator",
+    slug: "fantasy-basketball-points-calculator",    title: "Fantasy Basketball Points Calculator",
     description: "Calculate fantasy basketball points from an NBA stat line using ESPN or Yahoo default points-league scoring — also known as an NBA fantasy score calculator.",
     metaTitle: "Fantasy Basketball Points Calculator — NBA",
     metaDescription: "Free fantasy basketball points calculator. Turn an NBA box score into ESPN or Yahoo fantasy points, with shooting efficiency and stocks.",
@@ -457,9 +434,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-baseball-points-calculator",
-    category: "points",
-    title: "Fantasy Baseball Points Calculator",
+    slug: "fantasy-baseball-points-calculator",    title: "Fantasy Baseball Points Calculator",
     description: "Calculate fantasy baseball points for a hitter on ESPN, Yahoo or DraftKings scoring — singles to home runs, runs, RBIs, walks and steals.",
     metaTitle: "Fantasy Baseball Points Calculator — Hitters",
     metaDescription: "Free fantasy baseball points calculator for hitters. ESPN, Yahoo and DraftKings scoring for hits, runs, RBIs, walks and stolen bases.",
@@ -494,9 +469,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "mlb-pitcher-fantasy-score-calculator",
-    category: "points",
-    title: "MLB Pitcher Fantasy Score Calculator",
+    slug: "mlb-pitcher-fantasy-score-calculator",    title: "MLB Pitcher Fantasy Score Calculator",
     description: "Calculate a pitcher's fantasy score on PrizePicks, DraftKings, Yahoo or ESPN scoring — outs, strikeouts, wins, quality starts and earned runs.",
     metaTitle: "MLB Pitcher Fantasy Score Calculator",
     metaDescription: "Free MLB pitcher fantasy score calculator. PrizePicks, DraftKings, Yahoo and ESPN scoring with outs, strikeouts, wins and quality starts.",
@@ -534,9 +507,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "tennis-fantasy-score-calculator",
-    category: "points",
-    title: "Tennis Fantasy Score Calculator",
+    slug: "tennis-fantasy-score-calculator",    title: "Tennis Fantasy Score Calculator",
     description: "Calculate a tennis player's fantasy score from a match — games, sets, aces and double faults — on PrizePicks or DraftKings scoring.",
     metaTitle: "Tennis Fantasy Score Calculator",
     metaDescription: "Free tennis fantasy score calculator. PrizePicks and DraftKings scoring from games, sets, aces, double faults, breaks and bonuses.",
@@ -584,8 +555,7 @@ async function ensureCategory(cat: { name: string; slug: string }) {
 }
 
 async function main() {
-  const categoryIds: Record<string, string> = {};
-  for (const [key, cat] of Object.entries(CATEGORIES)) categoryIds[key] = (await ensureCategory(cat)).id;
+  const category = await ensureCategory(CATEGORY);
 
   let created = 0;
   let updated = 0;
@@ -595,7 +565,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: categoryIds[def.category],
+      categoryId: category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -629,7 +599,7 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated.`);
+  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
   console.log("New tools are created with status Draft — review them in /admin/tools and publish when ready.");
 }
 

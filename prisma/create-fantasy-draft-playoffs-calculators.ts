@@ -14,10 +14,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PARENT_SLUG = "sports-calculators";
-const CATEGORIES = {
-  draft: { name: "Fantasy Draft & Roster Calculators", slug: "fantasy-draft-roster-calculators" },
-  playoffs: { name: "Fantasy Playoff & Standings Calculators", slug: "fantasy-playoff-standings-calculators" },
-} as const;
+const CATEGORY = { name: "Fantasy Sports Calculators", slug: "fantasy-sports-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -67,9 +64,7 @@ const SD_NOTE =
   "(use about 20 for standard scoring).";
 
 interface ToolDef {
-  slug: string;
-  category: keyof typeof CATEGORIES;
-  title: string;
+  slug: string;  title: string;
   description: string;
   metaTitle: string;
   metaDescription: string;
@@ -85,9 +80,7 @@ interface ToolDef {
 const TOOLS: ToolDef[] = [
   // ----------------------------------------------------------- Draft & roster
   {
-    slug: "fantasy-auction-value-calculator",
-    category: "draft",
-    title: "Fantasy Auction Value Calculator",
+    slug: "fantasy-auction-value-calculator",    title: "Fantasy Auction Value Calculator",
     description: "Work out what a player is worth in a fantasy auction draft, from his projected points over replacement and the money in your league.",
     metaTitle: "Fantasy Auction Value Calculator — $ Value",
     metaDescription: "Free fantasy auction value calculator. Turn projected points over replacement into a dollar value for your league's budget and roster size.",
@@ -122,9 +115,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-football-draft-grade-calculator",
-    category: "draft",
-    title: "Fantasy Football Draft Grade Calculator",
+    slug: "fantasy-football-draft-grade-calculator",    title: "Fantasy Football Draft Grade Calculator",
     description: "Grade your fantasy football draft. Adds up your projected starting lineup and compares it with the league average to give a draft score, win chance and expected record.",
     metaTitle: "Fantasy Football Draft Grade Calculator",
     metaDescription: "Free fantasy football draft grade calculator. Score your drafted lineup vs the league average and get your projected win % and record.",
@@ -162,9 +153,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-keeper-calculator",
-    category: "draft",
-    title: "Fantasy Keeper Calculator",
+    slug: "fantasy-keeper-calculator",    title: "Fantasy Keeper Calculator",
     description: "Decide whether a player is worth keeping. Compares the round he'd go in this year's draft with the round you'd give up to keep him, and shows next year's cost.",
     metaTitle: "Fantasy Keeper Calculator — Keeper Value",
     metaDescription: "Free fantasy keeper calculator. Compare a player's ADP round with his keeper cost round to see his surplus value and next year's cost.",
@@ -196,9 +185,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "faab-calculator",
-    category: "draft",
-    title: "FAAB Calculator",
+    slug: "faab-calculator",    title: "FAAB Calculator",
     description: "Find how much free agent acquisition budget (FAAB) to bid on a waiver player, based on his tier, your remaining budget, competition and weeks left.",
     metaTitle: "FAAB Calculator — How Much to Bid",
     metaDescription: "Free FAAB calculator for fantasy waivers. Get a recommended bid from player tier, remaining budget, likely rival bidders and weeks left.",
@@ -237,9 +224,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "start-sit-calculator",
-    category: "draft",
-    title: "Start/Sit Calculator (Fantasy)",
+    slug: "start-sit-calculator",    title: "Start/Sit Calculator (Fantasy)",
     description: "Decide which of two fantasy players to start this week, using projections, floor and ceiling, matchup, and whether your team needs a safe score or a big one.",
     metaTitle: "Start/Sit Calculator — Fantasy Football",
     metaDescription: "Free fantasy start/sit calculator. Compare two players by projection, floor, ceiling and matchup, and get the right call for favourites and underdogs.",
@@ -274,9 +259,7 @@ const TOOLS: ToolDef[] = [
   },
   // ----------------------------------------------------- Playoffs & standings
   {
-    slug: "fantasy-football-playoff-odds-calculator",
-    category: "playoffs",
-    title: "Fantasy Football Playoff Odds Calculator",
+    slug: "fantasy-football-playoff-odds-calculator",    title: "Fantasy Football Playoff Odds Calculator",
     description: "Estimate your chances of making the fantasy football playoffs from your record, games left, scoring strength and the wins usually needed for a spot.",
     metaTitle: "Fantasy Football Playoff Odds Calculator",
     metaDescription: "Free fantasy football playoff odds calculator. Get your playoff chances from your record, points per game, games left and the wins needed.",
@@ -308,9 +291,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-playoff-scenario-calculator",
-    category: "playoffs",
-    title: "Fantasy Playoff Scenario Calculator",
+    slug: "fantasy-playoff-scenario-calculator",    title: "Fantasy Playoff Scenario Calculator",
     description: "Race one rival for a playoff spot. Get your chance to finish ahead, including head-to-head games and tiebreakers, and the wins you need to control your own fate.",
     metaTitle: "Fantasy Playoff Scenario Calculator",
     metaDescription: "Free fantasy playoff scenario calculator. Your chance to finish ahead of a rival, with head-to-head games, tiebreakers and wins needed to clinch.",
@@ -343,9 +324,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-football-magic-number-calculator",
-    category: "playoffs",
-    title: "Fantasy Football Magic Number Calculator",
+    slug: "fantasy-football-magic-number-calculator",    title: "Fantasy Football Magic Number Calculator",
     description: "Find your magic number to clinch a playoff spot over the team chasing you, and your elimination number against the team ahead of you.",
     metaTitle: "Fantasy Football Magic Number Calculator",
     metaDescription: "Free fantasy football magic number calculator. See the wins and rival losses you need to clinch, and your elimination number.",
@@ -375,9 +354,7 @@ const TOOLS: ToolDef[] = [
     ],
   },
   {
-    slug: "fantasy-football-luck-calculator",
-    category: "playoffs",
-    title: "Fantasy Football Luck Calculator",
+    slug: "fantasy-football-luck-calculator",    title: "Fantasy Football Luck Calculator",
     description: "Measure how lucky your fantasy football season has been — your actual wins against the wins your scoring (or all-play record) says you deserved.",
     metaTitle: "Fantasy Football Luck Calculator",
     metaDescription: "Free fantasy football luck calculator. Compare your record with expected wins from points scored or all-play record to see your luck.",
@@ -423,8 +400,7 @@ async function ensureCategory(cat: { name: string; slug: string }) {
 }
 
 async function main() {
-  const categoryIds: Record<string, string> = {};
-  for (const [key, cat] of Object.entries(CATEGORIES)) categoryIds[key] = (await ensureCategory(cat)).id;
+  const category = await ensureCategory(CATEGORY);
 
   let created = 0;
   let updated = 0;
@@ -434,7 +410,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: categoryIds[def.category],
+      categoryId: category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
@@ -468,7 +444,7 @@ async function main() {
     }
   }
 
-  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated.`);
+  console.log(`Done: ${created} tool(s) created, ${updated} tool(s) updated, all filed under "${category.name}".`);
   console.log("New tools are created with status Draft — review them in /admin/tools and publish when ready.");
 }
 
