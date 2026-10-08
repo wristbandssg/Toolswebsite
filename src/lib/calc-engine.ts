@@ -434,6 +434,14 @@ import { cryptoTaxSecurityCustomCalculators } from "./calc-engine-crypto-tax-sec
 import { fantasyTradeScoringCustomCalculators } from "./calc-engine-fantasy-trade-scoring";
 import { fantasyDraftPlayoffsCustomCalculators } from "./calc-engine-fantasy-draft-playoffs";
 import { fantasyPayoutsPoolsCustomCalculators } from "./calc-engine-fantasy-payouts-pools";
+import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
+import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
+import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
+import { sportsBodyCompositionCustomCalculators } from "./calc-engine-sports-body-composition";
+import { sportsEnergyCustomCalculators } from "./calc-engine-sports-energy";
+import { sportsFitnessTestsCustomCalculators } from "./calc-engine-sports-fitness-tests";
+import { sportsMilitaryTestsCustomCalculators } from "./calc-engine-sports-military-tests";
+import { sportsPowerConditioningCustomCalculators } from "./calc-engine-sports-power-conditioning";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -682,6 +690,14 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...fantasyTradeScoringCustomCalculators,
   ...fantasyDraftPlayoffsCustomCalculators,
   ...fantasyPayoutsPoolsCustomCalculators,
+  ...sportsStrengthProgrammingCustomCalculators,
+  ...sportsStrengthToolsCustomCalculators,
+  ...sportsPowerliftingCustomCalculators,
+  ...sportsBodyCompositionCustomCalculators,
+  ...sportsEnergyCustomCalculators,
+  ...sportsFitnessTestsCustomCalculators,
+  ...sportsMilitaryTestsCustomCalculators,
+  ...sportsPowerConditioningCustomCalculators,
 };
 
 export function runCalculator(
