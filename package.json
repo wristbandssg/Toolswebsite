@@ -319,6 +319,10 @@
     "db:create-sports-fitness-tests-calculators": "tsx prisma/create-sports-fitness-tests-calculators.ts",
     "db:create-sports-military-tests-calculators": "tsx prisma/create-sports-military-tests-calculators.ts",
     "db:create-sports-power-conditioning-calculators": "tsx prisma/create-sports-power-conditioning-calculators.ts",
+    "db:create-running-pace-calculators": "tsx prisma/create-running-pace-calculators.ts",
+    "db:create-running-performance-calculators": "tsx prisma/create-running-performance-calculators.ts",
+    "db:create-running-conditions-calculators": "tsx prisma/create-running-conditions-calculators.ts",
+    "db:create-running-nutrition-gear-calculators": "tsx prisma/create-running-nutrition-gear-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },
