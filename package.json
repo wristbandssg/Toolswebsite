@@ -323,6 +323,10 @@
     "db:create-running-performance-calculators": "tsx prisma/create-running-performance-calculators.ts",
     "db:create-running-conditions-calculators": "tsx prisma/create-running-conditions-calculators.ts",
     "db:create-running-nutrition-gear-calculators": "tsx prisma/create-running-nutrition-gear-calculators.ts",
+    "db:create-betting-odds-calculators": "tsx prisma/create-betting-odds-calculators.ts",
+    "db:create-betting-bets-calculators": "tsx prisma/create-betting-bets-calculators.ts",
+    "db:create-betting-strategy-calculators": "tsx prisma/create-betting-strategy-calculators.ts",
+    "db:create-betting-lines-racing-calculators": "tsx prisma/create-betting-lines-racing-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },

@@ -446,6 +446,10 @@ import { runningPaceCustomCalculators } from "./calc-engine-running-pace";
 import { runningPerformanceCustomCalculators } from "./calc-engine-running-performance";
 import { runningConditionsCustomCalculators } from "./calc-engine-running-conditions";
 import { runningNutritionGearCustomCalculators } from "./calc-engine-running-nutrition-gear";
+import { bettingOddsCustomCalculators } from "./calc-engine-betting-odds";
+import { bettingBetsCustomCalculators } from "./calc-engine-betting-bets";
+import { bettingStrategyCustomCalculators } from "./calc-engine-betting-strategy";
+import { bettingLinesRacingCustomCalculators } from "./calc-engine-betting-lines-racing";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -706,6 +710,10 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...runningPerformanceCustomCalculators,
   ...runningConditionsCustomCalculators,
   ...runningNutritionGearCustomCalculators,
+  ...bettingOddsCustomCalculators,
+  ...bettingBetsCustomCalculators,
+  ...bettingStrategyCustomCalculators,
+  ...bettingLinesRacingCustomCalculators,
 };
 
 export function runCalculator(
