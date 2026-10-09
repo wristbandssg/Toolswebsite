@@ -327,6 +327,11 @@
     "db:create-betting-bets-calculators": "tsx prisma/create-betting-bets-calculators.ts",
     "db:create-betting-strategy-calculators": "tsx prisma/create-betting-strategy-calculators.ts",
     "db:create-betting-lines-racing-calculators": "tsx prisma/create-betting-lines-racing-calculators.ts",
+    "db:create-motorsport-engine-calculators": "tsx prisma/create-motorsport-engine-calculators.ts",
+    "db:create-motorsport-power-gearing-calculators": "tsx prisma/create-motorsport-power-gearing-calculators.ts",
+    "db:create-motorsport-dynamics-calculators": "tsx prisma/create-motorsport-dynamics-calculators.ts",
+    "db:create-motorsport-chassis-fuel-calculators": "tsx prisma/create-motorsport-chassis-fuel-calculators.ts",
+    "db:create-motorsport-moto-series-calculators": "tsx prisma/create-motorsport-moto-series-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },

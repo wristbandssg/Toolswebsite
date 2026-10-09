@@ -450,6 +450,11 @@ import { bettingOddsCustomCalculators } from "./calc-engine-betting-odds";
 import { bettingBetsCustomCalculators } from "./calc-engine-betting-bets";
 import { bettingStrategyCustomCalculators } from "./calc-engine-betting-strategy";
 import { bettingLinesRacingCustomCalculators } from "./calc-engine-betting-lines-racing";
+import { motorsportEngineCustomCalculators } from "./calc-engine-motorsport-engine";
+import { motorsportPowerGearingCustomCalculators } from "./calc-engine-motorsport-power-gearing";
+import { motorsportDynamicsCustomCalculators } from "./calc-engine-motorsport-dynamics";
+import { motorsportChassisFuelCustomCalculators } from "./calc-engine-motorsport-chassis-fuel";
+import { motorsportMotoSeriesCustomCalculators } from "./calc-engine-motorsport-moto-series";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -714,6 +719,11 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...bettingBetsCustomCalculators,
   ...bettingStrategyCustomCalculators,
   ...bettingLinesRacingCustomCalculators,
+  ...motorsportEngineCustomCalculators,
+  ...motorsportPowerGearingCustomCalculators,
+  ...motorsportDynamicsCustomCalculators,
+  ...motorsportChassisFuelCustomCalculators,
+  ...motorsportMotoSeriesCustomCalculators,
 };
 
 export function runCalculator(
