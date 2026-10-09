@@ -334,6 +334,9 @@
     "db:create-motorsport-moto-series-calculators": "tsx prisma/create-motorsport-moto-series-calculators.ts",
     "db:create-winter-gear-calculators": "tsx prisma/create-winter-gear-calculators.ts",
     "db:create-winter-conditions-calculators": "tsx prisma/create-winter-conditions-calculators.ts",
+    "db:create-baseball-hitting-calculators": "tsx prisma/create-baseball-hitting-calculators.ts",
+    "db:create-baseball-pitching-calculators": "tsx prisma/create-baseball-pitching-calculators.ts",
+    "db:create-baseball-team-calculators": "tsx prisma/create-baseball-team-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },
