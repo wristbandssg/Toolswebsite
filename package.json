@@ -332,6 +332,8 @@
     "db:create-motorsport-dynamics-calculators": "tsx prisma/create-motorsport-dynamics-calculators.ts",
     "db:create-motorsport-chassis-fuel-calculators": "tsx prisma/create-motorsport-chassis-fuel-calculators.ts",
     "db:create-motorsport-moto-series-calculators": "tsx prisma/create-motorsport-moto-series-calculators.ts",
+    "db:create-winter-gear-calculators": "tsx prisma/create-winter-gear-calculators.ts",
+    "db:create-winter-conditions-calculators": "tsx prisma/create-winter-conditions-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },

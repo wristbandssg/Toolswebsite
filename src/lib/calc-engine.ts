@@ -455,6 +455,8 @@ import { motorsportPowerGearingCustomCalculators } from "./calc-engine-motorspor
 import { motorsportDynamicsCustomCalculators } from "./calc-engine-motorsport-dynamics";
 import { motorsportChassisFuelCustomCalculators } from "./calc-engine-motorsport-chassis-fuel";
 import { motorsportMotoSeriesCustomCalculators } from "./calc-engine-motorsport-moto-series";
+import { winterGearCustomCalculators } from "./calc-engine-winter-gear";
+import { winterConditionsCustomCalculators } from "./calc-engine-winter-conditions";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -724,6 +726,8 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...motorsportDynamicsCustomCalculators,
   ...motorsportChassisFuelCustomCalculators,
   ...motorsportMotoSeriesCustomCalculators,
+  ...winterGearCustomCalculators,
+  ...winterConditionsCustomCalculators,
 };
 
 export function runCalculator(
