@@ -460,6 +460,10 @@ import { winterConditionsCustomCalculators } from "./calc-engine-winter-conditio
 import { baseballHittingCustomCalculators } from "./calc-engine-baseball-hitting";
 import { baseballPitchingCustomCalculators } from "./calc-engine-baseball-pitching";
 import { baseballTeamCustomCalculators } from "./calc-engine-baseball-team";
+import { cyclingFitCustomCalculators } from "./calc-engine-cycling-fit";
+import { cyclingEquipmentCustomCalculators } from "./calc-engine-cycling-equipment";
+import { cyclingPowerCustomCalculators } from "./calc-engine-cycling-power";
+import { cyclingRideCustomCalculators } from "./calc-engine-cycling-ride";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -734,6 +738,10 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...baseballHittingCustomCalculators,
   ...baseballPitchingCustomCalculators,
   ...baseballTeamCustomCalculators,
+  ...cyclingFitCustomCalculators,
+  ...cyclingEquipmentCustomCalculators,
+  ...cyclingPowerCustomCalculators,
+  ...cyclingRideCustomCalculators,
 };
 
 export function runCalculator(

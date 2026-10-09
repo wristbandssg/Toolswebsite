@@ -337,6 +337,10 @@
     "db:create-baseball-hitting-calculators": "tsx prisma/create-baseball-hitting-calculators.ts",
     "db:create-baseball-pitching-calculators": "tsx prisma/create-baseball-pitching-calculators.ts",
     "db:create-baseball-team-calculators": "tsx prisma/create-baseball-team-calculators.ts",
+    "db:create-cycling-fit-calculators": "tsx prisma/create-cycling-fit-calculators.ts",
+    "db:create-cycling-equipment-calculators": "tsx prisma/create-cycling-equipment-calculators.ts",
+    "db:create-cycling-power-calculators": "tsx prisma/create-cycling-power-calculators.ts",
+    "db:create-cycling-ride-calculators": "tsx prisma/create-cycling-ride-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },
