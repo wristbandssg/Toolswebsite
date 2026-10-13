@@ -345,6 +345,9 @@
     "db:create-golf-scoring-calculators": "tsx prisma/create-golf-scoring-calculators.ts",
     "db:create-golf-equipment-calculators": "tsx prisma/create-golf-equipment-calculators.ts",
     "db:create-golf-distance-calculators": "tsx prisma/create-golf-distance-calculators.ts",
+    "db:create-hiking-steps-calculators": "tsx prisma/create-hiking-steps-calculators.ts",
+    "db:create-hiking-fitness-calculators": "tsx prisma/create-hiking-fitness-calculators.ts",
+    "db:create-hiking-trail-calculators": "tsx prisma/create-hiking-trail-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts"
   },
