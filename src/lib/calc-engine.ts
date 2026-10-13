@@ -471,6 +471,23 @@ import { golfDistanceCustomCalculators } from "./calc-engine-golf-distance";
 import { hikingStepsCustomCalculators } from "./calc-engine-hiking-steps";
 import { hikingFitnessCustomCalculators } from "./calc-engine-hiking-fitness";
 import { hikingTrailCustomCalculators } from "./calc-engine-hiking-trail";
+import { otherFootballCustomCalculators } from "./calc-engine-other-football";
+import { otherBasketballCustomCalculators } from "./calc-engine-other-basketball";
+import { otherHorseCareCustomCalculators } from "./calc-engine-other-horse-care";
+import { otherHorseCostsCustomCalculators } from "./calc-engine-other-horse-costs";
+import { otherLeagueCustomCalculators } from "./calc-engine-other-league";
+import { otherTeamStatsCustomCalculators } from "./calc-engine-other-team-stats";
+import { otherTargetGamesCustomCalculators } from "./calc-engine-other-target-games";
+import { otherShootingCustomCalculators } from "./calc-engine-other-shooting";
+import { otherArcheryCustomCalculators } from "./calc-engine-other-archery";
+import { otherSwimDiveCustomCalculators } from "./calc-engine-other-swim-dive";
+import { otherBoardsCustomCalculators } from "./calc-engine-other-boards";
+import { otherWindBoatCustomCalculators } from "./calc-engine-other-wind-boat";
+import { otherGymCardioCustomCalculators } from "./calc-engine-other-gym-cardio";
+import { otherRowingHomeGymCustomCalculators } from "./calc-engine-other-rowing-home-gym";
+import { otherTrackFieldCustomCalculators } from "./calc-engine-other-track-field";
+import { otherRacketCustomCalculators } from "./calc-engine-other-racket";
+import { otherCombatClimbSkateCustomCalculators } from "./calc-engine-other-combat-climb-skate";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -756,6 +773,23 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...hikingStepsCustomCalculators,
   ...hikingFitnessCustomCalculators,
   ...hikingTrailCustomCalculators,
+  ...otherFootballCustomCalculators,
+  ...otherBasketballCustomCalculators,
+  ...otherHorseCareCustomCalculators,
+  ...otherHorseCostsCustomCalculators,
+  ...otherLeagueCustomCalculators,
+  ...otherTeamStatsCustomCalculators,
+  ...otherTargetGamesCustomCalculators,
+  ...otherShootingCustomCalculators,
+  ...otherArcheryCustomCalculators,
+  ...otherSwimDiveCustomCalculators,
+  ...otherBoardsCustomCalculators,
+  ...otherWindBoatCustomCalculators,
+  ...otherGymCardioCustomCalculators,
+  ...otherRowingHomeGymCustomCalculators,
+  ...otherTrackFieldCustomCalculators,
+  ...otherRacketCustomCalculators,
+  ...otherCombatClimbSkateCustomCalculators,
 };
 
 export function runCalculator(
