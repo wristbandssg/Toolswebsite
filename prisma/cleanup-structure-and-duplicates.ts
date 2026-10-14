@@ -43,7 +43,8 @@ const CATEGORY_MERGES: [string, string][] = [
   ["net-worth-cost-of-living-calculators", "budgeting-methods-calculators"],
   ["vehicle-business-use-income-calculators", "car-ownership-fuel-ev-cost-calculators"],
 ];
-const EMPTY_CATEGORIES_TO_DELETE = ["shopping-calculators"];
+// shopping-calculators was deleted here, then re-created by create-shopping-boats-calculators.ts.
+const EMPTY_CATEGORIES_TO_DELETE: string[] = [];
 
 // tool slug -> category slug
 const TOOL_MOVES: Record<string, string> = {

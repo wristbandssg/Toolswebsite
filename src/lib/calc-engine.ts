@@ -432,6 +432,7 @@ import { cryptoTaxSecurityCustomCalculators } from "./calc-engine-crypto-tax-sec
 import { fantasyTradeScoringCustomCalculators } from "./calc-engine-fantasy-trade-scoring";
 import { fantasyDraftPlayoffsCustomCalculators } from "./calc-engine-fantasy-draft-playoffs";
 import { fantasyPayoutsPoolsCustomCalculators } from "./calc-engine-fantasy-payouts-pools";
+import { shoppingBoatsCustomCalculators } from "./calc-engine-shopping-boats";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -759,6 +760,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...fantasyTradeScoringCustomCalculators,
   ...fantasyDraftPlayoffsCustomCalculators,
   ...fantasyPayoutsPoolsCustomCalculators,
+  ...shoppingBoatsCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,

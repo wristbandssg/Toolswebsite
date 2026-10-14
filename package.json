@@ -309,6 +309,7 @@
     "db:create-fantasy-trade-scoring-calculators": "tsx prisma/create-fantasy-trade-scoring-calculators.ts",
     "db:create-fantasy-draft-playoffs-calculators": "tsx prisma/create-fantasy-draft-playoffs-calculators.ts",
     "db:create-fantasy-payouts-pools-calculators": "tsx prisma/create-fantasy-payouts-pools-calculators.ts",
+    "db:create-shopping-boats-calculators": "tsx prisma/create-shopping-boats-calculators.ts",
     "db:create-sports-strength-programming-calculators": "tsx prisma/create-sports-strength-programming-calculators.ts",
     "db:create-sports-strength-tools-calculators": "tsx prisma/create-sports-strength-tools-calculators.ts",
     "db:create-sports-powerlifting-calculators": "tsx prisma/create-sports-powerlifting-calculators.ts",
