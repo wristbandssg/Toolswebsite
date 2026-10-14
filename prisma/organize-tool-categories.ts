@@ -123,6 +123,19 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Insurance Calculators", slug: "insurance-calculators" },
   // Added 6 Oct 2026 with the 88-tool car cost expansion.
   { name: "Car & Vehicle Cost Calculators", slug: "car-vehicle-cost-calculators" },
+  // Added 14 Oct 2026 with the 51-tool finance expansion — the user's own
+  // sub-category names; the create-fin-* scripts make them on first run.
+  { name: "Business & Financial Ratios", slug: "business-financial-ratios" },
+  { name: "Investment & Depreciation Calculators", slug: "investment-depreciation-calculators" },
+  { name: "Tax & Duties Calculators", slug: "tax-duties-calculators" },
+  { name: "Demand & Elasticity Calculators", slug: "demand-elasticity-calculators" },
+  { name: "Salary & Wages Calculators", slug: "salary-wages-calculators" },
+  { name: "Profitability & Cost Calculators", slug: "profitability-cost-calculators" },
+  { name: "Revenue & Sales Calculators", slug: "revenue-sales-calculators" },
+  { name: "Growth & Productivity Calculators", slug: "growth-productivity-calculators" },
+  { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" },
+  { name: "Financial Calculators", slug: "financial-calculators" },
+  { name: "Additional Financial Calculators", slug: "additional-financial-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a

@@ -488,6 +488,11 @@ import { otherRowingHomeGymCustomCalculators } from "./calc-engine-other-rowing-
 import { otherTrackFieldCustomCalculators } from "./calc-engine-other-track-field";
 import { otherRacketCustomCalculators } from "./calc-engine-other-racket";
 import { otherCombatClimbSkateCustomCalculators } from "./calc-engine-other-combat-climb-skate";
+import { finValuationCustomCalculators } from "./calc-engine-fin-valuation";
+import { finDepreciationTaxCustomCalculators } from "./calc-engine-fin-depreciation-tax";
+import { finEconomicsCustomCalculators } from "./calc-engine-fin-economics";
+import { finBusinessPayCustomCalculators } from "./calc-engine-fin-business-pay";
+import { finMarketingMiscCustomCalculators } from "./calc-engine-fin-marketing-misc";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -790,6 +795,11 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...otherTrackFieldCustomCalculators,
   ...otherRacketCustomCalculators,
   ...otherCombatClimbSkateCustomCalculators,
+  ...finValuationCustomCalculators,
+  ...finDepreciationTaxCustomCalculators,
+  ...finEconomicsCustomCalculators,
+  ...finBusinessPayCustomCalculators,
+  ...finMarketingMiscCustomCalculators,
 };
 
 export function runCalculator(
