@@ -82,6 +82,7 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
 const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
+const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };
 
 const TOOLS: ToolDef[] = [
   {
@@ -248,7 +249,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "effective-corporate-tax-rate-calculator",
-    category: BUSINESS_CATEGORY,
+    category: TAX_CATEGORY,
     title: "Effective Corporate Tax Rate Calculator",
     description: "Calculate a company's effective corporate tax rate — income tax expense as a share of pre-tax income — and compare it with the combined federal and state statutory rate.",
     metaTitle: "Effective Corporate Tax Rate Calculator — vs 21% Statutory",

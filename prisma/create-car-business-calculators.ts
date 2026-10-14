@@ -15,7 +15,8 @@ const prisma = new PrismaClient();
 
 const PARENT_CATEGORY = { name: "Car & Vehicle Cost Calculators", slug: "car-vehicle-cost-calculators" };
 const FINANCE_SLUGS = ["finance-calculators", "finance"];
-const CATEGORY = { name: "Vehicle Business Use & Income Calculators", slug: "vehicle-business-use-income-calculators" };
+// Vehicle Business Use & Income was merged into Car Ownership, Fuel & EV Cost (cleanup-structure-and-duplicates.ts).
+const CATEGORY = { name: "Car Ownership, Fuel & EV Cost Calculators", slug: "car-ownership-fuel-ev-cost-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text

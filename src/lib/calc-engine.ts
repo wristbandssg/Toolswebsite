@@ -167,9 +167,9 @@
  *  - calc-engine-us-tax-bracket.ts / -marginal-tax-rate.ts /
  *    -effective-tax-rate.ts / -tax-liability.ts / -tax-refund.ts /
  *    -taxable-income.ts / -tax-withholding.ts / -withholding-tax.ts /
- *    -bonus-tax.ts / -overtime-tax.ts / -commission-tax.ts /
- *    -freelance-tax.ts / -contractor-tax.ts / -estimated-quarterly-tax.ts
- *    — the 14 income-tax-derived family variants (41 tools each, one per
+ *    -bonus-tax.ts / -overtime-tax.ts /
+ *    -freelance-tax.ts / -estimated-quarterly-tax.ts
+ *    — the 12 income-tax-derived family variants (41 tools each, one per
  *    income-tax state), all built on calc-engine-us-income-tax-rates.ts
  * Adding a new country means adding one more calc-engine-<country>.ts file
  * and one more line below merging its map in — no existing country's file
@@ -237,9 +237,7 @@ import { usTaxWithholdingCustomCalculators } from "./calc-engine-us-tax-withhold
 import { usWithholdingTaxCustomCalculators } from "./calc-engine-us-withholding-tax";
 import { usBonusTaxCustomCalculators } from "./calc-engine-us-bonus-tax";
 import { usOvertimeTaxCustomCalculators } from "./calc-engine-us-overtime-tax";
-import { usCommissionTaxCustomCalculators } from "./calc-engine-us-commission-tax";
 import { usFreelanceTaxCustomCalculators } from "./calc-engine-us-freelance-tax";
-import { usContractorTaxCustomCalculators } from "./calc-engine-us-contractor-tax";
 import { usEstimatedQuarterlyTaxCustomCalculators } from "./calc-engine-us-estimated-quarterly-tax";
 
 // --- Finance_Calculators_Topical_SEO_Master.xlsx batches (general/global,
@@ -572,9 +570,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...usWithholdingTaxCustomCalculators,
   ...usBonusTaxCustomCalculators,
   ...usOvertimeTaxCustomCalculators,
-  ...usCommissionTaxCustomCalculators,
   ...usFreelanceTaxCustomCalculators,
-  ...usContractorTaxCustomCalculators,
   ...usEstimatedQuarterlyTaxCustomCalculators,
   ...financeCreditDebtCustomCalculators,
   ...financeSalaryIncomeCustomCalculators,

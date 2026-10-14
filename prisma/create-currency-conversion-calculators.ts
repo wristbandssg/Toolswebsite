@@ -24,6 +24,7 @@
 //   npm run db:create-currency-conversion-calculators
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { RETIRED_TOOL_SLUGS } from "./retired-tool-slugs";
 
 const prisma = new PrismaClient();
 
@@ -480,7 +481,7 @@ async function main() {
   let created = 0;
   let updated = 0;
 
-  for (const def of TOOLS) {
+  for (const def of TOOLS.filter((t) => !RETIRED_TOOL_SLUGS.has(t.slug))) {
     const toolContent = {
       title: def.title,
       description: def.description,

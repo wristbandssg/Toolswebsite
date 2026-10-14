@@ -46,9 +46,7 @@
     "db:create-us-withholding-tax-calculators": "tsx prisma/create-us-withholding-tax-calculators.ts",
     "db:create-us-bonus-tax-calculators": "tsx prisma/create-us-bonus-tax-calculators.ts",
     "db:create-us-overtime-tax-calculators": "tsx prisma/create-us-overtime-tax-calculators.ts",
-    "db:create-us-commission-tax-calculators": "tsx prisma/create-us-commission-tax-calculators.ts",
     "db:create-us-freelance-tax-calculators": "tsx prisma/create-us-freelance-tax-calculators.ts",
-    "db:create-us-contractor-tax-calculators": "tsx prisma/create-us-contractor-tax-calculators.ts",
     "db:create-us-estimated-quarterly-tax-calculators": "tsx prisma/create-us-estimated-quarterly-tax-calculators.ts",
     "db:create-finance-credit-debt-calculators": "tsx prisma/create-finance-credit-debt-calculators.ts",
     "db:create-finance-salary-income-calculators": "tsx prisma/create-finance-salary-income-calculators.ts",
@@ -394,7 +392,8 @@
     "db:create-fin4-accounting-ratios-calculators": "tsx prisma/create-fin4-accounting-ratios-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts",
-    "db:consolidate-finance-subcategories": "tsx prisma/consolidate-finance-subcategories.ts"
+    "db:consolidate-finance-subcategories": "tsx prisma/consolidate-finance-subcategories.ts",
+    "db:cleanup-structure-and-duplicates": "tsx prisma/cleanup-structure-and-duplicates.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

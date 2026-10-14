@@ -302,7 +302,6 @@ const BUDGET_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Household & Family Expense Calculators", slug: "household-family-expense-calculators" },
   { name: "Life Events & Travel Budget Calculators", slug: "life-events-travel-budget-calculators" },
   { name: "Money-Saving & Spending Calculators", slug: "money-saving-calculators" },
-  { name: "Net Worth & Cost of Living Calculators", slug: "net-worth-cost-of-living-calculators" },
 ];
 
 // Sub-categories of Insurance Calculators (added 5 Oct 2026).
@@ -328,7 +327,6 @@ const CAR_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Car Lease, Rental & Transport Calculators", slug: "car-lease-rental-transport-calculators" },
   { name: "Car Ownership, Fuel & EV Cost Calculators", slug: "car-ownership-fuel-ev-cost-calculators" },
   { name: "Car Maintenance, Repair & Upgrade Calculators", slug: "car-maintenance-repair-upgrade-calculators" },
-  { name: "Vehicle Business Use & Income Calculators", slug: "vehicle-business-use-income-calculators" },
 ];
 
 // Sub-categories of Crypto Calculators (added 6 Oct 2026 with the 60-tool
@@ -352,7 +350,7 @@ const CRYPTO_TOOL_GROUPS: Record<string, string[]> = {
     "foreign-investment-currency-return-calculator", "exchange-rate-calculator", "foreign-exchange-calculator",
     "profit-loss-currency-calculator", "currency-conversion-calculator", "live-currency-converter",
     "historical-currency-converter", "historical-exchange-rate-calculator", "cross-currency-rate-calculator",
-    "currency-cross-rate-calculator", "inverse-exchange-rate-calculator", "currency-pair-calculator",
+    "inverse-exchange-rate-calculator", "currency-pair-calculator",
     "multi-currency-converter", "base-currency-calculator", "gold-currency-converter",
     "precious-metal-currency-converter", "forex-break-even-calculator", "forex-commission-calculator",
     "forex-spread-calculator", "forex-swap-calculator", "forex-rollover-calculator",

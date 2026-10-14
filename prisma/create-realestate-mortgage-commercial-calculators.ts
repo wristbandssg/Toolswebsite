@@ -29,6 +29,12 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const CATEGORY_SLUG = "real-estate-calculators";
+// Tools filed somewhere more specific than CATEGORY_SLUG (moved in cleanup-structure-and-duplicates.ts).
+const CATEGORY_OVERRIDES: Record<string, string> = {
+  "real-estate-mortgage-calculator": "mortgage-payment-type-calculators",
+  "investment-property-mortgage-calculator": "property-construction-mortgage-calculators",
+  "rental-property-mortgage-calculator": "property-construction-mortgage-calculators",
+};
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -381,6 +387,13 @@ async function main() {
     );
   }
 
+  const overrideIds = new Map<string, string>();
+  for (const slug of new Set(Object.values(CATEGORY_OVERRIDES))) {
+    const c = await prisma.toolCategory.findUnique({ where: { slug } });
+    if (!c) throw new Error(`The "${slug}" category doesn't exist.`);
+    overrideIds.set(slug, c.id);
+  }
+
   let created = 0;
   let updated = 0;
 
@@ -389,7 +402,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: CATEGORY_OVERRIDES[def.slug] ? overrideIds.get(CATEGORY_OVERRIDES[def.slug])! : category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

@@ -15,7 +15,8 @@ const prisma = new PrismaClient();
 
 const PARENT_CATEGORY = { name: "Budget Calculators", slug: "budget-calculators" };
 const FINANCE_SLUGS = ["finance-calculators", "finance"];
-const CATEGORY = { name: "Net Worth & Cost of Living Calculators", slug: "net-worth-cost-of-living-calculators" };
+// Net Worth & Cost of Living was merged into Budgeting Methods & Planning (cleanup-structure-and-duplicates.ts).
+const CATEGORY = { name: "Budgeting Methods & Planning Calculators", slug: "budgeting-methods-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
