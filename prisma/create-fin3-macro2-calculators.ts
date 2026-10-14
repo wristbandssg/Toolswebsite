@@ -75,7 +75,7 @@ const num = (key: string, label: string, highlight = false, decimals?: number) =
 const pct = (key: string, label: string, highlight = false) => ({ key, label, format: "percentage", ...(highlight ? { highlight: true } : {}) });
 
 
-const MACROECONOMICS = { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" };
+const MACROECONOMICS = { name: "Economics Calculators", slug: "economics-calculators" };
 
 const ECON_NOTE = "Textbook macroeconomic relationships for learning and rough estimates — real economies are messier.";
 const BANK_NOTE = "A simplified Basel III calculation for learning; regulators' rules include many more categories, caps and run-off rates.";

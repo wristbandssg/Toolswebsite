@@ -82,7 +82,7 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
 const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
-const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
 
 const evFields = (marketCap: number) => [currencyField("marketCap", "Market Capitalization", { default: marketCap, max: 100000000000000, step: 1000 }), currencyField("totalDebt", "Total Debt", { default: 600000000, max: 100000000000000, step: 1000 }), currencyField("preferredAndMinority", "Preferred Stock & Minority Interest", { default: 0, max: 100000000000000, step: 1000, required: false }), currencyField("cash", "Cash & Equivalents", { default: 200000000, max: 100000000000000, step: 1000 })];
 

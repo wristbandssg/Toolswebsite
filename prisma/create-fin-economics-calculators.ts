@@ -74,8 +74,8 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
-const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
-const MACROECONOMICS_CATEGORY = { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" };
+const MICROECONOMICS_CATEGORY = { name: "Economics Calculators", slug: "economics-calculators" };
+const MACROECONOMICS_CATEGORY = { name: "Economics Calculators", slug: "economics-calculators" };
 
 const ECON_NOTE = "These are standard textbook formulas for learning, homework and quick business estimates; real markets rarely follow straight-line curves exactly.";
 

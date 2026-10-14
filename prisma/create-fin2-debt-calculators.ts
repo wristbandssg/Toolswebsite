@@ -81,7 +81,7 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
-const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
 const BOND_FIXED_INCOME_CATEGORY = { name: "Bond & Fixed Income Calculators", slug: "bond-fixed-income-calculators" };
 
 const money = (key: string, label: string, def: number, required = true) => numberField(key, label, { unit: "$", default: def, min: -100000000000000, max: 100000000000000, step: 1, required });

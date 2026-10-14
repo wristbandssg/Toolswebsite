@@ -16,11 +16,11 @@ const prisma = new PrismaClient();
 const FINANCE_SLUGS = ["finance-calculators", "finance"];
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
-const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
 const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
 const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };
 const INTEREST_RATE_CATEGORY = { name: "Interest Rate Calculators", slug: "interest-rate-calculators" };
-const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
+const MICROECONOMICS_CATEGORY = { name: "Economics Calculators", slug: "economics-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text

@@ -82,7 +82,7 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
 const SAVINGS_CATEGORY = { name: "Savings Calculators", slug: "savings-calculators" };
-const MACROECONOMICS_CATEGORY = { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" };
+const MACROECONOMICS_CATEGORY = { name: "Economics Calculators", slug: "economics-calculators" };
 const BUDGETING_METHODS_CATEGORY = { name: "Budgeting Methods & Planning Calculators", slug: "budgeting-methods-calculators" };
 const ALTERNATIVE_INVESTMENT_CATEGORY = { name: "Alternative Investment Calculators", slug: "alternative-investment-calculators" };
 const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };

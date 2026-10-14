@@ -112,7 +112,8 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Tax Calculators", slug: "tax-calculators" },
   { name: "Credit & Debt Calculators", slug: "credit-debt-calculators" },
   { name: "Salary & Income Calculators", slug: "salary-income-calculators" },
-  { name: "Business Finance Calculators", slug: "business-finance-calculators" },
+  // Business Finance Calculators was removed on 14 Oct 2026 at the user's request — its
+  // tools now sit directly in Finance Calculators.
   { name: "Real Estate Calculators", slug: "real-estate-calculators" },
   { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
   { name: "Crypto Calculators", slug: "crypto-calculators" },
@@ -123,11 +124,9 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Insurance Calculators", slug: "insurance-calculators" },
   // Added 6 Oct 2026 with the 88-tool car cost expansion.
   { name: "Car & Vehicle Cost Calculators", slug: "car-vehicle-cost-calculators" },
-  // Added 14 Oct 2026 with the finance expansions; on the same day the user had the
-  // small and duplicate sub-categories merged away (prisma/consolidate-finance-
-  // subcategories.ts), leaving only these two new ones.
-  { name: "Microeconomics Calculators", slug: "microeconomics-calculators" },
-  { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" },
+  // Added 14 Oct 2026 with the finance expansions (Microeconomics and
+  // Macroeconomics merged into one the same day).
+  { name: "Economics Calculators", slug: "economics-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a

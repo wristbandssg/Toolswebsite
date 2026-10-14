@@ -40,8 +40,8 @@ const REMOVED = [
 ];
 
 // Target sub-category slug -> tool slugs moved into it.
-const MOVES: Record<string, string[]> = {
-  "business-calculators": [
+const MOVES_BY_KEY: Record<string, string[]> = {
+  "finance-calculators": [
     "paypal-fee-calculator", "check-digit-calculator", "margin-with-discount-calculator", "ctr-calculator",
     "youtube-revenue-calculator", "sales-percentage-calculator", "million-to-billion-converter",
     "labor-cost-calculator", "employee-cost-calculator", "discount-calculator", "customer-effort-score-calculator",
@@ -156,17 +156,26 @@ const MOVES: Record<string, string[]> = {
   "currency-exchange-forex-calculators": [
     "uk-coin-weight-calculator", "pence-to-pounds-converter",
   ],
-  "microeconomics-calculators": [
+  "economics-calculators": [
     "price-elasticity-of-demand-calculator", "income-elasticity-of-demand-calculator",
     "cross-price-elasticity-calculator", "consumer-surplus-calculator", "marginal-cost-calculator",
     "marginal-revenue-calculator", "maximum-profit-calculator", "deadweight-loss-calculator",
     "opportunity-cost-calculator", "hhi-calculator", "lerner-index-calculator",
   ],
-  "macroeconomics-calculators": [
+  "economics-calculators-macro": [
     "mpc-calculator", "comparative-advantage-calculator", "gdp-calculator", "gdp-per-capita-calculator",
     "unemployment-rate-calculator", "growth-rate-calculator", "apc-calculator",
   ],
 };
+
+// Business Finance and the two economics sub-categories were folded further the same
+// day (see flatten-business-finance-and-merge-economics.ts), so those targets now
+// point at the Finance main category and Economics Calculators.
+const MOVES: Record<string, string[]> = {};
+for (const [key, slugs] of Object.entries(MOVES_BY_KEY)) {
+  const target = key.replace(/-macro$/, "");
+  MOVES[target] = [...(MOVES[target] ?? []), ...slugs];
+}
 
 async function main() {
   console.log(APPLY ? "=== APPLY MODE — changes WILL be made ===" : "=== REPORT MODE — nothing will be changed ===");

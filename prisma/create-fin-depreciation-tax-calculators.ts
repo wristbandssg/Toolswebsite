@@ -81,7 +81,7 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
-const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
 const CAR_BUYING_SELLING_CATEGORY = { name: "Car Buying & Selling Calculators", slug: "car-buying-selling-calculators" };
 const HOUSEHOLD_FAMILY_EXPENSE_CATEGORY = { name: "Household & Family Expense Calculators", slug: "household-family-expense-calculators" };
 const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };

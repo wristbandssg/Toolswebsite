@@ -83,9 +83,9 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 // (see prisma/consolidate-finance-subcategories.ts).
 const HOUSEHOLD_FAMILY_EXPENSE_CATEGORY = { name: "Household & Family Expense Calculators", slug: "household-family-expense-calculators" };
 const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };
-const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
 const SALARY_INCOME_CATEGORY = { name: "Salary & Income Calculators", slug: "salary-income-calculators" };
-const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
+const MICROECONOMICS_CATEGORY = { name: "Economics Calculators", slug: "economics-calculators" };
 
 const RATING_OPTS: [string, number][] = [["None", 0], ["10%", 10], ["20%", 20], ["30%", 30], ["40%", 40], ["50%", 50], ["60%", 60], ["70%", 70], ["80%", 80], ["90%", 90], ["100%", 100]];
 

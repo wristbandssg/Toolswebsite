@@ -75,7 +75,7 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const MICROECONOMICS = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
+const MICROECONOMICS = { name: "Economics Calculators", slug: "economics-calculators" };
 
 const money = (key: string, label: string, def: number, required = true) => numberField(key, label, { unit: "$", default: def, min: -100000000000000, max: 100000000000000, step: 1, required });
 const big = (key: string, label: string, def: number, required = true) => currencyField(key, label, { default: def, max: 100000000000000, step: 1, required });

@@ -17,7 +17,9 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const CATEGORY_SLUG = "business-finance-calculators";
+// Business Finance Calculators was removed on 14 Oct 2026 (user request); these tools
+// now sit directly in the Finance Calculators main category.
+const CATEGORY_SLUG = "finance-calculators";
 
 // Tools filed somewhere other than CATEGORY_SLUG. business-loan-calculator
 // was moved to Loan Calculators on 27 Sep 2026 (user request, alongside the

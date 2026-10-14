@@ -79,7 +79,7 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const MACROECONOMICS = { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" };
+const MACROECONOMICS = { name: "Economics Calculators", slug: "economics-calculators" };
 
 const ECON_NOTE = "Textbook macroeconomic relationships for learning and rough estimates — real economies are messier.";
 

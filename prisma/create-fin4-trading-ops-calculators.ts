@@ -82,7 +82,7 @@ const cur = (key: string, label: string, highlight = false) => ({ key, label, fo
 // Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
 // (see prisma/consolidate-finance-subcategories.ts).
 const BUSINESS_SPECIALTY_INSURANCE_CATEGORY = { name: "Business & Specialty Insurance Calculators", slug: "business-specialty-insurance-calculators" };
-const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BUSINESS_CATEGORY = { name: "Finance Calculators", slug: "finance-calculators" };
 const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
 const SALARY_INCOME_CATEGORY = { name: "Salary & Income Calculators", slug: "salary-income-calculators" };
 

@@ -84,7 +84,8 @@ const TOPIC_CATEGORIES: { name: string; slug: string }[] = [
   { name: "Tax Calculators", slug: "tax-calculators" },
   { name: "Credit & Debt Calculators", slug: "credit-debt-calculators" },
   { name: "Salary & Income Calculators", slug: "salary-income-calculators" },
-  { name: "Business Finance Calculators", slug: "business-finance-calculators" },
+  // Business Finance Calculators was removed on 14 Oct 2026 at the user's request — its
+  // tools now sit directly in Finance Calculators.
   { name: "Real Estate Calculators", slug: "real-estate-calculators" },
   { name: "Currency & Exchange Calculators", slug: "currency-exchange-calculators" },
   { name: "Crypto Calculators", slug: "crypto-calculators" },
