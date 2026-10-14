@@ -8,7 +8,8 @@
  *    depreciation. Different from the existing property-/real-estate-
  *    depreciation tools (27.5/39-year buildings, mid-month).
  *  - depreciation: any asset — straight-line, double-declining (200%),
- *    150% declining balance or sum-of-the-years'-digits; declining methods
+ *    150% declining balance, sum-of-the-years'-digits, fixed declining
+ *    balance (Excel DB) or variable declining balance (VDB, switches to SL); declining methods
  *    stop at salvage and take the rest in the final year.
  *  - outTheDoorPrice: a car's total drive-away price — price less dealer
  *    discount, plus add-ons, doc fee, sales tax (trade-in credit optional),
@@ -89,7 +90,7 @@ export const depreciationCalculator: CustomCalculator = (values) => {
   const cost = pos(values.cost, 20000);
   const salvage = Math.min(cost, pos(values.salvageValue, 2000));
   const life = clamp(Math.round(num(values.usefulLife, 5)), 1, 50);
-  const method = num(values.method, 1); // 1 SL, 2 DDB, 3 150% DB, 4 SYD
+  const method = num(values.method, 1); // 1 SL, 2 DDB, 3 150% DB, 4 SYD, 5 fixed DB, 6 VDB
   const year = clamp(Math.round(num(values.year, 1)), 1, life);
   const base = cost - salvage;
   const syd = (life * (life + 1)) / 2;
@@ -103,7 +104,16 @@ export const depreciationCalculator: CustomCalculator = (values) => {
       const rate = (method === 2 ? 2 : 1.5) / life;
       d = y === life ? bv - salvage : Math.min(bv * rate, bv - salvage);
     } else if (method === 4) d = (base * (life - y + 1)) / syd;
-    else d = base / life;
+    else if (method === 5) {
+      // Fixed declining balance (Excel DB): rate = 1 − (salvage ÷ cost)^(1 ÷ life).
+      const rate = cost > 0 && salvage > 0 ? 1 - Math.pow(salvage / cost, 1 / life) : 1;
+      d = y === life ? bv - salvage : bv * rate;
+    } else if (method === 6) {
+      // Variable declining balance (Excel VDB): 200% DB, switching to straight-line on
+      // the remaining base when that gives more.
+      const remaining = life - y + 1;
+      d = Math.min(Math.max((bv * 2) / life, (bv - salvage) / remaining), bv - salvage);
+    } else d = base / life;
     d = Math.max(0, d);
     if (y === 1) first = d;
     bv -= d;

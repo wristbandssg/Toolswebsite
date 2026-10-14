@@ -152,6 +152,10 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Sales Calculators", slug: "sales-calculators" },
   { name: "Microeconomics Calculators", slug: "microeconomics-calculators" },
   { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" },
+  // Added 14 Oct 2026 with the 26-tool finance expansion 4 (create-fin4-*).
+  { name: "UK Finance Calculators", slug: "uk-finance-calculators" },
+  { name: "Indian Finance Calculators", slug: "indian-finance-calculators" },
+  { name: "Other Calculators", slug: "other-finance-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a

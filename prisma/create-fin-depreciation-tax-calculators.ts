@@ -118,14 +118,14 @@ const TOOLS: ToolDef[] = [
     slug: "depreciation-calculator",
     category: INVESTMENT_DEPRECIATION,
     title: "Depreciation Calculator",
-    description: "Calculate asset depreciation by straight-line, double-declining balance, 150% declining balance or sum-of-the-years'-digits — yearly expense, accumulated depreciation and book value.",
+    description: "Calculate asset depreciation by straight-line, double-declining, 150% declining, fixed or variable declining balance, or sum-of-the-years'-digits — yearly expense, accumulated depreciation and book value.",
     metaTitle: "Depreciation Calculator — Straight-Line, DDB & SYD",
     metaDescription: "Free depreciation calculator. Compare straight-line, double-declining, 150% declining balance and sum-of-years'-digits depreciation and book value by year.",
     calcInputs: [
       currencyField("cost", "Asset Cost", { default: 20000, max: 1000000000, step: 100 }),
       currencyField("salvageValue", "Salvage Value", { default: 2000, max: 1000000000, step: 100, required: false }),
       numberField("usefulLife", "Useful Life (years)", { default: 5, min: 1, max: 50 }),
-      dropdown("method", "Method", [["Straight-line", 1], ["Double-declining balance (200%)", 2], ["150% declining balance", 3], ["Sum-of-the-years' digits", 4]], 1),
+      dropdown("method", "Method", [["Straight-line", 1], ["Double-declining balance (200%)", 2], ["150% declining balance", 3], ["Sum-of-the-years' digits", 4], ["Fixed declining balance (Excel DB)", 5], ["Variable declining balance (DDB switching to straight-line)", 6]], 1),
       numberField("year", "Year to Show", { default: 1, min: 1, max: 50 }),
     ],
     calcResult: { label: "Depreciation This Year", format: "currency" },
@@ -134,7 +134,7 @@ const TOOLS: ToolDef[] = [
       "Enter what the asset cost, what you expect it to be worth at the end (salvage value) and its useful life. Choose a method and the year to look at.\n\n" +
       "Straight-line spreads the cost evenly. Declining-balance and sum-of-the-years'-digits methods are accelerated — bigger expenses early, smaller later.",
     examples: "Example: a $20,000 machine with a $2,000 salvage value over 5 years depreciates $3,600 a year straight-line. With double-declining balance, year 1 is $8,000 (40% of $20,000).",
-    assumptions: "Declining-balance methods apply rate ÷ life to the opening book value, never go below salvage value, and take whatever is left in the final year. Full-year convention (no partial first year). For US tax returns use the MACRS Depreciation Calculator. " + DISCLAIMER,
+    assumptions: "Declining-balance methods apply rate ÷ life to the opening book value, never go below salvage value, and take whatever is left in the final year. Fixed declining balance uses the rate 1 − (salvage ÷ cost)^(1 ÷ life); variable declining balance switches from 200% to straight-line when that is larger, like Excel's VDB. Full-year convention (no partial first year). For US tax returns use the MACRS Depreciation Calculator. " + DISCLAIMER,
     faq: [
       { question: "Which depreciation method is best?", answer: "Straight-line is simplest and most common for financial statements; accelerated methods suit assets that lose value fastest when new." },
       { question: "Is salvage value used in double-declining balance?", answer: "Not in the rate, but depreciation stops once book value reaches salvage value." },

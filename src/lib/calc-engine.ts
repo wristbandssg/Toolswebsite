@@ -512,6 +512,9 @@ import { fin3AccountingCustomCalculators } from "./calc-engine-fin3-accounting";
 import { fin3FinancialAnalysisCustomCalculators } from "./calc-engine-fin3-financial-analysis";
 import { fin3Macro1CustomCalculators } from "./calc-engine-fin3-macro1";
 import { fin3Macro2CustomCalculators } from "./calc-engine-fin3-macro2";
+import { fin4IndiaUkCustomCalculators } from "./calc-engine-fin4-india-uk";
+import { fin4TradingOpsCustomCalculators } from "./calc-engine-fin4-trading-ops";
+import { fin4AccountingRatiosCustomCalculators } from "./calc-engine-fin4-accounting-ratios";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -838,6 +841,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...fin3FinancialAnalysisCustomCalculators,
   ...fin3Macro1CustomCalculators,
   ...fin3Macro2CustomCalculators,
+  ...fin4IndiaUkCustomCalculators,
+  ...fin4TradingOpsCustomCalculators,
+  ...fin4AccountingRatiosCustomCalculators,
 };
 
 export function runCalculator(
