@@ -142,6 +142,16 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "General Investment Calculators", slug: "general-investment-calculators" },
   { name: "Equity Investment Calculators", slug: "equity-investment-calculators" },
   { name: "Debt Investment Calculators", slug: "debt-investment-calculators" },
+  // Added 14 Oct 2026 with the 84-tool finance expansion 3 (create-fin3-*);
+  // its retirement tools go into the existing Retirement Calculators.
+  { name: "Derivatives Investment Calculators", slug: "derivatives-investment-calculators" },
+  { name: "Tax & Salary Calculators", slug: "tax-salary-calculators" },
+  { name: "Mortgage & Real Estate Calculators", slug: "mortgage-real-estate-calculators" },
+  { name: "Personal Finance Calculators", slug: "personal-finance-calculators" },
+  { name: "Debt Management Calculators", slug: "debt-management-calculators" },
+  { name: "Sales Calculators", slug: "sales-calculators" },
+  { name: "Microeconomics Calculators", slug: "microeconomics-calculators" },
+  { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a

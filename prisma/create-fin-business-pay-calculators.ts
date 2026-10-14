@@ -233,7 +233,7 @@ const TOOLS: ToolDef[] = [
     slug: "discount-calculator",
     category: PROFITABILITY_COST,
     title: "Discount Calculator",
-    description: "Calculate the sale price after a percentage or dollar discount, stack a second discount, add sales tax, or find the markdown percentage from the original and sale price.",
+    description: "Calculate the sale price after a percentage or dollar discount, stack a second or third discount (double and triple discounts), add sales tax, or find the markdown percentage from the original and sale price.",
     metaTitle: "Discount Calculator — Sale Price, % Off & Markdown",
     metaDescription: "Free discount calculator. Find the sale price and savings for % off or $ off, stack an extra discount, add sales tax, or get the markdown % from two prices.",
     calcInputs: [
@@ -241,6 +241,7 @@ const TOOLS: ToolDef[] = [
       dropdown("mode", "Discount Type", [["Percent off", 1], ["Amount off", 2], ["Find markdown % from sale price", 3]], 1),
       percentField("discountPercent", "Discount %", { default: 25, step: 1, required: false }),
       percentField("extraDiscountPercent", "Extra Discount % (e.g. coupon, optional)", { default: 0, step: 1, required: false }),
+      percentField("thirdDiscountPercent", "Third Discount % (triple discount, optional)", { default: 0, step: 1, required: false }),
       currencyField("amountOff", "Amount Off", { default: 10, max: 100000000, step: 0.01, required: false }),
       currencyField("salePrice", "Sale Price (markdown mode)", { default: 60, max: 100000000, step: 0.01, required: false }),
       percentField("salesTaxRate", "Sales Tax Rate (optional)", { default: 0, max: 30, step: 0.01, required: false }),

@@ -23,7 +23,8 @@
  *    6.2% to $184,500 + Medicare 1.45%), FUTA 0.6% of $7,000, SUTA, workers'
  *    comp, health, 401(k) match, other benefits and overhead; cost per paid
  *    and per productive hour.
- *  - discount: % off (with a stacked second discount), amount off, or the
+ *  - discount: % off (with up to two more stacked discounts — the "Double /
+ *    Triple Discount" keywords), amount off, or the
  *    markdown % from original and sale price — the "Markdown Calculator"
  *    keyword is merged here.
  *  - marginalCost: ΔTC ÷ ΔQ and average total cost at both levels.
@@ -217,7 +218,7 @@ export const discountCalculator: CustomCalculator = (values) => {
   let final: number;
   if (mode === 2) final = original - pos(values.amountOff, 10);
   else if (mode === 3) final = pos(values.salePrice, 60);
-  else final = original * (1 - pos(values.discountPercent, 25) / 100) * (1 - pos(values.extraDiscountPercent, 0) / 100);
+  else final = original * (1 - pos(values.discountPercent, 25) / 100) * (1 - pos(values.extraDiscountPercent, 0) / 100) * (1 - pos(values.thirdDiscountPercent, 0) / 100);
   final = Math.max(0, final);
   const saved = original - final;
   return {
