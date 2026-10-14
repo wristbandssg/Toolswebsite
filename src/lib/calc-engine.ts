@@ -434,6 +434,9 @@ import { fantasyDraftPlayoffsCustomCalculators } from "./calc-engine-fantasy-dra
 import { fantasyPayoutsPoolsCustomCalculators } from "./calc-engine-fantasy-payouts-pools";
 import { shoppingBoatsCustomCalculators } from "./calc-engine-shopping-boats";
 import { shoppingBuyingCostsCustomCalculators } from "./calc-engine-shopping-buying-costs";
+import { shoppingCarTaxStatesCustomCalculators } from "./calc-engine-shopping-car-tax-states";
+import { shoppingImportDutyCustomCalculators } from "./calc-engine-shopping-import-duty";
+import { shoppingTaxSpecialCustomCalculators } from "./calc-engine-shopping-tax-special";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -763,6 +766,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...fantasyPayoutsPoolsCustomCalculators,
   ...shoppingBoatsCustomCalculators,
   ...shoppingBuyingCostsCustomCalculators,
+  ...shoppingCarTaxStatesCustomCalculators,
+  ...shoppingImportDutyCustomCalculators,
+  ...shoppingTaxSpecialCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
