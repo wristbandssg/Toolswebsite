@@ -76,12 +76,14 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const BUSINESS_PLANNING = { name: "Business Planning Calculators", slug: "business-planning-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 
 const TOOLS: ToolDef[] = [
   {
     slug: "bounce-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Bounce Rate Calculator",
     description: "Calculate your website's bounce rate from single-page sessions, and the GA4 bounce rate and engagement rate from engaged sessions.",
     metaTitle: "Bounce Rate Calculator — UA & GA4 Bounce Rate",
@@ -99,7 +101,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "exit-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Exit Rate Calculator",
     description: "Calculate a page's exit rate — the share of its pageviews that were the last in the session — and compare it with its bounce rate.",
     metaTitle: "Exit Rate Calculator — Page Exit Rate vs Bounce Rate",
@@ -117,7 +119,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "conversion-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Conversion Rate Calculator",
     description: "Calculate your conversion rate and online marketing funnel — visitor-to-lead and lead-to-customer rates, revenue per visitor, and the sales a target rate would bring.",
     metaTitle: "Conversion Rate Calculator — Website & Funnel Conversions",
@@ -135,7 +137,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "website-ad-revenue-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Website Ad Revenue Calculator",
     description: "Estimate how much your website or blog earns from display ads such as Google AdSense — daily, monthly and yearly — from pageviews and page RPM or CTR and CPC.",
     metaTitle: "Website Ad Revenue Calculator — AdSense Earnings Estimate",
@@ -153,7 +155,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "grp-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "GRP Calculator",
     description: "Calculate gross rating points (GRP) for a TV, radio or digital campaign from reach and frequency, plus impressions, cost per point and CPM.",
     metaTitle: "GRP Calculator — Gross Rating Points, Reach & Frequency",
@@ -171,7 +173,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "churn-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Churn Rate Calculator",
     description: "Calculate customer churn rate and customer retention rate for a month, quarter or year, the annualised churn, and the average customer lifetime.",
     metaTitle: "Churn Rate Calculator — Customer Churn & Retention Rate",
@@ -189,7 +191,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "saas-metrics-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "SaaS Metrics Calculator",
     description: "Calculate the key SaaS metrics in one place — MRR, ARR, churn, net revenue retention, CAC, LTV, LTV:CAC and CAC payback.",
     metaTitle: "SaaS Metrics Calculator — MRR, ARR, LTV, CAC & NRR",
@@ -207,7 +209,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "software-contract-value-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Software Contract Value Calculator",
     description: "Calculate the total contract value (TCV) and annual contract value (ACV) of a software or SaaS deal, with yearly price increases and one-time fees.",
     metaTitle: "Software Contract Value Calculator — TCV & ACV",
@@ -225,7 +227,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "sell-through-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Sell-Through Rate Calculator",
     description: "Calculate the sell-through rate of your inventory — units sold as a share of units received — plus the daily sales rate and days to sell out.",
     metaTitle: "Sell-Through Rate Calculator — Retail Inventory STR",
@@ -243,7 +245,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "gmroi-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "GMROI Calculator",
     description: "Calculate GMROI (gross margin return on investment) — the gross profit earned for every dollar invested in inventory — plus gross margin % and inventory turnover.",
     metaTitle: "GMROI Calculator — Gross Margin Return on Investment",

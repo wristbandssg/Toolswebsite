@@ -79,14 +79,16 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const MORTGAGE_REAL_ESTATE = { name: "Mortgage & Real Estate Calculators", slug: "mortgage-real-estate-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const REAL_ESTATE_CATEGORY = { name: "Real Estate Calculators", slug: "real-estate-calculators" };
 
 const gbp = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", currency: "GBP", ...(highlight ? { highlight: true } : {}) });
 
 const TOOLS: ToolDef[] = [
   {
     slug: "affo-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "AFFO Calculator",
     description: "Calculate a REIT's funds from operations (FFO) and adjusted funds from operations (AFFO) — totals, per share, dividend payout ratio and price-to-FFO.",
     metaTitle: "AFFO Calculator — FFO & AFFO for REITs",
@@ -104,7 +106,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "commercial-lease-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Commercial Lease Calculator",
     description: "Calculate the cost of a commercial lease — base rent per square foot, NNN charges (taxes, insurance, CAM), yearly escalations and free rent — monthly, yearly and over the term.",
     metaTitle: "Commercial Lease Calculator — NNN Rent per Sq Ft",
@@ -122,7 +124,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "net-effective-rent-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Net Effective Rent Calculator",
     description: "Calculate net effective rent — the real monthly rent after free months and other concessions — and the discount from the advertised rent.",
     metaTitle: "Net Effective Rent Calculator — Rent After Concessions",
@@ -140,7 +142,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "occupancy-rate-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Occupancy Rate Calculator",
     description: "Calculate the occupancy rate of a hotel, rental portfolio or vacation rental, plus ADR (average daily rate) and RevPAR (revenue per available room).",
     metaTitle: "Occupancy Rate Calculator — Occupancy, ADR & RevPAR",
@@ -158,7 +160,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "prorated-rent-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Prorated Rent Calculator",
     description: "Calculate prorated rent for a partial month when you move in or out mid-month — by days in the month, a 365-day year or a 30-day banker's month.",
     metaTitle: "Prorated Rent Calculator — Partial Month Rent",
@@ -176,7 +178,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "rental-commission-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Rental Commission Calculator",
     description: "Calculate a rental broker's fee or leasing commission — as a percentage of annual rent or a number of months' rent — and the agent's share after the split.",
     metaTitle: "Rental Commission Calculator — Broker & Leasing Fee",
@@ -194,7 +196,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "realtor-commission-calculator-with-vat",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Realtor Commission Calculator with VAT",
     description: "Calculate an estate agent's or realtor's fee including VAT — commission before and after VAT, the effective rate and what you're left with from the sale.",
     metaTitle: "Estate Agent Fee Calculator with VAT — Realtor Commission",

@@ -123,39 +123,11 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Insurance Calculators", slug: "insurance-calculators" },
   // Added 6 Oct 2026 with the 88-tool car cost expansion.
   { name: "Car & Vehicle Cost Calculators", slug: "car-vehicle-cost-calculators" },
-  // Added 14 Oct 2026 with the 51-tool finance expansion — the user's own
-  // sub-category names; the create-fin-* scripts make them on first run.
-  { name: "Business & Financial Ratios", slug: "business-financial-ratios" },
-  { name: "Investment & Depreciation Calculators", slug: "investment-depreciation-calculators" },
-  { name: "Tax & Duties Calculators", slug: "tax-duties-calculators" },
-  { name: "Demand & Elasticity Calculators", slug: "demand-elasticity-calculators" },
-  { name: "Salary & Wages Calculators", slug: "salary-wages-calculators" },
-  { name: "Profitability & Cost Calculators", slug: "profitability-cost-calculators" },
-  { name: "Revenue & Sales Calculators", slug: "revenue-sales-calculators" },
-  { name: "Growth & Productivity Calculators", slug: "growth-productivity-calculators" },
-  { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" },
-  { name: "Financial Calculators", slug: "financial-calculators" },
-  { name: "Additional Financial Calculators", slug: "additional-financial-calculators" },
-  // Added 14 Oct 2026 with the 88-tool finance expansion 2 (create-fin2-*).
-  { name: "Financial & Investment", slug: "financial-investment-calculators" },
-  { name: "Business Planning Calculators", slug: "business-planning-calculators" },
-  { name: "General Investment Calculators", slug: "general-investment-calculators" },
-  { name: "Equity Investment Calculators", slug: "equity-investment-calculators" },
-  { name: "Debt Investment Calculators", slug: "debt-investment-calculators" },
-  // Added 14 Oct 2026 with the 84-tool finance expansion 3 (create-fin3-*);
-  // its retirement tools go into the existing Retirement Calculators.
-  { name: "Derivatives Investment Calculators", slug: "derivatives-investment-calculators" },
-  { name: "Tax & Salary Calculators", slug: "tax-salary-calculators" },
-  { name: "Mortgage & Real Estate Calculators", slug: "mortgage-real-estate-calculators" },
-  { name: "Personal Finance Calculators", slug: "personal-finance-calculators" },
-  { name: "Debt Management Calculators", slug: "debt-management-calculators" },
-  { name: "Sales Calculators", slug: "sales-calculators" },
+  // Added 14 Oct 2026 with the finance expansions; on the same day the user had the
+  // small and duplicate sub-categories merged away (prisma/consolidate-finance-
+  // subcategories.ts), leaving only these two new ones.
   { name: "Microeconomics Calculators", slug: "microeconomics-calculators" },
   { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" },
-  // Added 14 Oct 2026 with the 26-tool finance expansion 4 (create-fin4-*).
-  { name: "UK Finance Calculators", slug: "uk-finance-calculators" },
-  { name: "Indian Finance Calculators", slug: "indian-finance-calculators" },
-  { name: "Other Calculators", slug: "other-finance-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a

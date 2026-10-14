@@ -79,14 +79,19 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const MORTGAGE_REAL_ESTATE = { name: "Mortgage & Real Estate Calculators", slug: "mortgage-real-estate-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const REAL_ESTATE_CATEGORY = { name: "Real Estate Calculators", slug: "real-estate-calculators" };
+const REFINANCE_HOME_EQUITY_CATEGORY = { name: "Refinance & Home Equity Calculators", slug: "refinance-home-equity-calculators" };
+const MORTGAGE_PAYMENT_TYPE_CATEGORY = { name: "Mortgage Payment & Type Calculators", slug: "mortgage-payment-type-calculators" };
+const HOME_BUYER_PROGRAM_CATEGORY = { name: "Home Buyer Program Calculators", slug: "home-buyer-program-calculators" };
 
 const php = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", currency: "PHP", ...(highlight ? { highlight: true } : {}) });
 
 const TOOLS: ToolDef[] = [
   {
     slug: "earnest-money-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Earnest Money Calculator",
     description: "Calculate the earnest money deposit for a home offer, and how much cash you'll still need at closing after it's credited toward your down payment and closing costs.",
     metaTitle: "Earnest Money Calculator — Deposit & Cash to Close",
@@ -104,7 +109,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "gift-of-equity-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "Gift of Equity Calculator",
     description: "Calculate a gift of equity when buying a home from family below market value — the gift amount, how it covers your down payment, the loan and any gift-tax filing needed.",
     metaTitle: "Gift of Equity Calculator — Family Home Sale",
@@ -122,7 +127,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "mortgage-penalty-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REFINANCE_HOME_EQUITY_CATEGORY,
     title: "Mortgage Penalty Calculator",
     description: "Estimate a mortgage prepayment penalty for breaking your mortgage early — three months' interest, the interest rate differential (IRD) or a percentage of the balance.",
     metaTitle: "Mortgage Penalty Calculator — IRD & 3 Months' Interest",
@@ -140,7 +145,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "mortgage-rate-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: MORTGAGE_PAYMENT_TYPE_CATEGORY,
     title: "Mortgage Rate Calculator",
     description: "See how your mortgage rate changes your monthly payment — the payment at your rate and at ±0.5 and ±1 point — and find the rate behind a quoted payment.",
     metaTitle: "Mortgage Rate Calculator — Payment at Different Rates",
@@ -158,7 +163,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "pag-ibig-housing-loan-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: HOME_BUYER_PROGRAM_CATEGORY,
     title: "Pag-IBIG Housing Loan Calculator",
     description: "Calculate your Pag-IBIG Fund housing loan monthly amortization, total interest, the income you need, the maximum loan for your salary and your age at maturity.",
     metaTitle: "Pag-IBIG Housing Loan Calculator — Monthly Amortization",
@@ -176,7 +181,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "what-to-offer-on-a-house-calculator",
-    category: MORTGAGE_REAL_ESTATE,
+    category: REAL_ESTATE_CATEGORY,
     title: "What To Offer On A House Calculator",
     description: "Get a suggested offer range for a house from comparable sales, needed repairs, how hot the market is and how long the home has been listed.",
     metaTitle: "What to Offer on a House Calculator — Offer Price Range",

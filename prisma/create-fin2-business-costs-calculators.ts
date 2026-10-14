@@ -79,12 +79,14 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const BUSINESS_PLANNING = { name: "Business Planning Calculators", slug: "business-planning-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 
 const TOOLS: ToolDef[] = [
   {
     slug: "3d-printer-buy-vs-outsource-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "3D Printer Buy vs Outsource Calculator",
     description: "Compare buying a 3D printer with outsourcing your prints — your cost per print (machine, filament, electricity, upkeep), yearly savings and break-even number of prints.",
     metaTitle: "3D Printer Buy vs Outsource Calculator — Cost per Print",
@@ -102,7 +104,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "build-vs-buy-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Build vs Buy Calculator",
     description: "Compare building software or a capability in-house with buying a ready-made solution — total and present-value cost of each over several years, and when building breaks even.",
     metaTitle: "Build vs Buy Calculator — In-House vs Vendor Cost",
@@ -120,7 +122,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "business-budget-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Business Budget Calculator",
     description: "Build a simple monthly business budget — revenue, cost of goods, operating expenses and tax — to see your operating and net profit, net margin and break-even revenue.",
     metaTitle: "Business Budget Calculator — Monthly Profit & Break-Even",
@@ -138,7 +140,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "cost-function-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Cost Function Calculator",
     description: "Calculate total cost from a cost function TC = FC + vQ (+ cQ²) — total variable cost, average fixed, variable and total cost, and marginal cost at any output.",
     metaTitle: "Cost Function Calculator — Total, Average & Marginal Cost",
@@ -156,7 +158,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "cost-of-doing-business-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Cost of Doing Business Calculator",
     description: "Calculate your cost of doing business — overhead plus your own pay as a share of revenue — and what it costs to run the business per billable hour and per day.",
     metaTitle: "Cost of Doing Business Calculator — Overhead per Hour",
@@ -174,7 +176,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "direct-material-price-variance-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Direct Material Price Variance Calculator",
     description: "Calculate the direct material price variance (and quantity variance) — whether you paid more or less than the standard cost for materials — and if it's favorable or unfavorable.",
     metaTitle: "Direct Material Price Variance Calculator — DMPV",
@@ -192,7 +194,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "price-quantity-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Price / Quantity Calculator",
     description: "Solve for total price, unit price or quantity from the other two — and compare the unit price of a second offer or pack size to find the better deal.",
     metaTitle: "Price Quantity Calculator — Total, Unit Price & Quantity",
@@ -210,7 +212,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lemonade-stand-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Lemonade Stand Calculator",
     description: "Work out the profit from a lemonade stand — revenue, cost per cup, setup costs, profit per cup, hourly earnings and how many cups you need to sell to break even.",
     metaTitle: "Lemonade Stand Calculator — Profit & Break-Even Cups",
@@ -228,7 +230,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "parking-ratio-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Parking Ratio Calculator",
     description: "Calculate a building's parking ratio — spaces per 1,000 square feet — and compare it with typical ratios for office, retail, medical, industrial and restaurant property.",
     metaTitle: "Parking Ratio Calculator — Spaces per 1,000 Sq Ft",
@@ -246,7 +248,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "effective-corporate-tax-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Effective Corporate Tax Rate Calculator",
     description: "Calculate a company's effective corporate tax rate — income tax expense as a share of pre-tax income — and compare it with the combined federal and state statutory rate.",
     metaTitle: "Effective Corporate Tax Rate Calculator — vs 21% Statutory",

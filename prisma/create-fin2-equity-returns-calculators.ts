@@ -75,15 +75,17 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const GENERAL_INVESTMENT = { name: "General Investment Calculators", slug: "general-investment-calculators" };
-const EQUITY_INVESTMENT = { name: "Equity Investment Calculators", slug: "equity-investment-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 
 const money = (key: string, label: string, def: number, required = true) => numberField(key, label, { unit: "$", default: def, min: -100000000000000, max: 100000000000000, step: 1, required });
 
 const TOOLS: ToolDef[] = [
   {
     slug: "dividend-payout-ratio-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Dividend Payout Ratio Calculator",
     description: "Calculate the dividend payout ratio and retention ratio from dividends and earnings per share, plus the payout as a share of free cash flow.",
     metaTitle: "Dividend Payout Ratio Calculator — Payout & Retention Ratio",
@@ -101,7 +103,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "dupont-analysis-calculator",
-    category: EQUITY_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "DuPont Analysis Calculator",
     description: "Break down return on equity with DuPont analysis — 3-step (profit margin × asset turnover × equity multiplier) and 5-step (tax burden, interest burden, EBIT margin).",
     metaTitle: "DuPont Analysis Calculator — 3-Step & 5-Step ROE",
@@ -119,7 +121,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "economic-value-added-calculator",
-    category: EQUITY_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Economic Value Added Calculator",
     description: "Calculate economic value added (EVA) — NOPAT minus a charge for all the capital invested — plus ROIC and the spread over the cost of capital.",
     metaTitle: "Economic Value Added Calculator — EVA",
@@ -137,7 +139,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "market-value-added-calculator",
-    category: GENERAL_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "MVA Calculator",
     description: "Calculate market value added (MVA) — how much value a company has created for investors above the capital they put in — and its market-to-book ratio.",
     metaTitle: "MVA Calculator — Market Value Added",
@@ -155,7 +157,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "residual-income-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Residual Income Calculator",
     description: "Calculate residual income — net income minus a charge for the cost of equity — and value a stock with the residual income model.",
     metaTitle: "Residual Income Calculator — RI Valuation Model",
@@ -173,7 +175,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "roic-calculator",
-    category: EQUITY_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "ROIC Calculator",
     description: "Calculate return on invested capital (ROIC) — NOPAT divided by debt plus equity minus cash — and the spread over your cost of capital.",
     metaTitle: "ROIC Calculator — Return on Invested Capital",
@@ -191,7 +193,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "sustainable-growth-rate-calculator",
-    category: EQUITY_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Sustainable Growth Rate Calculator",
     description: "Calculate a company's sustainable growth rate (SGR) — how fast it can grow without new equity or more leverage — and the internal growth rate.",
     metaTitle: "Sustainable Growth Rate Calculator — SGR = ROE × b",
@@ -209,7 +211,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "portfolio-beta-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Portfolio Beta Calculator",
     description: "Calculate the beta of your stock portfolio as the value-weighted average of each holding's beta, and its CAPM expected return.",
     metaTitle: "Portfolio Beta Calculator — Weighted Average Beta",
@@ -230,7 +232,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "unlevered-beta-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Unlevered Beta Calculator",
     description: "Calculate unlevered (asset) beta from a stock's levered beta, debt-to-equity and tax rate with the Hamada equation, and re-lever it to a target capital structure.",
     metaTitle: "Unlevered Beta Calculator — Hamada Asset Beta",
@@ -248,7 +250,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "operating-cash-flow-ratio-calculator",
-    category: EQUITY_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Operating Cash Flow Ratio Calculator",
     description: "Calculate the operating cash flow ratio — whether cash from operations covers current liabilities — plus the operating cash flow margin and cash conversion of earnings.",
     metaTitle: "Operating Cash Flow Ratio Calculator — OCF Ratio",

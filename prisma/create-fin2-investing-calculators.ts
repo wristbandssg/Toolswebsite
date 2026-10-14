@@ -79,9 +79,12 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const FINANCIAL_INVESTMENT = { name: "Financial & Investment", slug: "financial-investment-calculators" };
-const GENERAL_INVESTMENT = { name: "General Investment Calculators", slug: "general-investment-calculators" };
-const EQUITY_INVESTMENT = { name: "Equity Investment Calculators", slug: "equity-investment-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const SAVINGS_CATEGORY = { name: "Savings Calculators", slug: "savings-calculators" };
+const FUND_ETF_CATEGORY = { name: "Fund & ETF Calculators", slug: "fund-etf-calculators" };
+const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
+const ALTERNATIVE_INVESTMENT_CATEGORY = { name: "Alternative Investment Calculators", slug: "alternative-investment-calculators" };
 
 const inrField = (key: string, label: string, def: number, max = 1000000000, step = 500) => ({ key, label, type: "currency", unit: "INR", required: true, default: def, min: 0, max, step });
 const inr = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", currency: "INR", ...(highlight ? { highlight: true } : {}) });
@@ -89,7 +92,7 @@ const inr = (key: string, label: string, highlight = false) => ({ key, label, fo
 const TOOLS: ToolDef[] = [
   {
     slug: "ppf-calculator",
-    category: FINANCIAL_INVESTMENT,
+    category: SAVINGS_CATEGORY,
     title: "PPF Calculator",
     description: "Calculate the maturity value of your Public Provident Fund (PPF) account — total deposits, interest earned and maturity amount over 15 years or more.",
     metaTitle: "PPF Calculator — Public Provident Fund Maturity Value",
@@ -107,7 +110,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "swp-calculator",
-    category: FINANCIAL_INVESTMENT,
+    category: FUND_ETF_CATEGORY,
     title: "SWP Calculator",
     description: "Calculate a systematic withdrawal plan (SWP) — how much you withdraw, what's left at the end, and the most you can withdraw each month so your corpus lasts.",
     metaTitle: "SWP Calculator — Systematic Withdrawal Plan",
@@ -125,7 +128,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lumpsum-calculator",
-    category: FINANCIAL_INVESTMENT,
+    category: FUND_ETF_CATEGORY,
     title: "Lumpsum Calculator",
     description: "Calculate what a one-time (lump sum) mutual fund investment grows to — estimated returns, total value and its worth in today's money.",
     metaTitle: "Lumpsum Calculator — One-Time Mutual Fund Investment",
@@ -143,7 +146,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "bitcoin-etf-calculator",
-    category: GENERAL_INVESTMENT,
+    category: FUND_ETF_CATEGORY,
     title: "Bitcoin ETF Calculator",
     description: "Estimate the value of a spot bitcoin ETF investment from a future bitcoin price, after the fund's expense ratio — and compare it with buying bitcoin directly.",
     metaTitle: "Bitcoin ETF Calculator — Returns After Fees",
@@ -161,7 +164,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "nav-calculator",
-    category: EQUITY_INVESTMENT,
+    category: FUND_ETF_CATEGORY,
     title: "NAV Calculator",
     description: "Calculate a fund's net asset value (NAV) per unit or share from its assets, liabilities and units outstanding, and its premium or discount to the market price.",
     metaTitle: "NAV Calculator — Net Asset Value per Share",
@@ -179,7 +182,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "free-float-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Free Float Calculator",
     description: "Calculate a company's free float — the shares available for public trading after promoter, insider, government and strategic holdings — and its free-float market cap.",
     metaTitle: "Free Float Calculator — Float Shares & Float Market Cap",
@@ -197,7 +200,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "market-capitalization-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Market Capitalization Calculator",
     description: "Calculate a company's market capitalization from shares outstanding and share price, and see whether it's a mega, large, mid, small, micro or nano cap.",
     metaTitle: "Market Cap Calculator — Market Capitalization & Size",
@@ -215,7 +218,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "stock-split-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Stock Split Calculator",
     description: "Calculate your shares and the share price after a forward or reverse stock split, including cash paid for fractional shares.",
     metaTitle: "Stock Split Calculator — Shares & Price After a Split",
@@ -233,7 +236,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "carried-interest-calculator",
-    category: EQUITY_INVESTMENT,
+    category: ALTERNATIVE_INVESTMENT_CATEGORY,
     title: "Carried Interest Calculator",
     description: "Calculate a private equity or venture fund manager's carried interest after the hurdle rate, with or without a GP catch-up, and the investors' net return.",
     metaTitle: "Carried Interest Calculator — PE Carry & Hurdle Rate",
@@ -251,7 +254,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "moving-average-calculator",
-    category: GENERAL_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Moving Average Calculator",
     description: "Calculate the simple (SMA) and exponential (EMA) moving average of a stock or any data series, and whether the latest price is above or below it.",
     metaTitle: "Moving Average Calculator — SMA & EMA",

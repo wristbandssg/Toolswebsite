@@ -79,11 +79,11 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const TAX_SALARY = { name: "Tax & Salary Calculators", slug: "tax-salary-calculators" };
-const GENERAL_INVESTMENT = { name: "General Investment Calculators", slug: "general-investment-calculators" };
-const INVESTMENT_DEPRECIATION = { name: "Investment & Depreciation Calculators", slug: "investment-depreciation-calculators" };
-const PERSONAL_FINANCE = { name: "Personal Finance Calculators", slug: "personal-finance-calculators" };
-const BUSINESS_RATIOS = { name: "Business & Financial Ratios", slug: "business-financial-ratios" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };
+const BUDGETING_METHODS_CATEGORY = { name: "Budgeting Methods & Planning Calculators", slug: "budgeting-methods-calculators" };
 
 const big = (key: string, label: string, def: number, required = true) => currencyField(key, label, { default: def, max: 100000000000000, step: 1, required });
 const money = (key: string, label: string, def: number, required = true) => numberField(key, label, { unit: "$", default: def, min: -100000000000000, max: 100000000000000, step: 0.01, required });
@@ -91,7 +91,7 @@ const money = (key: string, label: string, def: number, required = true) => numb
 const TOOLS: ToolDef[] = [
   {
     slug: "round-to-nearest-dollar-or-cent-calculator",
-    category: TAX_SALARY,
+    category: BUSINESS_CATEGORY,
     title: "Round to Nearest Dollar or Cent",
     description: "Round a money amount to the nearest cent, dime, dollar, $5, $10 or $100 — or always up or down — and see the difference.",
     metaTitle: "Round to Nearest Dollar or Cent — Money Rounding",
@@ -109,7 +109,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "future-value-of-cash-flows-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Future Value of Cash Flows Calculator",
     description: "Calculate the future value of uneven cash flows — different deposits each year — grown at an interest rate to a chosen year, plus their present value.",
     metaTitle: "Future Value of Cash Flows Calculator — Uneven Deposits",
@@ -127,7 +127,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "units-of-production-depreciation-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: BUSINESS_CATEGORY,
     title: "Units of Production Depreciation Calculator",
     description: "Calculate depreciation by units of production (activity method) — based on units made, hours run or miles driven — with the rate per unit, accumulated depreciation and book value.",
     metaTitle: "Units of Production Depreciation — Activity Method",
@@ -145,7 +145,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "adding-machine-calculator",
-    category: PERSONAL_FINANCE,
+    category: BUDGETING_METHODS_CATEGORY,
     title: "Adding Machine Calculator",
     description: "An online adding machine (10-key) — add up to 20 amounts, including negatives, to get the total, count, average, largest and smallest, with optional tax.",
     metaTitle: "Adding Machine Calculator — Online 10-Key Tape",
@@ -163,7 +163,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "checkbook-balance-calculator",
-    category: PERSONAL_FINANCE,
+    category: BUDGETING_METHODS_CATEGORY,
     title: "Checkbook Balance Calculator",
     description: "Balance your checkbook — start from your balance, add deposits and subtract checks, card payments and fees to get the running and ending balance, and spot an overdraft.",
     metaTitle: "Checkbook Balance Calculator — Running Balance",
@@ -181,7 +181,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "stock-ratios-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "Stock Ratios Calculator",
     description: "Calculate the main stock valuation ratios at once — P/E, earnings yield, dividend yield, payout ratio, price-to-book and price-to-sales.",
     metaTitle: "Stock Ratios Calculator — P/E, Yield, P/B & P/S",
@@ -199,7 +199,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "liquidity-ratios-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "Liquidity Ratios Calculator",
     description: "Calculate a company's liquidity ratios at once — current ratio, quick (acid-test) ratio, cash ratio, operating cash flow ratio and working capital.",
     metaTitle: "Liquidity Ratios Calculator — Current, Quick & Cash Ratio",
@@ -217,7 +217,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "debt-ratios-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "Debt Ratios Calculator",
     description: "Calculate a company's debt and solvency ratios at once — debt ratio, debt-to-equity, equity ratio, interest coverage, debt-to-EBITDA and debt service coverage.",
     metaTitle: "Debt Ratios Calculator — Leverage & Coverage Ratios",
@@ -235,7 +235,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "profitability-ratios-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "Profitability Ratios Calculator",
     description: "Calculate a company's profitability ratios at once — gross margin, operating margin, net margin, return on assets (ROA) and return on equity (ROE).",
     metaTitle: "Profitability Ratios Calculator — Margins, ROA & ROE",
@@ -253,7 +253,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "operations-ratios-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "Operations Ratios Calculator",
     description: "Calculate a company's efficiency (operating) ratios at once — asset turnover, inventory, receivables and payables turnover, the matching days and the cash conversion cycle.",
     metaTitle: "Operations Ratios Calculator — Turnover & Efficiency",

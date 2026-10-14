@@ -72,9 +72,10 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const DEMAND_ELASTICITY = { name: "Demand & Elasticity Calculators", slug: "demand-elasticity-calculators" };
-const GROWTH_PRODUCTIVITY = { name: "Growth & Productivity Calculators", slug: "growth-productivity-calculators" };
-const MISCELLANEOUS = { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
+const MACROECONOMICS_CATEGORY = { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" };
 
 const ECON_NOTE = "These are standard textbook formulas for learning, homework and quick business estimates; real markets rarely follow straight-line curves exactly.";
 
@@ -83,7 +84,7 @@ const METHOD = dropdown("method", "Formula", [["Midpoint (arc) method", 1], ["Si
 const TOOLS: ToolDef[] = [
   {
     slug: "price-elasticity-of-demand-calculator",
-    category: DEMAND_ELASTICITY,
+    category: MICROECONOMICS_CATEGORY,
     title: "Price Elasticity of Demand Calculator",
     description: "Calculate the price elasticity of demand (PED) from two prices and quantities with the midpoint formula — elastic, inelastic or unit elastic — and the effect on total revenue.",
     metaTitle: "Price Elasticity of Demand Calculator — Midpoint Formula",
@@ -103,7 +104,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "income-elasticity-of-demand-calculator",
-    category: DEMAND_ELASTICITY,
+    category: MICROECONOMICS_CATEGORY,
     title: "Income Elasticity of Demand Calculator",
     description: "Calculate the income elasticity of demand (YED) from two income levels and quantities, and see whether a good is a luxury, a necessity or an inferior good.",
     metaTitle: "Income Elasticity of Demand Calculator — YED",
@@ -121,7 +122,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "cross-price-elasticity-calculator",
-    category: DEMAND_ELASTICITY,
+    category: MICROECONOMICS_CATEGORY,
     title: "Cross Price Elasticity Calculator",
     description: "Calculate the cross-price elasticity of demand between two goods and find out whether they are substitutes, complements or unrelated.",
     metaTitle: "Cross-Price Elasticity Calculator — Substitutes or Not",
@@ -139,7 +140,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "consumer-surplus-calculator",
-    category: DEMAND_ELASTICITY,
+    category: MICROECONOMICS_CATEGORY,
     title: "Consumer Surplus Calculator",
     description: "Calculate consumer surplus — and producer and total surplus — from a linear demand curve's maximum price, the market price and the quantity sold.",
     metaTitle: "Consumer Surplus Calculator — Consumer & Producer Surplus",
@@ -157,7 +158,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "mpc-calculator",
-    category: DEMAND_ELASTICITY,
+    category: MACROECONOMICS_CATEGORY,
     title: "MPC Calculator",
     description: "Calculate the marginal propensity to consume (MPC) and save (MPS), the spending and tax multipliers, and how much a change in spending moves GDP.",
     metaTitle: "MPC Calculator — Marginal Propensity to Consume & Multiplier",
@@ -175,7 +176,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "deadweight-loss-calculator",
-    category: MISCELLANEOUS,
+    category: MICROECONOMICS_CATEGORY,
     title: "Deadweight Loss Calculator",
     description: "Calculate the deadweight loss from a tax, tariff or price control — the lost economic surplus from trades that no longer happen — and the tax revenue raised.",
     metaTitle: "Deadweight Loss Calculator — Tax & Price Control DWL",
@@ -193,7 +194,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "comparative-advantage-calculator",
-    category: GROWTH_PRODUCTIVITY,
+    category: MACROECONOMICS_CATEGORY,
     title: "Comparative Advantage Calculator",
     description: "Find who has the comparative and absolute advantage in two goods from each producer's output, the opportunity costs, and the range of terms of trade that benefits both.",
     metaTitle: "Comparative Advantage Calculator — Opportunity Cost & Trade",
@@ -211,7 +212,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "gdp-calculator",
-    category: GROWTH_PRODUCTIVITY,
+    category: MACROECONOMICS_CATEGORY,
     title: "GDP Calculator",
     description: "Calculate gross domestic product (GDP) with the expenditure approach — consumption, investment, government spending and net exports — and real GDP with a deflator.",
     metaTitle: "GDP Calculator — Expenditure Approach (C + I + G + NX)",
@@ -229,7 +230,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "gdp-per-capita-calculator",
-    category: GROWTH_PRODUCTIVITY,
+    category: MACROECONOMICS_CATEGORY,
     title: "GDP Per Capita Calculator",
     description: "Calculate GDP per capita from a country's GDP and population — per year, month and day — and its growth from a previous figure.",
     metaTitle: "GDP Per Capita Calculator — Output per Person",
@@ -247,7 +248,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "unemployment-rate-calculator",
-    category: GROWTH_PRODUCTIVITY,
+    category: MACROECONOMICS_CATEGORY,
     title: "Unemployment Rate Calculator",
     description: "Calculate the unemployment rate, labor force, labor force participation rate and employment-population ratio from employed, unemployed and working-age population.",
     metaTitle: "Unemployment Rate Calculator — Labor Force & Participation",
@@ -265,7 +266,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "growth-rate-calculator",
-    category: GROWTH_PRODUCTIVITY,
+    category: MACROECONOMICS_CATEGORY,
     title: "Growth Rate Calculator",
     description: "Calculate the growth rate between two values — total growth, average and compound growth per period, the continuous rate, doubling time and a projection.",
     metaTitle: "Growth Rate Calculator — Compound, Average & Doubling Time",

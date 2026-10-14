@@ -79,15 +79,17 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const GENERAL_INVESTMENT = { name: "General Investment Calculators", slug: "general-investment-calculators" };
-const EQUITY_INVESTMENT = { name: "Equity Investment Calculators", slug: "equity-investment-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 
 const evFields = (marketCap: number) => [currencyField("marketCap", "Market Capitalization", { default: marketCap, max: 100000000000000, step: 1000 }), currencyField("totalDebt", "Total Debt", { default: 600000000, max: 100000000000000, step: 1000 }), currencyField("preferredAndMinority", "Preferred Stock & Minority Interest", { default: 0, max: 100000000000000, step: 1000, required: false }), currencyField("cash", "Cash & Equivalents", { default: 200000000, max: 100000000000000, step: 1000 })];
 
 const TOOLS: ToolDef[] = [
   {
     slug: "dividend-discount-model-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Dividend Discount Model Calculator",
     description: "Value a stock with the dividend discount model — the Gordon growth model or a two-stage DDM with a high-growth period — and compare the intrinsic value with the share price.",
     metaTitle: "Dividend Discount Model Calculator — Gordon & Two-Stage DDM",
@@ -105,7 +107,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "graham-number-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Graham Number Calculator",
     description: "Calculate the Graham Number — Benjamin Graham's maximum fair price for a defensive stock from EPS and book value per share — and his growth formula value.",
     metaTitle: "Graham Number Calculator — Benjamin Graham Fair Value",
@@ -123,7 +125,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "margin-of-safety-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Margin of Safety Calculator",
     description: "Calculate the margin of safety for an investment (intrinsic value vs market price) or for a business (actual sales above break-even), and the buy price for a target margin.",
     metaTitle: "Margin of Safety Calculator — Investing & Break-Even",
@@ -141,7 +143,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "peg-ratio-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "PEG Ratio Calculator",
     description: "Calculate the PEG ratio — the P/E ratio divided by expected earnings growth — and the dividend-adjusted PEG, to see whether a stock's price is justified by its growth.",
     metaTitle: "PEG Ratio Calculator — P/E to Growth Ratio",
@@ -159,7 +161,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "price-to-book-ratio-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Price to Book Ratio Calculator",
     description: "Calculate the price-to-book (P/B) ratio and book value per share, plus price to tangible book value excluding goodwill and intangibles.",
     metaTitle: "Price to Book Ratio Calculator — P/B & Book Value per Share",
@@ -177,7 +179,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "price-to-cash-flow-ratio-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Price to Cash Flow Ratio Calculator",
     description: "Calculate the price-to-cash-flow (P/CF) ratio from operating cash flow per share, plus the price-to-free-cash-flow ratio after capital spending.",
     metaTitle: "Price to Cash Flow Ratio Calculator — P/CF & P/FCF",
@@ -195,7 +197,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "price-to-sales-ratio-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Price to Sales Ratio Calculator",
     description: "Calculate the price-to-sales (P/S) ratio — market capitalization divided by revenue — and sales per share.",
     metaTitle: "Price to Sales Ratio Calculator — P/S Ratio",
@@ -213,7 +215,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "ebitda-multiple-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "EBITDA Multiple Calculator",
     description: "Calculate a company's EV/EBITDA multiple from market cap, debt and cash, and the implied enterprise and equity value at a target multiple.",
     metaTitle: "EBITDA Multiple Calculator — EV/EBITDA & Implied Value",
@@ -231,7 +233,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "ev-to-sales-calculator",
-    category: EQUITY_INVESTMENT,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "EV to Sales Calculator",
     description: "Calculate the EV/Sales (enterprise value to sales) multiple, compare it with the price-to-sales ratio, and value a company at a target EV/Sales multiple.",
     metaTitle: "EV to Sales Calculator — Enterprise Value to Revenue",
@@ -249,7 +251,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "year-over-year-growth-calculator",
-    category: GENERAL_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Year Over Year Growth Calculator",
     description: "Calculate year-over-year (YoY) growth — or quarter-over-quarter, month-over-month and week-over-week — for revenue, EPS, traffic or any metric, and its annualised rate.",
     metaTitle: "Year Over Year Growth Calculator — YoY, QoQ, MoM, WoW",

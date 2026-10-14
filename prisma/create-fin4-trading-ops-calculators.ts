@@ -79,15 +79,19 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const OTHER = { name: "Other Calculators", slug: "other-finance-calculators" };
-const TAX_SALARY = { name: "Tax & Salary Calculators", slug: "tax-salary-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_SPECIALTY_INSURANCE_CATEGORY = { name: "Business & Specialty Insurance Calculators", slug: "business-specialty-insurance-calculators" };
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
+const SALARY_INCOME_CATEGORY = { name: "Salary & Income Calculators", slug: "salary-income-calculators" };
 
 const TRADE_NOTE = "Technical indicators describe past prices; they don't predict them reliably. Use them with risk management, not as advice.";
 
 const TOOLS: ToolDef[] = [
   {
     slug: "combined-ratio-calculator",
-    category: OTHER,
+    category: BUSINESS_SPECIALTY_INSURANCE_CATEGORY,
     title: "Combined Ratio Calculator",
     description: "Calculate an insurer's combined ratio — loss ratio plus expense ratio — and underwriting profit, to see whether it makes money from writing insurance.",
     metaTitle: "Combined Ratio Calculator — Loss & Expense Ratio",
@@ -105,7 +109,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "customer-effort-score-calculator",
-    category: OTHER,
+    category: BUSINESS_CATEGORY,
     title: "Customer Effort Score Calculator",
     description: "Calculate your Customer Effort Score (CES) from 1–7 survey answers — the average score, the share who found it easy and the share who found it hard.",
     metaTitle: "Customer Effort Score Calculator — CES",
@@ -123,7 +127,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "trir-calculator",
-    category: OTHER,
+    category: BUSINESS_CATEGORY,
     title: "TRIR Calculator",
     description: "Calculate your OSHA total recordable incident rate (TRIR), DART rate and lost-time incident rate (LTIR) per 100 full-time workers.",
     metaTitle: "TRIR Calculator — TRIR, DART & LTIR Safety Rates",
@@ -141,7 +145,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "fibonacci-retracement-calculator",
-    category: OTHER,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Fibonacci Retracement Calculator",
     description: "Calculate Fibonacci retracement levels (23.6%, 38.2%, 50%, 61.8%, 78.6%) and extension targets (127.2%, 161.8%) from a swing high and low.",
     metaTitle: "Fibonacci Retracement Calculator — Levels & Extensions",
@@ -159,7 +163,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "pivot-point-calculator",
-    category: OTHER,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Pivot Point Calculator",
     description: "Calculate pivot points with support and resistance levels (S1–S3, R1–R3) from the previous period's high, low and close — classic, Woodie or Fibonacci.",
     metaTitle: "Pivot Point Calculator — Support & Resistance Levels",
@@ -177,7 +181,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "rsi-calculator",
-    category: OTHER,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Relative Strength Index Calculator (RSI)",
     description: "Calculate the Relative Strength Index (RSI) from closing prices with Wilder's smoothing, and see whether a stock looks overbought or oversold.",
     metaTitle: "RSI Calculator — Relative Strength Index",
@@ -195,7 +199,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "remote-vs-on-location-workers-calculator",
-    category: OTHER,
+    category: BUSINESS_CATEGORY,
     title: "Remote vs. On-Location Workers Calculator",
     description: "Compare what an employer spends on an office-based employee versus a remote one — office space, supplies, stipends, equipment and productivity — and the yearly savings.",
     metaTitle: "Remote vs On-Location Workers Calculator — Employer Cost",
@@ -213,7 +217,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "california-overtime-calculator",
-    category: TAX_SALARY,
+    category: SALARY_INCOME_CATEGORY,
     title: "California Overtime Calculator",
     description: "Calculate California overtime pay for a week — daily overtime after 8 hours, double time after 12, weekly overtime after 40, and the seventh-consecutive-day rule.",
     metaTitle: "California Overtime Calculator — Daily OT & Double Time",
@@ -231,7 +235,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "change-calculator",
-    category: TAX_SALARY,
+    category: BUSINESS_CATEGORY,
     title: "Change Calculator",
     description: "Calculate the change due from a cash payment and the fewest US bills and coins to give back — for cashiers, students and checking your change.",
     metaTitle: "Change Calculator — Change Due in Bills & Coins",

@@ -79,7 +79,10 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const DEBT_INVESTMENT = { name: "Debt Investment Calculators", slug: "debt-investment-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const BOND_FIXED_INCOME_CATEGORY = { name: "Bond & Fixed Income Calculators", slug: "bond-fixed-income-calculators" };
 
 const money = (key: string, label: string, def: number, required = true) => numberField(key, label, { unit: "$", default: def, min: -100000000000000, max: 100000000000000, step: 1, required });
 const bigCur = (key: string, label: string, def: number, required = true) => currencyField(key, label, { default: def, max: 100000000000000, step: 1, required });
@@ -87,7 +90,7 @@ const bigCur = (key: string, label: string, def: number, required = true) => cur
 const TOOLS: ToolDef[] = [
   {
     slug: "altman-z-score-calculator",
-    category: DEBT_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Altman Z-Score Calculator",
     description: "Calculate the Altman Z-Score to assess a company's risk of bankruptcy — for public manufacturers (Z), private companies (Z') and non-manufacturers (Z'') — and see its zone.",
     metaTitle: "Altman Z-Score Calculator — Bankruptcy Risk (Z, Z', Z'')",
@@ -105,7 +108,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "bond-price-calculator",
-    category: DEBT_INVESTMENT,
+    category: BOND_FIXED_INCOME_CATEGORY,
     title: "Bond Price Calculator",
     description: "Calculate a bond's price from its face value, coupon rate, yield to maturity and years to maturity — and whether it trades at a premium, par or discount.",
     metaTitle: "Bond Price Calculator — Price from Yield & Coupon",
@@ -123,7 +126,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "credit-spread-calculator",
-    category: DEBT_INVESTMENT,
+    category: BOND_FIXED_INCOME_CATEGORY,
     title: "Credit Spread Calculator",
     description: "Calculate a bond's credit spread over Treasuries in percent and basis points, and the default probability the spread implies.",
     metaTitle: "Credit Spread Calculator — Spread over Treasuries (bps)",
@@ -141,7 +144,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "debt-to-asset-ratio-calculator",
-    category: DEBT_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Debt to Asset Ratio Calculator",
     description: "Calculate the debt-to-asset (debt) ratio — the share of a company's assets financed by liabilities — and its equity ratio.",
     metaTitle: "Debt to Asset Ratio Calculator — Debt Ratio",
@@ -159,7 +162,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "debt-to-capital-ratio-calculator",
-    category: DEBT_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Debt-to-Capital Ratio Calculator",
     description: "Calculate the debt-to-capital ratio — interest-bearing debt as a share of total capital (debt plus equity) — and the matching debt-to-equity ratio.",
     metaTitle: "Debt-to-Capital Ratio Calculator — Leverage Ratio",
@@ -177,7 +180,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "debt-to-equity-calculator",
-    category: DEBT_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Debt to Equity Calculator",
     description: "Calculate a company's debt-to-equity (D/E) ratio three ways — total liabilities, interest-bearing debt and long-term debt — to judge its financial leverage.",
     metaTitle: "Debt to Equity Calculator — D/E Ratio",
@@ -195,7 +198,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "defensive-interval-ratio-calculator",
-    category: DEBT_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "Defensive Interval Ratio Calculator",
     description: "Calculate the defensive interval ratio — how many days a company could pay its operating expenses from liquid assets alone, without new revenue.",
     metaTitle: "Defensive Interval Ratio Calculator — Days of Liquidity",
@@ -213,7 +216,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "effective-duration-calculator",
-    category: DEBT_INVESTMENT,
+    category: BOND_FIXED_INCOME_CATEGORY,
     title: "Effective Duration Calculator",
     description: "Calculate a bond's effective duration and effective convexity from its prices when yields shift up and down, and estimate the price change for any rate move.",
     metaTitle: "Effective Duration Calculator — Duration & Convexity",
@@ -231,7 +234,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lgd-calculator",
-    category: DEBT_INVESTMENT,
+    category: BOND_FIXED_INCOME_CATEGORY,
     title: "LGD Calculator",
     description: "Calculate loss given default (LGD) from exposure at default, collateral and recoveries — and the expected credit loss with a probability of default.",
     metaTitle: "LGD Calculator — Loss Given Default & Expected Loss",

@@ -79,14 +79,16 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const DEBT_MANAGEMENT = { name: "Debt Management Calculators", slug: "debt-management-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const CREDIT_DEBT_CATEGORY = { name: "Credit & Debt Calculators", slug: "credit-debt-calculators" };
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 const RETIREMENT = { name: "Retirement Calculators", slug: "retirement-calculators" };
-const SALES = { name: "Sales Calculators", slug: "sales-calculators" };
 
 const TOOLS: ToolDef[] = [
   {
     slug: "debt-avalanche-calculator",
-    category: DEBT_MANAGEMENT,
+    category: CREDIT_DEBT_CATEGORY,
     title: "Debt Avalanche Calculator",
     description: "Plan your debt payoff with the avalanche method — extra money to the highest interest rate first — and compare months and interest with the snowball method.",
     metaTitle: "Debt Avalanche Calculator — Avalanche vs Snowball",
@@ -108,7 +110,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "deferred-payment-loan-calculator",
-    category: DEBT_MANAGEMENT,
+    category: CREDIT_DEBT_CATEGORY,
     title: "Deferred Payment Loan Calculator",
     description: "Calculate a loan with deferred payments — the interest that builds up during the deferral, the payment when repayment starts, and the extra cost versus paying from day one.",
     metaTitle: "Deferred Payment Loan Calculator — Interest During Deferral",
@@ -126,7 +128,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "finance-charge-calculator",
-    category: DEBT_MANAGEMENT,
+    category: CREDIT_DEBT_CATEGORY,
     title: "Finance Charge Calculator",
     description: "Calculate a credit card finance charge with the average daily balance method — from your starting balance, purchases, payments and APR over the billing cycle.",
     metaTitle: "Finance Charge Calculator — Average Daily Balance",
@@ -144,7 +146,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "post-judgment-interest-calculator",
-    category: DEBT_MANAGEMENT,
+    category: CREDIT_DEBT_CATEGORY,
     title: "Post Judgment Interest Calculator",
     description: "Calculate post-judgment interest on a court judgment — federal (28 U.S.C. § 1961, compounded yearly) or simple state interest — and the daily per-diem amount.",
     metaTitle: "Post Judgment Interest Calculator — Federal & State",
@@ -198,7 +200,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "check-digit-calculator",
-    category: SALES,
+    category: BUSINESS_CATEGORY,
     title: "Check Digit Calculator",
     description: "Calculate the check digit for a UPC-A or EAN-13 barcode, an ISBN-10 or any number using the Luhn algorithm (credit cards, IMEI).",
     metaTitle: "Check Digit Calculator — UPC, EAN, ISBN & Luhn",
@@ -216,7 +218,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "margin-with-discount-calculator",
-    category: SALES,
+    category: BUSINESS_CATEGORY,
     title: "Margin With Discount Calculator",
     description: "See what a discount does to your profit margin — the sale price, margin before and after, profit per unit, the biggest discount that keeps your target margin, and the extra sales needed.",
     metaTitle: "Margin With Discount Calculator — Discount vs Profit",

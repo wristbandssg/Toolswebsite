@@ -79,15 +79,21 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const PERSONAL_FINANCE = { name: "Personal Finance Calculators", slug: "personal-finance-calculators" };
-const DEBT_MANAGEMENT = { name: "Debt Management Calculators", slug: "debt-management-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const SAVINGS_CATEGORY = { name: "Savings Calculators", slug: "savings-calculators" };
+const MACROECONOMICS_CATEGORY = { name: "Macroeconomics Calculators", slug: "macroeconomics-calculators" };
+const BUDGETING_METHODS_CATEGORY = { name: "Budgeting Methods & Planning Calculators", slug: "budgeting-methods-calculators" };
+const ALTERNATIVE_INVESTMENT_CATEGORY = { name: "Alternative Investment Calculators", slug: "alternative-investment-calculators" };
+const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };
+const CREDIT_DEBT_CATEGORY = { name: "Credit & Debt Calculators", slug: "credit-debt-calculators" };
 
 const WEIGHT_UNIT = dropdown("weightUnit", "Weight Unit", [["Grams", 1], ["Troy ounces", 2], ["Pennyweights (dwt)", 3]], 1);
 
 const TOOLS: ToolDef[] = [
   {
     slug: "529-calculator",
-    category: PERSONAL_FINANCE,
+    category: SAVINGS_CATEGORY,
     title: "529 Calculator",
     description: "Project your 529 college savings plan balance from monthly contributions and expected returns, and the state income-tax deduction your contributions earn.",
     metaTitle: "529 Calculator — College Savings Plan Growth",
@@ -105,7 +111,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "apc-calculator",
-    category: PERSONAL_FINANCE,
+    category: MACROECONOMICS_CATEGORY,
     title: "APC Calculator",
     description: "Calculate the average propensity to consume (APC) and to save (APS) — the share of income spent and saved — and the marginal propensity to consume between two periods.",
     metaTitle: "APC Calculator — Average Propensity to Consume & Save",
@@ -123,7 +129,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "bank-reconciliation-calculator",
-    category: PERSONAL_FINANCE,
+    category: BUDGETING_METHODS_CATEGORY,
     title: "Bank Reconciliation Calculator",
     description: "Reconcile your bank statement with your books — adjust both balances for deposits in transit, outstanding checks, fees, interest and errors — and find any difference.",
     metaTitle: "Bank Reconciliation Calculator — Bank vs Book Balance",
@@ -141,7 +147,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "gold-melt-calculator",
-    category: PERSONAL_FINANCE,
+    category: ALTERNATIVE_INVESTMENT_CATEGORY,
     title: "Gold Melt Calculator",
     description: "Calculate the melt value of gold jewelry or scrap gold from its weight and karat at today's spot price, and what a buyer is likely to pay.",
     metaTitle: "Gold Melt Calculator — Scrap Gold Value by Karat",
@@ -159,7 +165,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "silver-melt-calculator",
-    category: PERSONAL_FINANCE,
+    category: ALTERNATIVE_INVESTMENT_CATEGORY,
     title: "Silver Melt Calculator",
     description: "Calculate the melt value of silver coins, sterling silver or scrap silver — by weight and purity or by the face value of 90% US silver coins.",
     metaTitle: "Silver Melt Calculator — Coin & Scrap Silver Value",
@@ -177,7 +183,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lottery-payout-calculator",
-    category: PERSONAL_FINANCE,
+    category: TAX_CATEGORY,
     title: "Lottery Payout Calculator",
     description: "Calculate a Powerball or Mega Millions jackpot payout — the lump-sum cash option and the 30-payment annuity — after federal and state taxes.",
     metaTitle: "Lottery Payout Calculator — Powerball & Mega Millions",
@@ -195,7 +201,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "stimulus-check-calculator",
-    category: PERSONAL_FINANCE,
+    category: TAX_CATEGORY,
     title: "Stimulus Check Calculator",
     description: "Calculate the amount of each 2020–2021 federal stimulus check (Economic Impact Payments 1, 2 and 3) for your filing status, income and children.",
     metaTitle: "Stimulus Check Calculator — EIP 1, 2 & 3 Amounts",
@@ -213,7 +219,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "trump-accounts-calculator",
-    category: PERSONAL_FINANCE,
+    category: SAVINGS_CATEGORY,
     title: "Trump Accounts Calculator",
     description: "Project a child's Trump Account balance at age 18 — the $1,000 federal pilot deposit for babies born 2025–2028, family and employer contributions, and investment growth.",
     metaTitle: "Trump Accounts Calculator — Child Account at 18",
@@ -231,7 +237,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "credit-utilization-calculator",
-    category: DEBT_MANAGEMENT,
+    category: CREDIT_DEBT_CATEGORY,
     title: "Credit Utilization Calculator",
     description: "Calculate your credit utilization ratio across up to five credit cards — overall and on your highest card — and how much to pay down to get under 30% or 10%.",
     metaTitle: "Credit Utilization Calculator — Ratio & Pay-Down Target",

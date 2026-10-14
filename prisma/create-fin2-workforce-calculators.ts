@@ -76,14 +76,16 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const BUSINESS_PLANNING = { name: "Business Planning Calculators", slug: "business-planning-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 
 const HR_NOTE = "HR benchmarks vary by industry, country and company size — compare against your own history and local rules.";
 
 const TOOLS: ToolDef[] = [
   {
     slug: "absence-percentage-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Absence Percentage Calculator",
     description: "Calculate the absence percentage (absenteeism rate) for an employee or team — days lost as a share of working days — and what the absence costs.",
     metaTitle: "Absence Percentage Calculator — Absenteeism Rate",
@@ -101,7 +103,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "bradford-factor-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Bradford Factor Calculator",
     description: "Calculate an employee's Bradford Factor score from the number of absence spells and total days absent, and see which common trigger point it reaches.",
     metaTitle: "Bradford Factor Calculator — Absence Score & Triggers",
@@ -119,7 +121,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "turnover-rate-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Turnover Rate Calculator",
     description: "Calculate employee turnover rate and attrition rate from headcount and separations, the annualised rate, voluntary turnover and the cost of replacing leavers.",
     metaTitle: "Employee Turnover Rate Calculator — Attrition & Cost",
@@ -137,7 +139,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "fte-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "FTE Calculator",
     description: "Calculate full-time equivalents (FTE) from full-time and part-time staff, and your ACA full-time employee count to check applicable large employer status.",
     metaTitle: "FTE Calculator — Full-Time Equivalent & ACA Count",
@@ -155,7 +157,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "man-hours-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Man-Hours Calculator",
     description: "Calculate man-hours (labor hours) for a crew, the labor cost, and how many days or workers a job needs.",
     metaTitle: "Man-Hours Calculator — Labor Hours, Cost & Crew Size",
@@ -173,7 +175,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "days-off-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Days Off Calculator",
     description: "Calculate how many days off you get in a year — weekends, public holidays, vacation and sick days — and how many days you actually work.",
     metaTitle: "Days Off Calculator — Working Days & Days Off per Year",
@@ -191,7 +193,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "tenure-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Tenure Calculator",
     description: "Calculate an employee's length of service (tenure) in years and months between two dates, and your team's average tenure.",
     metaTitle: "Tenure Calculator — Length of Service & Average Tenure",
@@ -209,7 +211,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "smokers-ctc-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Smoker's CTC Calculator",
     description: "Estimate the extra cost to company (CTC) of employees who smoke — time lost to smoke breaks, absence, lower productivity and higher health-care costs.",
     metaTitle: "Smoker's Cost to Company Calculator — Employer Cost",
@@ -227,7 +229,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "burndown-chart-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Burndown Chart Calculator",
     description: "Calculate where your sprint stands on a burndown chart — ideal vs actual remaining work, whether you're ahead or behind, the velocity needed and the projected finish day.",
     metaTitle: "Burndown Chart Calculator — Sprint Progress & Velocity",

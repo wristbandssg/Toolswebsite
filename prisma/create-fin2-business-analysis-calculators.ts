@@ -79,13 +79,16 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const BUSINESS_PLANNING = { name: "Business Planning Calculators", slug: "business-planning-calculators" };
-const GENERAL_INVESTMENT = { name: "General Investment Calculators", slug: "general-investment-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
+const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };
 
 const TOOLS: ToolDef[] = [
   {
     slug: "additional-funds-needed-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Additional Funds Needed Calculator",
     description: "Calculate additional funds needed (AFN) — the outside financing a company needs to support sales growth after spontaneous liabilities and retained earnings.",
     metaTitle: "Additional Funds Needed Calculator — AFN Formula",
@@ -103,7 +106,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "evm-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "EVM Calculator",
     description: "Calculate earned value management (EVM) metrics for a project — planned value, earned value, cost and schedule variance, CPI, SPI, EAC, ETC, VAC and TCPI.",
     metaTitle: "EVM Calculator — Earned Value, CPI, SPI & EAC",
@@ -121,7 +124,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "emv-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "EMV Calculator",
     description: "Calculate expected monetary value (EMV) for project risk analysis or a decision tree — probability × impact across up to five risks and opportunities.",
     metaTitle: "EMV Calculator — Expected Monetary Value (Risk Analysis)",
@@ -142,7 +145,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "hhi-calculator",
-    category: BUSINESS_PLANNING,
+    category: MICROECONOMICS_CATEGORY,
     title: "HHI Calculator",
     description: "Calculate the Herfindahl-Hirschman Index (HHI) of market concentration from firms' market shares, the four-firm ratio, and the change in HHI from a merger.",
     metaTitle: "HHI Calculator — Herfindahl-Hirschman Index & Merger ΔHHI",
@@ -160,7 +163,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lerner-index-calculator",
-    category: BUSINESS_PLANNING,
+    category: MICROECONOMICS_CATEGORY,
     title: "Lerner Index Calculator",
     description: "Calculate the Lerner Index of market power — (price − marginal cost) ÷ price — the markup, the implied price elasticity, and the profit-maximising price from an elasticity.",
     metaTitle: "Lerner Index Calculator — Market Power & Markup",
@@ -178,7 +181,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "operating-asset-turnover-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Operating Asset Turnover Calculator",
     description: "Calculate operating asset turnover — revenue divided by the assets actually used to run the business — and compare it with total asset turnover.",
     metaTitle: "Operating Asset Turnover Calculator — Asset Efficiency",
@@ -196,7 +199,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "pre-and-post-money-valuation-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "Pre and Post Money Valuation Calculator",
     description: "Calculate a startup's post-money valuation, investor and founder ownership, price per share and new shares issued — including the effect of a new option pool.",
     metaTitle: "Pre and Post Money Valuation Calculator — Startup Dilution",
@@ -214,7 +217,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "pvgo-calculator",
-    category: BUSINESS_PLANNING,
+    category: BUSINESS_CATEGORY,
     title: "PVGO Calculator",
     description: "Calculate the present value of growth opportunities (PVGO) — how much of a stock's price comes from expected future growth rather than current earnings.",
     metaTitle: "PVGO Calculator — Present Value of Growth Opportunities",
@@ -232,7 +235,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "expected-utility-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Expected Utility Calculator",
     description: "Calculate the expected utility of a risky choice from its outcomes and probabilities, plus its certainty equivalent and risk premium for your level of risk aversion.",
     metaTitle: "Expected Utility Calculator — Certainty Equivalent",
@@ -253,7 +256,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "nopat-calculator",
-    category: GENERAL_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "NOPAT Calculator",
     description: "Calculate NOPAT (net operating profit after tax) from EBIT and the tax rate, cross-check it from net income, and get the NOPAT margin.",
     metaTitle: "NOPAT Calculator — Net Operating Profit After Tax",

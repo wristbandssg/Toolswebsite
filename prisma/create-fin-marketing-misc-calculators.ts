@@ -76,16 +76,18 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const BUSINESS_RATIOS = { name: "Business & Financial Ratios", slug: "business-financial-ratios" };
-const REVENUE_SALES = { name: "Revenue & Sales Calculators", slug: "revenue-sales-calculators" };
-const MISCELLANEOUS = { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const MONEY_SAVING_CATEGORY = { name: "Money-Saving & Spending Calculators", slug: "money-saving-calculators" };
+const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };
 
 const AD_NOTE = "Industry benchmarks vary widely by platform, industry and season — compare against your own past campaigns.";
 
 const TOOLS: ToolDef[] = [
   {
     slug: "roas-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "ROAS Calculator",
     description: "Calculate return on ad spend (ROAS), ACoS, your break-even ROAS from your profit margin, and the profit left after advertising.",
     metaTitle: "ROAS Calculator — Return on Ad Spend & Break-Even ROAS",
@@ -103,7 +105,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "ctr-calculator",
-    category: REVENUE_SALES,
+    category: BUSINESS_CATEGORY,
     title: "CTR Calculator",
     description: "Calculate click-through rate (CTR) from clicks and impressions, and how many clicks you'd need to reach a target CTR.",
     metaTitle: "CTR Calculator — Click-Through Rate",
@@ -121,7 +123,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "cpc-calculator",
-    category: MISCELLANEOUS,
+    category: BUSINESS_CATEGORY,
     title: "CPC Calculator",
     description: "Calculate cost per click (CPC), cost per conversion and conversion rate, plus the maximum CPC you can afford for a target cost per acquisition.",
     metaTitle: "CPC Calculator — Cost per Click & Max CPC",
@@ -139,7 +141,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "cpm-calculator",
-    category: MISCELLANEOUS,
+    category: BUSINESS_CATEGORY,
     title: "CPM Calculator",
     description: "Calculate CPM (cost per thousand impressions), or solve for the campaign cost or the number of impressions a budget buys.",
     metaTitle: "CPM Calculator — Cost per 1,000 Impressions",
@@ -157,7 +159,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "youtube-revenue-calculator",
-    category: REVENUE_SALES,
+    category: BUSINESS_CATEGORY,
     title: "YouTube Revenue Calculator",
     description: "Estimate YouTube ad revenue from daily views, the share of monetized views and advertiser CPM — daily, monthly and yearly earnings and your RPM.",
     metaTitle: "YouTube Revenue Calculator — Estimate Channel Earnings",
@@ -175,7 +177,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "sales-percentage-calculator",
-    category: REVENUE_SALES,
+    category: BUSINESS_CATEGORY,
     title: "Sales Percentage Calculator",
     description: "Calculate what percentage of total sales a product, salesperson or region makes up, and its sales growth compared with a previous period.",
     metaTitle: "Sales Percentage Calculator — Share of Sales & Growth",
@@ -193,7 +195,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "nps-calculator",
-    category: MISCELLANEOUS,
+    category: BUSINESS_CATEGORY,
     title: "NPS Calculator",
     description: "Calculate your Net Promoter Score (NPS) from the number of promoters, passives and detractors, and how many more promoters you'd need to hit a target score.",
     metaTitle: "NPS Calculator — Net Promoter Score",
@@ -211,7 +213,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "margin-of-error-calculator",
-    category: MISCELLANEOUS,
+    category: BUSINESS_CATEGORY,
     title: "Margin of Error Calculator",
     description: "Calculate the margin of error of a survey or poll from the sample size and confidence level, the confidence interval, and the sample size needed for a target margin.",
     metaTitle: "Margin of Error Calculator — Survey Confidence Interval",
@@ -229,7 +231,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "money-counter-calculator",
-    category: MISCELLANEOUS,
+    category: MONEY_SAVING_CATEGORY,
     title: "Money Counter Calculator",
     description: "Count cash fast — enter how many of each US bill and coin you have to get the total, the bills and coins subtotals and how many pieces you counted.",
     metaTitle: "Money Counter Calculator — Count Bills & Coins",
@@ -261,7 +263,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "zakat-calculator",
-    category: MISCELLANEOUS,
+    category: TAX_CATEGORY,
     title: "Zakat Calculator",
     description: "Calculate the zakat you owe — 2.5% of your net zakatable wealth (cash, gold, silver, investments and business assets) once it reaches the nisab threshold.",
     metaTitle: "Zakat Calculator — Nisab & Zakat Due",

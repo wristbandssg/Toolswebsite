@@ -79,13 +79,14 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const TAX_SALARY = { name: "Tax & Salary Calculators", slug: "tax-salary-calculators" };
-const PERSONAL_FINANCE = { name: "Personal Finance Calculators", slug: "personal-finance-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const SALARY_INCOME_CATEGORY = { name: "Salary & Income Calculators", slug: "salary-income-calculators" };
 
 const TOOLS: ToolDef[] = [
   {
     slug: "12-hour-shift-pay-calculator",
-    category: TAX_SALARY,
+    category: SALARY_INCOME_CATEGORY,
     title: "12-Hour Shift Pay Calculator",
     description: "Calculate weekly, biweekly and yearly pay for 12-hour shifts with overtime — under the federal 40-hour rule or California's daily overtime and double-time rules.",
     metaTitle: "12-Hour Shift Pay Calculator — Overtime & Weekly Pay",
@@ -103,7 +104,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "billable-hours-calculator",
-    category: TAX_SALARY,
+    category: SALARY_INCOME_CATEGORY,
     title: "Billable Hours Calculator",
     description: "Calculate your billable utilization rate, weekly and yearly billings, effective rate per hour worked, and the billable hours you need to hit a revenue goal.",
     metaTitle: "Billable Hours Calculator — Utilization & Billings",
@@ -121,7 +122,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "prorated-salary-calculator",
-    category: TAX_SALARY,
+    category: SALARY_INCOME_CATEGORY,
     title: "Prorated Salary Calculator",
     description: "Calculate prorated salary for a partial month — when you start or leave mid-month or take unpaid days — and the salary for a part-time (FTE) position.",
     metaTitle: "Prorated Salary Calculator — Partial Month & FTE Pay",
@@ -139,7 +140,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "selling-leave-days-calculator",
-    category: TAX_SALARY,
+    category: SALARY_INCOME_CATEGORY,
     title: "Selling Leave Days Calculator",
     description: "Calculate how much you'd get for selling or cashing out unused vacation or leave days — the daily rate, gross payout and take-home after withholding.",
     metaTitle: "Selling Leave Days Calculator — PTO Cash-Out Value",
@@ -157,7 +158,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lifetime-earnings-calculator",
-    category: PERSONAL_FINANCE,
+    category: SALARY_INCOME_CATEGORY,
     title: "Lifetime Earnings Calculator",
     description: "Estimate how much you'll earn over the rest of your career with yearly raises — in total and in today's dollars — plus your final salary.",
     metaTitle: "Lifetime Earnings Calculator — Career Earnings Estimate",
@@ -175,7 +176,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "unpaid-work-calculator",
-    category: PERSONAL_FINANCE,
+    category: SALARY_INCOME_CATEGORY,
     title: "Unpaid Work Calculator",
     description: "Calculate the market value of unpaid household work — cooking, cleaning, childcare, caregiving, errands and repairs — per week, month and year.",
     metaTitle: "Unpaid Work Calculator — Value of Housework & Care",
@@ -200,7 +201,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "us-income-percentile-calculator",
-    category: PERSONAL_FINANCE,
+    category: SALARY_INCOME_CATEGORY,
     title: "US Income Percentile Calculator",
     description: "See where your household income ranks in the US — your income percentile, how you compare with the median, and the income needed for the top 20% and top 5%.",
     metaTitle: "US Income Percentile Calculator — Household Income Rank",
@@ -218,7 +219,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "unemployment-benefit-calculator",
-    category: PERSONAL_FINANCE,
+    category: SALARY_INCOME_CATEGORY,
     title: "Unemployment Benefit Calculator",
     description: "Estimate your weekly unemployment benefit from your past wages, your state's formula and maximum, the total over your benefit weeks, and the amount after tax withholding.",
     metaTitle: "Unemployment Benefit Calculator — Weekly UI Estimate",

@@ -79,15 +79,20 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const DERIVATIVES = { name: "Derivatives Investment Calculators", slug: "derivatives-investment-calculators" };
-const TAX_SALARY = { name: "Tax & Salary Calculators", slug: "tax-salary-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
+const BOND_FIXED_INCOME_CATEGORY = { name: "Bond & Fixed Income Calculators", slug: "bond-fixed-income-calculators" };
+const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };
+const CANADA_TAX_SALARY_CATEGORY = { name: "Canada Tax & Salary Calculators", slug: "canada-tax-salary-calculators" };
+const SALARY_INCOME_CATEGORY = { name: "Salary & Income Calculators", slug: "salary-income-calculators" };
 
 const FILING = (def: number) => dropdown("filingStatus", "Filing Status", [["Single", 1], ["Married filing jointly", 2], ["Head of household", 3], ["Married filing separately", 4]], def);
 
 const TOOLS: ToolDef[] = [
   {
     slug: "black-scholes-calculator",
-    category: DERIVATIVES,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Black Scholes Calculator",
     description: "Price European call and put options with the Black-Scholes model, and get the Greeks — delta, gamma, vega, theta and rho.",
     metaTitle: "Black Scholes Calculator — Option Price & Greeks",
@@ -105,7 +110,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "forward-rate-calculator",
-    category: DERIVATIVES,
+    category: BOND_FIXED_INCOME_CATEGORY,
     title: "Forward Rate Calculator",
     description: "Calculate the implied forward interest rate between two future dates from today's spot rates — the rate the yield curve locks in for a future period.",
     metaTitle: "Forward Rate Calculator — Implied Forward Interest Rate",
@@ -123,7 +128,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "options-spread-calculator",
-    category: DERIVATIVES,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Options Spread Calculator",
     description: "Calculate the max profit, max loss, breakeven and P/L of a vertical options spread — bull call, bear put, bull put or bear call.",
     metaTitle: "Options Spread Calculator — Vertical Spread P/L",
@@ -141,7 +146,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "put-call-parity-calculator",
-    category: DERIVATIVES,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Put-Call Parity Calculator",
     description: "Check put-call parity for European options — the implied call and put prices from the stock, strike, rate and time — and spot any mispricing.",
     metaTitle: "Put-Call Parity Calculator — Implied Call & Put Prices",
@@ -159,7 +164,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "amt-calculator",
-    category: TAX_SALARY,
+    category: TAX_CATEGORY,
     title: "AMT Calculator",
     description: "Estimate the 2026 alternative minimum tax (AMT) — AMTI, exemption and phase-out, tentative minimum tax — and whether you owe AMT on top of regular tax, including from ISO exercises.",
     metaTitle: "AMT Calculator 2026 — Alternative Minimum Tax",
@@ -177,7 +182,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "child-tax-credit-calculator",
-    category: TAX_SALARY,
+    category: TAX_CATEGORY,
     title: "Child Tax Credit Calculator",
     description: "Calculate your 2026 Child Tax Credit — $2,200 per qualifying child, the refundable additional child tax credit up to $1,700, the $500 credit for other dependents and the income phase-out.",
     metaTitle: "Child Tax Credit Calculator 2026 — CTC & Refundable ACTC",
@@ -195,7 +200,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "magi-calculator",
-    category: TAX_SALARY,
+    category: TAX_CATEGORY,
     title: "MAGI Calculator",
     description: "Calculate your modified adjusted gross income (MAGI) for Roth IRA eligibility, ACA health-insurance subsidies or Medicare IRMAA, and how much you can put in a Roth IRA in 2026.",
     metaTitle: "MAGI Calculator 2026 — Roth IRA, ACA & IRMAA",
@@ -213,7 +218,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "lottery-tax-calculator",
-    category: TAX_SALARY,
+    category: TAX_CATEGORY,
     title: "Lottery Tax Calculator",
     description: "Calculate the federal and state tax on lottery or gambling winnings — the 24% withholding, the actual tax at your 2026 bracket, any extra owed and your take-home.",
     metaTitle: "Lottery Tax Calculator — Taxes on Winnings (2026)",
@@ -231,7 +236,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "gst-qst-calculator",
-    category: TAX_SALARY,
+    category: CANADA_TAX_SALARY_CATEGORY,
     title: "GST/QST Calculator",
     description: "Add or remove Québec sales taxes — 5% federal GST and 9.975% QST (14.975% combined) — from any price.",
     metaTitle: "GST/QST Calculator — Québec Sales Tax 14.975%",
@@ -249,7 +254,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "future-salary-calculator",
-    category: TAX_SALARY,
+    category: SALARY_INCOME_CATEGORY,
     title: "Future Salary Calculator",
     description: "Project your salary years from now with annual raises, see what it's worth in today's dollars after inflation, and how much you'll earn in total along the way.",
     metaTitle: "Future Salary Calculator — Salary Growth with Raises",

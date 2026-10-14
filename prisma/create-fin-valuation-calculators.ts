@@ -14,10 +14,13 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const FINANCE_SLUGS = ["finance-calculators", "finance"];
-const BUSINESS_RATIOS = { name: "Business & Financial Ratios", slug: "business-financial-ratios" };
-const INVESTMENT_DEPRECIATION = { name: "Investment & Depreciation Calculators", slug: "investment-depreciation-calculators" };
-const FINANCIAL = { name: "Financial Calculators", slug: "financial-calculators" };
-const ADDITIONAL_FINANCIAL = { name: "Additional Financial Calculators", slug: "additional-financial-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const STOCK_OPTIONS_CATEGORY = { name: "Stock & Options Calculators", slug: "stock-options-calculators" };
+const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };
+const INTEREST_RATE_CATEGORY = { name: "Interest Rate Calculators", slug: "interest-rate-calculators" };
+const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
@@ -89,7 +92,7 @@ const cashFlowFields = (defaults: number[]) =>
 const TOOLS: ToolDef[] = [
   {
     slug: "wacc-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "WACC Calculator",
     description: "Calculate a company's weighted average cost of capital (WACC) from the market value of equity, debt and preferred stock, their costs and the tax rate.",
     metaTitle: "WACC Calculator — Weighted Average Cost of Capital",
@@ -117,7 +120,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "cost-of-equity-calculator",
-    category: BUSINESS_RATIOS,
+    category: BUSINESS_CATEGORY,
     title: "Cost of Equity Calculator",
     description: "Calculate the cost of equity with the CAPM (risk-free rate, beta and market return) or the dividend growth model, and compare both.",
     metaTitle: "Cost of Equity Calculator — CAPM & Dividend Growth Model",
@@ -145,7 +148,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "beta-calculator",
-    category: BUSINESS_RATIOS,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Beta Calculator",
     description: "Calculate a stock's beta against the market from paired period returns, plus alpha, correlation and R-squared.",
     metaTitle: "Beta Calculator — Stock Beta from Returns",
@@ -171,7 +174,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "earnings-per-share-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Earnings Per Share Calculator",
     description: "Calculate basic and diluted earnings per share (EPS) from net income, preferred dividends and shares, plus the P/E ratio and earnings yield.",
     metaTitle: "Earnings Per Share Calculator — Basic & Diluted EPS",
@@ -196,7 +199,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "npv-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "NPV Calculator",
     description: "Calculate the net present value (NPV) of an investment from its upfront cost, a discount rate and up to 10 years of cash flows, plus the profitability index and discounted payback.",
     metaTitle: "NPV Calculator — Net Present Value of Cash Flows",
@@ -216,7 +219,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "discounted-cash-flow-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: STOCK_OPTIONS_CATEGORY,
     title: "Discounted Cash Flow Calculator",
     description: "Value a company with a DCF model — project free cash flow over 5 or 10 years, add a terminal value and get enterprise value, equity value and intrinsic value per share.",
     metaTitle: "DCF Calculator — Discounted Cash Flow Valuation",
@@ -246,7 +249,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "irr-calculator",
-    category: ADDITIONAL_FINANCIAL,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "IRR Calculator",
     description: "Calculate the internal rate of return (IRR) of an investment from its upfront cost and up to 10 years of cash flows, plus MIRR and the cash multiple.",
     metaTitle: "IRR Calculator — Internal Rate of Return & MIRR",
@@ -266,7 +269,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "future-value-of-annuity-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Future Value of Annuity Calculator",
     description: "Calculate the future value of a series of equal payments (an ordinary annuity or annuity due), the interest earned and the annuity's present value.",
     metaTitle: "Future Value of Annuity Calculator — Ordinary & Due",
@@ -290,7 +293,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "finance-calculator",
-    category: FINANCIAL,
+    category: INTEREST_RATE_CATEGORY,
     title: "Finance Calculator",
     description: "A time-value-of-money (TVM) finance calculator: solve for future value, present value, payment, number of years or interest rate for savings or loans.",
     metaTitle: "Finance Calculator — TVM Solver (FV, PV, PMT, N, I/Y)",
@@ -320,7 +323,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "opportunity-cost-calculator",
-    category: BUSINESS_RATIOS,
+    category: MICROECONOMICS_CATEGORY,
     title: "Opportunity Cost Calculator",
     description: "Calculate the opportunity cost of a decision — the return of the best alternative you give up — from dollar returns or from two rates of return over time.",
     metaTitle: "Opportunity Cost Calculator — Cost of the Option Forgone",

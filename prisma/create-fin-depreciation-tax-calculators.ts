@@ -79,18 +79,22 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const INVESTMENT_DEPRECIATION = { name: "Investment & Depreciation Calculators", slug: "investment-depreciation-calculators" };
-const TAX_DUTIES = { name: "Tax & Duties Calculators", slug: "tax-duties-calculators" };
-const FINANCIAL = { name: "Financial Calculators", slug: "financial-calculators" };
-const ADDITIONAL_FINANCIAL = { name: "Additional Financial Calculators", slug: "additional-financial-calculators" };
-const MISCELLANEOUS = { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const CAR_BUYING_SELLING_CATEGORY = { name: "Car Buying & Selling Calculators", slug: "car-buying-selling-calculators" };
+const HOUSEHOLD_FAMILY_EXPENSE_CATEGORY = { name: "Household & Family Expense Calculators", slug: "household-family-expense-calculators" };
+const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };
+const FUND_ETF_CATEGORY = { name: "Fund & ETF Calculators", slug: "fund-etf-calculators" };
+const REAL_ESTATE_CATEGORY = { name: "Real Estate Calculators", slug: "real-estate-calculators" };
+const INTEREST_RATE_CATEGORY = { name: "Interest Rate Calculators", slug: "interest-rate-calculators" };
 
 const inr = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", currency: "INR", ...(highlight ? { highlight: true } : {}) });
 
 const TOOLS: ToolDef[] = [
   {
     slug: "macrs-depreciation-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: BUSINESS_CATEGORY,
     title: "MACRS Depreciation Calculator",
     description: "Calculate MACRS tax depreciation for 3-, 5-, 7-, 10-, 15- and 20-year business property using the IRS half-year tables, with Section 179 and bonus depreciation.",
     metaTitle: "MACRS Depreciation Calculator — IRS Tables, 179 & Bonus",
@@ -116,7 +120,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "depreciation-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: BUSINESS_CATEGORY,
     title: "Depreciation Calculator",
     description: "Calculate asset depreciation by straight-line, double-declining, 150% declining, fixed or variable declining balance, or sum-of-the-years'-digits — yearly expense, accumulated depreciation and book value.",
     metaTitle: "Depreciation Calculator — Straight-Line, DDB & SYD",
@@ -142,7 +146,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "out-the-door-price-calculator",
-    category: INVESTMENT_DEPRECIATION,
+    category: CAR_BUYING_SELLING_CATEGORY,
     title: "Out The Door Price Calculator",
     description: "Calculate a car's out-the-door price — the sale price plus sales tax, doc fee, title, registration and add-ons, less discounts, rebates and your trade-in.",
     metaTitle: "Out The Door Price Calculator — Car OTD Price",
@@ -175,7 +179,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "paypal-fee-calculator",
-    category: TAX_DUTIES,
+    category: BUSINESS_CATEGORY,
     title: "PayPal Fee Calculator",
     description: "Calculate PayPal fees on a payment, the amount you'll receive, and how much to ask for so you get a set amount after fees.",
     metaTitle: "PayPal Fee Calculator — Fees, Net & Amount to Ask",
@@ -201,7 +205,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "water-bill-calculator",
-    category: TAX_DUTIES,
+    category: HOUSEHOLD_FAMILY_EXPENSE_CATEGORY,
     title: "Water Bill Calculator",
     description: "Estimate your water and sewer bill from your usage (or household size), your utility's rates and base charges — per bill, per month and per year.",
     metaTitle: "Water Bill Calculator — Water & Sewer Cost Estimate",
@@ -231,7 +235,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "inflation-calculator",
-    category: FINANCIAL,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Inflation Calculator",
     description: "Calculate what money from any year since 1913 is worth today using US CPI data, or project future prices at an inflation rate — plus the change in buying power.",
     metaTitle: "Inflation Calculator — Value of Money & Buying Power",
@@ -258,7 +262,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "sip-calculator",
-    category: ADDITIONAL_FINANCIAL,
+    category: FUND_ETF_CATEGORY,
     title: "SIP Calculator",
     description: "Calculate the maturity value of a monthly SIP (systematic investment plan) in mutual funds — invested amount, estimated returns and total value, with an optional yearly step-up.",
     metaTitle: "SIP Calculator — Mutual Fund SIP Returns with Step-Up",
@@ -283,7 +287,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "price-per-square-foot-calculator",
-    category: ADDITIONAL_FINANCIAL,
+    category: REAL_ESTATE_CATEGORY,
     title: "Price Per Square Foot Calculator",
     description: "Calculate the price per square foot (and per square metre) of a home, property or rental, and compare it with nearby homes to estimate value.",
     metaTitle: "Price Per Square Foot Calculator — Home Value per Sq Ft",
@@ -306,7 +310,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "million-to-billion-converter",
-    category: ADDITIONAL_FINANCIAL,
+    category: BUSINESS_CATEGORY,
     title: "Million to Billion Converter",
     description: "Convert any number between thousands, lakhs, millions, crores, billions and trillions — for example, how many millions are in a billion.",
     metaTitle: "Million to Billion Converter — Lakh, Crore, Trillion",
@@ -324,7 +328,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "basis-point-calculator",
-    category: MISCELLANEOUS,
+    category: INTEREST_RATE_CATEGORY,
     title: "Basis Point Calculator",
     description: "Convert basis points (bps) to percent and decimal, see a rate after a change of N basis points, and the dollar value of the change on an amount.",
     metaTitle: "Basis Point Calculator — BPS to Percent & Dollar Value",

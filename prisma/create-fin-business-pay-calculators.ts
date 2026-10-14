@@ -79,16 +79,20 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const SALARY_WAGES = { name: "Salary & Wages Calculators", slug: "salary-wages-calculators" };
-const PROFITABILITY_COST = { name: "Profitability & Cost Calculators", slug: "profitability-cost-calculators" };
-const MISCELLANEOUS = { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const HOUSEHOLD_FAMILY_EXPENSE_CATEGORY = { name: "Household & Family Expense Calculators", slug: "household-family-expense-calculators" };
+const TAX_CATEGORY = { name: "Tax Calculators", slug: "tax-calculators" };
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
+const SALARY_INCOME_CATEGORY = { name: "Salary & Income Calculators", slug: "salary-income-calculators" };
+const MICROECONOMICS_CATEGORY = { name: "Microeconomics Calculators", slug: "microeconomics-calculators" };
 
 const RATING_OPTS: [string, number][] = [["None", 0], ["10%", 10], ["20%", 20], ["30%", 30], ["40%", 40], ["50%", 50], ["60%", 60], ["70%", 70], ["80%", 80], ["90%", 90], ["100%", 100]];
 
 const TOOLS: ToolDef[] = [
   {
     slug: "tip-calculator",
-    category: SALARY_WAGES,
+    category: HOUSEHOLD_FAMILY_EXPENSE_CATEGORY,
     title: "Tip Calculator",
     description: "Calculate the tip and total for a restaurant bill, split it between people, tip on the pre-tax amount and round up each share.",
     metaTitle: "Tip Calculator — Tip Amount & Split the Bill",
@@ -113,7 +117,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "agi-calculator",
-    category: SALARY_WAGES,
+    category: TAX_CATEGORY,
     title: "AGI Calculator",
     description: "Calculate your 2026 adjusted gross income (AGI) — total income minus above-the-line deductions such as IRA, HSA, student loan interest and half of self-employment tax — and your taxable income after the standard deduction.",
     metaTitle: "AGI Calculator 2026 — Adjusted Gross Income",
@@ -148,7 +152,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "labor-cost-calculator",
-    category: SALARY_WAGES,
+    category: BUSINESS_CATEGORY,
     title: "Labor Cost Calculator",
     description: "Calculate your business's total labor cost — wages, overtime, payroll taxes and benefits — the loaded cost per hour, and labor cost as a percentage of revenue.",
     metaTitle: "Labor Cost Calculator — Total Labor Cost & Labor %",
@@ -175,7 +179,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "va-disability-calculator",
-    category: SALARY_WAGES,
+    category: SALARY_INCOME_CATEGORY,
     title: "VA Disability Calculator",
     description: "Calculate your combined VA disability rating with VA math and your 2026 monthly compensation, including a spouse, children, dependent parents and Aid & Attendance.",
     metaTitle: "VA Disability Calculator 2026 — Combined Rating & Pay",
@@ -202,7 +206,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "employee-cost-calculator",
-    category: PROFITABILITY_COST,
+    category: BUSINESS_CATEGORY,
     title: "Employee Cost Calculator",
     description: "Calculate the true cost of an employee — salary plus employer payroll taxes, health insurance, retirement match, workers' comp and overhead — and the cost per hour.",
     metaTitle: "Employee Cost Calculator — True Cost of an Employee",
@@ -231,7 +235,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "discount-calculator",
-    category: PROFITABILITY_COST,
+    category: BUSINESS_CATEGORY,
     title: "Discount Calculator",
     description: "Calculate the sale price after a percentage or dollar discount, stack a second or third discount (double and triple discounts), add sales tax, or find the markdown percentage from the original and sale price.",
     metaTitle: "Discount Calculator — Sale Price, % Off & Markdown",
@@ -258,7 +262,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "marginal-cost-calculator",
-    category: PROFITABILITY_COST,
+    category: MICROECONOMICS_CATEGORY,
     title: "Marginal Cost Calculator",
     description: "Calculate marginal cost — the extra cost of producing one more unit — from the change in total cost and quantity, plus average cost at both levels.",
     metaTitle: "Marginal Cost Calculator — Cost of One More Unit",
@@ -276,7 +280,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "marginal-revenue-calculator",
-    category: PROFITABILITY_COST,
+    category: MICROECONOMICS_CATEGORY,
     title: "Marginal Revenue Calculator",
     description: "Calculate marginal revenue — the extra revenue from selling more units — from two prices and quantities, plus total and average revenue.",
     metaTitle: "Marginal Revenue Calculator — MR from Price & Quantity",
@@ -294,7 +298,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "maximum-profit-calculator",
-    category: PROFITABILITY_COST,
+    category: MICROECONOMICS_CATEGORY,
     title: "Maximum Profit Calculator",
     description: "Find the profit-maximising quantity and price where marginal revenue equals marginal cost, from a linear demand curve and your cost structure.",
     metaTitle: "Maximum Profit Calculator — Profit-Maximizing Price & Output",
@@ -312,7 +316,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "fifo-lifo-calculator",
-    category: MISCELLANEOUS,
+    category: BUSINESS_CATEGORY,
     title: "FIFO & LIFO Calculator",
     description: "Calculate cost of goods sold, ending inventory and gross profit under FIFO, LIFO and weighted average cost from up to five inventory purchases.",
     metaTitle: "FIFO & LIFO Calculator — COGS & Ending Inventory",

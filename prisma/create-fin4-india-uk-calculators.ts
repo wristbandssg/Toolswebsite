@@ -74,8 +74,11 @@ interface ToolDef {
 const num = (key: string, label: string, highlight = false, decimals?: number) => ({ key, label, format: "number", ...(decimals !== undefined ? { decimals } : {}), ...(highlight ? { highlight: true } : {}) });
 
 
-const UK_FINANCE = { name: "UK Finance Calculators", slug: "uk-finance-calculators" };
-const INDIAN_FINANCE = { name: "Indian Finance Calculators", slug: "indian-finance-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const CURRENCY_EXCHANGE_FOREX_CATEGORY = { name: "Currency Exchange & Forex Calculators", slug: "currency-exchange-forex-calculators" };
+const RETIREMENT_CATEGORY = { name: "Retirement Calculators", slug: "retirement-calculators" };
+const INDIA_TAX_SALARY_CATEGORY = { name: "India Tax & Salary Calculators", slug: "india-tax-salary-calculators" };
 
 const gbp = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", currency: "GBP", ...(highlight ? { highlight: true } : {}) });
 const inr = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", currency: "INR", ...(highlight ? { highlight: true } : {}) });
@@ -85,7 +88,7 @@ const SLAB = (def: number) => dropdown("taxSlab", "Your Income Tax Slab (old reg
 const TOOLS: ToolDef[] = [
   {
     slug: "uk-coin-weight-calculator",
-    category: UK_FINANCE,
+    category: CURRENCY_EXCHANGE_FOREX_CATEGORY,
     title: "UK Coin Weight Calculator",
     description: "Count UK coins by weight — weigh your 1p, 2p, 5p, 10p, 20p, 50p, £1 and £2 coins and see how many you have and what they're worth, the way banks check coin bags.",
     metaTitle: "UK Coin Weight Calculator — Count Coins by Weight",
@@ -103,7 +106,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "pence-to-pounds-converter",
-    category: UK_FINANCE,
+    category: CURRENCY_EXCHANGE_FOREX_CATEGORY,
     title: "Pence to Pounds Converter",
     description: "Convert pence to pounds or pounds to pence — and see the amount as whole pounds and pence.",
     metaTitle: "Pence to Pounds Converter — p to £ and £ to p",
@@ -121,7 +124,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "atal-pension-yojana-calculator",
-    category: INDIAN_FINANCE,
+    category: RETIREMENT_CATEGORY,
     title: "Atal Pension Yojana Calculator",
     description: "Find your Atal Pension Yojana (APY) monthly contribution for a guaranteed pension of ₹1,000 to ₹5,000 from age 60, based on the age you join — plus the total you'll pay and the corpus returned to your nominee.",
     metaTitle: "Atal Pension Yojana Calculator — APY Contribution Chart",
@@ -139,7 +142,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "elss-calculator",
-    category: INDIAN_FINANCE,
+    category: INDIA_TAX_SALARY_CATEGORY,
     title: "ELSS Calculator",
     description: "Calculate returns on an ELSS (equity-linked savings scheme) tax-saving mutual fund by SIP or lump sum, the Section 80C tax you save, and the LTCG tax on redemption.",
     metaTitle: "ELSS Calculator — Returns & 80C Tax Saving",
@@ -157,7 +160,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "hra-exemption-calculator",
-    category: INDIAN_FINANCE,
+    category: INDIA_TAX_SALARY_CATEGORY,
     title: "HRA Exemption Calculator",
     description: "Calculate your house rent allowance (HRA) exemption under Section 10(13A) — the least of actual HRA, rent paid minus 10% of salary, and 50% or 40% of salary — and the taxable HRA.",
     metaTitle: "HRA Exemption Calculator — Section 10(13A)",
@@ -175,7 +178,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "national-pension-system-calculator",
-    category: INDIAN_FINANCE,
+    category: RETIREMENT_CATEGORY,
     title: "NPS Calculator for India",
     description: "Calculate your National Pension System (NPS) corpus at retirement, the tax-free lump sum, the annuity purchase and your monthly pension — plus the extra 80CCD(1B) tax saving.",
     metaTitle: "NPS Calculator India — National Pension System Pension",
@@ -193,7 +196,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "tds-interest-calculator",
-    category: INDIAN_FINANCE,
+    category: INDIA_TAX_SALARY_CATEGORY,
     title: "TDS Interest Calculator",
     description: "Calculate interest on late TDS — 1% a month for late deduction and 1.5% a month for late payment under Section 201(1A) — and the Section 234E late filing fee.",
     metaTitle: "TDS Interest Calculator — Section 201(1A) & 234E",

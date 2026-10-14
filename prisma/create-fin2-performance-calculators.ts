@@ -79,14 +79,17 @@ const pct = (key: string, label: string, highlight = false) => ({ key, label, fo
 const cur = (key: string, label: string, highlight = false) => ({ key, label, format: "currency", ...(highlight ? { highlight: true } : {}) });
 
 
-const GENERAL_INVESTMENT = { name: "General Investment Calculators", slug: "general-investment-calculators" };
+// Tool categories follow the 14 Oct 2026 consolidation of the Finance sub-categories
+// (see prisma/consolidate-finance-subcategories.ts).
+const INVESTMENT_RETURNS_PLANNING_CATEGORY = { name: "Investment Returns & Planning Calculators", slug: "investment-returns-planning-calculators" };
+const BUSINESS_CATEGORY = { name: "Business Finance Calculators", slug: "business-calculators" };
 
 const RET = (key: string, label: string, def: number) => percentField(key, label, { default: def, min: -100, max: 1000, step: 0.01 });
 
 const TOOLS: ToolDef[] = [
   {
     slug: "discount-rate-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Discount Rate Calculator",
     description: "Calculate the discount rate that links a present value and a future value over a number of years, its effective annual rate, and the discount factor.",
     metaTitle: "Discount Rate Calculator — Rate from PV, FV & Years",
@@ -104,7 +107,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "hedge-ratio-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Hedge Ratio Calculator",
     description: "Calculate your hedge ratio (the share of an exposure that's hedged) and the optimal minimum-variance hedge ratio and number of futures contracts to hedge a position.",
     metaTitle: "Hedge Ratio Calculator — Optimal Hedge Ratio & Contracts",
@@ -122,7 +125,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "information-ratio-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Information Ratio Calculator",
     description: "Calculate the information ratio of a fund or portfolio — its return above a benchmark divided by tracking error — to judge a manager's skill.",
     metaTitle: "Information Ratio Calculator — vs Tracking Error",
@@ -140,7 +143,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "jensens-alpha-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Jensen's Alpha Calculator",
     description: "Calculate Jensen's alpha — how much a portfolio returned above (or below) what the CAPM predicts for its beta.",
     metaTitle: "Jensen's Alpha Calculator — Risk-Adjusted Excess Return",
@@ -158,7 +161,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "sortino-ratio-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Sortino Ratio Calculator",
     description: "Calculate the Sortino ratio — return above a target per unit of downside deviation — and compare it with the Sharpe ratio.",
     metaTitle: "Sortino Ratio Calculator — Downside Risk-Adjusted Return",
@@ -176,7 +179,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "treynor-ratio-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Treynor Ratio Calculator",
     description: "Calculate the Treynor ratio — excess return per unit of market risk (beta) — and compare it with the market's own Treynor ratio.",
     metaTitle: "Treynor Ratio Calculator — Return per Unit of Beta",
@@ -194,7 +197,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "value-at-risk-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Value at Risk Calculator",
     description: "Calculate the value at risk (VaR) and expected shortfall of a portfolio for a chosen confidence level and time horizon with the parametric (variance-covariance) method.",
     metaTitle: "Value at Risk Calculator — VaR & Expected Shortfall",
@@ -212,7 +215,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "perpetuity-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "Perpetuity Calculator",
     description: "Calculate the present value of a perpetuity — a payment that continues forever — including a growing perpetuity and payments that start today.",
     metaTitle: "Perpetuity Calculator — Present Value & Growing Perpetuity",
@@ -230,7 +233,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "pvifa-calculator",
-    category: GENERAL_INVESTMENT,
+    category: INVESTMENT_RETURNS_PLANNING_CATEGORY,
     title: "PVIFA Calculator",
     description: "Calculate the present value interest factor of an annuity (PVIFA) — and the matching future value factor (FVIFA) — for any rate and number of periods.",
     metaTitle: "PVIFA Calculator — Present Value Interest Factor of Annuity",
@@ -248,7 +251,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "ttm-calculator",
-    category: GENERAL_INVESTMENT,
+    category: BUSINESS_CATEGORY,
     title: "TTM Calculator",
     description: "Calculate trailing twelve months (TTM) revenue, earnings or any figure from the last four quarters or from annual and year-to-date numbers, plus TTM per share and P/E.",
     metaTitle: "TTM Calculator — Trailing Twelve Months Revenue & EPS",
