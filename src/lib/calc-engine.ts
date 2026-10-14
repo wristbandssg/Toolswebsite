@@ -493,6 +493,15 @@ import { finDepreciationTaxCustomCalculators } from "./calc-engine-fin-depreciat
 import { finEconomicsCustomCalculators } from "./calc-engine-fin-economics";
 import { finBusinessPayCustomCalculators } from "./calc-engine-fin-business-pay";
 import { finMarketingMiscCustomCalculators } from "./calc-engine-fin-marketing-misc";
+import { fin2InvestingCustomCalculators } from "./calc-engine-fin2-investing";
+import { fin2WebSaasCustomCalculators } from "./calc-engine-fin2-web-saas";
+import { fin2WorkforceCustomCalculators } from "./calc-engine-fin2-workforce";
+import { fin2BusinessCostsCustomCalculators } from "./calc-engine-fin2-business-costs";
+import { fin2BusinessAnalysisCustomCalculators } from "./calc-engine-fin2-business-analysis";
+import { fin2PerformanceCustomCalculators } from "./calc-engine-fin2-performance";
+import { fin2EquityValuationCustomCalculators } from "./calc-engine-fin2-equity-valuation";
+import { fin2EquityReturnsCustomCalculators } from "./calc-engine-fin2-equity-returns";
+import { fin2DebtCustomCalculators } from "./calc-engine-fin2-debt";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -800,6 +809,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...finEconomicsCustomCalculators,
   ...finBusinessPayCustomCalculators,
   ...finMarketingMiscCustomCalculators,
+  ...fin2InvestingCustomCalculators,
+  ...fin2WebSaasCustomCalculators,
+  ...fin2WorkforceCustomCalculators,
+  ...fin2BusinessCostsCustomCalculators,
+  ...fin2BusinessAnalysisCustomCalculators,
+  ...fin2PerformanceCustomCalculators,
+  ...fin2EquityValuationCustomCalculators,
+  ...fin2EquityReturnsCustomCalculators,
+  ...fin2DebtCustomCalculators,
 };
 
 export function runCalculator(

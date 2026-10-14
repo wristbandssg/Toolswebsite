@@ -136,6 +136,12 @@ const FINANCE_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Miscellaneous Calculators", slug: "miscellaneous-finance-calculators" },
   { name: "Financial Calculators", slug: "financial-calculators" },
   { name: "Additional Financial Calculators", slug: "additional-financial-calculators" },
+  // Added 14 Oct 2026 with the 88-tool finance expansion 2 (create-fin2-*).
+  { name: "Financial & Investment", slug: "financial-investment-calculators" },
+  { name: "Business Planning Calculators", slug: "business-planning-calculators" },
+  { name: "General Investment Calculators", slug: "general-investment-calculators" },
+  { name: "Equity Investment Calculators", slug: "equity-investment-calculators" },
+  { name: "Debt Investment Calculators", slug: "debt-investment-calculators" },
 ];
 
 // Kept under Tax Calculators when they exist; never created empty (a
