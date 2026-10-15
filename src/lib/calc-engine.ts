@@ -469,6 +469,14 @@ import { shoppingHomeCostOutdoorCustomCalculators } from "./calc-engine-shopping
 import { shoppingHomeCostBuildingsCustomCalculators } from "./calc-engine-shopping-home-cost-buildings";
 import { shoppingHomeCostWindowsCustomCalculators } from "./calc-engine-shopping-home-cost-windows";
 import { shoppingHomeCostCleaningCustomCalculators } from "./calc-engine-shopping-home-cost-cleaning";
+import { shoppingTechEnergyCustomCalculators } from "./calc-engine-shopping-tech-energy";
+import { shoppingTechPowerCustomCalculators } from "./calc-engine-shopping-tech-power";
+import { shoppingTechNetCustomCalculators } from "./calc-engine-shopping-tech-net";
+import { shoppingTechPcCustomCalculators } from "./calc-engine-shopping-tech-pc";
+import { shoppingTechStorageCustomCalculators } from "./calc-engine-shopping-tech-storage";
+import { shoppingTechDisplayCustomCalculators } from "./calc-engine-shopping-tech-display";
+import { shoppingTechPhotoCustomCalculators } from "./calc-engine-shopping-tech-photo";
+import { shoppingTechAudioCustomCalculators } from "./calc-engine-shopping-tech-audio";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -833,6 +841,14 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingHomeCostBuildingsCustomCalculators,
   ...shoppingHomeCostWindowsCustomCalculators,
   ...shoppingHomeCostCleaningCustomCalculators,
+  ...shoppingTechEnergyCustomCalculators,
+  ...shoppingTechPowerCustomCalculators,
+  ...shoppingTechNetCustomCalculators,
+  ...shoppingTechPcCustomCalculators,
+  ...shoppingTechStorageCustomCalculators,
+  ...shoppingTechDisplayCustomCalculators,
+  ...shoppingTechPhotoCustomCalculators,
+  ...shoppingTechAudioCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
