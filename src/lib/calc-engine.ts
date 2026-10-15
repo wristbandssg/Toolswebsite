@@ -482,6 +482,11 @@ import { shoppingShipFreightCustomCalculators } from "./calc-engine-shopping-shi
 import { shoppingShipSellersCustomCalculators } from "./calc-engine-shopping-ship-sellers";
 import { shoppingShipVehiclesCustomCalculators } from "./calc-engine-shopping-ship-vehicles";
 import { shoppingShipMovingCustomCalculators } from "./calc-engine-shopping-ship-moving";
+import { shoppingVehValuesCustomCalculators } from "./calc-engine-shopping-veh-values";
+import { shoppingVehGearCustomCalculators } from "./calc-engine-shopping-veh-gear";
+import { shoppingVehCollectCustomCalculators } from "./calc-engine-shopping-veh-collect";
+import { shoppingVehAutoCustomCalculators } from "./calc-engine-shopping-veh-auto";
+import { shoppingVehTiresCustomCalculators } from "./calc-engine-shopping-veh-tires";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -859,6 +864,11 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingShipSellersCustomCalculators,
   ...shoppingShipVehiclesCustomCalculators,
   ...shoppingShipMovingCustomCalculators,
+  ...shoppingVehValuesCustomCalculators,
+  ...shoppingVehGearCustomCalculators,
+  ...shoppingVehCollectCustomCalculators,
+  ...shoppingVehAutoCustomCalculators,
+  ...shoppingVehTiresCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
