@@ -452,6 +452,11 @@ import { shoppingGoldItemsCustomCalculators } from "./calc-engine-shopping-gold-
 import { shoppingGoldSilverCustomCalculators } from "./calc-engine-shopping-gold-silver";
 import { shoppingGoldDiamondsCustomCalculators } from "./calc-engine-shopping-gold-diamonds";
 import { shoppingGoldGemsCustomCalculators } from "./calc-engine-shopping-gold-gems";
+import { shoppingSizeBodyCustomCalculators } from "./calc-engine-shopping-size-body";
+import { shoppingSizeShoesCustomCalculators } from "./calc-engine-shopping-size-shoes";
+import { shoppingSizeDressCustomCalculators } from "./calc-engine-shopping-size-dress";
+import { shoppingSizeMenswearCustomCalculators } from "./calc-engine-shopping-size-menswear";
+import { shoppingSizeAccessoriesCustomCalculators } from "./calc-engine-shopping-size-accessories";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -799,6 +804,11 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingGoldSilverCustomCalculators,
   ...shoppingGoldDiamondsCustomCalculators,
   ...shoppingGoldGemsCustomCalculators,
+  ...shoppingSizeBodyCustomCalculators,
+  ...shoppingSizeShoesCustomCalculators,
+  ...shoppingSizeDressCustomCalculators,
+  ...shoppingSizeMenswearCustomCalculators,
+  ...shoppingSizeAccessoriesCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
