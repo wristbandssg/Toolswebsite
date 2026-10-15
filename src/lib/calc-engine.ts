@@ -437,6 +437,9 @@ import { shoppingBuyingCostsCustomCalculators } from "./calc-engine-shopping-buy
 import { shoppingCarTaxStatesCustomCalculators } from "./calc-engine-shopping-car-tax-states";
 import { shoppingImportDutyCustomCalculators } from "./calc-engine-shopping-import-duty";
 import { shoppingTaxSpecialCustomCalculators } from "./calc-engine-shopping-tax-special";
+import { shoppingDealTipsCustomCalculators } from "./calc-engine-shopping-deal-tips";
+import { shoppingDealDiscountsCustomCalculators } from "./calc-engine-shopping-deal-discounts";
+import { shoppingDealUnitsCustomCalculators } from "./calc-engine-shopping-deal-units";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -769,6 +772,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingCarTaxStatesCustomCalculators,
   ...shoppingImportDutyCustomCalculators,
   ...shoppingTaxSpecialCustomCalculators,
+  ...shoppingDealTipsCustomCalculators,
+  ...shoppingDealDiscountsCustomCalculators,
+  ...shoppingDealUnitsCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
