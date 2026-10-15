@@ -487,6 +487,10 @@ import { shoppingVehGearCustomCalculators } from "./calc-engine-shopping-veh-gea
 import { shoppingVehCollectCustomCalculators } from "./calc-engine-shopping-veh-collect";
 import { shoppingVehAutoCustomCalculators } from "./calc-engine-shopping-veh-auto";
 import { shoppingVehTiresCustomCalculators } from "./calc-engine-shopping-veh-tires";
+import { shoppingLifeWeddingCustomCalculators } from "./calc-engine-shopping-life-wedding";
+import { shoppingLifePartyCustomCalculators } from "./calc-engine-shopping-life-party";
+import { shoppingLifeHobbyCustomCalculators } from "./calc-engine-shopping-life-hobby";
+import { shoppingLifeCostsCustomCalculators } from "./calc-engine-shopping-life-costs";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -869,6 +873,10 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingVehCollectCustomCalculators,
   ...shoppingVehAutoCustomCalculators,
   ...shoppingVehTiresCustomCalculators,
+  ...shoppingLifeWeddingCustomCalculators,
+  ...shoppingLifePartyCustomCalculators,
+  ...shoppingLifeHobbyCustomCalculators,
+  ...shoppingLifeCostsCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
