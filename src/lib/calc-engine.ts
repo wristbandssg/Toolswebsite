@@ -457,6 +457,11 @@ import { shoppingSizeShoesCustomCalculators } from "./calc-engine-shopping-size-
 import { shoppingSizeDressCustomCalculators } from "./calc-engine-shopping-size-dress";
 import { shoppingSizeMenswearCustomCalculators } from "./calc-engine-shopping-size-menswear";
 import { shoppingSizeAccessoriesCustomCalculators } from "./calc-engine-shopping-size-accessories";
+import { shoppingHomeFurnishCustomCalculators } from "./calc-engine-shopping-home-furnish";
+import { shoppingHomeDecorCustomCalculators } from "./calc-engine-shopping-home-decor";
+import { shoppingHomeSpacesCustomCalculators } from "./calc-engine-shopping-home-spaces";
+import { shoppingHomeWaterCustomCalculators } from "./calc-engine-shopping-home-water";
+import { shoppingHomeHvacCustomCalculators } from "./calc-engine-shopping-home-hvac";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -809,6 +814,11 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingSizeDressCustomCalculators,
   ...shoppingSizeMenswearCustomCalculators,
   ...shoppingSizeAccessoriesCustomCalculators,
+  ...shoppingHomeFurnishCustomCalculators,
+  ...shoppingHomeDecorCustomCalculators,
+  ...shoppingHomeSpacesCustomCalculators,
+  ...shoppingHomeWaterCustomCalculators,
+  ...shoppingHomeHvacCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
