@@ -462,6 +462,13 @@ import { shoppingHomeDecorCustomCalculators } from "./calc-engine-shopping-home-
 import { shoppingHomeSpacesCustomCalculators } from "./calc-engine-shopping-home-spaces";
 import { shoppingHomeWaterCustomCalculators } from "./calc-engine-shopping-home-water";
 import { shoppingHomeHvacCustomCalculators } from "./calc-engine-shopping-home-hvac";
+import { shoppingHomeCostExteriorCustomCalculators } from "./calc-engine-shopping-home-cost-exterior";
+import { shoppingHomeCostSurfacesCustomCalculators } from "./calc-engine-shopping-home-cost-surfaces";
+import { shoppingHomeCostKitchenCustomCalculators } from "./calc-engine-shopping-home-cost-kitchen";
+import { shoppingHomeCostOutdoorCustomCalculators } from "./calc-engine-shopping-home-cost-outdoor";
+import { shoppingHomeCostBuildingsCustomCalculators } from "./calc-engine-shopping-home-cost-buildings";
+import { shoppingHomeCostWindowsCustomCalculators } from "./calc-engine-shopping-home-cost-windows";
+import { shoppingHomeCostCleaningCustomCalculators } from "./calc-engine-shopping-home-cost-cleaning";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -819,6 +826,13 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingHomeSpacesCustomCalculators,
   ...shoppingHomeWaterCustomCalculators,
   ...shoppingHomeHvacCustomCalculators,
+  ...shoppingHomeCostExteriorCustomCalculators,
+  ...shoppingHomeCostSurfacesCustomCalculators,
+  ...shoppingHomeCostKitchenCustomCalculators,
+  ...shoppingHomeCostOutdoorCustomCalculators,
+  ...shoppingHomeCostBuildingsCustomCalculators,
+  ...shoppingHomeCostWindowsCustomCalculators,
+  ...shoppingHomeCostCleaningCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
