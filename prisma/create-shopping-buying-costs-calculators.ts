@@ -1,5 +1,7 @@
 // One-time (but safe to re-run) batch setup script: creates the 3 new tools of
-// the user's car buying list (Shopping Calculators > Buying Costs Calculators).
+// the user's car buying list (Shopping Calculators > Vehicle, Resale &
+// Collectibles; originally a separate "Buying Costs Calculators" sub-category,
+// merged 15 Oct 2026 by prisma/merge-shopping-boat-buying-into-vehicle.ts).
 // The other 17 names already exist and were NOT moved:
 //   Car Payment -> auto-loan-calculator; Car Lease -> car-lease-calculator;
 //   Car Depreciation, Car Affordability, Out the Door, New vs Used, Car
@@ -25,7 +27,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const MAIN_CATEGORY = { name: "Shopping Calculators", slug: "shopping-calculators", breadcrumbName: "Shopping" };
-const CATEGORY = { name: "Buying Costs Calculators", slug: "buying-costs-calculators" };
+const CATEGORY = { name: "Vehicle, Resale & Collectibles Calculators", slug: "vehicle-resale-collectibles-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text

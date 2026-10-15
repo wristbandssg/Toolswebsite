@@ -1,5 +1,7 @@
 // One-time (but safe to re-run) batch setup script: creates the 2 new tools of
-// the user's boat list (Shopping Calculators > Boat Calculators). The other
+// the user's boat list (Shopping Calculators > Vehicle, Resale & Collectibles;
+// originally a separate "Boat Calculators" sub-category, merged 15 Oct 2026 by
+// prisma/merge-shopping-boat-buying-into-vehicle.ts). The other
 // two names on the list already exist and were NOT moved:
 //   Boat Insurance Calculator        -> boat-insurance-calculator (Auto & Vehicle Insurance)
 //   Boat Cost Of Ownership Calculator -> boat-total-cost-of-ownership-calculator (Car Ownership, Fuel & EV Cost)
@@ -21,7 +23,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const MAIN_CATEGORY = { name: "Shopping Calculators", slug: "shopping-calculators", breadcrumbName: "Shopping" };
-const CATEGORY = { name: "Boat Calculators", slug: "boat-calculators" };
+const CATEGORY = { name: "Vehicle, Resale & Collectibles Calculators", slug: "vehicle-resale-collectibles-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text
