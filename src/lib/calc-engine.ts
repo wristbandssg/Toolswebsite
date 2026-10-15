@@ -440,6 +440,13 @@ import { shoppingTaxSpecialCustomCalculators } from "./calc-engine-shopping-tax-
 import { shoppingDealTipsCustomCalculators } from "./calc-engine-shopping-deal-tips";
 import { shoppingDealDiscountsCustomCalculators } from "./calc-engine-shopping-deal-discounts";
 import { shoppingDealUnitsCustomCalculators } from "./calc-engine-shopping-deal-units";
+import { shoppingPriceFeesCustomCalculators } from "./calc-engine-shopping-price-fees";
+import { shoppingPriceMarkupCustomCalculators } from "./calc-engine-shopping-price-markup";
+import { shoppingPriceFoodCustomCalculators } from "./calc-engine-shopping-price-food";
+import { shoppingPriceCraftsCustomCalculators } from "./calc-engine-shopping-price-crafts";
+import { shoppingPriceServicesCustomCalculators } from "./calc-engine-shopping-price-services";
+import { shoppingPricePrintCustomCalculators } from "./calc-engine-shopping-price-print";
+import { shoppingPriceSignsCustomCalculators } from "./calc-engine-shopping-price-signs";
 import { sportsStrengthProgrammingCustomCalculators } from "./calc-engine-sports-strength-programming";
 import { sportsStrengthToolsCustomCalculators } from "./calc-engine-sports-strength-tools";
 import { sportsPowerliftingCustomCalculators } from "./calc-engine-sports-powerlifting";
@@ -775,6 +782,13 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...shoppingDealTipsCustomCalculators,
   ...shoppingDealDiscountsCustomCalculators,
   ...shoppingDealUnitsCustomCalculators,
+  ...shoppingPriceFeesCustomCalculators,
+  ...shoppingPriceMarkupCustomCalculators,
+  ...shoppingPriceFoodCustomCalculators,
+  ...shoppingPriceCraftsCustomCalculators,
+  ...shoppingPriceServicesCustomCalculators,
+  ...shoppingPricePrintCustomCalculators,
+  ...shoppingPriceSignsCustomCalculators,
   ...sportsStrengthProgrammingCustomCalculators,
   ...sportsStrengthToolsCustomCalculators,
   ...sportsPowerliftingCustomCalculators,
