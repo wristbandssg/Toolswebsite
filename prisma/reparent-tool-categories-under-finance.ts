@@ -112,6 +112,13 @@ const COUNTRY_TAX_CATEGORY_SLUGS = [
 ];
 
 async function main() {
+  // Retired 17 Oct 2026: Real Estate (with Mortgage) is now its own main category
+  // (prisma/restructure-real-estate-main-category.ts). This script still files both
+  // under Finance, so it would undo that — it only runs with --legacy.
+  if (!process.argv.includes("--legacy")) {
+    console.log("Retired: this script would move Real Estate and Mortgage back under Finance. Run with --legacy only if you mean that.");
+    return;
+  }
   // 1. Finance Calculators — the root.
   let finance = await prisma.toolCategory.findFirst({ where: { slug: { in: FINANCE_SLUGS } } });
   if (!finance) {

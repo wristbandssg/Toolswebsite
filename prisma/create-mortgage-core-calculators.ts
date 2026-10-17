@@ -24,19 +24,18 @@ const prisma = new PrismaClient();
 // missing sub-category is created under Mortgage Calculators.
 const PARENT_CATEGORY_SLUG = "mortgage-calculators";
 const SUBCATEGORY_NAMES: Record<string, string> = {
-  "mortgage-payment-type-calculators": "Mortgage Payment & Type Calculators",
-  "mortgage-cost-insurance-calculators": "Mortgage Cost & Insurance Calculators",
+  "mortgage-payment-type-calculators": "Mortgage Payment, Type & Cost Calculators",
 };
 const TOOL_CATEGORY: Record<string, string> = {
   "mortgage-calculator": "mortgage-payment-type-calculators",
   "mortgage-interest-calculator": "mortgage-payment-type-calculators",
   "home-loan-calculator": "mortgage-payment-type-calculators",
   "mortgage-amortization-calculator": "mortgage-payment-type-calculators",
-  "mortgage-apr-calculator": "mortgage-cost-insurance-calculators",
-  "mortgage-points-calculator": "mortgage-cost-insurance-calculators",
-  "mortgage-discount-points-break-even-calculator": "mortgage-cost-insurance-calculators",
-  "private-mortgage-insurance-pmi-calculator": "mortgage-cost-insurance-calculators",
-  "loan-to-value-ltv-calculator": "mortgage-cost-insurance-calculators",
+  "mortgage-apr-calculator": "mortgage-payment-type-calculators",
+  "mortgage-points-calculator": "mortgage-payment-type-calculators",
+  "mortgage-discount-points-break-even-calculator": "mortgage-payment-type-calculators",
+  "private-mortgage-insurance-pmi-calculator": "mortgage-payment-type-calculators",
+  "loan-to-value-ltv-calculator": "mortgage-payment-type-calculators",
   "debt-to-income-dti-mortgage-calculator": "mortgage-payment-type-calculators",
   "mortgage-payoff-calculator": "mortgage-payment-type-calculators",
 };

@@ -22,7 +22,7 @@ const prisma = new PrismaClient();
 // missing sub-category is created under Mortgage Calculators.
 const PARENT_CATEGORY_SLUG = "mortgage-calculators";
 const SUBCATEGORY_NAMES: Record<string, string> = {
-  "mortgage-payment-type-calculators": "Mortgage Payment & Type Calculators",
+  "mortgage-payment-type-calculators": "Mortgage Payment, Type & Cost Calculators",
 };
 const TOOL_CATEGORY: Record<string, string> = {
   "extra-mortgage-payment-calculator": "mortgage-payment-type-calculators",

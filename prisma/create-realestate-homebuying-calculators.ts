@@ -25,6 +25,7 @@
 //   npm run db:create-realestate-homebuying-calculators
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { realEstateCategoryIdFor } from "./real-estate-structure";
 
 const prisma = new PrismaClient();
 
@@ -432,7 +433,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: def.slug === INSURANCE_TOOL_SLUG ? insuranceCategory.id : category.id,
+      categoryId: (await realEstateCategoryIdFor(prisma, def.slug)) ?? (def.slug === INSURANCE_TOOL_SLUG ? insuranceCategory.id : category.id),
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

@@ -32,6 +32,9 @@ const CURRENCY_LOCALE: Record<string, string> = {
   PHP: "en-PH",
   NZD: "en-NZ",
   SGD: "en-SG",
+  AED: "en-AE",
+  EUR: "en-IE",
+  MXN: "es-MX",
 };
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -47,6 +50,9 @@ const CURRENCY_SYMBOL: Record<string, string> = {
   PHP: "₱",
   NZD: "NZ$",
   SGD: "S$",
+  AED: "AED ",
+  EUR: "€",
+  MXN: "MX$",
 };
 
 function defaultStep(min: number, max: number) {

@@ -24,8 +24,7 @@ const PARENT_CATEGORY_SLUG = "mortgage-calculators";
 const SUBCATEGORY_NAMES: Record<string, string> = {
   "refinance-home-equity-calculators": "Refinance & Home Equity Calculators",
   "home-buyer-program-calculators": "Home Buyer Program Calculators",
-  "mortgage-payment-type-calculators": "Mortgage Payment & Type Calculators",
-  "mortgage-cost-insurance-calculators": "Mortgage Cost & Insurance Calculators",
+  "mortgage-payment-type-calculators": "Mortgage Payment, Type & Cost Calculators",
 };
 const TOOL_CATEGORY: Record<string, string> = {
   "mortgage-refinance-calculator": "refinance-home-equity-calculators",
@@ -37,7 +36,7 @@ const TOOL_CATEGORY: Record<string, string> = {
   "usda-loan-calculator": "home-buyer-program-calculators",
   "jumbo-mortgage-calculator": "mortgage-payment-type-calculators",
   "first-time-home-buyer-mortgage-calculator": "home-buyer-program-calculators",
-  "mortgage-tax-deduction-calculator": "mortgage-cost-insurance-calculators",
+  "mortgage-tax-deduction-calculator": "mortgage-payment-type-calculators",
   "mortgage-comparison-calculator": "mortgage-payment-type-calculators",
 };
 

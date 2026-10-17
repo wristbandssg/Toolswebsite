@@ -595,8 +595,12 @@ export async function organizeToolCategories(prisma: Db, APPLY: boolean, log: (s
   log();
   log(APPLY ? "Done — changes applied." : "Report only — nothing was changed. Run again with --apply to make these changes.");
 }
-
-if (process.argv[1]?.includes("organize-tool-categories")) {
+// Retired 17 Oct 2026: Real Estate (with Mortgage) is now its own main category
+// (prisma/restructure-real-estate-main-category.ts). This script still files both under
+// Finance, so it would undo that — it only runs with --legacy.
+if (process.argv[1]?.includes("organize-tool-categories") && !process.argv.includes("--legacy")) {
+  console.log("Retired: this script would move Real Estate and Mortgage back under Finance. Run with --legacy only if you mean that.");
+} else if (process.argv[1]?.includes("organize-tool-categories")) {
   const prisma = new PrismaClient();
   organizeToolCategories(prisma, APPLY)
     .catch((e) => {

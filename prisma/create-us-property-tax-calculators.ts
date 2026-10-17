@@ -15,6 +15,7 @@
 //   npm run db:create-us-property-tax-calculators
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { realEstateCategoryIdFor } from "./real-estate-structure";
 
 const prisma = new PrismaClient();
 
@@ -137,7 +138,7 @@ async function main() {
       title: t.title,
       description: t.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await realEstateCategoryIdFor(prisma, t.slug)) ?? (category.id),
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify([propertyValueField()]),

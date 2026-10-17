@@ -13,7 +13,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PARENT_CATEGORY_SLUG = "mortgage-calculators";
-const CATEGORY = { name: "Mortgage Cost & Insurance Calculators", slug: "mortgage-cost-insurance-calculators" };
+const CATEGORY = { name: "Mortgage Payment, Type & Cost Calculators", slug: "mortgage-payment-type-calculators" };
 
 function paragraphsToHtml(text: string): string {
   return text

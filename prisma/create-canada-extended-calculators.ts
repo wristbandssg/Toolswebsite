@@ -19,6 +19,7 @@
 // /admin/tools and publish when you're happy with it.
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { realEstateCategoryIdFor } from "./real-estate-structure";
 
 const prisma = new PrismaClient();
 
@@ -960,7 +961,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await realEstateCategoryIdFor(prisma, def.slug)) ?? (category.id),
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
