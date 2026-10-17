@@ -581,6 +581,15 @@ import { reMortgageLocalCustomCalculators } from "./calc-engine-re-mortgage-loca
 import { reTaxLocalCustomCalculators } from "./calc-engine-re-tax-local";
 import { reInvestStrCustomCalculators } from "./calc-engine-re-invest-str";
 import { reLandCommercialCustomCalculators } from "./calc-engine-re-land-commercial";
+import { eduGpaCustomCalculators } from "./calc-engine-edu-gpa";
+import { eduGradesCustomCalculators } from "./calc-engine-edu-grades";
+import { eduApCustomCalculators } from "./calc-engine-edu-ap";
+import { eduTestsCustomCalculators } from "./calc-engine-edu-tests";
+import { eduProExamsCustomCalculators } from "./calc-engine-edu-pro-exams";
+import { eduIntlCustomCalculators } from "./calc-engine-edu-intl";
+import { eduCollegeCustomCalculators } from "./calc-engine-edu-college";
+import { eduSchoolCustomCalculators } from "./calc-engine-edu-school";
+import { eduCareersCustomCalculators } from "./calc-engine-edu-careers";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -976,6 +985,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...reTaxLocalCustomCalculators,
   ...reInvestStrCustomCalculators,
   ...reLandCommercialCustomCalculators,
+  ...eduGpaCustomCalculators,
+  ...eduGradesCustomCalculators,
+  ...eduApCustomCalculators,
+  ...eduTestsCustomCalculators,
+  ...eduProExamsCustomCalculators,
+  ...eduIntlCustomCalculators,
+  ...eduCollegeCustomCalculators,
+  ...eduSchoolCustomCalculators,
+  ...eduCareersCustomCalculators,
 };
 
 export function runCalculator(
