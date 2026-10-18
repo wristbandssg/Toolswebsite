@@ -603,6 +603,7 @@ import { lawWorkCustomCalculators } from "./calc-engine-law-work";
 import { lawUiCustomCalculators } from "./calc-engine-law-ui";
 import { lawBenefitsCustomCalculators } from "./calc-engine-law-benefits";
 import { lawPiCustomCalculators } from "./calc-engine-law-pi";
+import { lawCourtCustomCalculators } from "./calc-engine-law-court";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -1020,6 +1021,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...lawUiCustomCalculators,
   ...lawBenefitsCustomCalculators,
   ...lawPiCustomCalculators,
+  ...lawCourtCustomCalculators,
 };
 
 export function runCalculator(
