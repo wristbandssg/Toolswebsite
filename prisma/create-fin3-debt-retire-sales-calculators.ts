@@ -146,7 +146,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "post-judgment-interest-calculator",
-    category: CREDIT_DEBT_CATEGORY,
+    category: { name: "Court, Criminal & Legal Fee Calculators", slug: "court-criminal-legal-fee-calculators" }, // moved to Law & Government (setup-law-government-category.ts)
     title: "Post Judgment Interest Calculator",
     description: "Calculate post-judgment interest on a court judgment — federal (28 U.S.C. § 1961, compounded yearly) or simple state interest — and the daily per-diem amount.",
     metaTitle: "Post Judgment Interest Calculator — Federal & State",

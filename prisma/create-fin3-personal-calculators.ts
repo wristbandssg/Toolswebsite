@@ -201,7 +201,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "stimulus-check-calculator",
-    category: TAX_CATEGORY,
+    category: { name: "Government Benefits Calculators", slug: "government-benefits-calculators" }, // moved to Law & Government (setup-law-government-category.ts)
     title: "Stimulus Check Calculator",
     description: "Calculate the amount of each 2020–2021 federal stimulus check (Economic Impact Payments 1, 2 and 3) for your filing status, income and children.",
     metaTitle: "Stimulus Check Calculator — EIP 1, 2 & 3 Amounts",

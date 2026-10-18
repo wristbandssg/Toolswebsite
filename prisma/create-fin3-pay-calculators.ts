@@ -140,7 +140,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "selling-leave-days-calculator",
-    category: SALARY_INCOME_CATEGORY,
+    category: { name: "Military & Veterans Calculators", slug: "military-veterans-calculators" }, // moved to Law & Government (setup-law-government-category.ts)
     title: "Selling Leave Days Calculator",
     description: "Calculate how much you'd get for selling or cashing out unused vacation or leave days — the daily rate, gross payout and take-home after withholding.",
     metaTitle: "Selling Leave Days Calculator — PTO Cash-Out Value",
@@ -219,7 +219,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "unemployment-benefit-calculator",
-    category: SALARY_INCOME_CATEGORY,
+    category: { name: "Unemployment, Workers' Comp & Paid Leave Calculators", slug: "unemployment-workers-comp-leave-calculators" }, // moved to Law & Government (setup-law-government-category.ts)
     title: "Unemployment Benefit Calculator",
     description: "Estimate your weekly unemployment benefit from your past wages, your state's formula and maximum, the total over your benefit weeks, and the amount after tax withholding.",
     metaTitle: "Unemployment Benefit Calculator — Weekly UI Estimate",

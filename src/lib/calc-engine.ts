@@ -590,6 +590,12 @@ import { eduIntlCustomCalculators } from "./calc-engine-edu-intl";
 import { eduCollegeCustomCalculators } from "./calc-engine-edu-college";
 import { eduSchoolCustomCalculators } from "./calc-engine-edu-school";
 import { eduCareersCustomCalculators } from "./calc-engine-edu-careers";
+import { lawMilPayCustomCalculators } from "./calc-engine-law-mil-pay";
+import { lawMilMovesCustomCalculators } from "./calc-engine-law-mil-moves";
+import { lawMilRetireCustomCalculators } from "./calc-engine-law-mil-retire";
+import { lawMilVaCustomCalculators } from "./calc-engine-law-mil-va";
+import { lawMilFitCustomCalculators } from "./calc-engine-law-mil-fit";
+import { lawMilMiscCustomCalculators } from "./calc-engine-law-mil-misc";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -994,6 +1000,12 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...eduCollegeCustomCalculators,
   ...eduSchoolCustomCalculators,
   ...eduCareersCustomCalculators,
+  ...lawMilPayCustomCalculators,
+  ...lawMilMovesCustomCalculators,
+  ...lawMilRetireCustomCalculators,
+  ...lawMilVaCustomCalculators,
+  ...lawMilFitCustomCalculators,
+  ...lawMilMiscCustomCalculators,
 };
 
 export function runCalculator(

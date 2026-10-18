@@ -314,6 +314,9 @@ async function ensureCategory(cat: { name: string; slug: string }) {
 
 async function main() {
   const category = await ensureCategory(CATEGORY);
+  // Military tests moved to Law & Government > Military & Veterans (setup-law-government-category.ts).
+  const military = await prisma.toolCategory.findUnique({ where: { slug: "military-veterans-calculators" } });
+  const MILITARY_SLUGS = new Set(["navy-body-fat-calculator"]);
 
   let created = 0;
   let updated = 0;
@@ -323,7 +326,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: military && MILITARY_SLUGS.has(def.slug) ? military.id : category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

@@ -179,7 +179,7 @@ const TOOLS: ToolDef[] = [
   },
   {
     slug: "va-disability-calculator",
-    category: SALARY_INCOME_CATEGORY,
+    category: { name: "Military & Veterans Calculators", slug: "military-veterans-calculators" }, // moved to Law & Government (setup-law-government-category.ts)
     title: "VA Disability Calculator",
     description: "Calculate your combined VA disability rating with VA math and your 2026 monthly compensation, including a spouse, children, dependent parents and Aid & Attendance.",
     metaTitle: "VA Disability Calculator 2026 — Combined Rating & Pay",
