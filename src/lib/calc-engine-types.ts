@@ -53,7 +53,7 @@ export interface CalcInputField {
 export interface CalcResultConfig {
   label: string;
   unit?: string;
-  format?: "number" | "currency" | "percentage";
+  format?: "number" | "currency" | "percentage" | "date";
   // ISO 4217 currency code (e.g. "USD", "GBP", "CAD", "INR") used when
   // format is "currency" — see CURRENCY_LOCALE/CURRENCY_SYMBOL in
   // CalculatorWidget. Defaults to "USD" when omitted, so every existing
@@ -76,7 +76,7 @@ export interface CalcResultLineConfig {
   key: string;
   label: string;
   unit?: string;
-  format?: "number" | "currency" | "percentage";
+  format?: "number" | "currency" | "percentage" | "date";
   // See CalcResultConfig.currency above — same default/behavior.
   currency?: string;
   // See CalcResultConfig.decimals above — same default/behavior.

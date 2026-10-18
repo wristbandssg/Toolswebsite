@@ -38,7 +38,7 @@ const toolCreateSchema = z.object({
     .object({
       label: z.string(),
       unit: z.string().optional(),
-      format: z.enum(["number", "currency", "percentage"]).optional(),
+      format: z.enum(["number", "currency", "percentage", "date"]).optional(),
     })
     .optional()
     .nullable(),
@@ -51,7 +51,7 @@ const toolCreateSchema = z.object({
         key: z.string().min(1),
         label: z.string().min(1),
         unit: z.string().optional(),
-        format: z.enum(["number", "currency", "percentage"]).optional(),
+        format: z.enum(["number", "currency", "percentage", "date"]).optional(),
         highlight: z.boolean().optional(),
       })
     )

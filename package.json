@@ -478,6 +478,8 @@
     "db:create-law-mil-misc-calculators": "tsx prisma/create-law-mil-misc-calculators.ts",
     "db:create-law-cs-calculators": "tsx prisma/create-law-cs-calculators.ts",
     "db:create-law-family-calculators": "tsx prisma/create-law-family-calculators.ts",
+    "db:create-law-wage-calculators": "tsx prisma/create-law-wage-calculators.ts",
+    "db:create-law-work-calculators": "tsx prisma/create-law-work-calculators.ts",
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts",
     "db:consolidate-finance-subcategories": "tsx prisma/consolidate-finance-subcategories.ts",

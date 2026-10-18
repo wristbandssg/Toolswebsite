@@ -490,6 +490,7 @@ export default function ToolForm({
               <option value="number">Number</option>
               <option value="currency">Currency</option>
               <option value="percentage">Percentage</option>
+              <option value="date">Date</option>
             </select>
           </label>
         </div>
@@ -545,6 +546,7 @@ export default function ToolForm({
                   <option value="number">Number</option>
                   <option value="currency">Currency</option>
                   <option value="percentage">Percentage</option>
+                  <option value="date">Date</option>
                 </select>
                 <label className="flex items-center gap-1.5 text-xs text-gray-500">
                   <input

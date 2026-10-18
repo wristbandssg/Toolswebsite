@@ -55,6 +55,34 @@ const CURRENCY_SYMBOL: Record<string, string> = {
   MXN: "MX$",
 };
 
+// Date fields and "date" results travel as day numbers (whole days since
+// 1970-01-01 UTC), so custom calculators can do date maths with plain
+// numbers. A date field's default may be a day number or "today", "today+30",
+// "today-7" (relative to the visitor's date).
+const DAY_MS = 86400000;
+
+function todayDayNumber() {
+  const now = new Date();
+  return Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / DAY_MS);
+}
+
+function dayNumberToIso(day: number) {
+  return new Date(day * DAY_MS).toISOString().slice(0, 10);
+}
+
+function isoToDayNumber(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return Date.UTC(y, (m ?? 1) - 1, d ?? 1) / DAY_MS;
+}
+
+function dateDefault(def: number | string | undefined) {
+  if (typeof def === "string" && def.startsWith("today")) {
+    return dayNumberToIso(todayDayNumber() + (Number(def.slice(5)) || 0));
+  }
+  if (typeof def === "number" && def > 0) return dayNumberToIso(def);
+  return dayNumberToIso(todayDayNumber());
+}
+
 function defaultStep(min: number, max: number) {
   const span = max - min;
   if (span > 20000) return 1000;
@@ -83,7 +111,10 @@ function defaultStep(min: number, max: number) {
 export default function CalculatorWidget({ toolSlug, fields, result, results }: Props) {
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(
-      fields.map((f) => [f.key, f.default !== undefined ? String(f.default) : ""])
+      fields.map((f) => [
+        f.key,
+        f.type === "date" ? dateDefault(f.default) : f.default !== undefined ? String(f.default) : "",
+      ])
     )
   );
   const [output, setOutput] = useState<number | null>(null);
@@ -105,7 +136,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     try {
       const numericValues: Record<string, number> = {};
       for (const f of fields) {
-        numericValues[f.key] = parseFloat(values[f.key]);
+        numericValues[f.key] = f.type === "date" ? isoToDayNumber(values[f.key]) : parseFloat(values[f.key]);
       }
       const res = await fetch(`/api/tools/${toolSlug}/calculate`, {
         method: "POST",
@@ -135,7 +166,11 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     }
   }
 
-  function formatValue(n: number, format?: "number" | "currency" | "percentage", currency?: string, decimals?: number) {
+  function formatValue(n: number, format?: "number" | "currency" | "percentage" | "date", currency?: string, decimals?: number) {
+    if (format === "date") {
+      if (!n) return "—";
+      return new Date(n * DAY_MS).toLocaleDateString("en-US", { timeZone: "UTC", weekday: "short", year: "numeric", month: "short", day: "numeric" });
+    }
     if (format === "currency") {
       const code = currency ?? "USD";
       const locale = CURRENCY_LOCALE[code] ?? "en-US";
@@ -167,7 +202,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
   const detailLines = (results ?? []).filter((line) => !line.highlight);
   const maxDetailValue = Math.max(
     1,
-    ...detailLines.map((line) => Math.abs(breakdown?.[line.key] ?? 0))
+    ...detailLines.filter((line) => line.format !== "date").map((line) => Math.abs(breakdown?.[line.key] ?? 0))
   );
 
   return (
@@ -208,6 +243,14 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                         </option>
                       ))}
                     </select>
+                  ) : field.type === "date" ? (
+                    <input
+                      type="date"
+                      className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                      value={values[field.key] ?? ""}
+                      required={field.required !== false}
+                      onChange={(e) => setField(field.key, e.target.value)}
+                    />
                   ) : (
                     <input
                       type="number"
@@ -283,6 +326,14 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                   {detailLines.map((line) => {
                     const value = breakdown[line.key];
                     if (value === undefined) return null;
+                    if (line.format === "date") {
+                      return (
+                        <div key={line.key} className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600 dark:text-gray-300">{line.label}</span>
+                          <span className="font-semibold text-gray-900 dark:text-gray-100">{formatValue(value, "date")}</span>
+                        </div>
+                      );
+                    }
                     if (value === 0) {
                       return (
                         <p
