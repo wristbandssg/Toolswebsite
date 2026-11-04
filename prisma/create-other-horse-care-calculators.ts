@@ -10,6 +10,7 @@
 // or
 //   npm run db:create-other-horse-care-calculators
 
+import { petsMovedCategoryId } from "./setup-pets-animals-category";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -264,7 +265,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await petsMovedCategoryId(prisma, def.slug)) ?? category.id, // moved by setup-pets-animals-category.ts
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
