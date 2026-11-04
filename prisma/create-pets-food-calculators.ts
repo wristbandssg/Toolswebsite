@@ -1,7 +1,6 @@
 // One-time (but safe to re-run) batch setup script: creates 25 pet food, feeding, care-service and cost
 // calculators (Pets & Animals Calculators > Pet Food, Care & Cost Calculators). Energy formulas and
 // price tables live in src/lib/calc-engine-pets-food.ts; examples are computed from the engine.
-/* eslint-disable @typescript-eslint/no-unused-vars -- shared helper block; not every batch uses every helper */
 //
 // HOW TO RUN (after prisma/setup-pets-animals-category.ts --apply)
 //   npx tsx prisma/create-pets-food-calculators.ts

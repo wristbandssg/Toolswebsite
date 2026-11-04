@@ -33,7 +33,6 @@ function round2(n: number): number {
 const nonNeg = (v: number, d = 0) => Math.max(0, safeNumber(v, d));
 const pick = (v: number, n: number) => Math.min(n - 1, Math.max(0, Math.round(safeNumber(v))));
 const yes = (v: number) => Math.round(safeNumber(v)) === 1;
-const ceil = (n: number) => Math.ceil(n - 1e-9);
 const LB = 0.45359237;
 const kgOf = (v: Record<string, number>) => (pick(v.weightUnit, 2) === 0 ? nonNeg(v.weight) * LB : nonNeg(v.weight));
 const rer = (kg: number) => 70 * Math.pow(Math.max(0, kg), 0.75);
