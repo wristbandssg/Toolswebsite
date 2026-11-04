@@ -10,6 +10,7 @@
 // or
 //   npm run db:create-fin2-workforce-calculators
 
+import { bizIndMovedCategoryId } from "./setup-business-industrial-category";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -270,7 +271,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await bizIndMovedCategoryId(prisma, def.slug)) ?? category.id, // moved by setup-business-industrial-category.ts
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
