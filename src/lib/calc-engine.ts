@@ -606,6 +606,7 @@ import { lawPiCustomCalculators } from "./calc-engine-law-pi";
 import { lawCourtCustomCalculators } from "./calc-engine-law-court";
 import { lawImmigCustomCalculators } from "./calc-engine-law-immig";
 import { lawGovCustomCalculators } from "./calc-engine-law-gov";
+import { bizEnergyCustomCalculators } from "./calc-engine-biz-energy";
 import { bizFreightCustomCalculators } from "./calc-engine-biz-freight";
 import { bizShippingCustomCalculators } from "./calc-engine-biz-shipping";
 import { bizConstructionCustomCalculators } from "./calc-engine-biz-construction";
@@ -1031,6 +1032,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...lawCourtCustomCalculators,
   ...lawImmigCustomCalculators,
   ...lawGovCustomCalculators,
+  ...bizEnergyCustomCalculators,
   ...bizFreightCustomCalculators,
   ...bizShippingCustomCalculators,
   ...bizConstructionCustomCalculators,
