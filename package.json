@@ -487,6 +487,7 @@
     "db:create-law-court-calculators": "tsx prisma/create-law-court-calculators.ts",
     "db:create-law-immig-calculators": "tsx prisma/create-law-immig-calculators.ts",
     "db:create-law-gov-calculators": "tsx prisma/create-law-gov-calculators.ts",
+    "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",
     "db:create-biz-fluids-calculators": "tsx prisma/create-biz-fluids-calculators.ts",
