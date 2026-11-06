@@ -619,6 +619,7 @@ import { foodBizCustomCalculators } from "./calc-engine-food-biz";
 import { foodNutritionCustomCalculators } from "./calc-engine-food-nutrition";
 import { foodDietCustomCalculators } from "./calc-engine-food-diet";
 import { foodRnBurgerCustomCalculators } from "./calc-engine-food-rn-burger";
+import { foodRnBowlCustomCalculators } from "./calc-engine-food-rn-bowl";
 import { bizAgCustomCalculators } from "./calc-engine-biz-ag";
 import { bizOpsCustomCalculators } from "./calc-engine-biz-ops";
 import { bizMfgCustomCalculators } from "./calc-engine-biz-mfg";
@@ -1062,6 +1063,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...foodNutritionCustomCalculators,
   ...foodDietCustomCalculators,
   ...foodRnBurgerCustomCalculators,
+  ...foodRnBowlCustomCalculators,
   ...bizAgCustomCalculators,
   ...bizOpsCustomCalculators,
   ...bizMfgCustomCalculators,
