@@ -37,6 +37,7 @@ export const FOOD_SUBCATEGORIES: { name: string; slug: string; parent?: string }
   { name: "Restaurant & Fast Food Nutrition Calculators", slug: "restaurant-fast-food-nutrition-calculators" },
   { name: "Burger, Chicken & Fast Food Nutrition Calculators", slug: "burger-chicken-fast-food-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
   { name: "Mexican, Bowl & Salad Restaurant Nutrition Calculators", slug: "mexican-bowl-salad-restaurant-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
+  { name: "Pizza, Sub & Sandwich Nutrition Calculators", slug: "pizza-sub-sandwich-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
 ];
 
 const PARTY = "party-event-food-calculators";

@@ -503,6 +503,7 @@
     "db:create-food-diet-calculators": "tsx prisma/create-food-diet-calculators.ts",
     "db:create-food-rn-burger-calculators": "tsx prisma/create-food-rn-burger-calculators.ts",
     "db:create-food-rn-bowl-calculators": "tsx prisma/create-food-rn-bowl-calculators.ts",
+    "db:create-food-rn-pizza-calculators": "tsx prisma/create-food-rn-pizza-calculators.ts",
     "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",
