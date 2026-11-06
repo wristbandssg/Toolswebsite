@@ -611,6 +611,7 @@ import { petsFoodCustomCalculators } from "./calc-engine-pets-food";
 import { petsGrowthCustomCalculators } from "./calc-engine-pets-growth";
 import { petsVetCustomCalculators } from "./calc-engine-pets-vet";
 import { petsDosageCustomCalculators } from "./calc-engine-pets-dosage";
+import { foodBeerCustomCalculators } from "./calc-engine-food-beer";
 import { bizAgCustomCalculators } from "./calc-engine-biz-ag";
 import { bizOpsCustomCalculators } from "./calc-engine-biz-ops";
 import { bizMfgCustomCalculators } from "./calc-engine-biz-mfg";
@@ -1046,6 +1047,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...petsGrowthCustomCalculators,
   ...petsVetCustomCalculators,
   ...petsDosageCustomCalculators,
+  ...foodBeerCustomCalculators,
   ...bizAgCustomCalculators,
   ...bizOpsCustomCalculators,
   ...bizMfgCustomCalculators,

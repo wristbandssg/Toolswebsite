@@ -493,6 +493,8 @@
     "db:create-pets-growth-calculators": "tsx prisma/create-pets-growth-calculators.ts",
     "db:create-pets-vet-calculators": "tsx prisma/create-pets-vet-calculators.ts",
     "db:create-pets-dosage-calculators": "tsx prisma/create-pets-dosage-calculators.ts",
+    "db:setup-food-drink-category": "tsx prisma/setup-food-drink-category.ts",
+    "db:create-food-beer-calculators": "tsx prisma/create-food-beer-calculators.ts",
     "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",

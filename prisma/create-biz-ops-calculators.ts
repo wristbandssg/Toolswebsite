@@ -14,6 +14,7 @@
 
 import * as E from "../src/lib/calc-engine-biz-ops";
 
+import { foodMovedCategoryId } from "./setup-food-drink-category";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -631,7 +632,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: cat.id,
+      categoryId: (await foodMovedCategoryId(prisma, def.slug)) ?? cat.id, // moved by setup-food-drink-category.ts
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
