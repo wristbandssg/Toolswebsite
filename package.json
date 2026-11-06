@@ -500,6 +500,7 @@
     "db:create-food-baking-calculators": "tsx prisma/create-food-baking-calculators.ts",
     "db:create-food-biz-calculators": "tsx prisma/create-food-biz-calculators.ts",
     "db:create-food-nutrition-calculators": "tsx prisma/create-food-nutrition-calculators.ts",
+    "db:create-food-diet-calculators": "tsx prisma/create-food-diet-calculators.ts",
     "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",
