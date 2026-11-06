@@ -615,6 +615,7 @@ import { foodBeerCustomCalculators } from "./calc-engine-food-beer";
 import { foodDrinksCustomCalculators } from "./calc-engine-food-drinks";
 import { foodCookingCustomCalculators } from "./calc-engine-food-cooking";
 import { foodBakingCustomCalculators } from "./calc-engine-food-baking";
+import { foodBizCustomCalculators } from "./calc-engine-food-biz";
 import { bizAgCustomCalculators } from "./calc-engine-biz-ag";
 import { bizOpsCustomCalculators } from "./calc-engine-biz-ops";
 import { bizMfgCustomCalculators } from "./calc-engine-biz-mfg";
@@ -1054,6 +1055,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...foodDrinksCustomCalculators,
   ...foodCookingCustomCalculators,
   ...foodBakingCustomCalculators,
+  ...foodBizCustomCalculators,
   ...bizAgCustomCalculators,
   ...bizOpsCustomCalculators,
   ...bizMfgCustomCalculators,
