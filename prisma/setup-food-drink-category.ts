@@ -1,7 +1,9 @@
 // Food & Drink Calculators (6 Nov 2026, user request: "Food and Drink Calculator" is the only main
 // category for the 375-keyword list, at most 10 sub-categories, at most 5 child sub-categories).
-// Keyword check: Claude outputs/Food_Drink_Keyword_Check.md (304 new tools).
-//   1. Creates the main category, its 10 sub-categories and the 5 restaurant-nutrition children.
+// Keyword check: Claude outputs/Food_Drink_Keyword_Check.md (304 new tools). The 171 restaurant-brand
+// nutrition tools were not built, and their empty sub-category + 5 children were deleted at the
+// user's request (6 Nov 2026) — 9 sub-categories remain.
+//   1. Creates the main category and its 9 sub-categories.
 //   2. Moves existing party-food, drink and food-pricing tools whose main intent belongs here (their
 //      owning create-*.ts scripts read FOOD_MOVES too, so re-running them keeps the tools in place).
 //
@@ -20,12 +22,6 @@ export const FOOD_MAIN = { name: "Food & Drink Calculators", slug: "food-drink-c
 
 /** parent = slug of another entry here (child sub-category); omitted = directly under the main category. */
 export const FOOD_SUBCATEGORIES: { name: string; slug: string; parent?: string }[] = [
-  { name: "Restaurant & Fast Food Nutrition Calculators", slug: "restaurant-fast-food-nutrition-calculators" },
-  { name: "Burger, Chicken & Fast Food Nutrition Calculators", slug: "burger-chicken-fast-food-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
-  { name: "Mexican, Bowl & Salad Restaurant Nutrition Calculators", slug: "mexican-bowl-salad-restaurant-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
-  { name: "Pizza, Sub & Sandwich Nutrition Calculators", slug: "pizza-sub-sandwich-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
-  { name: "Coffee, Smoothie & Dessert Shop Nutrition Calculators", slug: "coffee-smoothie-dessert-shop-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
-  { name: "Sit-Down Restaurant Nutrition Calculators", slug: "sit-down-restaurant-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
   { name: "Food Nutrition & Calorie Calculators", slug: "food-nutrition-calorie-calculators" },
   { name: "Diet, Macro & Meal Planning Calculators", slug: "diet-macro-meal-planning-calculators" },
   { name: "Cooking Time, Meat & Curing Calculators", slug: "cooking-time-meat-curing-calculators" },
