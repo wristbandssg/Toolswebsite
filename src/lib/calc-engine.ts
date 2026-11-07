@@ -629,6 +629,7 @@ import { artsCreativeCustomCalculators } from "./calc-engine-arts-creative";
 import { artsMysticCustomCalculators } from "./calc-engine-arts-mystic";
 import { hgConCustomCalculators } from "./calc-engine-hg-con";
 import { hgLandCustomCalculators } from "./calc-engine-hg-land";
+import { hgGardCustomCalculators } from "./calc-engine-hg-gard";
 import { bizAgCustomCalculators } from "./calc-engine-biz-ag";
 import { bizOpsCustomCalculators } from "./calc-engine-biz-ops";
 import { bizMfgCustomCalculators } from "./calc-engine-biz-mfg";
@@ -1082,6 +1083,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...artsMysticCustomCalculators,
   ...hgConCustomCalculators,
   ...hgLandCustomCalculators,
+  ...hgGardCustomCalculators,
   ...bizAgCustomCalculators,
   ...bizOpsCustomCalculators,
   ...bizMfgCustomCalculators,
