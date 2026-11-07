@@ -37,6 +37,10 @@ const CURRENCY_LOCALE: Record<string, string> = {
   MXN: "es-MX",
 };
 
+// Same limit as TEXT_MAX_LENGTH in calc-engine-types (kept local so the client
+// bundle doesn't pull in the calculation engine).
+const TEXT_MAX_LENGTH = 60;
+
 const CURRENCY_SYMBOL: Record<string, string> = {
   USD: "$",
   GBP: "£",
@@ -136,6 +140,13 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     try {
       const numericValues: Record<string, number> = {};
       for (const f of fields) {
+        if (f.type === "text") {
+          // Text travels as character codes so the API stays numeric (see readText in calc-engine-types).
+          const text = (values[f.key] ?? "").slice(0, TEXT_MAX_LENGTH);
+          numericValues[f.key] = text.length;
+          for (let i = 0; i < text.length; i++) numericValues[`${f.key}__${i}`] = text.charCodeAt(i);
+          continue;
+        }
         numericValues[f.key] = f.type === "date" ? isoToDayNumber(values[f.key]) : parseFloat(values[f.key]);
       }
       const res = await fetch(`/api/tools/${toolSlug}/calculate`, {
@@ -246,6 +257,15 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                         </option>
                       ))}
                     </select>
+                  ) : field.type === "text" ? (
+                    <input
+                      type="text"
+                      maxLength={TEXT_MAX_LENGTH}
+                      className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                      value={values[field.key] ?? ""}
+                      required={field.required !== false}
+                      onChange={(e) => setField(field.key, e.target.value)}
+                    />
                   ) : field.type === "date" ? (
                     <input
                       type="date"

@@ -7,7 +7,7 @@ import { toolSlugError } from "@/lib/url-changes";
 const calcInputFieldSchema = z.object({
   key: z.string().min(1),
   label: z.string().min(1),
-  type: z.enum(["number", "percentage", "currency", "dropdown", "date", "slider"]),
+  type: z.enum(["number", "percentage", "currency", "dropdown", "date", "slider", "text"]),
   unit: z.string().optional(),
   required: z.boolean().optional(),
   default: z.union([z.number(), z.string()]).optional(),

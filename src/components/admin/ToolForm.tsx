@@ -432,6 +432,7 @@ export default function ToolForm({
                   <option value="dropdown">Dropdown</option>
                   <option value="date">Date</option>
                   <option value="slider">Slider</option>
+                  <option value="text">Text (e.g. a name)</option>
                 </select>
                 <input
                   placeholder="Unit (optional)"

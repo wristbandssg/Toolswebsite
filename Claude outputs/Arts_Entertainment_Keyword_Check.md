@@ -190,3 +190,13 @@ Stay where they are: `subwoofer-box-calculator` and the speaker/headphone impeda
 **Hard to build:** Zi Wei Dou Shu, Bazi, Qimen Dunjia, Human Design, Fame Astrology and Venus Line need Chinese-calendar solar terms or planetary positions (an ephemeris). They can be built, but with more effort than the other tools, and should be labelled for entertainment.
 
 **Dated figures to refresh:** per-stream payout rates, the US mechanical royalty rate, ASCAP fee schedules and Vivid Seats fees change every year.
+
+## F. Build status (7 Nov 2026)
+
+**Done:** 77 new tools built and published, plus the 12 moves applied — 89 tools in Arts & Entertainment Calculators:
+
+- Music Theory, Instrument & Audio: 40 (35 new + 5 moved)
+- Art, Film & Creator Income: 29 (23 new + 6 moved)
+- Tarot, Astrology & Fun: 20 (19 new + 1 moved)
+
+**Not built (5):** Online Zi Wei Dou Shu and Online Qimen Dunjia (complex lunar-calendar charts), Birth Chart Human Design (needs a full planetary ephemeris and the gate mapping), Fame Astrology (planet and house positions) and Tomodachi Personality (the game's mapping is uncertain).

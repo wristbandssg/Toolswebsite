@@ -32,7 +32,24 @@ export type CalcFieldType =
   | "currency"
   | "dropdown"
   | "date"
-  | "slider";
+  | "slider"
+  // Free text (e.g. a name). The widget sends it as numbers so the API stays
+  // numeric: values[key] = length, values[`${key}__${i}`] = UTF-16 code of
+  // character i (first TEXT_MAX_LENGTH characters). Decode with readText().
+  | "text";
+
+export const TEXT_MAX_LENGTH = 60;
+
+/** Rebuilds a "text" field's string from the numbers the widget sent. */
+export function readText(values: Record<string, number>, key: string): string {
+  const len = Math.min(TEXT_MAX_LENGTH, Math.max(0, Math.round(Number(values[key]) || 0)));
+  let s = "";
+  for (let i = 0; i < len; i++) {
+    const c = Math.round(Number(values[`${key}__${i}`]));
+    if (Number.isFinite(c) && c > 0 && c < 65536) s += String.fromCharCode(c);
+  }
+  return s;
+}
 
 export interface CalcInputField {
   key: string; // variable name used inside the formula, e.g. "part"
