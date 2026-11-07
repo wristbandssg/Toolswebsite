@@ -39,6 +39,7 @@ export const FOOD_SUBCATEGORIES: { name: string; slug: string; parent?: string }
   { name: "Mexican, Bowl & Salad Restaurant Nutrition Calculators", slug: "mexican-bowl-salad-restaurant-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
   { name: "Pizza, Sub & Sandwich Nutrition Calculators", slug: "pizza-sub-sandwich-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
   { name: "Coffee, Smoothie & Dessert Shop Nutrition Calculators", slug: "coffee-smoothie-dessert-shop-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
+  { name: "Sit-Down Restaurant Nutrition Calculators", slug: "sit-down-restaurant-nutrition-calculators", parent: "restaurant-fast-food-nutrition-calculators" },
 ];
 
 const PARTY = "party-event-food-calculators";

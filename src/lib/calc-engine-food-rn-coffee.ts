@@ -4,11 +4,10 @@
  *
  * Data / methods:
  *  - Calories per menu item as published by each chain (US menus), collected 6 Nov 2026 from
- *    fastfoodnutrition.org, which republishes the chains' nutrition information. Pizza values are per
- *    slice where the chain lists slices. Only calories are used — no protein/carb figures are invented.
- *    Items with a size range are split into "(smallest size)" / "(largest size)" rows (for Subway these
- *    are the 6-inch and footlong). Chains whose listed data looked inconsistent or incomplete
- *    (Domino's, Marco's, Jet's, Blaze, MOD, Papa Murphy's, Penn Station) were not built.
+ *    fastfoodnutrition.org, which republishes the chains' nutrition information. Only calories are
+ *    used — no protein/carb figures are invented. Items with a size range are split into
+ *    "(smallest size)" / "(largest size)" rows. Chains not available on the source (Dutch Bros,
+ *    Einstein Bros, Biggby, Scooter's, 7 Brew, Swig, The Human Bean, Aroma Joe's) were not built.
  *  - Daily reference: 2,000 kcal (FDA). Burn rates for a 155 lb adult: brisk walking ≈ 4.5 kcal/min,
  *    running ≈ 11 kcal/min.
  *
