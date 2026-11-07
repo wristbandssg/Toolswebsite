@@ -511,6 +511,7 @@
     "db:create-arts-music-calculators": "tsx prisma/create-arts-music-calculators.ts",
     "db:create-arts-creative-calculators": "tsx prisma/create-arts-creative-calculators.ts",
     "db:create-arts-mystic-calculators": "tsx prisma/create-arts-mystic-calculators.ts",
+    "db:create-hg-con-calculators": "tsx prisma/create-hg-con-calculators.ts",
     "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",
