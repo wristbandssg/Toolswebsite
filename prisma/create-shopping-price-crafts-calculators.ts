@@ -8,6 +8,7 @@
 // or
 //   npm run db:create-shopping-price-crafts-calculators
 
+import { artsMovedCategoryId } from "./setup-arts-entertainment-category";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -498,7 +499,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await artsMovedCategoryId(prisma, def.slug)) ?? category.id, // moved by setup-arts-entertainment-category.ts
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

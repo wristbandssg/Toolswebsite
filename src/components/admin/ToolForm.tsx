@@ -547,7 +547,16 @@ export default function ToolForm({
                   <option value="currency">Currency</option>
                   <option value="percentage">Percentage</option>
                   <option value="date">Date</option>
+                  <option value="label">Text label</option>
                 </select>
+                {line.format === "label" ? (
+                  <input
+                    placeholder="Labels, comma-separated (index 0, 1, 2…)"
+                    className="rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-800 sm:col-span-2"
+                    value={(line.labels ?? []).join(", ")}
+                    onChange={(e) => updateResultLine(i, { labels: e.target.value.split(",").map((s) => s.trim()) })}
+                  />
+                ) : null}
                 <label className="flex items-center gap-1.5 text-xs text-gray-500">
                   <input
                     type="checkbox"

@@ -166,7 +166,10 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     }
   }
 
-  function formatValue(n: number, format?: "number" | "currency" | "percentage" | "date", currency?: string, decimals?: number) {
+  function formatValue(n: number, format?: "number" | "currency" | "percentage" | "date" | "label", currency?: string, decimals?: number, labels?: string[]) {
+    if (format === "label") {
+      return labels?.[Math.round(n)] ?? "—";
+    }
     if (format === "date") {
       if (!n) return "—";
       return new Date(n * DAY_MS).toLocaleDateString("en-US", { timeZone: "UTC", weekday: "short", year: "numeric", month: "short", day: "numeric" });
@@ -187,7 +190,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
   }
 
   function formatOutput(n: number) {
-    return formatValue(n, result?.format, result?.currency, result?.decimals);
+    return formatValue(n, result?.format, result?.currency, result?.decimals, result?.labels);
   }
 
   // Drives the "$ Results" header symbol — the single-output `result`
@@ -202,7 +205,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
   const detailLines = (results ?? []).filter((line) => !line.highlight);
   const maxDetailValue = Math.max(
     1,
-    ...detailLines.filter((line) => line.format !== "date").map((line) => Math.abs(breakdown?.[line.key] ?? 0))
+    ...detailLines.filter((line) => line.format !== "date" && line.format !== "label").map((line) => Math.abs(breakdown?.[line.key] ?? 0))
   );
 
   return (
@@ -316,7 +319,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                     {highlightLine.label}
                   </p>
                   <p className="mt-1 text-3xl font-bold">
-                    {formatValue(breakdown[highlightLine.key], highlightLine.format, highlightLine.currency, highlightLine.decimals)}
+                    {formatValue(breakdown[highlightLine.key], highlightLine.format, highlightLine.currency, highlightLine.decimals, highlightLine.labels)}
                   </p>
                 </div>
               ) : null}
@@ -326,11 +329,11 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                   {detailLines.map((line) => {
                     const value = breakdown[line.key];
                     if (value === undefined) return null;
-                    if (line.format === "date") {
+                    if (line.format === "date" || line.format === "label") {
                       return (
                         <div key={line.key} className="flex items-center justify-between text-sm">
                           <span className="text-gray-600 dark:text-gray-300">{line.label}</span>
-                          <span className="font-semibold text-gray-900 dark:text-gray-100">{formatValue(value, "date")}</span>
+                          <span className="font-semibold text-gray-900 dark:text-gray-100">{formatValue(value, line.format, undefined, undefined, line.labels)}</span>
                         </div>
                       );
                     }

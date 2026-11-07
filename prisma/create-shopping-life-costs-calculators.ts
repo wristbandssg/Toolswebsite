@@ -9,6 +9,7 @@
 //   npm run db:create-shopping-life-costs-calculators
 
 import { foodMovedCategoryId } from "./setup-food-drink-category";
+import { artsMovedCategoryId } from "./setup-arts-entertainment-category";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -532,7 +533,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: (await foodMovedCategoryId(prisma, def.slug)) ?? category.id, // moved by setup-food-drink-category.ts
+      categoryId: (await artsMovedCategoryId(prisma, def.slug)) ?? (await foodMovedCategoryId(prisma, def.slug)) ?? category.id, // moved by setup-arts-entertainment / setup-food-drink
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
