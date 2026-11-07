@@ -517,6 +517,7 @@
     "db:create-hg-roof-calculators": "tsx prisma/create-hg-roof-calculators.ts",
     "db:create-hg-deck-calculators": "tsx prisma/create-hg-deck-calculators.ts",
     "db:create-hg-frame-calculators": "tsx prisma/create-hg-frame-calculators.ts",
+    "db:create-hg-floor-calculators": "tsx prisma/create-hg-floor-calculators.ts",
     "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",
