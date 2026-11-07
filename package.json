@@ -521,6 +521,7 @@
     "db:create-hg-hvac-calculators": "tsx prisma/create-hg-hvac-calculators.ts",
     "db:create-hg-plumb-calculators": "tsx prisma/create-hg-plumb-calculators.ts",
     "db:create-hg-pool-calculators": "tsx prisma/create-hg-pool-calculators.ts",
+    "db:create-hg-home-calculators": "tsx prisma/create-hg-home-calculators.ts",
     "db:create-biz-ag-calculators": "tsx prisma/create-biz-ag-calculators.ts",
     "db:create-biz-ops-calculators": "tsx prisma/create-biz-ops-calculators.ts",
     "db:create-biz-mfg-calculators": "tsx prisma/create-biz-mfg-calculators.ts",
