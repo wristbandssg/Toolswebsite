@@ -52,124 +52,112 @@ Checked against the live database (5386 tools, every category). There is no Arts
 
 | Existing tool | Current location | Proposed location | Reason |
 |---|---|---|---|
-| `commission-price-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Photography, Film & Event Calculators | Main intent is art / photography |
-| `painting-price-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Photography, Film & Event Calculators | Main intent is art / photography |
-| `art-print-price-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Photography, Film & Event Calculators | Main intent is art / photography |
-| `photography-pricing-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Photography, Film & Event Calculators | Main intent is art / photography |
-| `photography-exposure-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Art, Photography, Film & Event Calculators | Main intent is art / photography |
-| `guitar-value-calculator` | Shopping Calculators > Vehicle, Resale & Collectibles Calculators | Arts & Entertainment > Guitar, Instrument & Vocal Calculators | Main intent is musical instruments |
-| `piano-value-calculator` | Shopping Calculators > Vehicle, Resale & Collectibles Calculators | Arts & Entertainment > Guitar, Instrument & Vocal Calculators | Main intent is musical instruments |
-| `audio-delay-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Tempo, Audio & Studio Calculators | Main intent is live sound / audio |
-| `decibel-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Tempo, Audio & Studio Calculators | Main intent is live sound / audio |
-| `speaker-wattage-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Tempo, Audio & Studio Calculators | Main intent is live sound / audio |
-| `youtube-revenue-calculator` | Finance Calculators | Arts & Entertainment > Music Royalties & Creator Income Calculators | Main intent is creator income |
-| `streaming-cost-calculator` | Shopping Calculators > Lifestyle, Party & Wedding Calculators | Arts & Entertainment > Movies, TV & Fun Calculators | Main intent is entertainment |
+| `commission-price-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Film & Creator Income Calculators | Main intent is art / photography |
+| `painting-price-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Film & Creator Income Calculators | Main intent is art / photography |
+| `art-print-price-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Film & Creator Income Calculators | Main intent is art / photography |
+| `photography-pricing-calculator` | Shopping Calculators > Pricing, Markup & Seller Fee Calculators | Arts & Entertainment > Art, Film & Creator Income Calculators | Main intent is art / photography |
+| `photography-exposure-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Art, Film & Creator Income Calculators | Main intent is art / photography |
+| `guitar-value-calculator` | Shopping Calculators > Vehicle, Resale & Collectibles Calculators | Arts & Entertainment > Music Theory, Instrument & Audio Calculators | Main intent is musical instruments |
+| `piano-value-calculator` | Shopping Calculators > Vehicle, Resale & Collectibles Calculators | Arts & Entertainment > Music Theory, Instrument & Audio Calculators | Main intent is musical instruments |
+| `audio-delay-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Music Theory, Instrument & Audio Calculators | Main intent is live sound / audio |
+| `decibel-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Music Theory, Instrument & Audio Calculators | Main intent is live sound / audio |
+| `speaker-wattage-calculator` | Shopping Calculators > Electronics, Energy & Tech Calculators | Arts & Entertainment > Music Theory, Instrument & Audio Calculators | Main intent is live sound / audio |
+| `youtube-revenue-calculator` | Finance Calculators | Arts & Entertainment > Art, Film & Creator Income Calculators | Main intent is creator income |
+| `streaming-cost-calculator` | Shopping Calculators > Lifestyle, Party & Wedding Calculators | Arts & Entertainment > Tarot, Astrology & Fun Calculators | Main intent is entertainment |
 
 Stay where they are: `subwoofer-box-calculator` and the speaker/headphone impedance tools (home and car electronics), `musical-instrument-loan-*` (Finance), `art-collectibles-investment-calculator` (Finance), `wall-art-size-calculator` (home improvement).
 
 ## D. Clean final list
 
-**Main category: Arts & Entertainment Calculators** — 7 flat sub-categories (groups under 10 tools were combined).
+**Main category: Arts & Entertainment Calculators** — 3 flat sub-categories, each with 20+ tools (merged at the user's request on 7 Nov 2026).
 
-### 1. Music Theory Calculators (13 new)
+### 1. Music Theory, Instrument & Audio Calculators (35 new + 5 moved in)
 
+- BPM Calculator
+- String Tension Calculator (also covers: Stringjoy Tension Calculator, D'addario String Tension Calculator, Bass String Tension Calculator)
+- Reverb Calculator
 - Chord Calculator (also covers: Triad Calculator, Piano Chord Calculator, Seventh Chord Calculator)
 - Interval Calculator (also covers: Semitone Calculator, Compound Interval Calculator, Interval Inversion Calculator)
+- Vocal Range Calculator (also covers: Voice Type Calculator)
+- Song Length Calculator
+- Fret Calculator (also covers: Fret Position Calculator)
+- String Gauge Calculator
 - Transpose Key Calculator
+- Tone Stack Calculator
+- Room Mode Calculator
 - Guitar Chord Calculator
+- Reverb Time Calculator
+- Studio Monitor Placement Calculator
 - Chord Inversion Calculator (also covers: Triad Inversion Calculator)
+- Time Signature Calculator
 - Capo Calculator
 - Chord Progression Calculator (also covers: Roman Numeral Analysis Calculator, Harmony Calculator)
+- Metric Modulation Calculator
+- Notes per Second Calculator
+- Guitar Neck Angle Calculator
 - Note Frequency Calculator (also covers: Tune Bot Calculator, Music Note Calculator)
+- Compressor Calculator
+- Cymbal Weight Calculator
+- String Spacing Calculator
 - Figured Bass Calculator
 - Secondary Dominant Calculator
+- Qsc Speaker Coverage Calculator
+- Tempo to MS Calculator (also covers: Rhythm Calculator)
+- Tempo Pitch Calculator
+- Piano Bench Height Calculator
 - Key Signature Calculator
 - PC Set Calculator
 - Music Scale Calculator
 
-### 2. Tempo, Audio & Studio Calculators (13 new + 3 moved in)
-
-- BPM Calculator
-- Reverb Calculator
-- Song Length Calculator
-- Room Mode Calculator
-- Reverb Time Calculator
-- Studio Monitor Placement Calculator
-- Time Signature Calculator
-- Metric Modulation Calculator
-- Notes per Second Calculator
-- Compressor Calculator
-- Qsc Speaker Coverage Calculator
-- Tempo to MS Calculator (also covers: Rhythm Calculator)
-- Tempo Pitch Calculator
-
-### 3. Guitar, Instrument & Vocal Calculators (9 new + 2 moved in)
-
-- String Tension Calculator (also covers: Stringjoy Tension Calculator, D'addario String Tension Calculator, Bass String Tension Calculator)
-- Vocal Range Calculator (also covers: Voice Type Calculator)
-- Fret Calculator (also covers: Fret Position Calculator)
-- String Gauge Calculator
-- Tone Stack Calculator
-- Guitar Neck Angle Calculator
-- Cymbal Weight Calculator
-- String Spacing Calculator
-- Piano Bench Height Calculator
-
-### 4. Music Royalties & Creator Income Calculators (13 new + 1 moved in)
+### 2. Art, Film & Creator Income Calculators (23 new + 6 moved in)
 
 - Spotify Royalty Calculator
 - Royalty Calculator (also covers: Distrokid Stream Calculator, Reverse Royalty Calculator)
+- Color Theory Calculator
 - ASCAP License Fee Calculator
 - Apple Music Royalties Calculator
+- Dance Floor Size Calculator
 - Soundcloud Royalty Calculator
+- Pipe and Drape Calculator
+- Golden Hour Photography Calculator
+- Mural Cost Calculator
 - Mechanical Royalty Calculator
 - Tiktok Royalty Calculator
+- Hyperfocal Length Calculator
 - Podcast Income Calculator
 - Performance Royalty Calculator
 - Music Publishing Royalty Calculator
 - Deezer Royalties Calculator
-- Band Profit Calculator
-- Youtube Music Royalty Calculator
-
-### 5. Art, Photography, Film & Event Calculators (10 new + 5 moved in)
-
-- Color Theory Calculator
-- Dance Floor Size Calculator
-- Pipe and Drape Calculator
-- Golden Hour Photography Calculator
-- Mural Cost Calculator
-- Hyperfocal Length Calculator
 - Vivid Seats Fees Calculator
 - Animation Cost Calculator
 - Movie Budget Calculator
+- Band Profit Calculator
+- Youtube Music Royalty Calculator
 - Stage Size Calculator
 
-### 6. Tarot, Astrology & Numerology Calculators (15 new)
+### 3. Tarot, Astrology & Fun Calculators (24 new + 1 moved in)
 
 - Online Zi Wei Dou Shu Calculator
 - Tarot Combination Calculator
 - Tarot Birth Card Calculator (also covers: Tarot Card Calculator)
+- Camel Calculator
 - Accurate Online Bazi Calculator
+- Male Delusion Calculator
 - Birth Chart Human Design Calculator
+- Playlist Calculator (also covers: YouTube Playlist Length Calculator, Album Length Calculator)
 - Destiny Matrix Arcana Calculator (also covers: Arcana Calculator)
+- Binge Calculator
 - Psychic Birth Chart Calculator
 - Vowels Numerology Calculator
 - Daily Tarot Calculator
+- Zodiac Signs Match Calculator
 - Cardology Calculator
 - Arcana Compatibility Calculator
 - Fame Astrology Calculator
 - Online Qimen Dunjia Calculator
+- Speed Playback Calculator
 - Venus Line Calculator
 - Galactic Signature Calculator
-
-### 7. Movies, TV & Fun Calculators (9 new + 1 moved in)
-
-- Camel Calculator
-- Male Delusion Calculator
-- Playlist Calculator (also covers: YouTube Playlist Length Calculator, Album Length Calculator)
-- Binge Calculator
-- Zodiac Signs Match Calculator
-- Speed Playback Calculator
 - Toji Anime Physique Calculator
 - Tomodachi Personality Calculator
 - Compatibility Name Calculator (also covers: Magic Love Calculator, Prank Love Calculator, The Crush Calculator)
