@@ -9,11 +9,11 @@ Checked against the live database (5463 tools, every category). There is no Hous
 | | Count |
 |---|---|
 | Keywords submitted (received) | 2674 |
-| Exact duplicates inside the list | 1006 |
-| Already built (dropped) | 805 |
-| Merged (same intent) | 532 |
-| Needs review (not built) | 53 |
-| **Unique new tools** | **278** |
+| Exact duplicates inside the list | 606 |
+| Already built (dropped) | 982 |
+| Merged (same intent) | 698 |
+| Needs review (not built) | 81 |
+| **Unique new tools** | **307** |
 
 Plus **199 existing tools** recommended to move into House & Garden (section C; not counted as new).
 
@@ -123,7 +123,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | fencing calculator | Already built | `fence-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | wood calculator | Already built | `lumber-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | gravel calculator tons | Already built | `gravel-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
-| vinyl plank flooring installation cost calculator | Already built | `vinyl-plank-flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| vinyl plank flooring installation cost calculator | Already built | `flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | pool gallons calculator | Already built | `pool-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | blow in insulation calculator | Already built | `blown-in-insulation-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | fence material calculator | Already built | `fence-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
@@ -237,7 +237,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | turkey cook time calculator | Already built | `turkey-cook-time-calculator` (Food & Drink Calculators > Cooking Time, Meat & Curing Calculators) |
 | tablecloth size calculator | Already built | `tablecloth-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | cinder block wall calculator | Already built | `concrete-block-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
-| bathroom remodel calculator | Already built | `bathroom-remodel-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| bathroom remodel calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
 | concrete driveway calculator | Already built | `concrete-driveway-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
 | spray foam insulation calculator | Already built | `spray-foam-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | caulking calculator | Already built | `sealant-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
@@ -267,7 +267,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | home improvement calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
 | artificial grass cost calculator | Already built | `artificial-turf-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | stone dust calculator | Already built | `road-base-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
-| small bathroom remodel cost calculator | Already built | `bathroom-remodel-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| small bathroom remodel cost calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
 | stud wall calculator | Already built | `framing-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | lumen calculator | Already built | `lumens-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | swimming pool volume calculator | Already built | `pool-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
@@ -289,7 +289,6 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | tankless water heater sizing calculator | Already built | `tankless-water-heater-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | air conditioner room size calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | bagged concrete calculator | Already built | `quikrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
-| hardwood flooring cost calculator | Already built | `hardwood-floor-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | pine straw calculator | Already built | `pine-straw-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
 | base rock calculator | Already built | `road-base-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
 | sealant calculator | Already built | `sealant-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
@@ -356,7 +355,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | renovation calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
 | window cleaning pricing calculator | Already built | `window-cleaning-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | hardwood floor estimate calculator | Already built | `hardwood-floor-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
-| laminate flooring installation cost calculator | Already built | `laminate-flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| laminate flooring installation cost calculator | Already built | `flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | gravel calculator driveway | Already built | `gravel-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
 | deck builder calculator | Already built | `deck-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | yard calculator concrete | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
@@ -399,7 +398,6 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | home depot fence installation cost calculator | Already built | `fence-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | concrete patio cost calculator | Already built | `concrete-price-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | lowes fence calculator | Already built | `fence-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
-| pool water calculator gallons | Already built | `pool-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | high bay lighting calculator | Already built | `warehouse-led-lighting-calculator` (Business & Industrial Calculators > Freight, Logistics & Warehouse Calculators) |
 | deck lumber calculator | Already built | `deck-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
 | heat btu calculator | Already built | `btu-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
@@ -517,7 +515,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | floor replacement cost calculator | Already built | `flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | carpet calculator cost | Already built | `carpet-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | my cleaning quote calculator | Already built | `house-cleaning-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
-| vinyl flooring installation cost calculator | Already built | `vinyl-plank-flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| vinyl flooring installation cost calculator | Already built | `flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | basement waterproofing cost calculator | Already built | `roof-replacement-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | swimming pool calculator | Already built | `pool-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | hardie board siding cost calculator | Already built | `siding-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
@@ -826,6 +824,185 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | ac room calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
 | breeze block calculator | Already built | `concrete-block-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
 | air con calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| footing concrete calculator | Already built | `concrete-footing-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| shed size calculator | Already built | `storage-shed-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| cadr calculator | Already built | `air-purifier-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| pump size calculator | Already built | `pump-size-calculator` (Business & Industrial Calculators > Manufacturing, Metals & Engineering Calculators) |
+| new window cost calculator | Already built | `window-replacement-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| soap calculator online | Already built | `soap-lye-calculator` (Shopping Calculators > Lifestyle, Party & Wedding Calculators) |
+| shed cost calculator | Already built | `shed-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| air conditioner wire size calculator | Already built | `wire-size-calculator` (Business & Industrial Calculators > Energy, Solar & Electrical Calculators) |
+| cooling capacity calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| bathroom renovations cost calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| building estimate calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| kitchen renovation calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| cost to rebuild home calculator | Already built | `home-replacement-cost-calculator` (Finance Calculators > Insurance Calculators > Home & Property Insurance Calculators) |
+| air conditioning size calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| concrete measurement calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| soapcalc.net calculator | Already built | `soap-lye-calculator` (Shopping Calculators > Lifestyle, Party & Wedding Calculators) |
+| house construction estimate calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| cemex concrete calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| acoustic ceiling calculator | Already built | `drop-ceiling-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| house building estimate calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| new bathroom cost calculator | Already built | `bathroom-remodel-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| composite decking cost calculator | Already built | `deck-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| tiling cost calculator | Already built | `tile-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| house construction cost calculator india | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| construction cost calculator india | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| building construction calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| property rebuild calculator | Already built | `home-replacement-cost-calculator` (Finance Calculators > Insurance Calculators > Home & Property Insurance Calculators) |
+| roman blind calculator | Already built | `blind-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| storage calculator for cctv | Already built | `security-camera-storage-calculator` (Shopping Calculators > Electronics, Energy & Tech Calculators) |
+| house rebuild cost calculator uk | Already built | `home-replacement-cost-calculator` (Finance Calculators > Insurance Calculators > Home & Property Insurance Calculators) |
+| knock down rebuild cost calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| air conditioner tonnage calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| home window tint cost calculator | Already built | `home-window-tint-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| home remodel calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| r-value calculator | Already built | `r-value-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| self level calculator | Already built | `self-leveling-concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| toilet paper calculator | Already built | `toilet-paper-paper-towel-calculator` (Shopping Calculators > Lifestyle, Party & Wedding Calculators) |
+| remodeling costs calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| home renovation estimate calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| fence board calculator | Already built | `fence-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| kitchen remodel calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| garage calculator | Already built | `garage-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| window pricing calculator | Already built | `window-replacement-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| fence installation calculator | Already built | `fence-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| home improvement cost calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| construction price calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| swimming pool construction cost calculator | Already built | `pool-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| house renovation calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| fence repair costs calculator | Already built | `fence-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| renovation estimate calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| concrete floor calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| pool heat pump size calculator | Already built | `pool-heater-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| room heater size calculator | Already built | `space-heater-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| post hole calculator | Already built | `post-hole-concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| swimming pool cost calculator | Already built | `pool-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| construction cost calculator online | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| spotlight calculator | Already built | `recessed-lighting-spacing-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| b&q gravel calculator | Already built | `gravel-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| wood weight calculator kg | Already built | `log-weight-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| cost of building a house calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| grid ceiling calculator | Already built | `drop-ceiling-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| calculator ac | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| concrete basement calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| chicken cooking time calculator | Already built | `chicken-cooking-time-calculator` (Food & Drink Calculators > Cooking Time, Meat & Curing Calculators) |
+| concrete blocks calculator | Already built | `concrete-block-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| renovation costs calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| light calculator for room | Already built | `lumens-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| garage price calculator | Already built | `garage-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| carport calculator | Already built | `carport-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| british thermal unit calculator | Already built | `btu-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| self levelling compound calculator | Already built | `self-leveling-concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| artificial lawn installation cost calculator | Already built | `artificial-turf-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| garage construction cost calculator | Already built | `garage-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| renovation budget calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| patio price calculator | Already built | `patio-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| wood measurement calculator | Already built | `lumber-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| rebuild house cost calculator | Already built | `home-replacement-cost-calculator` (Finance Calculators > Insurance Calculators > Home & Property Insurance Calculators) |
+| building cost estimate calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| calculator for wood | Already built | `lumber-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| air source heat pump size calculator | Already built | `heat-pump-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| cost of rebuilding a house calculator | Already built | `home-replacement-cost-calculator` (Finance Calculators > Insurance Calculators > Home & Property Insurance Calculators) |
+| concrete slab cost calculator australia | Already built | `concrete-price-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| air con size calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| self build cost calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| sand and cement calculator for block work | Already built | `cement-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| curtains size calculator | Already built | `curtain-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| roofing quote calculator | Already built | `roof-replacement-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| christmas light calculator | Already built | `christmas-lights-calculator` (Shopping Calculators > Lifestyle, Party & Wedding Calculators) |
+| tile installation cost calculator | Already built | `tile-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| heat pump btu calculator | Already built | `heat-pump-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| material take off calculator | Already built | `material-estimator-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| fence quote calculator | Already built | `fence-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| free cleaning calculator | Already built | `house-cleaning-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| yard calculator for gravel | Already built | `gravel-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| remodel calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| pentair pool volume calculator | Already built | `pool-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| inground fiberglass pool cost calculator | Already built | `pool-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| armstrong ceiling grid calculator | Already built | `drop-ceiling-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| oval pool volume calculator | Already built | `pool-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| flooring installation cost calculator | Already built | `flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| grease trap sizing calculator | Already built | `grease-trap-sizing-calculator` (Business & Industrial Calculators > Manufacturing, Metals & Engineering Calculators) |
+| how many boards do i need calculator | Already built | `lumber-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| spray foam insulation cost per sq ft calculator | Already built | `insulation-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| armstrong ceiling tile calculator | Already built | `drop-ceiling-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| mulch calculator cubic yards | Already built | `mulch-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| deck layout calculator | Already built | `deck-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| kitchen cabinet calculator | Already built | `cabinet-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| concrete. calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| floor leveler calculator | Already built | `self-leveling-concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| decking calculator app | Already built | `deck-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| topsoil calculator yards | Already built | `topsoil-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| house siding cost calculator | Already built | `siding-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| bostik grout calculator | Already built | `grout-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| concrete calculator for footings | Already built | `concrete-footing-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| rug size for dining table calculator | Already built | `rug-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| picture hanging calculator | Already built | `picture-hanging-height-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| footing calculator concrete | Already built | `concrete-footing-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| sourdough feeding calculator | Already built | `sourdough-feeding-ratio-calculator` (Food & Drink Calculators > Baking & Recipe Calculators) |
+| concrete patio calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| deck build calculator | Already built | `deck-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| 2 x 4 calculator | Already built | `lumber-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| concrete block wall calculator | Already built | `concrete-block-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| mulch yard calculator | Already built | `mulch-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| footing cost calculator | Already built | `foundation-cost-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| how many bags of sand do i need calculator | Already built | `sand-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| insulation cost calculator | Already built | `insulation-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| kitchen cabinet refinishing cost calculator | Already built | `cabinet-painting-refinishing-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| lawn care cost calculator | Already built | `lawn-care-pricing-calculator` (Shopping Calculators > Pricing, Markup & Seller Fee Calculators) |
+| quikrete concrete mix calculator | Already built | `quikrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| usg ceiling grid calculator | Already built | `drop-ceiling-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| non shrink grout calculator | Already built | `grout-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| portable generator size calculator | Already built | `generator-size-calculator` (Business & Industrial Calculators > Energy, Solar & Electrical Calculators) |
+| construction materials calculator | Already built | `material-estimator-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| residential building cost calculator | Already built | `cost-to-build-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| home remodel estimate calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| air conditioner sizing calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| metal stud calculator | Already built | `framing-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| cost to build a deck calculator | Already built | `deck-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| wire size calculator ac 240v | Already built | `wire-size-calculator` (Business & Industrial Calculators > Energy, Solar & Electrical Calculators) |
+| remodeling calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| fence building calculator | Already built | `fence-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| bathroom remodel estimate calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| deck costs calculator | Already built | `deck-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| grout calculator for tile | Already built | `grout-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| fence pricing calculator | Already built | `fence-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| kitchen cabinet painting cost calculator | Already built | `cabinet-painting-refinishing-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| house addition cost calculator | Already built | `home-addition-cost-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| concrete pour calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| water heater calculator | Already built | `water-heater-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| air compressor sizing calculator | Already built | `air-compressor-cfm-calculator` (Business & Industrial Calculators > Manufacturing, Metals & Engineering Calculators) |
+| addition cost calculator | Already built | `home-addition-cost-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
+| btu air conditioner calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| condo remodel cost calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| cabinet refacing cost calculator | Already built | `cabinet-refacing-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| grout calculator metric | Already built | `grout-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| water softener calculator | Already built | `water-softener-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| concreate calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| turkey cook calculator | Already built | `turkey-cook-time-calculator` (Food & Drink Calculators > Cooking Time, Meat & Curing Calculators) |
+| cooling calculator | Already built | `ac-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| bark mulch calculator | Already built | `mulch-calculator` (Business & Industrial Calculators > Landscaping, Aggregate & Paving Calculators) |
+| window replacement estimate calculator | Already built | `window-replacement-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| sewer pipe slope calculator | Already built | `pipe-slope-calculator` (Business & Industrial Calculators > Manufacturing, Metals & Engineering Calculators) |
+| landscape cost calculator | Already built | `landscaping-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| cost of new windows calculator | Already built | `window-replacement-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| remodeling cost calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| remodel estimate calculator | Already built | `renovation-cost-calculator` (Real Estate Calculators > Rental Property & Investment Calculators) |
+| pergola cost calculator | Already built | `pergola-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| npk calculator | Already built | `fertilizer-calculator` (Business & Industrial Calculators > Agriculture & Livestock Calculators) |
+| fan size calculator | Already built | `ceiling-fan-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| metal building cost calculator | Already built | `metal-building-cost-calculator` (Business & Industrial Calculators > Construction Materials & Estimating Calculators) |
+| tv distance from sofa calculator | Already built | `tv-size-calculator` (Shopping Calculators > Electronics, Energy & Tech Calculators) |
+| gas pipe size calculator | Already built | `gas-pipe-sizing-calculator` (Business & Industrial Calculators > Manufacturing, Metals & Engineering Calculators) |
+| picture framing costs calculator | Already built | `picture-framing-cost-calculator` (Shopping Calculators > Pricing, Markup & Seller Fee Calculators) |
+| flooring price calculator | Already built | `flooring-cost-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| btu requirement calculator | Already built | `btu-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| wood stove size calculator | Already built | `wood-stove-size-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| best btu calculator | Already built | `btu-calculator` (Shopping Calculators > Home Improvement Cost & Sizing Calculators) |
+| concrete amount calculator | Already built | `concrete-calculator` (Business & Industrial Calculators > Concrete & Masonry Calculators) |
+| free home addition calculator | Already built | `home-addition-cost-calculator` (Real Estate Calculators > Land, Construction & Building Cost Calculators) |
 | square foot calculator | Same purpose | Square Footage Calculator |
 | sqft calculator | Same purpose | Square Footage Calculator |
 | sq foot calculator | Same purpose | Square Footage Calculator |
@@ -847,6 +1024,15 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | room square feet calculator | Same purpose | Square Footage Calculator |
 | metre square calculator | Same purpose | Square Footage Calculator |
 | square meterage calculator | Same purpose | Square Footage Calculator |
+| sq.ft calculator | Same purpose | Square Footage Calculator |
+| house square feet calculator | Same purpose | Square Footage Calculator |
+| floor measurement calculator | Same purpose | Square Footage Calculator |
+| floor space calculator | Same purpose | Square Footage Calculator |
+| house area calculator | Same purpose | Square Footage Calculator |
+| sqft calculator feet and inches | Same purpose | Square Footage Calculator |
+| square feet calculator feet and inches | Same purpose | Square Footage Calculator |
+| room dimension calculator | Same purpose | Square Footage Calculator |
+| squarefoot calculator | Same purpose | Square Footage Calculator |
 | roof pitch calculator | Same purpose | Roof Pitch Calculator |
 | roof slope calculator | Same purpose | Roof Pitch Calculator |
 | roof angle calculator | Same purpose | Roof Pitch Calculator |
@@ -854,6 +1040,11 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | roof slope angle calculator | Same purpose | Roof Pitch Calculator |
 | pitch calculator roof | Same purpose | Roof Pitch Calculator |
 | pitch roof calculator | Same purpose | Roof Pitch Calculator |
+| roof height calculator | Same purpose | Roof Pitch Calculator |
+| roof rise calculator | Same purpose | Roof Pitch Calculator |
+| roofing pitch calculator | Same purpose | Roof Pitch Calculator |
+| roof pitch degree calculator | Same purpose | Roof Pitch Calculator |
+| roof calculator pitch | Same purpose | Roof Pitch Calculator |
 | dirt calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
 | soil volume calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
 | dirt volume calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
@@ -868,6 +1059,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | how much dirt do i need calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
 | lowes soil calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
 | soil yard calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
+| how much soil do i need calculator | Same purpose | Soil & Dirt Calculator (Cubic Yards & Tons) |
 | paint calculator square feet | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
 | sherwin williams paint calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
 | paint calculator 12x14 room | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
@@ -888,6 +1080,16 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | paint calculator by square feet | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
 | dulux paint calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
 | paint quantity calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| paint needed calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| paint calculator room size | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| how much paint calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| paint volume calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| room paint calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| paint usage calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| paint calculator for one wall | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| interior paint calculator square feet | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| spray paint coverage calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
+| house paint calculator | Same purpose | Paint Calculator (Gallons for Walls & Ceilings) |
 | stair stringer calculator | Same purpose | Stair Stringer Calculator |
 | deck stringer calculator | Same purpose | Stair Stringer Calculator |
 | stringer length calculator | Same purpose | Stair Stringer Calculator |
@@ -906,6 +1108,15 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | tile area calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
 | how many tiles do i need calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
 | floor tiles calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
+| bathroom tile calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
+| 1200 x 600 tiles square feet calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
+| tile coverage calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
+| tile calculator floor | Same purpose | Tile Calculator (Tiles & Boxes) |
+| ctm tile calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
+| tile floor calculator | Same purpose | Tile Calculator (Tiles & Boxes) |
+| square footage calculator tile | Same purpose | Tile Calculator (Tiles & Boxes) |
+| tile calculator for floor | Same purpose | Tile Calculator (Tiles & Boxes) |
+| tile calculator wall | Same purpose | Tile Calculator (Tiles & Boxes) |
 | rafter length calculator | Same purpose | Rafter Length Calculator |
 | roof rafter calculator | Same purpose | Rafter Length Calculator |
 | rafter calculator free | Same purpose | Rafter Length Calculator |
@@ -914,6 +1125,10 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | roof rafter length calculator | Same purpose | Rafter Length Calculator |
 | rafter angle calculator | Same purpose | Rafter Length Calculator |
 | rafter roof pitch calculator | Same purpose | Rafter Length Calculator |
+| rafter size calculator | Same purpose | Rafter Length Calculator |
+| roof framing calculator | Same purpose | Rafter Length Calculator |
+| rafter spacing calculator | Same purpose | Rafter Length Calculator |
+| common rafter calculator | Same purpose | Rafter Length Calculator |
 | board and batten calculator | Same purpose | Board and Batten Calculator |
 | board and batten wall calculator | Same purpose | Board and Batten Calculator |
 | board and batten spacing calculator | Same purpose | Board and Batten Calculator |
@@ -924,6 +1139,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | drywall sheet calculator | Same purpose | Drywall Calculator (Sheets, Mud & Screws) |
 | home depot drywall calculator | Same purpose | Drywall Calculator (Sheets, Mud & Screws) |
 | usg drywall calculator | Same purpose | Drywall Calculator (Sheets, Mud & Screws) |
+| drywall estimate calculator | Same purpose | Drywall Calculator (Sheets, Mud & Screws) |
 | roofing calculator | Same purpose | Roof Area & Squares Calculator |
 | roof square footage calculator | Same purpose | Roof Area & Squares Calculator |
 | roofing square calculator | Same purpose | Roof Area & Squares Calculator |
@@ -946,6 +1162,8 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | roofing square footage calculator | Same purpose | Roof Area & Squares Calculator |
 | roof sqft calculator | Same purpose | Roof Area & Squares Calculator |
 | square feet to roofing squares calculator | Same purpose | Roof Area & Squares Calculator |
+| roofing area calculator | Same purpose | Roof Area & Squares Calculator |
+| roof measurement calculator | Same purpose | Roof Area & Squares Calculator |
 | river rock calculator | Same purpose | Landscape Rock Calculator (River Rock, Lava Rock & Decorative Stone) |
 | landscape rock calculator | Same purpose | Landscape Rock Calculator (River Rock, Lava Rock & Decorative Stone) |
 | landscape stone calculator | Same purpose | Landscape Rock Calculator (River Rock, Lava Rock & Decorative Stone) |
@@ -963,9 +1181,16 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | wallpaper square footage calculator | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
 | how much wallpaper do i need calculator | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
 | wallpaper roll calculator | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
+| wall paper calculator | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
+| best wallpaper calculator | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
+| wallpaper calculator with pattern repeat | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
+| wallpaper calculator free | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
+| wallpaper calculator for one wall | Same purpose | Wallpaper Calculator (Rolls with Pattern Repeat) |
 | free fabric calculator | Same purpose | Fabric Yardage Calculator (Upholstery & Drapery) |
 | upholstery fabric calculator | Same purpose | Fabric Yardage Calculator (Upholstery & Drapery) |
 | fabric yard calculator | Same purpose | Fabric Yardage Calculator (Upholstery & Drapery) |
+| box cushion calculator | Same purpose | Fabric Yardage Calculator (Upholstery & Drapery) |
+| free fabric calculator upholstery | Same purpose | Fabric Yardage Calculator (Upholstery & Drapery) |
 | roof truss calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
 | roof truss span calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
 | roof truss design calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
@@ -976,6 +1201,8 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | mono truss calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
 | attic truss calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
 | floor truss design calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
+| shed roof truss design calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
+| roof trusses calculator | Same purpose | Roof Truss Calculator (Span, Pitch & Lumber) |
 | vinyl siding calculator | Same purpose | Siding Calculator (Squares & Trim) |
 | hardie siding calculator | Same purpose | Siding Calculator (Squares & Trim) |
 | lap siding calculator | Same purpose | Siding Calculator (Squares & Trim) |
@@ -991,6 +1218,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | house siding calculator | Same purpose | Siding Calculator (Squares & Trim) |
 | hardie lap siding calculator | Same purpose | Siding Calculator (Squares & Trim) |
 | lp siding calculator | Same purpose | Siding Calculator (Squares & Trim) |
+| hardie plank calculator | Same purpose | Siding Calculator (Squares & Trim) |
 | wet bulb temperature calculator | Same purpose | Wet Bulb Temperature Calculator |
 | pea gravel calculator tons | Same purpose | Pea Gravel Calculator |
 | large tree removal cost calculator | Same purpose | Tree Removal Cost Calculator |
@@ -1003,6 +1231,10 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | brick paver calculator | Same purpose | Paver Calculator (Pavers, Base & Sand) |
 | lowes paver calculator | Same purpose | Paver Calculator (Pavers, Base & Sand) |
 | block paving calculator | Same purpose | Paver Calculator (Pavers, Base & Sand) |
+| paving bricks calculator | Same purpose | Paver Calculator (Pavers, Base & Sand) |
+| sand calculator for pavers | Same purpose | Paver Calculator (Pavers, Base & Sand) |
+| paver calculator square feet | Same purpose | Paver Calculator (Pavers, Base & Sand) |
+| patio stone calculator | Same purpose | Paver Calculator (Pavers, Base & Sand) |
 | flooring calculator | Same purpose | Flooring Calculator (Square Feet & Boxes) |
 | flooring calculator square feet | Same purpose | Flooring Calculator (Square Feet & Boxes) |
 | square foot calculator for flooring | Same purpose | Flooring Calculator (Square Feet & Boxes) |
@@ -1010,6 +1242,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | how many boxes of flooring do i need calculator | Same purpose | Flooring Calculator (Square Feet & Boxes) |
 | floor square footage calculator | Same purpose | Flooring Calculator (Square Feet & Boxes) |
 | square footage calculator for flooring | Same purpose | Flooring Calculator (Square Feet & Boxes) |
+| home depot flooring calculator | Same purpose | Flooring Calculator (Square Feet & Boxes) |
 | insulation calculator | Same purpose | Insulation Calculator (Attic & Walls) |
 | attic insulation calculator | Same purpose | Insulation Calculator (Attic & Walls) |
 | free insulation calculator square feet | Same purpose | Insulation Calculator (Attic & Walls) |
@@ -1019,6 +1252,8 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | insulation calculator for attic | Same purpose | Insulation Calculator (Attic & Walls) |
 | how much insulation do i need calculator | Same purpose | Insulation Calculator (Attic & Walls) |
 | loft insulation calculator | Same purpose | Insulation Calculator (Attic & Walls) |
+| rockwool insulation calculator | Same purpose | Insulation Calculator (Attic & Walls) |
+| ceiling insulation calculator | Same purpose | Insulation Calculator (Attic & Walls) |
 | pool salt calculator | Same purpose | Pool Salt Calculator |
 | salt pool calculator | Same purpose | Pool Salt Calculator |
 | salt calculator for pool | Same purpose | Pool Salt Calculator |
@@ -1028,14 +1263,18 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | water volume calculator | Same purpose | Water Volume Calculator (Gallons & Liters) |
 | volume of water calculator | Same purpose | Water Volume Calculator (Gallons & Liters) |
 | water volume calculator in gallons | Same purpose | Water Volume Calculator (Gallons & Liters) |
+| pool water calculator gallons | Same purpose | Water Volume Calculator (Gallons & Liters) |
 | water capacity calculator | Same purpose | Water Volume Calculator (Gallons & Liters) |
+| water gallon calculator | Same purpose | Water Volume Calculator (Gallons & Liters) |
 | sod solutions area calculator | Same purpose | Sod Calculator (Pallets & Rolls) |
 | sod calculator home depot | Same purpose | Sod Calculator (Pallets & Rolls) |
+| sod calculator square feet | Same purpose | Sod Calculator (Pallets & Rolls) |
 | plant spacing calculator | Same purpose | Plant Spacing Calculator (Plants per Area) |
 | tree spacing calculator | Same purpose | Plant Spacing Calculator (Plants per Area) |
 | planting calculator | Same purpose | Plant Spacing Calculator (Plants per Area) |
 | spacing calculator | Same purpose | Plant Spacing Calculator (Plants per Area) |
 | plant population calculator | Same purpose | Plant Spacing Calculator (Plants per Area) |
+| corn plant spacing calculator | Same purpose | Plant Spacing Calculator (Plants per Area) |
 | roof shingle calculator | Same purpose | Shingle Calculator (Bundles & Squares) |
 | free roofing calculator square feet | Same purpose | Shingle Calculator (Bundles & Squares) |
 | roof shingles calculator | Same purpose | Shingle Calculator (Bundles & Squares) |
@@ -1052,6 +1291,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | roof shingles calculator home depot | Same purpose | Shingle Calculator (Bundles & Squares) |
 | shingle bundle calculator | Same purpose | Shingle Calculator (Bundles & Squares) |
 | paver gravel calculator | Same purpose | Paver Base Calculator |
+| paver base depth calculator | Same purpose | Paver Base Calculator |
 | duct size calculator | Same purpose | Duct Size Calculator (CFM & Velocity) |
 | duct sizing calculator | Same purpose | Duct Size Calculator (CFM & Velocity) |
 | duct cfm calculator | Same purpose | Duct Size Calculator (CFM & Velocity) |
@@ -1083,6 +1323,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | ac duct calculator | Same purpose | Duct Size Calculator (CFM & Velocity) |
 | duct calculator chart | Same purpose | Duct Size Calculator (CFM & Velocity) |
 | duct size calculator app | Same purpose | Duct Size Calculator (CFM & Velocity) |
+| square to round duct calculator | Same purpose | Duct Size Calculator (CFM & Velocity) |
 | free manual j calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
 | hvac load calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
 | manual j calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
@@ -1095,8 +1336,11 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | mini split load calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
 | online hvac load calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
 | btu load calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
+| cooling load calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
+| ac load calculator | Same purpose | HVAC Load Calculator (Manual J Estimate) |
 | retaining wall block calculator | Same purpose | Retaining Wall Calculator (Blocks, Caps & Gravel) |
 | retaining wall blocks calculator | Same purpose | Retaining Wall Calculator (Blocks, Caps & Gravel) |
+| stairs calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
 | rise and run calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
 | staircase calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
 | stair calculator with diagram | Same purpose | Stair Calculator (Rise, Run & Steps) |
@@ -1110,17 +1354,37 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | rise run stair calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
 | decks.com stair calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
 | rise and run stair calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
+| stair height calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
+| how to build stairs calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
+| staircase calculator with landing | Same purpose | Stair Calculator (Rise, Run & Steps) |
+| stair rise run calculator | Same purpose | Stair Calculator (Rise, Run & Steps) |
+| stairs calculator with landing | Same purpose | Stair Calculator (Rise, Run & Steps) |
+| stair calculator with diagram and landing | Same purpose | Stair Calculator (Rise, Run & Steps) |
 | carpet calculator square feet | Same purpose | Carpet Calculator (Square Yards) |
 | carpet area calculator | Same purpose | Carpet Calculator (Square Yards) |
 | carpet measurement calculator | Same purpose | Carpet Calculator (Square Yards) |
 | carpet measuring calculator | Same purpose | Carpet Calculator (Square Yards) |
+| how much carpet do i need calculator | Same purpose | Carpet Calculator (Square Yards) |
+| online carpet calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet size calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet square footage calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet roll calculator | Same purpose | Carpet Calculator (Square Yards) |
+| measure carpet calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet measure calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet measurements calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet calculator in feet | Same purpose | Carpet Calculator (Square Yards) |
+| carpet square meter calculator | Same purpose | Carpet Calculator (Square Yards) |
+| carpet calculator in meters | Same purpose | Carpet Calculator (Square Yards) |
+| square meter to carpet calculator | Same purpose | Carpet Calculator (Square Yards) |
 | deck stair calculator | Same purpose | Deck Stair Calculator |
 | deck stairs calculator | Same purpose | Deck Stair Calculator |
 | deck stair stringer calculator | Same purpose | Deck Stair Calculator |
 | stair calculator deck | Same purpose | Deck Stair Calculator |
 | cubic footage calculator | Same purpose | Cubic Feet Calculator |
+| wood cubic feet calculator | Same purpose | Cubic Feet Calculator |
 | standing seam cost calculator | Same purpose | Metal Roof Cost Calculator |
 | standing seam metal roof cost calculator | Same purpose | Metal Roof Cost Calculator |
+| metal roofing cost calculator | Same purpose | Metal Roof Cost Calculator |
 | baluster spacing calculator | Same purpose | Baluster & Spindle Spacing Calculator |
 | baluster calculator | Same purpose | Baluster & Spindle Spacing Calculator |
 | spindle spacing calculator | Same purpose | Baluster & Spindle Spacing Calculator |
@@ -1137,17 +1401,22 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | panelling calculator | Same purpose | Wainscoting Calculator |
 | wall panelling calculator | Same purpose | Wainscoting Calculator |
 | wall panel calculator | Same purpose | Wainscoting Calculator |
+| paneling calculator | Same purpose | Wainscoting Calculator |
+| wall panelling spacing calculator | Same purpose | Wainscoting Calculator |
 | grass seed calculator | Same purpose | Grass Seed Calculator |
 | cord wood calculator | Same purpose | Firewood Cord Calculator |
 | firewood cord calculator | Same purpose | Firewood Cord Calculator |
 | wood cord calculator | Same purpose | Firewood Cord Calculator |
 | how many sheets of plywood do i need calculator | Same purpose | Plywood Sheet Calculator |
 | plywood sheet calculator | Same purpose | Plywood Sheet Calculator |
+| plywood calculator for cabinets | Same purpose | Plywood Sheet Calculator |
 | rolling offset calculator | Same purpose | Pipe Offset Calculator (Rolling & 45°) |
 | 45 degree offset calculator | Same purpose | Pipe Offset Calculator (Rolling & 45°) |
 | metal roofing calculator | Same purpose | Metal Roof Calculator (Panels, Screws & Trim) |
 | metal roof calculator app | Same purpose | Metal Roof Calculator (Panels, Screws & Trim) |
 | roof sheet calculator | Same purpose | Metal Roof Calculator (Panels, Screws & Trim) |
+| minimum slope for metal roof calculator | Same purpose | Metal Roof Calculator (Panels, Screws & Trim) |
+| steel roof calculator | Same purpose | Metal Roof Calculator (Panels, Screws & Trim) |
 | paint calculator exterior | Same purpose | Exterior Paint Calculator |
 | fill dirt calculator | Same purpose | Fill Dirt Calculator (Yards & Tons) |
 | dirt fill calculator | Same purpose | Fill Dirt Calculator (Yards & Tons) |
@@ -1173,6 +1442,8 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | pond gallon calculator | Same purpose | Pond Volume Calculator |
 | pond water calculator | Same purpose | Pond Volume Calculator |
 | pond volume calculator litres | Same purpose | Pond Volume Calculator |
+| pond capacity calculator | Same purpose | Pond Volume Calculator |
+| pond volume calculator gallons | Same purpose | Pond Volume Calculator |
 | new hvac system cost calculator | Same purpose | HVAC Replacement Cost Calculator |
 | furnace and ac replacement cost calculator | Same purpose | HVAC Replacement Cost Calculator |
 | central air installation cost calculator | Same purpose | HVAC Replacement Cost Calculator |
@@ -1181,6 +1452,9 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | hvac system cost calculator | Same purpose | HVAC Replacement Cost Calculator |
 | hvac repair cost calculator | Same purpose | HVAC Replacement Cost Calculator |
 | ducted air conditioning cost calculator | Same purpose | HVAC Replacement Cost Calculator |
+| air conditioning installation cost calculator | Same purpose | HVAC Replacement Cost Calculator |
+| air conditioner cost calculator | Same purpose | HVAC Replacement Cost Calculator |
+| air conditioning cost calculator | Same purpose | HVAC Replacement Cost Calculator |
 | pool chemical calculator | Same purpose | Pool Chemical Calculator (All-in-One) |
 | pool math calculator | Same purpose | Pool Chemical Calculator (All-in-One) |
 | pool chemical calculator app | Same purpose | Pool Chemical Calculator (All-in-One) |
@@ -1190,11 +1464,13 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | pool chemistry calculator | Same purpose | Pool Chemical Calculator (All-in-One) |
 | pool calculator app | Same purpose | Pool Chemical Calculator (All-in-One) |
 | laminate flooring calculator | Same purpose | Laminate Flooring Calculator (Boxes) |
+| laminate floor calculator | Same purpose | Laminate Flooring Calculator (Boxes) |
 | laminate flooring calculator b&q | Same purpose | Laminate Flooring Calculator (Boxes) |
 | termite treatment cost calculator | Same purpose | Pest Control & Termite Treatment Cost Calculator |
 | conduit size calculator | Same purpose | Conduit Fill Calculator |
 | polymeric sand calculator | Same purpose | Polymeric & Paver Sand Calculator |
 | dominator polymeric sand calculator | Same purpose | Polymeric & Paver Sand Calculator |
+| simple heat loss calculator | Same purpose | Heat Loss Calculator (Room & Whole House) |
 | gambrel roof truss calculator | Same purpose | Gambrel Roof Calculator (Rafters & Truss) |
 | gambrel truss calculator | Same purpose | Gambrel Roof Calculator (Rafters & Truss) |
 | sod installation cost calculator | Same purpose | Sod Cost Calculator |
@@ -1203,9 +1479,15 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | deck joist calculator | Same purpose | Joist Span Calculator (Floor & Deck) |
 | joist span calculator | Same purpose | Joist Span Calculator (Floor & Deck) |
 | i-joist span calculator | Same purpose | Joist Span Calculator (Floor & Deck) |
+| joist spacing calculator | Same purpose | Joist Span Calculator (Floor & Deck) |
 | driveway paving cost calculator | Same purpose | Driveway Cost Calculator (Asphalt, Concrete & Gravel) |
 | blacktop driveway cost calculator | Same purpose | Driveway Cost Calculator (Asphalt, Concrete & Gravel) |
 | resin driveway cost calculator | Same purpose | Driveway Cost Calculator (Asphalt, Concrete & Gravel) |
+| driveway costs calculator | Same purpose | Driveway Cost Calculator (Asphalt, Concrete & Gravel) |
+| asphalt driveway resurfacing cost calculator | Same purpose | Driveway Cost Calculator (Asphalt, Concrete & Gravel) |
+| driveway pavers cost calculator | Same purpose | Driveway Cost Calculator (Asphalt, Concrete & Gravel) |
+| air source heat pump cost calculator | Same purpose | Heat Pump Cost Calculator |
+| heat pump installation cost calculator | Same purpose | Heat Pump Cost Calculator |
 | free chain link fence calculator | Same purpose | Chain Link Fence Calculator |
 | potting soil calculator | Same purpose | Potting & Garden Soil Bag Calculator |
 | how many bags of soil do i need calculator | Same purpose | Potting & Garden Soil Bag Calculator |
@@ -1221,12 +1503,14 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | seer rating calculator | Same purpose | SEER Savings Calculator |
 | 14 seer vs 16 seer calculator | Same purpose | SEER Savings Calculator |
 | muriatic acid pool calculator | Same purpose | Pool pH Calculator (Muriatic Acid & Soda Ash) |
+| tree age calculator | Same purpose | Tree Age Calculator (Trunk Circumference) |
 | lawn size calculator | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
 | yard square footage calculator | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
 | lawn square footage calculator | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
 | yard size calculator | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
 | scotts lawn size calculator | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
 | lawn area calculator | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
+| lawn size calculator satellite | Same purpose | Lawn Size Calculator (Square Feet & Acres) |
 | room size calculator | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
 | wall square footage calculator | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
 | room calculator | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
@@ -1235,12 +1519,14 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | wall area calculator | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
 | room size calculator m2 | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
 | room square meter calculator | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
+| wall sq ft calculator | Same purpose | Room Area Calculator (Floor, Walls & Ceiling) |
 | baseboard calculator | Same purpose | Baseboard & Trim Calculator |
 | tile calculator shower | Same purpose | Shower Tile Calculator |
 | tile calculator for shower | Same purpose | Shower Tile Calculator |
 | shower square footage calculator | Same purpose | Shower Tile Calculator |
 | saturation index calculator | Same purpose | LSI Calculator (Langelier Saturation Index) |
 | lsi calculator pool | Same purpose | LSI Calculator (Langelier Saturation Index) |
+| langelier index calculator | Same purpose | LSI Calculator (Langelier Saturation Index) |
 | lighting layout calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
 | led lighting layout calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
 | light layout calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
@@ -1248,6 +1534,7 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | garage lighting layout calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
 | led light calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
 | downlight spacing calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
+| ceiling light calculator | Same purpose | Lighting Layout Calculator (Fixtures & Spacing) |
 | house repiping cost calculator | Same purpose | Repiping Cost Calculator |
 | backsplash tile calculator | Same purpose | Backsplash Tile Calculator |
 | vinyl flooring calculator | Same purpose | Vinyl Plank Flooring Calculator (Boxes) |
@@ -1255,10 +1542,14 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | mapei thinset calculator | Same purpose | Thinset Mortar Calculator |
 | tile mortar calculator | Same purpose | Thinset Mortar Calculator |
 | tile adhesive calculator | Same purpose | Thinset Mortar Calculator |
+| tile cement calculator | Same purpose | Thinset Mortar Calculator |
 | fence stain calculator | Same purpose | Deck & Fence Stain Calculator |
 | deck stain calculator | Same purpose | Deck & Fence Stain Calculator |
+| fence paint calculator | Same purpose | Deck & Fence Stain Calculator |
+| fence painting cost calculator | Same purpose | Deck & Fence Stain Calculator |
 | tesla solar roof cost calculator | Same purpose | Solar Roof Cost Calculator (Solar Shingles) |
 | interior wall framing cost calculator | Same purpose | Framing Cost Calculator |
+| house framing cost calculator | Same purpose | Framing Cost Calculator |
 | fence post spacing calculator | Same purpose | Fence Post Spacing Calculator |
 | commercial cleaning cost calculator | Same purpose | Commercial Cleaning Cost Calculator |
 | commercial cleaning calculator | Same purpose | Commercial Cleaning Cost Calculator |
@@ -1267,32 +1558,47 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | commercial cleaning estimate calculator | Same purpose | Commercial Cleaning Cost Calculator |
 | commercial cleaning quote calculator | Same purpose | Commercial Cleaning Cost Calculator |
 | janitorial cost per square foot calculator | Same purpose | Commercial Cleaning Cost Calculator |
+| free commercial cleaning calculator | Same purpose | Commercial Cleaning Cost Calculator |
 | post construction cleaning calculator app | Same purpose | Post-Construction Cleaning Cost Calculator |
 | pool chlorine calculator | Same purpose | Pool Chlorine Calculator |
 | how much chlorine to add to pool calculator | Same purpose | Pool Chlorine Calculator |
 | how much liquid chlorine to add to pool calculator | Same purpose | Pool Chlorine Calculator |
+| chlorine ppm calculator | Same purpose | Pool Chlorine Calculator |
 | vinyl fencing cost calculator | Same purpose | Vinyl Fence Cost Calculator |
 | flat roof replacement cost calculator | Same purpose | Flat Roof Cost Calculator (EPDM, TPO & Modified) |
 | epdm roofing cost calculator | Same purpose | Flat Roof Cost Calculator (EPDM, TPO & Modified) |
+| tpo roofing cost calculator | Same purpose | Flat Roof Cost Calculator (EPDM, TPO & Modified) |
 | rubber roof estimate calculator | Same purpose | Flat Roof Cost Calculator (EPDM, TPO & Modified) |
 | rubber roof cost calculator | Same purpose | Flat Roof Cost Calculator (EPDM, TPO & Modified) |
 | linear feet to square feet calculator | Same purpose | Linear Feet to Square Feet Calculator |
+| handrail angle calculator | Same purpose | Stair Angle Calculator |
 | hip rafter calculator | Same purpose | Hip Roof Calculator (Area & Hip Rafters) |
 | hip roof shingle calculator | Same purpose | Hip Roof Calculator (Area & Hip Rafters) |
+| hardwood flooring cost calculator | Same purpose | Hardwood Flooring Calculator |
+| hardwood flooring calculator | Same purpose | Hardwood Flooring Calculator |
 | countertop square footage calculator | Same purpose | Countertop Square Footage Calculator |
 | super heat calculator | Same purpose | Superheat Calculator |
 | boiler size calculator | Same purpose | Boiler Size Calculator |
+| boiler btu calculator | Same purpose | Boiler Size Calculator |
 | what size boiler do i need calculator | Same purpose | Boiler Size Calculator |
+| boiler sizing calculator | Same purpose | Boiler Size Calculator |
+| boiler size calculator app | Same purpose | Boiler Size Calculator |
 | pipe volume calculator gallons | Same purpose | Pipe Volume Calculator (Gallons) |
+| volume of a pipe calculator | Same purpose | Pipe Volume Calculator (Gallons) |
 | french drain gravel calculator | Same purpose | French Drain Calculator (Gravel, Pipe & Fabric) |
 | handyman drywall repair cost calculator | Same purpose | Drywall Repair Cost Calculator |
+| deck beam span calculator | Same purpose | Deck Beam Span Calculator |
 | playground mulch calculator | Same purpose | Playground & Rubber Mulch Calculator |
+| picture frame molding calculator | Same purpose | Picture Frame Molding Calculator |
 | picture frame moulding calculator | Same purpose | Picture Frame Molding Calculator |
+| rainwater collection calculator | Same purpose | Rainwater Harvesting Calculator |
 | gutter size calculator | Same purpose | Gutter & Downspout Size Calculator |
 | smacna gutter calculator | Same purpose | Gutter & Downspout Size Calculator |
 | front porch cost calculator | Same purpose | Porch Cost Calculator |
+| plywood cut calculator | Same purpose | Plywood Cut List Calculator |
 | garage heater size calculator | Same purpose | Garage Heater Size Calculator |
 | btu calculator for garage | Same purpose | Garage Heater Size Calculator |
+| garage heater btu calculator | Same purpose | Garage Heater Size Calculator |
 | yard clean up cost calculator | Same purpose | Yard Cleanup & Leaf Removal Cost Calculator |
 | cfm to square feet calculator | Same purpose | Air Changes per Hour (ACH) & CFM Calculator |
 | cfm ventilation calculator | Same purpose | Air Changes per Hour (ACH) & CFM Calculator |
@@ -1301,11 +1607,13 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | roof coating cost calculator | Same purpose | Roof Coating & Rejuvenation Cost Calculator |
 | natural gas pipe sizing calculator | Same purpose | Pipe Size Calculator (Water Flow) |
 | pipe sizing calculator | Same purpose | Pipe Size Calculator (Water Flow) |
+| pipe diameter calculator | Same purpose | Pipe Size Calculator (Water Flow) |
 | batt insulation calculator | Same purpose | Batt Insulation Calculator (Rolls & R-Value) |
 | insulation calculator for walls | Same purpose | Batt Insulation Calculator (Rolls & R-Value) |
 | free insulation calculator for walls | Same purpose | Batt Insulation Calculator (Rolls & R-Value) |
 | commercial hvac sizing calculator | Same purpose | Commercial HVAC Sizing Calculator |
 | hvac tons per square foot commercial calculator | Same purpose | Commercial HVAC Sizing Calculator |
+| wood movement calculator | Same purpose | Wood Movement Calculator (Shrinkage & Swelling) |
 | sunroom cost calculator | Same purpose | Sunroom & Screened Porch Cost Calculator |
 | screened in patio cost calculator | Same purpose | Sunroom & Screened Porch Cost Calculator |
 | lean to roof pitch calculator | Same purpose | Shed (Lean-To) Roof Pitch Calculator |
@@ -1314,25 +1622,42 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | plumbing calculator | Same purpose | Plumbing Cost Calculator |
 | plumbing cost calculator | Same purpose | Plumbing Cost Calculator |
 | plumbing calculator app | Same purpose | Plumbing Cost Calculator |
+| plumbing estimate calculator | Same purpose | Plumbing Cost Calculator |
+| plumbing installation cost calculator | Same purpose | Plumbing Cost Calculator |
 | gutter replacement calculator | Same purpose | Gutter Calculator (Feet, Downspouts & Hangers) |
 | sauna heater size calculator | Same purpose | Sauna Heater Size Calculator |
+| bathroom demolition cost calculator | Same purpose | Interior Demolition Cost Calculator |
 | npsha calculator | Same purpose | Pump TDH & NPSHa Calculator |
 | water pump size calculator | Same purpose | Pump TDH & NPSHa Calculator |
 | artificial turf calculator | Same purpose | Artificial Turf Calculator (Rolls, Infill & Seams) |
 | artificial grass calculator | Same purpose | Artificial Turf Calculator (Rolls, Infill & Seams) |
 | wrought iron fence cost calculator | Same purpose | Metal & Aluminum Fence Cost Calculator |
 | aluminum fence cost calculator | Same purpose | Metal & Aluminum Fence Cost Calculator |
+| decomposed granite calculator | Same purpose | Decomposed Granite Calculator |
 | commercial roof replacement cost calculator | Same purpose | Commercial Roof Cost Calculator (TPO, EPDM & Metal) |
 | heat trace calculator | Same purpose | Heat Tape (Heat Trace) Calculator |
+| roof heat cable calculator | Same purpose | Heat Tape (Heat Trace) Calculator |
+| asbestos abatement cost calculator | Same purpose | Asbestos Abatement Cost Calculator |
+| asbestos removal cost calculator | Same purpose | Asbestos Abatement Cost Calculator |
 | schluter heated floor calculator | Same purpose | Radiant Floor Heating Calculator (Mat Size & Cost) |
 | radiant floor heating cost calculator | Same purpose | Radiant Floor Heating Calculator (Mat Size & Cost) |
+| schluter ditra-heat calculator | Same purpose | Radiant Floor Heating Calculator (Mat Size & Cost) |
+| underfloor heating cost calculator | Same purpose | Radiant Floor Heating Calculator (Mat Size & Cost) |
+| how many sprinklers per zone calculator | Same purpose | Sprinklers per Zone Calculator |
+| irrigation calculator | Same purpose | Sprinklers per Zone Calculator |
+| sprinkler layout calculator | Same purpose | Sprinklers per Zone Calculator |
 | ice and water shield calculator | Same purpose | Ice & Water Shield Calculator |
+| shed material calculator | Same purpose | Shed Material Calculator |
 | lumber calculator for shed | Same purpose | Shed Material Calculator |
 | stair railing calculator | Same purpose | Railing Calculator (Posts, Rails & Balusters) |
 | deck railing calculator | Same purpose | Railing Calculator (Posts, Rails & Balusters) |
+| deck railing cost calculator | Same purpose | Railing Calculator (Posts, Rails & Balusters) |
 | pumpkin weight calculator | Same purpose | Giant Pumpkin Weight Calculator (OTT) |
+| concrete block wall cost calculator | Same purpose | Block Wall Cost Calculator |
 | refrigerant charge calculator | Same purpose | Refrigerant Charge Calculator (Line Set) |
+| stair carpet calculator | Same purpose | Stair Runner Calculator |
 | pool alkalinity calculator | Same purpose | Pool Alkalinity Calculator |
+| spiral staircase calculator | Same purpose | Spiral Staircase Calculator |
 | stucco repair cost calculator | Same purpose | Stucco Cost Calculator |
 | kingspan u value calculator | Same purpose | U-Value Calculator (Walls, Roofs & Floors) |
 | celotex u value calculator | Same purpose | U-Value Calculator (Walls, Roofs & Floors) |
@@ -1344,6 +1669,8 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | btu calculator radiator | Same purpose | Radiator BTU & Size Calculator |
 | radiator sizing calculator | Same purpose | Radiator BTU & Size Calculator |
 | radiator output calculator | Same purpose | Radiator BTU & Size Calculator |
+| rad size calculator | Same purpose | Radiator BTU & Size Calculator |
+| btu calculator for radiators | Same purpose | Radiator BTU & Size Calculator |
 | water tank capacity calculator | Same purpose | Water Tank Capacity Calculator |
 | water tank volume calculator litres | Same purpose | Water Tank Capacity Calculator |
 | water tank size calculator | Same purpose | Water Tank Capacity Calculator |
@@ -1355,9 +1682,25 @@ Plus **199 existing tools** recommended to move into House & Garden (section C; 
 | house extension cost calculator | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
 | double storey extension cost calculator | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
 | house extension calculator | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
+| house extension cost calculator uk | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
+| home extension calculator | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
+| extension price calculator | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
+| kitchen extension cost calculator | Same purpose | House Extension Cost Calculator (Single & Double Storey) |
 | conservatory roof replacement cost calculator | Same purpose | Conservatory Cost Calculator (incl. Roof Replacement) |
 | ac power consumption calculator | Same purpose | Air Conditioner Running Cost Calculator |
+| air conditioner electricity consumption calculator | Same purpose | Air Conditioner Running Cost Calculator |
+| roof tiles calculator | Same purpose | Roof Tile Calculator (Tiles, Battens & Ridge) |
 | interior design cost calculator | Same purpose | Interior Design Cost Calculator |
+| interior design calculator | Same purpose | Interior Design Cost Calculator |
+| copper tube weight calculator | Same purpose | Copper Pipe Weight Calculator |
+| house rewire cost calculator | Same purpose | House Rewiring Cost Calculator |
+| waterfall pump size calculator | Same purpose | Pond & Waterfall Pump Size Calculator |
+| slate roof cost calculator | Same purpose | Slate Roof Calculator (Slates & Cost) |
+| slate roof replacement cost calculator | Same purpose | Slate Roof Calculator (Slates & Cost) |
+| retractable awning cost calculator | Same purpose | Awning Size & Cost Calculator |
+| how long will it take to heat my pool calculator | Same purpose | Pool Heating Cost & Time Calculator |
+| bathroom fan cfm calculator | Same purpose | Bathroom Exhaust Fan CFM Calculator |
+| exhaust fan cfm calculator | Same purpose | Bathroom Exhaust Fan CFM Calculator |
 
 ## C. Moves of existing tools (not counted as new)
 
@@ -1571,32 +1914,32 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 
 | Sub-category | New | Moved in | Total |
 |---|---|---|---|
-| Concrete, Masonry & Paving Calculators | 20 | 26 | 46 |
+| Concrete, Masonry & Paving Calculators | 21 | 26 | 47 |
 | Gravel, Soil & Landscaping Calculators | 15 | 14 | 29 |
-| Lawn, Garden & Tree Calculators | 22 | 1 | 23 |
-| Roofing & Gutter Calculators | 35 | 4 | 39 |
-| Deck, Fence & Stair Calculators | 29 | 10 | 39 |
-| Framing, Drywall, Insulation & Siding Calculators | 21 | 16 | 37 |
+| Lawn, Garden & Tree Calculators | 25 | 1 | 26 |
+| Roofing & Gutter Calculators | 39 | 4 | 43 |
+| Deck, Fence & Stair Calculators | 32 | 10 | 42 |
+| Framing, Drywall, Insulation & Siding Calculators | 23 | 16 | 39 |
 | Flooring, Tile, Paint & Interior Calculators | 33 | 40 | 73 |
-| HVAC, Plumbing & Electrical Calculators | 51 | 30 | 81 |
-| Pool, Pond & Water Calculators | 15 | 9 | 24 |
-| Home Building, Remodel & Cleaning Cost Calculators | 37 | 49 | 86 |
+| HVAC, Plumbing & Electrical Calculators | 57 | 30 | 87 |
+| Pool, Pond & Water Calculators | 20 | 9 | 29 |
+| Home Building, Remodel & Cleaning Cost Calculators | 42 | 49 | 91 |
 
-### 1. Concrete, Masonry & Paving Calculators (20 new)
+### 1. Concrete, Masonry & Paving Calculators (21 new)
 
-- Paver Calculator (Pavers, Base & Sand) — also covers: patio calculator, pavers calculator, paver patio calculator, patio paver calculator, brick paver calculator, lowes paver calculator, block paving calculator, gravel calculator for pavers
-- Paver Base Calculator — also covers: paver gravel calculator
+- Paver Calculator (Pavers, Base & Sand) — also covers: patio calculator, pavers calculator, paver patio calculator, patio paver calculator, brick paver calculator, lowes paver calculator, patio stone calculator, block paving calculator, paving bricks calculator, sand calculator for pavers, gravel calculator for pavers, paver calculator square feet
+- Paver Base Calculator — also covers: paver gravel calculator, paver base depth calculator
 - Retaining Wall Calculator (Blocks, Caps & Gravel) — also covers: retaining wall block calculator, retaining wall blocks calculator
 - Foundation Repair Cost Calculator
 - Polymeric & Paver Sand Calculator — also covers: polymeric sand calculator, dominator polymeric sand calculator
 - Driveway Sealing Cost Calculator
-- Driveway Cost Calculator (Asphalt, Concrete & Gravel) — also covers: resin driveway cost calculator, driveway paving cost calculator, blacktop driveway cost calculator
+- Driveway Cost Calculator (Asphalt, Concrete & Gravel) — also covers: driveway costs calculator, resin driveway cost calculator, driveway paving cost calculator, driveway pavers cost calculator, blacktop driveway cost calculator, asphalt driveway resurfacing cost calculator
 - Anchoring Epoxy Calculator (Rebar & Anchor Holes)
 - Stucco Calculator (Bags & Coverage)
 - Dry Pour Concrete Calculator (Bags for Post Holes & Slabs)
 - Concrete Countertop Calculator
 - Concrete Slab Thickness Calculator
-- Block Wall Cost Calculator
+- Block Wall Cost Calculator — also covers: concrete block wall cost calculator
 - Tuckpointing Cost Calculator
 - Concrete Removal & Demolition Cost Calculator
 - Stucco Cost Calculator — also covers: stucco repair cost calculator
@@ -1604,29 +1947,30 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Floor Screed Calculator
 - Concrete Wire Mesh Calculator
 - Patio Slab Calculator (Paving Slabs)
+- Patio Size Calculator
 
 ### 2. Gravel, Soil & Landscaping Calculators (15 new)
 
-- Soil & Dirt Calculator (Cubic Yards & Tons) — also covers: dirt calculator, dirt yard calculator, dirt calculator tons, soil yard calculator, dirt calculator yards, lowes soil calculator, soil volume calculator, dirt volume calculator, dirt yardage calculator, yards of dirt calculator, yard calculator for dirt, cubic feet calculator soil, cubic yard calculator soil, how much dirt do i need calculator
+- Soil & Dirt Calculator (Cubic Yards & Tons) — also covers: dirt calculator, dirt yard calculator, dirt calculator tons, soil yard calculator, dirt calculator yards, lowes soil calculator, soil volume calculator, dirt volume calculator, dirt yardage calculator, yards of dirt calculator, yard calculator for dirt, cubic feet calculator soil, cubic yard calculator soil, how much dirt do i need calculator, how much soil do i need calculator
 - Landscape Rock Calculator (River Rock, Lava Rock & Decorative Stone) — also covers: lava rock calculator, river rock calculator, drain rock calculator, landscape rock calculator, landscape stone calculator, decorative rock calculator, landscaping rock calculator, decorative stone calculator, 2 inch river rock calculator, how much rock do i need calculator
 - Pea Gravel Calculator — also covers: pea gravel calculator tons
-- Sod Calculator (Pallets & Rolls) — also covers: sod calculator home depot, sod solutions area calculator
+- Sod Calculator (Pallets & Rolls) — also covers: sod calculator home depot, sod calculator square feet, sod solutions area calculator
 - Fill Dirt Calculator (Yards & Tons) — also covers: fill dirt calculator, dirt fill calculator
 - Sod Cost Calculator — also covers: sod installation cost calculator
 - French Drain Calculator (Gravel, Pipe & Fabric) — also covers: french drain gravel calculator
 - Playground & Rubber Mulch Calculator — also covers: playground mulch calculator
 - Gravel Cost Calculator — also covers: pea gravel cost calculator
 - Artificial Turf Calculator (Rolls, Infill & Seams) — also covers: artificial turf calculator, artificial grass calculator
-- Decomposed Granite Calculator
+- Decomposed Granite Calculator — also covers: decomposed granite calculator
 - Trenching Cost Calculator
 - Land Grading Cost Calculator
 - French Drain Cost Calculator
 - Mulch Installation Cost Calculator
 
-### 3. Lawn, Garden & Tree Calculators (22 new)
+### 3. Lawn, Garden & Tree Calculators (25 new)
 
 - Tree Removal Cost Calculator — also covers: palm tree removal cost calculator, large tree removal cost calculator
-- Plant Spacing Calculator (Plants per Area) — also covers: spacing calculator, planting calculator, tree spacing calculator, plant spacing calculator, plant population calculator
+- Plant Spacing Calculator (Plants per Area) — also covers: spacing calculator, planting calculator, tree spacing calculator, plant spacing calculator, plant population calculator, corn plant spacing calculator
 - VPD Calculator (Vapor Pressure Deficit)
 - Tree & Hedge Trimming Cost Calculator — also covers: hedge trimming cost calculator, palm tree trimming cost calculator
 - Grass Seed Calculator — also covers: grass seed calculator
@@ -1634,29 +1978,32 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Firewood Cord Calculator — also covers: cord wood calculator, wood cord calculator, firewood cord calculator
 - Raised Bed Soil Calculator — also covers: raised bed soil calculator, soil calculator raised bed, garden bed soil calculator, soil calculator for raised bed, soil calculator for raised beds, raised garden bed soil calculator
 - Potting & Garden Soil Bag Calculator — also covers: potting soil calculator, how many bags of soil do i need calculator
-- Tree Age Calculator (Trunk Circumference)
-- Lawn Size Calculator (Square Feet & Acres) — also covers: lawn size calculator, yard size calculator, lawn area calculator, scotts lawn size calculator, yard square footage calculator, lawn square footage calculator
+- Tree Age Calculator (Trunk Circumference) — also covers: tree age calculator
+- Lawn Size Calculator (Square Feet & Acres) — also covers: lawn size calculator, yard size calculator, lawn area calculator, scotts lawn size calculator, yard square footage calculator, lawn square footage calculator, lawn size calculator satellite
 - Chicken Coop Size Calculator
 - Hammock Hang Calculator
 - Frost Date & Planting Calendar Calculator
-- Rainwater Harvesting Calculator
+- Rainwater Harvesting Calculator — also covers: rainwater collection calculator
 - Yard Cleanup & Leaf Removal Cost Calculator — also covers: yard clean up cost calculator
 - Lawn Aeration Cost Calculator
 - Sunlight Hours Calculator (Daylight & Sun Angle)
-- Sprinklers per Zone Calculator
+- Sprinklers per Zone Calculator — also covers: irrigation calculator, sprinkler layout calculator, how many sprinklers per zone calculator
 - Greenhouse Heater Size Calculator
 - Giant Pumpkin Weight Calculator (OTT) — also covers: pumpkin weight calculator
 - Drip Irrigation Calculator
+- Lawn Top Dressing Calculator
+- Chainsaw Chain Length Calculator
+- Tree Planting Cost Calculator
 
-### 4. Roofing & Gutter Calculators (35 new)
+### 4. Roofing & Gutter Calculators (39 new)
 
-- Roof Pitch Calculator — also covers: roof pitch calculator, roof slope calculator, roof angle calculator, pitch calculator roof, pitch roof calculator, roof pitch calculator app, roof slope angle calculator
-- Rafter Length Calculator — also covers: rafter calculator app, roof rafter calculator, rafter calculator free, roof length calculator, rafter angle calculator, rafter length calculator, rafter roof pitch calculator, roof rafter length calculator
-- Roof Area & Squares Calculator — also covers: roofing calculator, roof calculator app, roof area calculator, roof size calculator, roof sqft calculator, roof sq ft calculator, roofing calculator app, roof square calculator, free roofing calculator, davinci roof calculator, roofing calculator free, roofing square calculator, roof calculator by address, roof square foot calculator, roof calculator square feet, satellite roofing calculator, roof square footage calculator, roof size calculator by address, roofing square footage calculator, free roof size calculator by address, roof square footage calculator by address, square feet to roofing squares calculator
-- Roof Truss Calculator (Span, Pitch & Lumber) — also covers: roof truss calculator, mono truss calculator, truss price calculator, attic truss calculator, simple truss calculator, scissor truss calculator, roof truss span calculator, roof truss design calculator, floor truss design calculator, build your own trusses calculator
+- Roof Pitch Calculator — also covers: roof rise calculator, roof pitch calculator, roof slope calculator, roof angle calculator, pitch calculator roof, pitch roof calculator, roof calculator pitch, roof height calculator, roofing pitch calculator, roof pitch calculator app, roof slope angle calculator, roof pitch degree calculator
+- Rafter Length Calculator — also covers: rafter calculator app, roof rafter calculator, rafter calculator free, roof length calculator, rafter size calculator, rafter angle calculator, roof framing calculator, rafter length calculator, common rafter calculator, rafter spacing calculator, rafter roof pitch calculator, roof rafter length calculator
+- Roof Area & Squares Calculator — also covers: roofing calculator, roof calculator app, roof area calculator, roof size calculator, roof sqft calculator, roof sq ft calculator, roofing calculator app, roof square calculator, free roofing calculator, davinci roof calculator, roofing calculator free, roofing area calculator, roofing square calculator, roof calculator by address, roof square foot calculator, roof calculator square feet, roof measurement calculator, satellite roofing calculator, roof square footage calculator, roof size calculator by address, roofing square footage calculator, free roof size calculator by address, roof square footage calculator by address, square feet to roofing squares calculator
+- Roof Truss Calculator (Span, Pitch & Lumber) — also covers: roof truss calculator, mono truss calculator, truss price calculator, attic truss calculator, simple truss calculator, roof trusses calculator, scissor truss calculator, roof truss span calculator, roof truss design calculator, floor truss design calculator, build your own trusses calculator, shed roof truss design calculator
 - Shingle Calculator (Bundles & Squares) — also covers: shingles calculator, roof shingle calculator, roof shingles calculator, roof material calculator, shingle square calculator, shingle bundle calculator, roofing shingle calculator, roofing material calculator, shingle calculator for roof, roofing shingles calculator, roofing materials calculator, roofing calculator square feet, free roofing calculator square feet, roof shingles calculator home depot, how many shingles do i need calculator
-- Metal Roof Cost Calculator — also covers: standing seam cost calculator, standing seam metal roof cost calculator
-- Metal Roof Calculator (Panels, Screws & Trim) — also covers: roof sheet calculator, metal roofing calculator, metal roof calculator app
+- Metal Roof Cost Calculator — also covers: standing seam cost calculator, metal roofing cost calculator, standing seam metal roof cost calculator
+- Metal Roof Calculator (Panels, Screws & Trim) — also covers: roof sheet calculator, steel roof calculator, metal roofing calculator, metal roof calculator app, minimum slope for metal roof calculator
 - Soffit Calculator (Panels & J-Channel)
 - Attic Ventilation Calculator (Intake & Exhaust NFA) — also covers: roof vent calculator, ridge vent calculator, attic vent calculator, ventilation calculator, soffit vent calculator, gaf ventilation calculator, roof ventilation calculator, attic ventilation calculator, owens corning ventilation calculator
 - Gambrel Roof Calculator (Rafters & Truss) — also covers: gambrel truss calculator, gambrel roof truss calculator
@@ -1664,7 +2011,7 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Birdsmouth Cut Calculator
 - Roof Snow & Dead Load Calculator
 - Rafter Span Calculator
-- Flat Roof Cost Calculator (EPDM, TPO & Modified) — also covers: rubber roof cost calculator, epdm roofing cost calculator, rubber roof estimate calculator, flat roof replacement cost calculator
+- Flat Roof Cost Calculator (EPDM, TPO & Modified) — also covers: tpo roofing cost calculator, rubber roof cost calculator, epdm roofing cost calculator, rubber roof estimate calculator, flat roof replacement cost calculator
 - Hip Roof Calculator (Area & Hip Rafters) — also covers: hip rafter calculator, hip roof shingle calculator
 - Ridge Beam Size Calculator
 - Gutter & Downspout Size Calculator — also covers: gutter size calculator, smacna gutter calculator
@@ -1684,12 +2031,16 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Florida Roof Replacement Cost Calculator
 - Austin Roof Replacement Cost Calculator
 - Flat Roof Slope (Drainage) Calculator
-- Roof Tile Calculator (Tiles, Battens & Ridge)
+- Roof Tile Calculator (Tiles, Battens & Ridge) — also covers: roof tiles calculator
+- Purlin Spacing Calculator
+- Slate Roof Calculator (Slates & Cost) — also covers: slate roof cost calculator, slate roof replacement cost calculator
+- Flat Roof Material Calculator (EPDM & TPO)
+- Gable Roof Calculator (Area & Rafters)
 
-### 5. Deck, Fence & Stair Calculators (29 new)
+### 5. Deck, Fence & Stair Calculators (32 new)
 
 - Stair Stringer Calculator — also covers: deck stringer calculator, stair stringer calculator, stringer length calculator, stair stringer layout calculator
-- Stair Calculator (Rise, Run & Steps) — also covers: ez stair calculator, staircase calculator, stair step calculator, stair riser calculator, rise and run calculator, rise run stair calculator, step calculator for stairs, decks.com stair calculator, stair calculator with diagram, stair rise and run calculator, stair calculator rise and run, rise and run stair calculator, standard stair rise and run calculator
+- Stair Calculator (Rise, Run & Steps) — also covers: stairs calculator, ez stair calculator, staircase calculator, stair step calculator, stair riser calculator, rise and run calculator, stair height calculator, rise run stair calculator, stair rise run calculator, step calculator for stairs, decks.com stair calculator, stair calculator with diagram, stair rise and run calculator, stair calculator rise and run, rise and run stair calculator, how to build stairs calculator, stairs calculator with landing, staircase calculator with landing, standard stair rise and run calculator, stair calculator with diagram and landing
 - Deck Stair Calculator — also covers: deck stair calculator, stair calculator deck, deck stairs calculator, deck stair stringer calculator
 - Baluster & Spindle Spacing Calculator — also covers: baluster calculator, deck baluster calculator, stair spindle calculator, spindle spacing calculator, baluster spacing calculator, stair baluster spacing calculator
 - Fence Picket Calculator (Count & Spacing) — also covers: fence picket calculator, picket fence calculator, picket spacing calculator
@@ -1697,80 +2048,85 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Stair Tread Calculator
 - Chain Link Fence Calculator — also covers: free chain link fence calculator
 - Stair Calculator with Landing
-- Deck & Fence Stain Calculator — also covers: deck stain calculator, fence stain calculator
+- Deck & Fence Stain Calculator — also covers: deck stain calculator, fence stain calculator, fence paint calculator, fence painting cost calculator
 - Fence Post Spacing Calculator — also covers: fence post spacing calculator
 - Vinyl Fence Cost Calculator — also covers: vinyl fencing cost calculator
-- Stair Angle Calculator
+- Stair Angle Calculator — also covers: handrail angle calculator
 - Board-on-Board Fence Calculator
 - Fence Post Depth Calculator
 - Deck Repair Cost Calculator
 - Vinyl Fence Calculator
-- Deck Beam Span Calculator
+- Deck Beam Span Calculator — also covers: deck beam span calculator
 - Porch Cost Calculator — also covers: front porch cost calculator
 - Under-Deck Drainage Calculator
 - Metal & Aluminum Fence Cost Calculator — also covers: aluminum fence cost calculator, wrought iron fence cost calculator
 - Shed Ramp Calculator (Length & Angle)
-- Railing Calculator (Posts, Rails & Balusters) — also covers: deck railing calculator, stair railing calculator
+- Railing Calculator (Posts, Rails & Balusters) — also covers: deck railing calculator, stair railing calculator, deck railing cost calculator
 - Pool Fence Cost Calculator
 - Deck Footing Calculator (Spacing, Size & Concrete)
 - Deck Staining Cost Calculator
-- Spiral Staircase Calculator
+- Spiral Staircase Calculator — also covers: spiral staircase calculator
 - Composite Fence Cost Calculator
 - Deck Board Spacing Calculator
+- Gate Brace Calculator
+- Awning Size & Cost Calculator — also covers: retractable awning cost calculator
+- Gazebo Size Calculator
 
-### 6. Framing, Drywall, Insulation & Siding Calculators (21 new)
+### 6. Framing, Drywall, Insulation & Siding Calculators (23 new)
 
 - Board and Batten Calculator — also covers: batten board calculator, board and batten calculator, board and batten wall calculator, board and batten spacing calculator
-- Drywall Calculator (Sheets, Mud & Screws) — also covers: sheetrock calculator, usg drywall calculator, drywall sheet calculator, home depot drywall calculator, drywall calculator square feet, drywall calculator walls and ceiling
-- Siding Calculator (Squares & Trim) — also covers: lp siding calculator, lap siding calculator, siding calculator app, free siding calculator, vinyl siding calculator, hardie board calculator, house siding calculator, hardie siding calculator, siding square calculator, siding estimate calculator, hardie lap siding calculator, siding calculator square feet, james hardie siding calculator, hardie plank siding calculator, hardie board siding calculator
-- Insulation Calculator (Attic & Walls) — also covers: insulation calculator, loft insulation calculator, attic insulation calculator, lowes insulation calculator, insulation calculator attic, insulation calculator for attic, insulation calculator square feet, free insulation calculator square feet, how much insulation do i need calculator
-- Plywood Sheet Calculator — also covers: plywood sheet calculator, how many sheets of plywood do i need calculator
-- Joist Span Calculator (Floor & Deck) — also covers: deck joist calculator, joist span calculator, floor joist calculator, i-joist span calculator, floor joist span calculator
+- Drywall Calculator (Sheets, Mud & Screws) — also covers: sheetrock calculator, usg drywall calculator, drywall sheet calculator, drywall estimate calculator, home depot drywall calculator, drywall calculator square feet, drywall calculator walls and ceiling
+- Siding Calculator (Squares & Trim) — also covers: lp siding calculator, lap siding calculator, siding calculator app, free siding calculator, vinyl siding calculator, hardie board calculator, house siding calculator, hardie plank calculator, hardie siding calculator, siding square calculator, siding estimate calculator, hardie lap siding calculator, siding calculator square feet, james hardie siding calculator, hardie plank siding calculator, hardie board siding calculator
+- Insulation Calculator (Attic & Walls) — also covers: insulation calculator, loft insulation calculator, attic insulation calculator, lowes insulation calculator, insulation calculator attic, ceiling insulation calculator, rockwool insulation calculator, insulation calculator for attic, insulation calculator square feet, free insulation calculator square feet, how much insulation do i need calculator
+- Plywood Sheet Calculator — also covers: plywood sheet calculator, plywood calculator for cabinets, how many sheets of plywood do i need calculator
+- Joist Span Calculator (Floor & Deck) — also covers: deck joist calculator, joist span calculator, floor joist calculator, i-joist span calculator, joist spacing calculator, floor joist span calculator
 - Sheathing & OSB Calculator — also covers: sheathing calculator, roof sheathing calculator
 - Framing Nail Calculator
-- Framing Cost Calculator — also covers: interior wall framing cost calculator
+- Framing Cost Calculator — also covers: house framing cost calculator, interior wall framing cost calculator
 - Drywall Mud & Joint Compound Calculator
 - Drywall Repair Cost Calculator — also covers: handyman drywall repair cost calculator
-- Plywood Cut List Calculator
+- Plywood Cut List Calculator — also covers: plywood cut calculator
 - Batt Insulation Calculator (Rolls & R-Value) — also covers: batt insulation calculator, insulation calculator for walls, free insulation calculator for walls
 - Pole Barn Material Calculator
-- Wood Movement Calculator (Shrinkage & Swelling)
+- Wood Movement Calculator (Shrinkage & Swelling) — also covers: wood movement calculator
 - Geodesic Dome Calculator (Struts & Hubs)
 - Mobile Home Skirting Calculator
 - Tongue & Groove Paneling Calculator
-- Shed Material Calculator — also covers: lumber calculator for shed
+- Shed Material Calculator — also covers: shed material calculator, lumber calculator for shed
 - Plaster Calculator (Bags & Coverage)
 - Compound Miter Calculator (Crown & Angles)
+- Shelf Bracket Spacing Calculator
+- Rake Wall Calculator (Stud Lengths)
 
 ### 7. Flooring, Tile, Paint & Interior Calculators (33 new)
 
-- Paint Calculator (Gallons for Walls & Ceilings) — also covers: behr paint calculator, wall paint calculator, kilz paint calculator, paint calculator behr, dulux paint calculator, paint gallon calculator, paint amount calculator, paint coverage calculator, paint calculator interior, interior paint calculator, paint quantity calculator, paint calculator for walls, paint calculator 12x14 room, home depot paint calculator, paint calculator square feet, benjamin moore paint calculator, paint square footage calculator, paint calculator by square feet, sherwin williams paint calculator, how much paint do i need calculator
-- Tile Calculator (Tiles & Boxes) — also covers: tiles calculator, tiling calculator, tile calculator m2, wall tile calculator, tile area calculator, floor tile calculator, sq ft calculator tile, floor tiles calculator, tile calculator square feet, square foot calculator tile, tile calculator square meters, tile square footage calculator, square footage calculator for tile, how many tiles do i need calculator
-- Wallpaper Calculator (Rolls with Pattern Repeat) — also covers: calculator wallpaper, wallpaper roll calculator, wallpaper calculator in inches, wallpaper calculator with repeat, wallpaper calculator square feet, wallpaper square footage calculator, how much wallpaper do i need calculator
-- Fabric Yardage Calculator (Upholstery & Drapery) — also covers: free fabric calculator, fabric yard calculator, upholstery fabric calculator
-- Flooring Calculator (Square Feet & Boxes) — also covers: flooring calculator, flooring calculator square feet, floor square footage calculator, flooring square footage calculator, square foot calculator for flooring, square footage calculator for flooring, how many boxes of flooring do i need calculator
-- Carpet Calculator (Square Yards) — also covers: carpet area calculator, carpet measuring calculator, carpet calculator square feet, carpet measurement calculator
-- Wainscoting Calculator — also covers: wainscot calculator, panelling calculator, wall panel calculator, wainscoting calculator, wainscotting calculator, wall paneling calculator, wall panelling calculator, wainscoting spacing calculator
+- Paint Calculator (Gallons for Walls & Ceilings) — also covers: behr paint calculator, wall paint calculator, kilz paint calculator, paint calculator behr, room paint calculator, dulux paint calculator, paint usage calculator, house paint calculator, paint gallon calculator, paint amount calculator, paint needed calculator, paint volume calculator, paint coverage calculator, paint calculator interior, interior paint calculator, paint quantity calculator, how much paint calculator, paint calculator for walls, paint calculator room size, paint calculator 12x14 room, home depot paint calculator, paint calculator square feet, paint calculator for one wall, benjamin moore paint calculator, paint square footage calculator, paint calculator by square feet, spray paint coverage calculator, sherwin williams paint calculator, how much paint do i need calculator, interior paint calculator square feet
+- Tile Calculator (Tiles & Boxes) — also covers: tiles calculator, tiling calculator, tile calculator m2, ctm tile calculator, wall tile calculator, tile area calculator, tile calculator wall, floor tile calculator, sq ft calculator tile, tile calculator floor, tile floor calculator, floor tiles calculator, bathroom tile calculator, tile coverage calculator, tile calculator for floor, tile calculator square feet, square foot calculator tile, tile calculator square meters, tile square footage calculator, square footage calculator tile, square footage calculator for tile, how many tiles do i need calculator, 1200 x 600 tiles square feet calculator
+- Wallpaper Calculator (Rolls with Pattern Repeat) — also covers: calculator wallpaper, wall paper calculator, wallpaper roll calculator, best wallpaper calculator, wallpaper calculator free, wallpaper calculator in inches, wallpaper calculator with repeat, wallpaper calculator square feet, wallpaper calculator for one wall, wallpaper square footage calculator, how much wallpaper do i need calculator, wallpaper calculator with pattern repeat
+- Fabric Yardage Calculator (Upholstery & Drapery) — also covers: free fabric calculator, fabric yard calculator, box cushion calculator, upholstery fabric calculator, free fabric calculator upholstery
+- Flooring Calculator (Square Feet & Boxes) — also covers: flooring calculator, home depot flooring calculator, flooring calculator square feet, floor square footage calculator, flooring square footage calculator, square foot calculator for flooring, square footage calculator for flooring, how many boxes of flooring do i need calculator
+- Carpet Calculator (Square Yards) — also covers: carpet area calculator, carpet size calculator, carpet roll calculator, online carpet calculator, measure carpet calculator, carpet measure calculator, carpet calculator in feet, carpet measuring calculator, carpet calculator in meters, carpet calculator square feet, carpet measurement calculator, carpet measurements calculator, carpet square meter calculator, carpet square footage calculator, square meter to carpet calculator, how much carpet do i need calculator
+- Wainscoting Calculator — also covers: wainscot calculator, paneling calculator, panelling calculator, wall panel calculator, wainscoting calculator, wainscotting calculator, wall paneling calculator, wall panelling calculator, wainscoting spacing calculator, wall panelling spacing calculator
 - Exterior Paint Calculator — also covers: paint calculator exterior
-- Laminate Flooring Calculator (Boxes) — also covers: laminate flooring calculator, laminate flooring calculator b&q
+- Laminate Flooring Calculator (Boxes) — also covers: laminate floor calculator, laminate flooring calculator, laminate flooring calculator b&q
 - Baseboard & Trim Calculator — also covers: baseboard calculator
 - Shower Tile Calculator — also covers: tile calculator shower, tile calculator for shower, shower square footage calculator
 - Backsplash Tile Calculator — also covers: backsplash tile calculator
 - Vinyl Plank Flooring Calculator (Boxes) — also covers: vinyl flooring calculator, vinyl plank flooring calculator
-- Thinset Mortar Calculator — also covers: tile mortar calculator, mapei thinset calculator, tile adhesive calculator
+- Thinset Mortar Calculator — also covers: tile mortar calculator, tile cement calculator, mapei thinset calculator, tile adhesive calculator
 - Ceiling Paint Calculator
 - Lamp Shade Size Calculator
+- Hardwood Flooring Calculator — also covers: hardwood flooring calculator, hardwood flooring cost calculator
 - Countertop Square Footage Calculator — also covers: countertop square footage calculator
-- Picture Frame Molding Calculator — also covers: picture frame moulding calculator
-- Hardwood Flooring Calculator
+- Picture Frame Molding Calculator — also covers: picture frame molding calculator, picture frame moulding calculator
 - Picture & Gallery Wall Spacing Calculator
 - Subfloor Calculator
 - Accent Wall Calculator
-- Radiant Floor Heating Calculator (Mat Size & Cost) — also covers: schluter heated floor calculator, radiant floor heating cost calculator
+- Radiant Floor Heating Calculator (Mat Size & Cost) — also covers: schluter ditra-heat calculator, schluter heated floor calculator, underfloor heating cost calculator, radiant floor heating cost calculator
 - Commercial Painting Cost Calculator
 - Polished Concrete Floor Cost Calculator
 - Drop Ceiling Installation Cost Calculator
-- Stair Runner Calculator
+- Stair Runner Calculator — also covers: stair carpet calculator
 - Tile Layout Calculator (Rows, Cuts & Pattern)
 - Marble Flooring Cost Calculator
 - Bed Height Calculator
@@ -1778,29 +2134,29 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Home Theater Screen & Seating Calculator
 - Will It Fit Through the Door Calculator
 
-### 8. HVAC, Plumbing & Electrical Calculators (51 new)
+### 8. HVAC, Plumbing & Electrical Calculators (57 new)
 
 - Wet Bulb Temperature Calculator — also covers: wet bulb temperature calculator
-- Duct Size Calculator (CFM & Velocity) — also covers: airflow calculator, ac duct calculator, duct cfm calculator, air duct calculator, cfm calculator duct, ductwork calculator, duct calculator cfm, cfm duct calculator, duct size calculator, duct area calculator, hvac duct calculator, duct work calculator, duct calculator chart, duct sizing calculator, ductwork cfm calculator, duct velocity calculator, hvac ductwork calculator, hvac duct cfm calculator, cfm calculator duct size, duct size cfm calculator, air duct size calculator, duct air flow calculator, duct size calculator app, hvac flow rate calculator, hvac duct size calculator, ductwork sizing calculator, hvac trunk line calculator, duct size calculator online, how to use a duct calculator, maximum duct length calculator, free hvac duct sizing calculator
-- HVAC Load Calculator (Manual J Estimate) — also covers: j load calculator, manual j calculator, btu load calculator, hvac load calculator, heat load calculator, quick load calculator, free manual j calculator, mini split load calculator, simple heat load calculator, whole house load calculator, online hvac load calculator, heat load calculator for air conditioning
+- Duct Size Calculator (CFM & Velocity) — also covers: airflow calculator, ac duct calculator, duct cfm calculator, air duct calculator, cfm calculator duct, ductwork calculator, duct calculator cfm, cfm duct calculator, duct size calculator, duct area calculator, hvac duct calculator, duct work calculator, duct calculator chart, duct sizing calculator, ductwork cfm calculator, duct velocity calculator, hvac ductwork calculator, hvac duct cfm calculator, cfm calculator duct size, duct size cfm calculator, air duct size calculator, duct air flow calculator, duct size calculator app, hvac flow rate calculator, hvac duct size calculator, ductwork sizing calculator, hvac trunk line calculator, duct size calculator online, how to use a duct calculator, maximum duct length calculator, square to round duct calculator, free hvac duct sizing calculator
+- HVAC Load Calculator (Manual J Estimate) — also covers: j load calculator, ac load calculator, manual j calculator, btu load calculator, hvac load calculator, heat load calculator, quick load calculator, cooling load calculator, free manual j calculator, mini split load calculator, simple heat load calculator, whole house load calculator, online hvac load calculator, heat load calculator for air conditioning
 - Pipe Offset Calculator (Rolling & 45°) — also covers: rolling offset calculator, 45 degree offset calculator
-- HVAC Replacement Cost Calculator — also covers: hvac cost calculator, hvac system cost calculator, hvac repair cost calculator, new hvac system cost calculator, hvac replacement cost calculator, ducted air conditioning cost calculator, central air installation cost calculator, furnace and ac replacement cost calculator
+- HVAC Replacement Cost Calculator — also covers: hvac cost calculator, hvac system cost calculator, hvac repair cost calculator, new hvac system cost calculator, air conditioner cost calculator, hvac replacement cost calculator, air conditioning cost calculator, ducted air conditioning cost calculator, central air installation cost calculator, furnace and ac replacement cost calculator, air conditioning installation cost calculator
 - Ductwork Replacement Cost Calculator
 - Conduit Fill Calculator — also covers: conduit size calculator
-- Heat Loss Calculator (Room & Whole House)
-- Heat Pump Cost Calculator
+- Heat Loss Calculator (Room & Whole House) — also covers: simple heat loss calculator
+- Heat Pump Cost Calculator — also covers: air source heat pump cost calculator, heat pump installation cost calculator
 - SEER Savings Calculator — also covers: ac savings calculator, seer rating calculator, seer savings calculator, hvac savings calculator, 14 seer vs 16 seer calculator, seer energy savings calculator, energy savings calculator hvac, hvac energy savings calculator, commercial hvac energy savings calculator
-- Lighting Layout Calculator (Fixtures & Spacing) — also covers: led light calculator, light layout calculator, light spacing calculator, lighting layout calculator, downlight spacing calculator, led lighting layout calculator, garage lighting layout calculator
+- Lighting Layout Calculator (Fixtures & Spacing) — also covers: led light calculator, light layout calculator, light spacing calculator, ceiling light calculator, lighting layout calculator, downlight spacing calculator, led lighting layout calculator, garage lighting layout calculator
 - Repiping Cost Calculator — also covers: house repiping cost calculator
 - Mixed Air Temperature Calculator
 - Superheat Calculator — also covers: super heat calculator
-- Boiler Size Calculator — also covers: boiler size calculator, what size boiler do i need calculator
-- Pipe Volume Calculator (Gallons) — also covers: pipe volume calculator gallons
+- Boiler Size Calculator — also covers: boiler btu calculator, boiler size calculator, boiler sizing calculator, boiler size calculator app, what size boiler do i need calculator
+- Pipe Volume Calculator (Gallons) — also covers: volume of a pipe calculator, pipe volume calculator gallons
 - Electrical Panel Upgrade Cost Calculator
-- Garage Heater Size Calculator — also covers: btu calculator for garage, garage heater size calculator
+- Garage Heater Size Calculator — also covers: btu calculator for garage, garage heater btu calculator, garage heater size calculator
 - Mini Split Cost Calculator
 - Air Changes per Hour (ACH) & CFM Calculator — also covers: cfm ventilation calculator, cfm to square feet calculator, cfm per square foot calculator
-- Pipe Size Calculator (Water Flow) — also covers: pipe sizing calculator, natural gas pipe sizing calculator
+- Pipe Size Calculator (Water Flow) — also covers: pipe sizing calculator, pipe diameter calculator, natural gas pipe sizing calculator
 - Foot-Candle Calculator
 - Duct Cleaning Cost Calculator
 - Water Heater Installation Cost Calculator
@@ -1809,12 +2165,12 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Radiant Tube Heater Sizing Calculator
 - Septic System Cost Calculator
 - Grease Trap Size Calculator
-- Plumbing Cost Calculator — also covers: plumbing calculator, plumbing calculator app, plumbing cost calculator, plumbing repair cost calculator
+- Plumbing Cost Calculator — also covers: plumbing calculator, plumbing calculator app, plumbing cost calculator, plumbing estimate calculator, plumbing repair cost calculator, plumbing installation cost calculator
 - Sauna Heater Size Calculator — also covers: sauna heater size calculator
 - Metal Building HVAC Size Calculator
 - Pump TDH & NPSHa Calculator — also covers: npsha calculator, water pump size calculator
 - Exhaust Fan Duct Size Calculator
-- Heat Tape (Heat Trace) Calculator — also covers: heat trace calculator
+- Heat Tape (Heat Trace) Calculator — also covers: heat trace calculator, roof heat cable calculator
 - Tap Drill Size Calculator
 - Return Air Duct Size Calculator
 - Water Service Line Size Calculator
@@ -1826,42 +2182,53 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Range Hood Height Calculator
 - U-Value Calculator (Walls, Roofs & Floors) — also covers: u-value calculator, celotex u value calculator, kingspan u value calculator, rockwool u value calculator
 - Geothermal Heat Pump Cost Calculator
-- Radiator BTU & Size Calculator — also covers: radiator btu calculator, btu radiator calculator, btu calculator radiator, radiator size calculator, radiator sizing calculator, radiator output calculator
-- Air Conditioner Running Cost Calculator — also covers: ac power consumption calculator
-- Copper Pipe Weight Calculator
-- House Rewiring Cost Calculator
+- Radiator BTU & Size Calculator — also covers: rad size calculator, radiator btu calculator, btu radiator calculator, btu calculator radiator, radiator size calculator, radiator sizing calculator, radiator output calculator, btu calculator for radiators
+- Air Conditioner Running Cost Calculator — also covers: ac power consumption calculator, air conditioner electricity consumption calculator
+- Copper Pipe Weight Calculator — also covers: copper tube weight calculator
+- House Rewiring Cost Calculator — also covers: house rewire cost calculator
 - Heat Pump Running Cost Calculator
+- Home Heating Cost Calculator
+- HVAC Delta T Calculator
+- Refrigerant Pressure-Temperature (PT) Calculator
+- Bathroom Exhaust Fan CFM Calculator — also covers: exhaust fan cfm calculator, bathroom fan cfm calculator
+- Glycol Mix Calculator (Hydronic Freeze Protection)
+- Fan Law Calculator (CFM, RPM & Power)
 
-### 9. Pool, Pond & Water Calculators (15 new)
+### 9. Pool, Pond & Water Calculators (20 new)
 
 - Pool Salt Calculator — also covers: pool salt calculator, salt pool calculator, pentair salt calculator, salt calculator for pool, pool salt calculator chart, how much salt to add to pool calculator
-- Water Volume Calculator (Gallons & Liters) — also covers: water volume calculator, water capacity calculator, volume of water calculator, water volume calculator in gallons
-- Pond Volume Calculator — also covers: pond water calculator, pond volume calculator, pond gallon calculator, pond volume calculator litres
+- Water Volume Calculator (Gallons & Liters) — also covers: water volume calculator, water gallon calculator, water capacity calculator, volume of water calculator, pool water calculator gallons, water volume calculator in gallons
+- Pond Volume Calculator — also covers: pond water calculator, pond volume calculator, pond gallon calculator, pond capacity calculator, pond volume calculator litres, pond volume calculator gallons
 - Pool Chemical Calculator (All-in-One) — also covers: pool calculator app, pool math calculator, pool chemical calculator, pool calculator chemical, pool chemistry calculator, pool chemical calculator app, trouble free pool calculator, best pool chemical calculator app
 - Pool pH Calculator (Muriatic Acid & Soda Ash) — also covers: muriatic acid pool calculator
-- LSI Calculator (Langelier Saturation Index) — also covers: lsi calculator pool, saturation index calculator
+- LSI Calculator (Langelier Saturation Index) — also covers: lsi calculator pool, langelier index calculator, saturation index calculator
 - Pool Pump Run Time Calculator
 - Pool Shock Calculator
 - Pool Resurfacing Cost Calculator
-- Pool Chlorine Calculator — also covers: pool chlorine calculator, how much chlorine to add to pool calculator, how much liquid chlorine to add to pool calculator
+- Pool Chlorine Calculator — also covers: chlorine ppm calculator, pool chlorine calculator, how much chlorine to add to pool calculator, how much liquid chlorine to add to pool calculator
 - Pool Evaporation Calculator
 - Pool Filter Sand Calculator
 - Pool Maintenance Cost Calculator
 - Pool Alkalinity Calculator — also covers: pool alkalinity calculator
 - Water Tank Capacity Calculator — also covers: water tank size calculator, water tank capacity calculator, water tank volume calculator litres
+- Pond & Waterfall Pump Size Calculator — also covers: waterfall pump size calculator
+- Hot Tub Chemical Calculator
+- Pool Heating Cost & Time Calculator — also covers: how long will it take to heat my pool calculator
+- Pool Fill Time Calculator
+- Pond Liner Size Calculator
 
-### 10. Home Building, Remodel & Cleaning Cost Calculators (37 new)
+### 10. Home Building, Remodel & Cleaning Cost Calculators (42 new)
 
-- Square Footage Calculator — also covers: sq calculator, sft calculator, sqft calculator, 16x20 calculator, sq foot calculator, square ft calculator, room sq ft calculator, floor area calculator, square foot calculator, calculator square feet, metre square calculator, swuare footage calculator, square meterage calculator, room square foot calculator, room square feet calculator, room square footage calculator, home square footage calculator, house square footage calculator, total square footage calculator, room size calculator square feet, square footage calculator with feet and inches
+- Square Footage Calculator — also covers: sq calculator, sft calculator, sqft calculator, 16x20 calculator, sq.ft calculator, sq foot calculator, square ft calculator, room sq ft calculator, floor area calculator, house area calculator, squarefoot calculator, square foot calculator, calculator square feet, floor space calculator, metre square calculator, swuare footage calculator, room dimension calculator, square meterage calculator, room square foot calculator, room square feet calculator, house square feet calculator, floor measurement calculator, room square footage calculator, home square footage calculator, house square footage calculator, total square footage calculator, sqft calculator feet and inches, room size calculator square feet, square feet calculator feet and inches, square footage calculator with feet and inches
 - Construction Cost per Square Foot by ZIP Code Calculator
-- Cubic Feet Calculator — also covers: cubic footage calculator
+- Cubic Feet Calculator — also covers: cubic footage calculator, wood cubic feet calculator
 - Mold Remediation Cost Calculator
 - Second Story Addition Cost Calculator
 - Pest Control & Termite Treatment Cost Calculator — also covers: termite treatment cost calculator
-- Room Area Calculator (Floor, Walls & Ceiling) — also covers: room calculator, ceiling calculator, room size calculator, room area calculator, wall area calculator, room size calculator m2, room square meter calculator, wall square footage calculator
+- Room Area Calculator (Floor, Walls & Ceiling) — also covers: room calculator, ceiling calculator, room size calculator, room area calculator, wall area calculator, wall sq ft calculator, room size calculator m2, room square meter calculator, wall square footage calculator
 - Stair Lift Cost Calculator
 - Hurricane Impact Window Cost Calculator
-- Commercial Cleaning Cost Calculator — also covers: commercial cleaning calculator, commercial cleaning bid calculator, commercial cleaning cost calculator, commercial cleaning calculator free, commercial cleaning quote calculator, commercial cleaning estimate calculator, janitorial cost per square foot calculator
+- Commercial Cleaning Cost Calculator — also covers: commercial cleaning calculator, commercial cleaning bid calculator, commercial cleaning cost calculator, commercial cleaning calculator free, free commercial cleaning calculator, commercial cleaning quote calculator, commercial cleaning estimate calculator, janitorial cost per square foot calculator
 - Post-Construction Cleaning Cost Calculator — also covers: post construction cleaning calculator app
 - Water Damage Repair Cost Calculator
 - Home Addition Value (ROI) Calculator
@@ -1874,43 +2241,48 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - Front Door Replacement Cost Calculator
 - Sunroom & Screened Porch Cost Calculator — also covers: sunroom cost calculator, screened in patio cost calculator
 - Dumpster Weight Calculator (Debris Tonnage)
-- Interior Demolition Cost Calculator
+- Interior Demolition Cost Calculator — also covers: bathroom demolition cost calculator
 - Shed Removal Cost Calculator
 - Glass Block Window Cost Calculator
-- Asbestos Abatement Cost Calculator
+- Asbestos Abatement Cost Calculator — also covers: asbestos removal cost calculator, asbestos abatement cost calculator
 - Vinegar Dilution Calculator
 - Airbnb Cleaning Fee Calculator
 - Cost to Furnish a House Calculator
 - Floor Plan Square Footage Calculator
 - Double Glazing & uPVC Window Cost Calculator — also covers: double glazing cost calculator, double glazing cost calculator uk, double glazed windows cost calculator
-- House Extension Cost Calculator (Single & Double Storey) — also covers: house extension calculator, cost of extension calculator, house extension cost calculator, single storey extension cost calculator, double storey extension cost calculator
+- House Extension Cost Calculator (Single & Double Storey) — also covers: home extension calculator, house extension calculator, extension price calculator, cost of extension calculator, house extension cost calculator, kitchen extension cost calculator, house extension cost calculator uk, single storey extension cost calculator, double storey extension cost calculator
 - Conservatory Cost Calculator (incl. Roof Replacement) — also covers: conservatory roof replacement cost calculator
 - Loft Conversion Cost Calculator
-- Interior Design Cost Calculator — also covers: interior design cost calculator
+- Interior Design Cost Calculator — also covers: interior design calculator, interior design cost calculator
 - Door Weight Calculator
 - Garage Conversion Cost Calculator
+- Ladder Height & Angle Calculator
+- Home Staging Cost Calculator
+- House Material Cost Calculator
+- Roller Shutter Cost Calculator
+- Glass Weight Calculator
 
 ## E. Coverage and review notes
 
 **Needs review (not built):**
 
-- air fryer calculator, air fryer conversion calculator, air fryer to oven conversion calculator, oven to air fryer calculator, airfryer calculator: Kitchen cooking conversion — belongs in Food & Drink (not built there yet); not house & garden
-- cooking time adjustment calculator, cooking time calculator: Kitchen cooking — belongs in Food & Drink > Cooking Time; not house & garden
+- air fryer calculator, air fryer conversion calculator, air fryer to oven conversion calculator, oven to air fryer calculator, airfryer calculator, oven to air fryer conversion calculator: Kitchen cooking conversion — belongs in Food & Drink (not built there yet); not house & garden
+- cooking time adjustment calculator, cooking time calculator, cooking time adjustment calculator oven: Kitchen cooking — belongs in Food & Drink > Cooking Time; not house & garden
 - roofing calculator reviews, calc industries tradesman calculator, project calculator, homewise calculator, is roofing calculator legit, quick create calculator, roofing calculator. com, lawn beast calculator, jobber lawn care calculator: Brand / app / website name or review query (navigational) — no calculation of its own
-- microwave calculator: Kitchen cooking (microwave wattage time) — belongs in Food & Drink
+- microwave calculator, microwave conversion calculator, microwave wattage calculator: Kitchen cooking (microwave wattage time) — belongs in Food & Drink
 - zucchini calculator: Unclear intent (zucchini bread? garden yield? game?) — need the meaning
 - tree calculator: Unclear intent (tree age, spacing, weight or carbon?) — covered by the specific tree tools
 - segmented bowl calculator: Woodturning craft — hobby/crafts, not house & garden
 - calculator holder: Product (a holder), not a calculator
 - eds load calculator, eds calculator: Unclear acronym (EDS) — HVAC/electrical meaning uncertain
-- kg calculator grow a garden, growagarden calculator, grow a garden size calculator, weight calculator grow a garden, grow a garden calculator kg, garden horizon calculator, grow a garden per kg calculator, per kg calculator grow a garden, calculator grow a garden pet kg: Roblox games (Grow a Garden / Garden Horizons) — game value calculators, not real gardening
+- kg calculator grow a garden, growagarden calculator, grow a garden size calculator, weight calculator grow a garden, grow a garden calculator kg, garden horizon calculator, grow a garden per kg calculator, per kg calculator grow a garden, calculator grow a garden pet kg, size calculator grow a garden, weight grow a garden calculator, kg calculator grow a garden pet, base weight calculator grow a garden, trade grow a garden calculator: Roblox games (Grow a Garden / Garden Horizons) — game value calculators, not real gardening
 - cleaning calculator malta: Malta-specific cleaning prices — no data; covered by House Cleaning Cost
 - 2x6 load capacity calculator, glass weight load calculator: Structural load capacity of a single board/glass — needs engineering tables; Beam Span covers the board case
 - weighted blanket calculator: Bedding weight by body weight — fits Shopping/Lifestyle better than house & garden
 - fire hose friction loss calculator: Fire service hydraulics — belongs with Law & Government / fire tools, not house & garden
 - dry ice calculator: Dry ice for shipping/coolers — Food & Drink or Shipping, not house & garden
 - coast fire calculator for couples: Personal finance (FIRE retirement), not house & garden; Finance already has FIRE tools
-- french press calculator: Coffee brewing ratio — belongs in Food & Drink > Coffee (cold-brew-ratio exists)
+- french press calculator, french press coffee ratio calculator: Coffee brewing ratio — belongs in Food & Drink > Coffee (cold-brew-ratio exists)
 - heavy16 nutrient calculator: Brand nutrient schedule (Heavy 16) — feeding chart data not public
 - schedule 1 mushroom mix calculator: Video game (Schedule I) recipe mixer — not house & garden
 - dewalt three free tools deal calculator: Retail promotion, no calculation
@@ -1923,6 +2295,12 @@ Stay where they are: commercial and civil tools (construction bid & bond, concre
 - calculator cover: Product (a cover), not a calculator
 - office fit out cost calculator: Commercial office fit-out — business/commercial, not house & garden
 - hap calculator: Carrier HAP software (navigational)
+- project price calculator, j calculator, wooden calculator, silverchef calculator, calculator batteries, luxe sauna calculator, advanced nutrients calculator, american asphalt calculator, sh calculator: Brand / app / unclear name (navigational) — no calculation of its own
+- v60 ratio calculator, sous vide calculator, slow cooker roast beef cooking time calculator, cook time calculator, cake batter calculator: Kitchen cooking/coffee — belongs in Food & Drink
+- floor weight capacity calculator: Structural floor load — needs an engineer; Joist Span covers the code case
+- eight mansions feng shui calculator: Feng shui (Kua number) — belongs with Tarot, Astrology & Fun, not house & garden
+- refrigeration calculator: Unclear (refrigeration load? refrigerant?) — covered by the refrigerant tools
+- candle burn time calculator: Candle craft — belongs in Shopping > Lifestyle (candle tools exist)
 
 **Functionality the merged tools must keep:**
 - Square Footage Calculator: feet + inches inputs, several rooms added together, rectangle/triangle/circle shapes, and linear-feet × width.
