@@ -10,6 +10,7 @@
 //   npm run db:create-re-land-commercial-calculators
 
 import * as E from "../src/lib/calc-engine-re-land-commercial";
+import { hgMovedCategoryId } from "./setup-house-garden-category";
 import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -564,7 +565,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: categoryIds.get(def.category)!,
+      categoryId: (await hgMovedCategoryId(prisma, def.slug)) ?? categoryIds.get(def.category)!,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

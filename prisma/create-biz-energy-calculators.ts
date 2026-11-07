@@ -14,6 +14,7 @@
 //   npm run db:create-biz-energy-calculators
 
 import * as E from "../src/lib/calc-engine-biz-energy";
+import { hgMovedCategoryId } from "./setup-house-garden-category";
 
 import { PrismaClient, Prisma } from "@prisma/client";
 
@@ -633,7 +634,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: cat.id,
+      categoryId: (await hgMovedCategoryId(prisma, def.slug)) ?? cat.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

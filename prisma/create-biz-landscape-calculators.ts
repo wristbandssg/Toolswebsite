@@ -11,6 +11,7 @@
 //   npm run db:create-biz-landscape-calculators
 
 import * as E from "../src/lib/calc-engine-biz-landscape";
+import { hgMovedCategoryId } from "./setup-house-garden-category";
 
 import { PrismaClient, Prisma } from "@prisma/client";
 
@@ -302,7 +303,9 @@ const TOOLS: ToolDef[] = [
 ];
 
 async function main() {
-  const cat = await prisma.toolCategory.findUnique({ where: { slug: CAT } });
+  // All these tools moved to House & Garden (setup-house-garden-category.ts), which deleted this
+  // sub-category; fall back to the House & Garden one so re-running still works.
+  const cat = (await prisma.toolCategory.findUnique({ where: { slug: CAT } })) ?? (await prisma.toolCategory.findUnique({ where: { slug: "gravel-soil-landscaping-calculators" } }));
   if (!cat) throw new Error(`The "${CAT}" category doesn't exist — run "npx tsx prisma/setup-business-industrial-category.ts --apply" first.`);
 
   let created = 0;
@@ -313,7 +316,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: cat.id,
+      categoryId: (await hgMovedCategoryId(prisma, def.slug)) ?? cat.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

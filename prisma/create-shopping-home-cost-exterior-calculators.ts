@@ -9,6 +9,7 @@
 //   npm run db:create-shopping-home-cost-exterior-calculators
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { hgMovedCategoryId } from "./setup-house-garden-category";
 
 const prisma = new PrismaClient();
 
@@ -483,7 +484,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await hgMovedCategoryId(prisma, def.slug)) ?? category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),
