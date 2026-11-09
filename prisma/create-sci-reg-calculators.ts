@@ -1,0 +1,191 @@
+// One-time (but safe to re-run) batch setup script: creates 15 calculators in Science Calculators >
+// Statistics & Probability Calculators (regression & correlation). Formulas live in
+// src/lib/calc-engine-sci-reg.ts; examples are computed from the engine.
+//
+// HOW TO RUN (after prisma/setup-science-category.ts --apply)
+//   npx tsx prisma/create-sci-reg-calculators.ts        (SCI_DRY=1 → check only, no database)
+// or
+//   npm run db:create-sci-reg-calculators
+
+import * as E from "../src/lib/calc-engine-sci-reg";
+import { mk, num, tx, dd, T, runBatch, type ToolDef } from "./sci-tool-kit";
+
+const CAT = "statistics-probability-calculators";
+const X = (d: string) => tx("x", "x Values", d);
+const Y = (d: string) => tx("y", "y Values", d);
+const X0 = (d = "") => tx("x0", "Predict at x (optional)", d);
+const XY = (x: string, y: string, x0 = "") => ({ ...T("x", x), ...T("y", y), ...T("x0", x0) });
+
+const TOOLS: ToolDef[] = [
+  mk({
+    slug: "linear-regression-calculator", title: "Linear Regression Calculator (Least Squares Line)",
+    desc: "Find the least-squares regression line ŷ = bx + a from x and y data — slope, intercept, r, R², standard errors, slope test and predictions.",
+    meta: "Linear Regression Calculator — Least Squares Regression Line & Equation",
+    inputs: [X("1 2 3 4 5"), Y("2 4 5 4 5"), X0("6")],
+    results: [["equation", "Regression Equation", "t"], ["slope", "Slope b", "n", 10], ["intercept", "Intercept a", "n", 10], ["r", "Correlation r", "n", 8], ["r2", "R²", "n", 8], ["seEstimate", "Standard Error of Estimate", "n", 8], ["slopeTest", "Slope Significance", "t"], ["interceptSE", "SE of Intercept", "n", 8], ["predictions", "Predictions", "t"]],
+    fn: E.linearRegression, ex: XY("1 2 3 4 5", "2 4 5 4 5", "6"),
+    exText: (o) => `Example: x = 1–5, y = 2 4 5 4 5 → ${o.equation}, R² = ${o.r2}.`,
+    how: "b = Sxy/Sxx and a = ȳ − b·x̄ minimise Σ(y − ŷ)². SE(b) = s/√Sxx with s = √(SSE/(n − 2)); t = b/SE(b) with n − 2 df.",
+    assume: "Separate values with spaces, commas or new lines; x and y must have the same count.",
+    faq: [["What does R² mean?", "The share of the variation in y explained by the line — 0.6 means 60%."], ["Can I extrapolate?", "Predictions far outside the x range are unreliable — the linear pattern may not continue."]],
+  }),
+  mk({
+    slug: "correlation-coefficient-calculator", title: "Correlation Coefficient Calculator (Pearson r)",
+    desc: "Calculate Pearson's correlation coefficient r and R² from paired data, with strength, significance test and a 95% confidence interval.",
+    meta: "Correlation Coefficient Calculator — Pearson r, R² & P-Value",
+    inputs: [X("1 2 3 4 5"), Y("2 4 5 4 5")],
+    results: [["r", "Pearson r", "n", 10], ["r2", "R²", "n", 10], ["strength", "Strength", "l", E.STRENGTH], ["direction", "Direction", "t"], ["t", "t Statistic", "n", 8], ["p", "p-value (two-sided)", "n", 8], ["ci", "95% CI for ρ", "t"]],
+    fn: E.correlation, ex: XY("1 2 3 4 5", "2 4 5 4 5"),
+    exText: (o) => `Example: x = 1–5, y = 2 4 5 4 5 → r = ${o.r}.`,
+    how: "r = Sxy/√(Sxx·Syy). Test: t = r√((n − 2)/(1 − r²)) with n − 2 df. The CI uses Fisher's z = atanh(r) ± 1.96/√(n − 3).",
+    assume: "Pearson measures linear association; for ranks or monotonic curves use Spearman.",
+    faq: [["Does correlation imply causation?", "No — a third variable or coincidence can produce strong correlations."]],
+  }),
+  mk({
+    slug: "covariance-calculator", title: "Covariance Calculator (Sample & Population)",
+    desc: "Calculate the sample and population covariance of two variables, with their means and correlation.",
+    inputs: [X("1 2 3 4 5"), Y("2 4 5 4 5")],
+    results: [["sample", "Sample Covariance", "n", 10], ["population", "Population Covariance", "n", 10], ["r", "Correlation r", "n", 8], ["means", "Means", "t"], ["sxy", "Sxy = Σ(x − x̄)(y − ȳ)", "n", 10]],
+    fn: E.covariance, ex: XY("1 2 3 4 5", "2 4 5 4 5"),
+    exText: (o) => `Example: x = 1–5, y = 2 4 5 4 5 → sample covariance ${o.sample}.`,
+    how: "cov = Σ(x − x̄)(y − ȳ)/(n − 1) for a sample, /n for a population.",
+    assume: "Covariance depends on units; r is the unit-free version.",
+    faq: [["What does a negative covariance mean?", "y tends to fall as x rises."]],
+  }),
+  mk({
+    slug: "sxx-sxy-calculator", title: "Sxx, Syy & Sxy Calculator (Sums of Squares)",
+    desc: "Calculate Sxx, Syy and Sxy for regression, plus Σx, Σy, Σx², Σy², Σxy and the slope.",
+    inputs: [X("1 2 3 4 5"), Y("2 4 5 4 5")],
+    results: [["sxx", "Sxx", "n", 10], ["syy", "Syy", "n", 10], ["sxy", "Sxy", "n", 10], ["sums", "Sums", "t"], ["means", "Means", "t"], ["slope", "Slope Sxy/Sxx", "n", 10]],
+    fn: E.sxxSxy, ex: XY("1 2 3 4 5", "2 4 5 4 5"),
+    exText: (o) => `Example: x = 1–5 → Sxx = ${o.sxx}, Sxy = ${o.sxy}.`,
+    how: "Sxx = Σx² − (Σx)²/n, Syy = Σy² − (Σy)²/n, Sxy = Σxy − ΣxΣy/n.",
+    assume: "Computed with deviations from the mean for accuracy.",
+    faq: [["Where are these used?", "Slope b = Sxy/Sxx, correlation r = Sxy/√(SxxSyy)."]],
+  }),
+  mk({
+    slug: "exponential-regression-calculator", title: "Exponential Regression Calculator (y = a·eᵇˣ)",
+    desc: "Fit an exponential model y = a·e^(bx) (and y = a·bˣ) to data — growth rate, doubling time, R² and predictions.",
+    inputs: [X("0 1 2 3 4"), Y("3 5.9 12.2 23.8 49"), X0("5")],
+    results: [["equation", "Model y = a·e^(bx)", "t"], ["baseForm", "Model y = a·bˣ", "t"], ["a", "a", "n", 10], ["b", "b (continuous rate)", "n", 10], ["growth", "Growth per Unit x (%)", "n", 8], ["r2", "R² (original scale)", "n", 8], ["r2log", "R² (ln y scale)", "n", 8], ["doubling", "Doubling / Half-Life", "n", 8], ["predictions", "Predictions", "t"]],
+    fn: E.exponentialRegression, ex: XY("0 1 2 3 4", "3 5.9 12.2 23.8 49", "5"),
+    exText: (o) => `Example: → ${o.equation}, growth ${o.growth}% per step.`,
+    how: "Fit a straight line to (x, ln y): ln y = ln a + bx. Doubling time = ln 2/b.",
+    assume: "All y must be positive; fitting on the log scale weights small y values more (the usual calculator method).",
+    faq: [["Same as a TI-84 ExpReg?", "Yes — the TI-84 also fits ln y and reports y = a·bˣ."]],
+  }),
+  mk({
+    slug: "quadratic-regression-calculator", title: "Quadratic Regression Calculator (y = ax² + bx + c)",
+    desc: "Fit a parabola y = ax² + bx + c to data by least squares — coefficients, R², vertex and predictions.",
+    inputs: [X("-2 -1 0 1 2 3"), Y("9.1 3.8 1.2 2.1 7.2 14.8"), X0("4")],
+    results: [["equation", "Equation", "t"], ["a", "a", "n", 10], ["b", "b", "n", 10], ["c", "c", "n", 10], ["r2", "R²", "n", 8], ["vertex", "Vertex", "t"], ["predictions", "Predictions", "t"]],
+    fn: E.quadraticRegression, ex: XY("-2 -1 0 1 2 3", "9.1 3.8 1.2 2.1 7.2 14.8", "4"),
+    exText: (o) => `Example: → ${o.equation}, R² = ${o.r2}.`,
+    how: "Solve the 3 × 3 normal equations (XᵀX)β = Xᵀy with columns 1, x, x².",
+    assume: "Needs at least 3 distinct x values.",
+    faq: [["Quadratic or linear?", "If the scatter curves (rises then falls, or accelerates), compare R² and the residuals of both."]],
+  }),
+  mk({
+    slug: "coefficient-of-determination-calculator", title: "Coefficient of Determination (R²) Calculator",
+    desc: "Calculate R² and adjusted R² from observed and predicted values — with SSE, SST, SSR and RMSE.",
+    inputs: [tx("y", "Observed y", "3 5 7 9 11"), tx("yhat", "Predicted ŷ", "2.8 5.3 6.9 9.2 10.8"), num("k", "Number of Predictors k", 1, 0, 100, 1)],
+    results: [["r2", "R²", "n", 10], ["adj", "Adjusted R²", "n", 10], ["sse", "SSE (residual)", "n", 10], ["sst", "SST (total)", "n", 10], ["ssr", "SSR (explained)", "n", 10], ["rmse", "RMSE", "n", 8]],
+    fn: E.coefDetermination, ex: { k: 1, ...T("y", "3 5 7 9 11"), ...T("yhat", "2.8 5.3 6.9 9.2 10.8") },
+    exText: (o) => `Example: → R² = ${o.r2}.`,
+    how: "R² = 1 − SSE/SST. Adjusted R² = 1 − (1 − R²)(n − 1)/(n − k − 1).",
+    assume: "R² can be negative if the predictions are worse than the mean.",
+    faq: [["Why use adjusted R²?", "Plain R² never falls when you add predictors; adjusted R² penalises useless ones."]],
+  }),
+  mk({
+    slug: "multiple-linear-regression-calculator", title: "Multiple Linear Regression Calculator",
+    desc: "Fit y = b₀ + b₁x₁ + … + b₄x₄ with up to four predictors — coefficients, standard errors, t and p-values, R², adjusted R² and the F-test.",
+    meta: "Multiple Regression Calculator — Coefficients, R² & P-Values",
+    inputs: [tx("y", "y (dependent)", "6 8 9 11 13 14"), tx("x1", "x₁", "1 2 3 4 5 6"), tx("x2", "x₂ (optional)", "2 1 3 2 4 3"), tx("x3", "x₃ (optional)", ""), tx("x4", "x₄ (optional)", "")],
+    results: [["equation", "Regression Equation", "t"], ["coefficients", "Coefficients", "t"], ["r2", "R²", "n", 8], ["adj", "Adjusted R²", "n", 8], ["F", "Overall F-Test", "t"], ["se", "Standard Error of Regression", "n", 8]],
+    fn: E.multipleRegression, ex: { ...T("y", "6 8 9 11 13 14"), ...T("x1", "1 2 3 4 5 6"), ...T("x2", "2 1 3 2 4 3"), ...T("x3", ""), ...T("x4", "") },
+    exText: (o) => `Example: → ${o.equation}, R² = ${o.r2}.`,
+    how: "β = (XᵀX)⁻¹Xᵀy. SE(bⱼ) = √(MSE·[(XᵀX)⁻¹]ⱼⱼ), t = bⱼ/SE with n − p df; F = (SSR/(p − 1))/MSE.",
+    assume: "Each predictor list must have the same length as y; strongly correlated predictors make coefficients unstable.",
+    faq: [["How many observations do I need?", "More than the number of coefficients — ideally 10–20 per predictor."]],
+  }),
+  mk({
+    slug: "polynomial-regression-calculator", title: "Polynomial Regression Calculator (Cubic, Quartic Curve Fitting)",
+    desc: "Fit a polynomial of degree 1–6 to data — linear, quadratic, cubic, quartic — with coefficients, R², adjusted R² and predictions.",
+    meta: "Polynomial Regression Calculator — Cubic & Quartic Curve Fitting",
+    inputs: [X("0 1 2 3 4 5"), Y("1 2.2 8.9 28 63 126"), dd("degree", "Degree", E.DEGREES, 2), X0("6")],
+    results: [["equation", "Equation", "t"], ["coefficients", "Coefficients", "t"], ["r2", "R²", "n", 8], ["adj", "Adjusted R²", "n", 8], ["rmse", "RMSE", "n", 8], ["predictions", "Predictions", "t"]],
+    fn: E.polynomialRegression, ex: { degree: 2, ...XY("0 1 2 3 4 5", "1 2.2 8.9 28 63 126", "6") },
+    exText: (o) => `Example: cubic fit → ${o.equation}.`,
+    how: "Least squares with columns 1, x, x², …, xᵈ via the normal equations.",
+    assume: "Needs more distinct x values than the degree. High degrees overfit and swing wildly outside the data.",
+    faq: [["Which degree should I choose?", "The lowest that fits well — check adjusted R² and whether the curve makes physical sense."]],
+  }),
+  mk({
+    slug: "logarithmic-regression-calculator", title: "Logarithmic Regression Calculator (y = a + b·ln x)",
+    desc: "Fit a logarithmic model y = a + b·ln(x) to data — coefficients, R² and predictions.",
+    inputs: [X("1 2 4 8 16"), Y("2 3.4 4.9 6.1 7.6"), X0("32")],
+    results: [["equation", "Equation", "t"], ["a", "a", "n", 10], ["b", "b", "n", 10], ["r2", "R²", "n", 8], ["predictions", "Predictions", "t"]],
+    fn: E.logarithmicRegression, ex: XY("1 2 4 8 16", "2 3.4 4.9 6.1 7.6", "32"),
+    exText: (o) => `Example: → ${o.equation}.`,
+    how: "Linear regression of y on ln x.",
+    assume: "All x must be positive.",
+    faq: [["When is a log model appropriate?", "When y keeps rising but by less each time x doubles (diminishing returns)."]],
+  }),
+  mk({
+    slug: "residual-calculator", title: "Residual Calculator (Residual Plot Table)",
+    desc: "Calculate residuals and standardised residuals for a linear fit — table of x, y, ŷ and residual, SSE, RMSE and flagged points.",
+    inputs: [X("1 2 3 4 5 6"), Y("2.1 3.9 6.2 7.8 10.1 15")],
+    results: [["table", "Residual Table", "t"], ["line", "Fitted Line", "t"], ["sse", "SSE", "n", 10], ["rmse", "RMSE", "n", 8], ["se", "Residual Standard Error", "n", 8], ["flagged", "Unusual Points", "t"]],
+    fn: E.residuals, ex: XY("1 2 3 4 5 6", "2.1 3.9 6.2 7.8 10.1 15"),
+    exText: (o) => `Example: → SSE = ${o.sse}; ${o.flagged}.`,
+    how: "Residual eᵢ = yᵢ − ŷᵢ. Standardised (internally studentised) = eᵢ/(s√(1 − hᵢᵢ)) with leverage hᵢᵢ = 1/n + (xᵢ − x̄)²/Sxx.",
+    assume: "A good residual plot shows random scatter around 0 with no curve or funnel.",
+    faq: [["What does a pattern in the residuals mean?", "A curve suggests a non-linear model; a funnel shape suggests changing variance."]],
+  }),
+  mk({
+    slug: "logistic-regression-calculator", title: "Logistic Regression Calculator (Binary Outcome)",
+    desc: "Fit a simple logistic regression p = 1/(1 + e^−(b₀ + b₁x)) to 0/1 outcomes — coefficients, odds ratio, Wald z, McFadden R² and predicted probabilities.",
+    inputs: [X("1 2 3 4 5 6 7 8"), Y("0 0 1 0 1 0 1 1"), X0("4.5")],
+    results: [["equation", "Model", "t"], ["b0", "b₀", "n", 8], ["b1", "b₁", "n", 8], ["oddsRatio", "Odds Ratio e^b₁", "n", 8], ["wald", "Wald Test", "t"], ["mcfadden", "McFadden Pseudo-R²", "n", 6], ["logLik", "Log-Likelihood", "n", 8], ["half", "x Where p = 0.5", "n", 8], ["predictions", "Predicted Probabilities", "t"]],
+    fn: E.logisticRegression, ex: XY("1 2 3 4 5 6 7 8", "0 0 1 0 1 0 1 1", "4.5"),
+    exText: (o) => `Example: → odds ratio ${o.oddsRatio} per unit of x.`,
+    how: "Maximum likelihood by Newton-Raphson: maximise Σ[y ln p + (1 − y) ln(1 − p)]. The odds ratio e^b₁ is the multiplicative change in odds per unit x.",
+    assume: "One predictor; y coded 0/1. Perfectly separated data have no finite solution.",
+    faq: [["How do I interpret b₁?", "Each one-unit increase in x multiplies the odds of y = 1 by e^b₁."]],
+  }),
+  mk({
+    slug: "spearman-correlation-calculator", title: "Spearman Rank Correlation Calculator (ρ)",
+    desc: "Calculate Spearman's rank correlation ρ from paired data — ranks with ties averaged, Σd² and p-value.",
+    inputs: [X("1 2 3 4 5"), Y("5 6 7 8 7")],
+    results: [["rho", "Spearman ρ", "n", 10], ["p", "p-value (two-sided)", "n", 8], ["d2", "Σd²", "n", 8], ["ranks", "Ranks", "t"]],
+    fn: E.spearman, ex: XY("1 2 3 4 5", "5 6 7 8 7"),
+    exText: (o) => `Example: → ρ = ${o.rho}.`,
+    how: "Rank each variable (ties get the average rank) and compute Pearson's r on the ranks. Without ties ρ = 1 − 6Σd²/(n(n² − 1)).",
+    assume: "p-value from the t approximation t = ρ√((n − 2)/(1 − ρ²)).",
+    faq: [["When should I use Spearman?", "For ordinal data, outliers or monotonic but curved relationships."]],
+  }),
+  mk({
+    slug: "power-regression-calculator", title: "Power Regression Calculator (y = a·xᵇ)",
+    desc: "Fit a power-law model y = a·x^b to data — coefficients, R² and predictions.",
+    inputs: [X("1 2 3 4 5"), Y("2.9 12.1 27.5 47.2 76")],
+    results: [["equation", "Equation", "t"], ["a", "a", "n", 10], ["b", "Exponent b", "n", 10], ["r2", "R² (original scale)", "n", 8], ["r2log", "R² (log-log scale)", "n", 8], ["predictions", "Predictions", "t"]],
+    fn: E.powerRegression, ex: XY("1 2 3 4 5", "2.9 12.1 27.5 47.2 76"),
+    exText: (o) => `Example: → ${o.equation}.`,
+    how: "Linear regression of ln y on ln x: ln y = ln a + b·ln x.",
+    assume: "All x and y must be positive.",
+    faq: [["Where do power laws appear?", "Allometry (body mass vs metabolism), Kepler's third law, area vs length."]],
+  }),
+  mk({
+    slug: "covariance-matrix-calculator", title: "Covariance Matrix & Correlation Matrix Calculator",
+    desc: "Calculate the covariance matrix and correlation matrix of several variables from a data table (rows = observations).",
+    inputs: [tx("data", "Data (rows = observations, columns = variables; rows separated by ;)", "1 2 3; 2 4 1; 3 5 4; 4 4 2; 5 5 6"), dd("type", "Covariance Type", E.COV_TYPE, 0)],
+    results: [["cov", "Covariance Matrix", "t"], ["corr", "Correlation Matrix", "t"], ["means", "Means", "t"], ["size", "Size", "t"], ["total", "Total Variance (trace)", "n", 8]],
+    fn: E.covarianceMatrix, ex: { type: 0, ...T("data", "1 2 3; 2 4 1; 3 5 4; 4 4 2; 5 5 6") },
+    exText: (o) => `Example: 5 observations of 3 variables → total variance ${o.total}.`,
+    how: "Cᵢⱼ = Σ(xᵢ − x̄ᵢ)(xⱼ − x̄ⱼ)/(n − 1); correlation Rᵢⱼ = Cᵢⱼ/√(CᵢᵢCⱼⱼ).",
+    assume: "Each row is one observation; the diagonal holds the variances.",
+    faq: [["What is the covariance matrix used for?", "Principal component analysis, portfolio risk and multivariate normal models."]],
+  }),
+];
+
+runBatch(CAT, TOOLS);
