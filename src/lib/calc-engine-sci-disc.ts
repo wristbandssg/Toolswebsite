@@ -450,7 +450,7 @@ export const crc: SciCalculator = (v) => {
 };
 export const CRC_INPUT = ["Text (UTF-8)", "Hex bytes"];
 export const COMPLEXITY = ["O(1)", "O(log n)", "O(√n)", "O(n)", "O(n log n)", "O(n²)", "O(n³)", "O(2ⁿ)", "O(n!)"];
-const cx = [(n: number) => 1, (n: number) => Math.log2(n), (n: number) => Math.sqrt(n), (n: number) => n, (n: number) => n * Math.log2(n), (n: number) => n * n, (n: number) => n ** 3, (n: number) => 2 ** n, (n: number) => Math.exp(lgamma(n + 1))];
+const cx = [() => 1, (n: number) => Math.log2(n), (n: number) => Math.sqrt(n), (n: number) => n, (n: number) => n * Math.log2(n), (n: number) => n * n, (n: number) => n ** 3, (n: number) => 2 ** n, (n: number) => Math.exp(lgamma(n + 1))];
 const dur = (sec: number) => (!Number.isFinite(sec) ? "longer than the age of the universe" : sec < 1e-3 ? `${fmt(sec * 1e6, 4)} µs` : sec < 1 ? `${fmt(sec * 1e3, 4)} ms` : sec < 3600 ? `${fmt(sec, 4)} s` : sec < 86400 * 365 ? `${fmt(sec / 3600, 4)} hours` : sec < 4.3e17 ? `${fmt(sec / (86400 * 365), 4)} years` : "longer than the age of the universe");
 export const bigO: SciCalculator = (v) => {
   const k = pick(v.cls, 9), n = Math.max(1, pos(v.n, 1000)), ops = pos(v.ops, 1e9) || 1e9;
