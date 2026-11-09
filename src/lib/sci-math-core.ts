@@ -89,9 +89,45 @@ const FUNCS = new Set([
 ]);
 const CONSTS = new Set(["pi", "e", "PI", "E", "tau", "phi"]);
 
-/** Normalises everyday notation (×, ÷, π, √, ², unicode minus, "ln") before parsing. */
+/**
+ * Log convention: users type log(x) for base 10 and ln(x) for natural log (as on a handheld
+ * calculator). mathjs uses log(x) for the natural log, so before parsing a one-argument log(…)
+ * becomes log10(…) and ln(…) becomes log(…). Text results go the other way (log( → ln() so they
+ * can be read and re-entered.
+ */
+function fixLogs(src: string): string {
+  let out = "";
+  for (let i = 0; i < src.length; i++) {
+    const before = i === 0 ? "" : src[i - 1];
+    if (src.startsWith("log(", i) && !/[A-Za-z0-9_]/.test(before)) {
+      // find the matching bracket and look for a top-level comma (log(x, b) keeps its base)
+      let depth = 0, j = i + 3, comma = false;
+      for (; j < src.length; j++) {
+        if (src[j] === "(") depth++;
+        else if (src[j] === ")") {
+          depth--;
+          if (depth === 0) break;
+        } else if (src[j] === "," && depth === 1) comma = true;
+      }
+      out += comma ? "log(" : "log10(";
+      i += 3;
+      continue;
+    }
+    if (src.startsWith("ln(", i) && !/[A-Za-z0-9_]/.test(before)) {
+      out += "log(";
+      i += 2;
+      continue;
+    }
+    out += src[i];
+  }
+  return out;
+}
+/** mathjs output → display/re-entry text (natural log shown as ln). */
+export const showLogs = (s: string) => s.replace(/(?<![A-Za-z0-9_])log\(/g, "ln(");
+
+/** Normalises everyday notation (×, ÷, π, √, ², unicode minus, ln/log) before parsing. */
 export function normalise(expr: string): string {
-  return expr
+  return fixLogs(expr
     .replace(/[×·]/g, "*")
     .replace(/÷/g, "/")
     .replace(/[−–—]/g, "-")
@@ -100,7 +136,7 @@ export function normalise(expr: string): string {
     .replace(/√\s*([0-9.]+|[a-z])/gi, "sqrt($1)")
     .replace(/²/g, "^2")
     .replace(/³/g, "^3")
-    .replace(/\*\*/g, "^");
+    .replace(/\*\*/g, "^"));
 }
 
 /** Parses and whitelists an expression. `vars` = variable names the tool allows (e.g. ["x"]). */
@@ -143,13 +179,11 @@ export function parseSafe(expr: string, vars: string[] = []): MathNode {
 
 const d2r = (x: number) => (x * Math.PI) / 180;
 const r2d = (x: number) => (x * 180) / Math.PI;
-/** Scope of helper functions: ln, log10-style log (log(x) = base 10, log(x, b) = base b), degree trig. */
+/** Scope of helper constants and degree-mode trig (logs are handled by fixLogs). */
 function scope(deg: boolean): Record<string, unknown> {
   const t = (f: (x: number) => number) => (deg ? (x: number) => f(d2r(x)) : f);
   const it = (f: (x: number) => number) => (deg ? (x: number) => r2d(f(x)) : f);
   const sc: Record<string, unknown> = {
-    ln: Math.log,
-    log: (x: number, b?: number) => (b === undefined ? Math.log10(x) : Math.log(x) / Math.log(b)),
     phi: (1 + Math.sqrt(5)) / 2,
     tau: 2 * Math.PI,
   };
@@ -191,10 +225,14 @@ export const evalExpr = (expr: string, deg = false) => compileFn(expr, [], deg)(
 export function derivText(expr: string, v = "x", order = 1): string {
   let node = parseSafe(expr, [v]);
   for (let i = 0; i < order; i++) node = math.derivative(node, v);
-  return math.simplify(node).toString({ implicit: "hide", parenthesis: "auto" });
+  return showLogs(math.simplify(node).toString({ implicit: "hide", parenthesis: "auto" }));
+}
+/** Partial derivative (as text) of an expression in several variables. */
+export function derivTextVars(expr: string, vars: string[], v: string): string {
+  return showLogs(math.simplify(math.derivative(parseSafe(expr, vars), v)).toString({ implicit: "hide", parenthesis: "auto" }));
 }
 export function simplifyText(expr: string, vars: string[] = ["x"]): string {
-  return math.simplify(parseSafe(expr, vars)).toString({ parenthesis: "auto" });
+  return showLogs(math.simplify(parseSafe(expr, vars)).toString({ parenthesis: "auto" }));
 }
 /** Polynomial in x → coefficients [a0, a1, …] (throws if it isn't a polynomial). */
 export function polyCoeffs(expr: string, v = "x"): number[] {
