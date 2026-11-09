@@ -509,7 +509,7 @@ export const nsolve: SciCalculator = (v) => {
 export const evaluateExpression: SciCalculator = (v) => {
   const f = compileFn(txt(v, "expr"), ["x", "y", "z"]);
   const x = num(v.x, 2), y = num(v.y, 3), z = num(v.z, 1);
-  return { value: sig(f(x, y, z), 12), substituted: txt(v, "expr").replace(/\bx\b/g, `(${fmt(x)})`).replace(/\by\b/g, `(${fmt(y)})`).replace(/\bz\b/g, `(${fmt(z)})`) };
+  return { value: sig(f(x, y, z), 12), substituted: txt(v, "expr").replace(/(?<![A-Za-z_])x(?![A-Za-z_])/g, `(${fmt(x)})`).replace(/(?<![A-Za-z_])y(?![A-Za-z_])/g, `(${fmt(y)})`).replace(/(?<![A-Za-z_])z(?![A-Za-z_])/g, `(${fmt(z)})`) };
 };
 
 // ---------- Rational zeros theorem ----------
@@ -614,7 +614,7 @@ export const crossMultiply: SciCalculator = (v) => {
 };
 
 // ---------- Function composition ----------
-const sub = (outer: string, inner: string) => outer.replace(/\bx\b/g, `(${inner})`);
+const sub = (outer: string, inner: string) => outer.replace(/(?<![A-Za-z_])x(?![A-Za-z_])/g, `(${inner})`);
 export const composition: SciCalculator = (v) => {
   const fs = txt(v, "f"), gs = txt(v, "g"), x = num(v.x, 2);
   const f = compileFn(fs), g = compileFn(gs);

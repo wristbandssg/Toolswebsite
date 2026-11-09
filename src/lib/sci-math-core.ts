@@ -236,7 +236,8 @@ export function integrate(f: (x: number) => number, a: number, b: number, eps = 
     const flm = f(lm), frm = f(rm);
     calls += 2;
     const left = simpson(l, m, fl, flm, fm), right = simpson(m, r, fm, frm, fr);
-    if (depth <= 0 || calls > 200000 || Math.abs(left + right - whole) <= 15 * e) return left + right + (left + right - whole) / 15;
+    // always split at least 6 levels deep, so periodic functions can't fool the error test
+    if (depth <= 0 || calls > 200000 || (depth <= 34 && Math.abs(left + right - whole) <= 15 * e)) return left + right + (left + right - whole) / 15;
     return rec(l, m, fl, flm, fm, left, e / 2, depth - 1) + rec(m, r, fm, frm, fr, right, e / 2, depth - 1);
   };
   const fa = f(a), fb = f(b), fm = f((a + b) / 2);
