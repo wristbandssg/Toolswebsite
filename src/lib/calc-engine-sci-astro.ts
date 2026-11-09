@@ -139,7 +139,7 @@ export const eclipses: SciCalculator = (v) => {
 // ---------- orbits & gravity ----------
 const BODIES: [string, number, number, number][] = [["Sun", 1.32712440018e20, 6.957e8, 274], ["Mercury", 2.2032e13, 2.4397e6, 3.7], ["Venus", 3.24859e14, 6.0518e6, 8.87], ["Earth", 3.986004418e14, 6.371e6, 9.807], ["Moon", 4.9048695e12, 1.7374e6, 1.62], ["Mars", 4.282837e13, 3.3895e6, 3.71], ["Jupiter", 1.26686534e17, 6.9911e7, 24.79], ["Saturn", 3.7931187e16, 5.8232e7, 10.44], ["Uranus", 5.793939e15, 2.5362e7, 8.69], ["Neptune", 6.836529e15, 2.4622e7, 11.15], ["Pluto", 8.71e11, 1.1883e6, 0.62]];
 export const BODY_NAMES = [...BODIES.map((b) => b[0]), "Custom mass"];
-const gmOf = (v: Vals, key = "body", def = 3) => { const k = pick(v[key], BODIES.length + 1); return k === BODIES.length ? { GM: G * pos(v.M, 5.972e24), R: pos(v.R, 6371) * 1000, name: "custom body" } : { GM: BODIES[k][1], R: BODIES[k][2], name: BODIES[k][0] }; };
+const gmOf = (v: Vals, key = "body") => { const k = pick(v[key], BODIES.length + 1); return k === BODIES.length ? { GM: G * pos(v.M, 5.972e24), R: pos(v.R, 6371) * 1000, name: "custom body" } : { GM: BODIES[k][1], R: BODIES[k][2], name: BODIES[k][0] }; };
 export const ORB_MODE = ["Period from semi-major axis", "Semi-major axis from period"];
 export const orbitalPeriod: SciCalculator = (v) => {
   const { GM, R, name } = gmOf(v), toA = pick(v.mode, 2) === 1;
