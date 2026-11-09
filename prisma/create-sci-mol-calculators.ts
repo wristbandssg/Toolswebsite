@@ -67,7 +67,7 @@ const TOOLS: ToolDef[] = [
     inputs: [EQ("C3H8 + O2 = CO2 + H2O"), tx("given", "Known Species (as written)", "C3H8"), pn("amount", "Amount of Known Species", 44, "", BIG), dd("unit", "Amount In", E.AMOUNT_UNIT, 0)],
     results: [["balanced", "Balanced Equation", "t"], ["table", "Amounts of Each Species", "t"], ["givenMol", "Known Species (mol)", "n", 8], ["extent", "Reaction Extent (mol)", "n", 8]],
     fn: E.stoichiometry, ex: { unit: 0, amount: 44, ...T("eq", "C3H8 + O2 = CO2 + H2O"), ...T("given", "C3H8") },
-    exText: (o) => `Example: burning 44 g of propane → ${o.table.split("\n")[2]}.`,
+    exText: (o) => `Example: burning 44 g of propane → ${String(o.table).split("\n")[2]}.`,
     how: "Convert to moles, multiply by the mole ratio from the balanced coefficients, convert back to grams.",
     assume: "The known species is completely consumed or produced (no limiting-reactant check).",
     faq: [["What is a mole ratio?", "The ratio of coefficients — for 2H₂ + O₂ → 2H₂O, H₂ : O₂ = 2 : 1."]],
