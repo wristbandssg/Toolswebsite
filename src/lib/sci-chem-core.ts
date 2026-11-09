@@ -118,7 +118,7 @@ export const elementMass = (sym: string) => BY_SYM.get(sym)!.mass;
 
 // ---------- exact balancing ----------
 type Q = [bigint, bigint];
-const B0 = BigInt(0), B1 = BigInt(1), B1000 = BigInt(1000);
+const B0 = BigInt(0), B1 = BigInt(1);
 const gcd = (a: bigint, b: bigint): bigint => {
   a = a < B0 ? -a : a;
   b = b < B0 ? -b : b;
