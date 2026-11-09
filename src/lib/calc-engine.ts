@@ -637,6 +637,7 @@ import { hgFloorCustomCalculators } from "./calc-engine-hg-floor";
 import { hgHvacCustomCalculators } from "./calc-engine-hg-hvac";
 import { hgPlumbCustomCalculators } from "./calc-engine-hg-plumb";
 import { hgPoolCustomCalculators } from "./calc-engine-hg-pool";
+import { sciFluidCustomCalculators } from "./calc-engine-sci-fluid";
 import { sciMachCustomCalculators } from "./calc-engine-sci-mach";
 import { sciStructCustomCalculators } from "./calc-engine-sci-struct";
 import { sciRfCustomCalculators } from "./calc-engine-sci-rf";
@@ -1124,6 +1125,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...hgHvacCustomCalculators,
   ...hgPlumbCustomCalculators,
   ...hgPoolCustomCalculators,
+  ...sciFluidCustomCalculators,
   ...sciMachCustomCalculators,
   ...sciStructCustomCalculators,
   ...sciRfCustomCalculators,
