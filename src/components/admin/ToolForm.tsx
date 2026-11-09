@@ -549,6 +549,7 @@ export default function ToolForm({
                   <option value="percentage">Percentage</option>
                   <option value="date">Date</option>
                   <option value="label">Text label</option>
+                  <option value="text">Text (calculator returns a string)</option>
                 </select>
                 {line.format === "label" ? (
                   <input

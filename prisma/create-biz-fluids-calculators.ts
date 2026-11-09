@@ -12,6 +12,7 @@
 import * as E from "../src/lib/calc-engine-biz-fluids";
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { sciMovedCategoryId } from "./setup-science-category";
 
 const prisma = new PrismaClient();
 
@@ -385,7 +386,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: cat.id,
+      categoryId: (await sciMovedCategoryId(prisma, def.slug)) ?? cat.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

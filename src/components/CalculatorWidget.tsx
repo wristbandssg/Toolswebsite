@@ -39,7 +39,7 @@ const CURRENCY_LOCALE: Record<string, string> = {
 
 // Same limit as TEXT_MAX_LENGTH in calc-engine-types (kept local so the client
 // bundle doesn't pull in the calculation engine).
-const TEXT_MAX_LENGTH = 60;
+const TEXT_MAX_LENGTH = 300;
 
 const CURRENCY_SYMBOL: Record<string, string> = {
   USD: "$",
@@ -122,7 +122,7 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     )
   );
   const [output, setOutput] = useState<number | null>(null);
-  const [breakdown, setBreakdown] = useState<Record<string, number> | null>(null);
+  const [breakdown, setBreakdown] = useState<Record<string, number | string> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasCalculated, setHasCalculated] = useState(false);
@@ -177,7 +177,10 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
     }
   }
 
-  function formatValue(n: number, format?: "number" | "currency" | "percentage" | "date" | "label", currency?: string, decimals?: number, labels?: string[]) {
+  function formatValue(n: number | string, format?: "number" | "currency" | "percentage" | "date" | "label" | "text", currency?: string, decimals?: number, labels?: string[]) {
+    // Text lines (format "text") and any string value are shown as they are.
+    if (typeof n === "string") return n;
+    if (n === null || n === undefined || !Number.isFinite(n)) return "—";
     if (format === "label") {
       return labels?.[Math.round(n)] ?? "—";
     }
@@ -216,7 +219,12 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
   const detailLines = (results ?? []).filter((line) => !line.highlight);
   const maxDetailValue = Math.max(
     1,
-    ...detailLines.filter((line) => line.format !== "date" && line.format !== "label").map((line) => Math.abs(breakdown?.[line.key] ?? 0))
+    ...detailLines
+      .filter((line) => line.format !== "date" && line.format !== "label" && line.format !== "text")
+      .map((line) => {
+        const v = breakdown?.[line.key];
+        return typeof v === "number" && Number.isFinite(v) ? Math.abs(v) : 0;
+      })
   );
 
   return (
@@ -338,7 +346,13 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                   <p className="text-xs font-medium uppercase tracking-wide text-indigo-100">
                     {highlightLine.label}
                   </p>
-                  <p className="mt-1 text-3xl font-bold">
+                  <p
+                    className={
+                      typeof breakdown[highlightLine.key] === "string" && String(breakdown[highlightLine.key]).length > 18
+                        ? "mt-1 whitespace-pre-wrap break-words font-mono text-lg font-bold"
+                        : "mt-1 text-3xl font-bold"
+                    }
+                  >
                     {formatValue(breakdown[highlightLine.key], highlightLine.format, highlightLine.currency, highlightLine.decimals, highlightLine.labels)}
                   </p>
                 </div>
@@ -348,7 +362,17 @@ export default function CalculatorWidget({ toolSlug, fields, result, results }: 
                 <div className="space-y-2.5">
                   {detailLines.map((line) => {
                     const value = breakdown[line.key];
-                    if (value === undefined) return null;
+                    if (value === undefined || value === null) return null;
+                    if (line.format === "text" || typeof value === "string") {
+                      return (
+                        <div key={line.key} className="text-sm">
+                          <span className="text-gray-600 dark:text-gray-300">{line.label}</span>
+                          <p className="mt-1 whitespace-pre-wrap break-words rounded-lg bg-gray-50 px-3 py-2 font-mono text-gray-900 dark:bg-gray-800/60 dark:text-gray-100">
+                            {String(value)}
+                          </p>
+                        </div>
+                      );
+                    }
                     if (line.format === "date" || line.format === "label") {
                       return (
                         <div key={line.key} className="flex items-center justify-between text-sm">

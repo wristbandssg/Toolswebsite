@@ -11,6 +11,7 @@
 //   npm run db:create-other-combat-climb-skate-calculators
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { sciMovedCategoryId } from "./setup-science-category";
 
 const prisma = new PrismaClient();
 
@@ -338,7 +339,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: category.id,
+      categoryId: (await sciMovedCategoryId(prisma, def.slug)) ?? category.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

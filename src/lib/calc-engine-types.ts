@@ -38,7 +38,7 @@ export type CalcFieldType =
   // character i (first TEXT_MAX_LENGTH characters). Decode with readText().
   | "text";
 
-export const TEXT_MAX_LENGTH = 60;
+export const TEXT_MAX_LENGTH = 300;
 
 /** Rebuilds a "text" field's string from the numbers the widget sent. */
 export function readText(values: Record<string, number>, key: string): string {
@@ -70,7 +70,7 @@ export interface CalcInputField {
 export interface CalcResultConfig {
   label: string;
   unit?: string;
-  format?: "number" | "currency" | "percentage" | "date" | "label";
+  format?: "number" | "currency" | "percentage" | "date" | "label" | "text";
   // format "label": the calculator returns an index and the page shows labels[index]
   // (e.g. note or chord names). Out-of-range indexes show "—".
   labels?: string[];
@@ -96,7 +96,7 @@ export interface CalcResultLineConfig {
   key: string;
   label: string;
   unit?: string;
-  format?: "number" | "currency" | "percentage" | "date" | "label";
+  format?: "number" | "currency" | "percentage" | "date" | "label" | "text";
   // format "label": the calculator returns an index and the page shows labels[index]
   // (e.g. note or chord names). Out-of-range indexes show "—".
   labels?: string[];
@@ -163,5 +163,7 @@ export function runExpressionCalc(
  * single-output shape — most calculators) or a `Record<string, number>` — a
  * named breakdown (e.g. { grossPay, federalTax, netPay, ... }) for a tool
  * whose Tool.calcResults defines multiple result lines. */
-export type CustomCalculatorResult = number | Record<string, number>;
+// A breakdown value is normally a number; lines with format "text" carry a string
+// (e.g. a derivative formula or a matrix written out) and are shown as-is.
+export type CustomCalculatorResult = number | Record<string, number | string>;
 export type CustomCalculator = (values: CalcInputValues) => CustomCalculatorResult;
