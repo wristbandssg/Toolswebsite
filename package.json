@@ -521,6 +521,7 @@
     "db:create-hg-hvac-calculators": "tsx prisma/create-hg-hvac-calculators.ts",
     "db:create-hg-plumb-calculators": "tsx prisma/create-hg-plumb-calculators.ts",
     "db:create-hg-pool-calculators": "tsx prisma/create-hg-pool-calculators.ts",
+    "db:create-sci-rf-calculators": "tsx prisma/create-sci-rf-calculators.ts",
     "db:create-sci-circ-calculators": "tsx prisma/create-sci-circ-calculators.ts",
     "db:create-sci-gen-calculators": "tsx prisma/create-sci-gen-calculators.ts",
     "db:create-sci-dna-calculators": "tsx prisma/create-sci-dna-calculators.ts",
