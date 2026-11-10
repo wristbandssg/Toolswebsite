@@ -35,6 +35,11 @@ const CURRENCY_LOCALE: Record<string, string> = {
   AED: "en-AE",
   EUR: "en-IE",
   MXN: "es-MX",
+  JPY: "ja-JP",
+  THB: "th-TH",
+  TRY: "tr-TR",
+  TWD: "zh-TW",
+  CHF: "de-CH",
 };
 
 // Same limit as TEXT_MAX_LENGTH in calc-engine-types (kept local so the client
@@ -57,6 +62,11 @@ const CURRENCY_SYMBOL: Record<string, string> = {
   AED: "AED ",
   EUR: "€",
   MXN: "MX$",
+  JPY: "¥",
+  THB: "฿",
+  TRY: "₺",
+  TWD: "NT$",
+  CHF: "CHF ",
 };
 
 // Date fields and "date" results travel as day numbers (whole days since

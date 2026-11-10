@@ -23,6 +23,7 @@
 import * as E from "../src/lib/calc-engine-law-immig";
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { trvMovedCategoryId } from "./setup-travel-category";
 
 const prisma = new PrismaClient();
 
@@ -547,7 +548,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: cat.id,
+      categoryId: (await trvMovedCategoryId(prisma, def.slug)) ?? cat.id,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

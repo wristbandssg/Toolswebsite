@@ -637,6 +637,15 @@ import { hgFloorCustomCalculators } from "./calc-engine-hg-floor";
 import { hgHvacCustomCalculators } from "./calc-engine-hg-hvac";
 import { hgPlumbCustomCalculators } from "./calc-engine-hg-plumb";
 import { hgPoolCustomCalculators } from "./calc-engine-hg-pool";
+import { trvDistCustomCalculators } from "./calc-engine-trv-dist";
+import { trvFlightCustomCalculators } from "./calc-engine-trv-flight";
+import { trvBagCustomCalculators } from "./calc-engine-trv-bag";
+import { trvMilesCustomCalculators } from "./calc-engine-trv-miles";
+import { trvStatusCustomCalculators } from "./calc-engine-trv-status";
+import { trvTollCustomCalculators } from "./calc-engine-trv-toll";
+import { trvTaxiCustomCalculators } from "./calc-engine-trv-taxi";
+import { trvRailCustomCalculators } from "./calc-engine-trv-rail";
+import { trvTripCustomCalculators } from "./calc-engine-trv-trip";
 import { sciEarthCustomCalculators } from "./calc-engine-sci-earth";
 import { sciAstroCustomCalculators } from "./calc-engine-sci-astro";
 import { sciFluidCustomCalculators } from "./calc-engine-sci-fluid";
@@ -1127,6 +1136,15 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...hgHvacCustomCalculators,
   ...hgPlumbCustomCalculators,
   ...hgPoolCustomCalculators,
+  ...trvDistCustomCalculators,
+  ...trvFlightCustomCalculators,
+  ...trvBagCustomCalculators,
+  ...trvMilesCustomCalculators,
+  ...trvStatusCustomCalculators,
+  ...trvTollCustomCalculators,
+  ...trvTaxiCustomCalculators,
+  ...trvRailCustomCalculators,
+  ...trvTripCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,

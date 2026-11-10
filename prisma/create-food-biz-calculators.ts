@@ -10,6 +10,7 @@
 import * as E from "../src/lib/calc-engine-food-biz";
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { trvMovedCategoryId } from "./setup-travel-category";
 
 const prisma = new PrismaClient();
 
@@ -251,7 +252,7 @@ async function main() {
       title: def.title,
       description: def.description,
       templateKey: "tool-template-3",
-      categoryId: cats.get(def.cat)!,
+      categoryId: (await trvMovedCategoryId(prisma, def.slug)) ?? cats.get(def.cat)!,
       calcType: "custom",
       calcFormula: null,
       calcInputs: JSON.stringify(def.calcInputs),

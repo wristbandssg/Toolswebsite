@@ -563,7 +563,17 @@
     "db:setup-finance-categories": "tsx prisma/reparent-tool-categories-under-finance.ts",
     "db:organize-categories": "tsx prisma/organize-tool-categories.ts",
     "db:consolidate-finance-subcategories": "tsx prisma/consolidate-finance-subcategories.ts",
-    "db:cleanup-structure-and-duplicates": "tsx prisma/cleanup-structure-and-duplicates.ts"
+    "db:cleanup-structure-and-duplicates": "tsx prisma/cleanup-structure-and-duplicates.ts",
+    "db:setup-travel-category": "tsx prisma/setup-travel-category.ts --apply",
+    "db:create-trv-dist-calculators": "tsx prisma/create-trv-dist-calculators.ts",
+    "db:create-trv-flight-calculators": "tsx prisma/create-trv-flight-calculators.ts",
+    "db:create-trv-bag-calculators": "tsx prisma/create-trv-bag-calculators.ts",
+    "db:create-trv-miles-calculators": "tsx prisma/create-trv-miles-calculators.ts",
+    "db:create-trv-status-calculators": "tsx prisma/create-trv-status-calculators.ts",
+    "db:create-trv-toll-calculators": "tsx prisma/create-trv-toll-calculators.ts",
+    "db:create-trv-taxi-calculators": "tsx prisma/create-trv-taxi-calculators.ts",
+    "db:create-trv-rail-calculators": "tsx prisma/create-trv-rail-calculators.ts",
+    "db:create-trv-trip-calculators": "tsx prisma/create-trv-trip-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
