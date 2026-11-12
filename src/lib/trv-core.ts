@@ -294,3 +294,6 @@ export const dateIn = (v: Vals, key: string, def: number) => { const x = v[key];
 /** Money text with a currency symbol (used inside text results). */
 export const money = (x: number, sym = "$", dp = 2) => `${x < 0 ? "−" : ""}${sym}${Math.abs(x).toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
 export const nfmt = (x: number, dp = 0) => x.toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
+
+/** Every airport in the built-in table (for nearest-airport searches). */
+export const airportList = (): Place[] => ALL.filter((p) => p.kind === "airport");

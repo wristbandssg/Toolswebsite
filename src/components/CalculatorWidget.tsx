@@ -40,6 +40,7 @@ const CURRENCY_LOCALE: Record<string, string> = {
   TRY: "tr-TR",
   TWD: "zh-TW",
   CHF: "de-CH",
+  KRW: "ko-KR",
 };
 
 // Same limit as TEXT_MAX_LENGTH in calc-engine-types (kept local so the client
@@ -67,6 +68,7 @@ const CURRENCY_SYMBOL: Record<string, string> = {
   TRY: "₺",
   TWD: "NT$",
   CHF: "CHF ",
+  KRW: "₩",
 };
 
 // Date fields and "date" results travel as day numbers (whole days since

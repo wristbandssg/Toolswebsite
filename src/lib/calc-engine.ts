@@ -646,6 +646,7 @@ import { trvTollCustomCalculators } from "./calc-engine-trv-toll";
 import { trvTaxiCustomCalculators } from "./calc-engine-trv-taxi";
 import { trvRailCustomCalculators } from "./calc-engine-trv-rail";
 import { trvTripCustomCalculators } from "./calc-engine-trv-trip";
+import { trvExtraCustomCalculators } from "./calc-engine-trv-extra";
 import { sciEarthCustomCalculators } from "./calc-engine-sci-earth";
 import { sciAstroCustomCalculators } from "./calc-engine-sci-astro";
 import { sciFluidCustomCalculators } from "./calc-engine-sci-fluid";
@@ -1145,6 +1146,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...trvTaxiCustomCalculators,
   ...trvRailCustomCalculators,
   ...trvTripCustomCalculators,
+  ...trvExtraCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,
