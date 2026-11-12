@@ -1,0 +1,137 @@
+{
+ "mainCategory": "Travel Calculators",
+ "date": "2026-11-12",
+ "tools": [
+  {
+   "slug": "south-korea-trip-cost-calculator",
+   "title": "South Korea Trip Cost Calculator",
+   "subcategory": "Trip Cost, Theme Park & Cruise Calculators",
+   "keywords": [
+    "korea trip cost calculator"
+   ]
+  },
+  {
+   "slug": "cruise-cost-calculator",
+   "title": "Cruise Cost Calculator",
+   "subcategory": "Trip Cost, Theme Park & Cruise Calculators",
+   "keywords": [
+    "cruise calculator",
+    "disney cruise calculator"
+   ]
+  },
+  {
+   "slug": "korean-air-skypass-miles-calculator",
+   "title": "Korean Air SKYPASS Miles Calculator",
+   "subcategory": "Airline Miles, Hotel Points & Rewards Calculators",
+   "keywords": [
+    "korean air miles calculator"
+   ]
+  },
+  {
+   "slug": "alaska-airlines-miles-calculator",
+   "title": "Alaska Airlines Miles Calculator",
+   "subcategory": "Airline Miles, Hotel Points & Rewards Calculators",
+   "keywords": [
+    "alaska airlines points calculator",
+    "alaska airlines mileage calculator"
+   ]
+  },
+  {
+   "slug": "royal-jordanian-royal-club-miles-calculator",
+   "title": "Royal Jordanian Royal Club Miles Calculator",
+   "subcategory": "Airline Miles, Hotel Points & Rewards Calculators",
+   "keywords": [
+    "royal jordanian miles calculator"
+   ]
+  },
+  {
+   "slug": "buy-miles-calculator",
+   "title": "Buy Miles Calculator",
+   "subcategory": "Airline Miles, Hotel Points & Rewards Calculators",
+   "keywords": [
+    "aa buy miles calculator",
+    "buy aa miles calculator"
+   ]
+  },
+  {
+   "slug": "korean-air-baggage-calculator",
+   "title": "Korean Air Baggage Calculator",
+   "subcategory": "Flight, Baggage & Airfare Calculators",
+   "keywords": [
+    "korean air baggage calculator"
+   ]
+  },
+  {
+   "slug": "brussels-airlines-baggage-calculator",
+   "title": "Brussels Airlines Baggage Calculator",
+   "subcategory": "Flight, Baggage & Airfare Calculators",
+   "keywords": [
+    "brussels airlines baggage calculator"
+   ]
+  },
+  {
+   "slug": "turkish-airlines-pet-fee-calculator",
+   "title": "Turkish Airlines Pet Fee Calculator",
+   "subcategory": "Flight, Baggage & Airfare Calculators",
+   "keywords": [
+    "turkish airlines pet fee calculator"
+   ]
+  },
+  {
+   "slug": "closest-airport-calculator",
+   "title": "Closest Airport Calculator",
+   "subcategory": "Distance, Route & Travel Time Calculators",
+   "keywords": [
+    "closest airport calculator"
+   ]
+  },
+  {
+   "slug": "seattle-taxi-fare-calculator",
+   "title": "Seattle Taxi Fare Calculator",
+   "subcategory": "Taxi & Rideshare Fare Calculators",
+   "keywords": [
+    "seattle taxi fare calculator"
+   ]
+  },
+  {
+   "slug": "vancouver-taxi-fare-calculator",
+   "title": "Vancouver Taxi Fare Calculator",
+   "subcategory": "Taxi & Rideshare Fare Calculators",
+   "keywords": [
+    "vancouver taxi fare calculator"
+   ]
+  },
+  {
+   "slug": "washington-dc-taxi-fare-calculator",
+   "title": "Washington DC Taxi Fare Calculator",
+   "subcategory": "Taxi & Rideshare Fare Calculators",
+   "keywords": [
+    "dca taxi fare calculator"
+   ]
+  },
+  {
+   "slug": "aruba-taxi-fare-calculator",
+   "title": "Aruba Taxi Fare Calculator",
+   "subcategory": "Taxi & Rideshare Fare Calculators",
+   "keywords": [
+    "aruba taxi fare calculator"
+   ]
+  },
+  {
+   "slug": "grab-fare-calculator-thailand",
+   "title": "Grab Fare Calculator Thailand",
+   "subcategory": "Taxi & Rideshare Fare Calculators",
+   "keywords": [
+    "grab fare calculator thailand"
+   ]
+  },
+  {
+   "slug": "seoul-subway-fare-calculator",
+   "title": "Seoul Subway Fare Calculator",
+   "subcategory": "Train, Metro & Rail Pass Calculators",
+   "keywords": [
+    "seoul subway fare calculator"
+   ]
+  }
+ ]
+}
