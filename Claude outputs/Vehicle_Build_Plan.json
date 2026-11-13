@@ -3,6 +3,7 @@
   "slug": "uk-car-tax-calculator",
   "title": "UK Car Tax (VED) Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 1,
   "keywords": [
    "road tax calculator",
    "road tax calculator by reg"
@@ -12,6 +13,7 @@
   "slug": "idv-calculator",
   "title": "IDV Calculator (Insured Declared Value)",
   "category": "Finance Calculators > Insurance Calculators > Auto & Vehicle Insurance Calculators",
+  "batch": 1,
   "keywords": [
    "idv calculator"
   ]
@@ -20,6 +22,7 @@
   "slug": "ireland-vrt-calculator",
   "title": "Ireland VRT Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Buying & Selling Calculators",
+  "batch": 1,
   "keywords": [
    "vrt calculator"
   ]
@@ -28,6 +31,7 @@
   "slug": "pcp-car-finance-calculator",
   "title": "PCP Car Finance Calculator (UK)",
   "category": "Finance Calculators > Loan Calculators > Auto & Vehicle Loan Calculators",
+  "batch": 1,
   "keywords": [
    "pcp calculator"
   ]
@@ -36,15 +40,21 @@
   "slug": "power-to-weight-ratio-calculator",
   "title": "Power-to-Weight Ratio Calculator",
   "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 1,
   "keywords": [
    "power to weight ratio calculator",
-   "power to weight calculator"
+   "power to weight calculator",
+   "hp to weight ratio calculator",
+   "hp per ton calculator",
+   "weight to power ratio calculator",
+   "horsepower per ton calculator"
   ]
  },
  {
   "slug": "ctp-green-slip-calculator",
   "title": "CTP Green Slip Calculator (NSW)",
   "category": "Finance Calculators > Insurance Calculators > Auto & Vehicle Insurance Calculators",
+  "batch": 1,
   "keywords": [
    "greenslip calculator",
    "green slip calculator",
@@ -55,6 +65,7 @@
   "slug": "lucky-vehicle-number-calculator",
   "title": "Lucky Vehicle Number Calculator",
   "category": "Arts & Entertainment Calculators > Tarot, Astrology & Fun Calculators",
+  "batch": 1,
   "keywords": [
    "lucky vehicle number calculator"
   ]
@@ -63,16 +74,20 @@
   "slug": "car-loan-eligibility-calculator",
   "title": "Car Loan Eligibility Calculator",
   "category": "Finance Calculators > Loan Calculators > Auto & Vehicle Loan Calculators",
+  "batch": 1,
   "keywords": [
    "car loan eligibility calculator",
    "car loan approval calculator",
-   "how much car loan can i get approved for calculator"
+   "how much car loan can i get approved for calculator",
+   "car loan pre approval calculator",
+   "car loan qualification calculator"
   ]
  },
  {
   "slug": "skid-patch-calculator",
   "title": "Skid Patch Calculator (Fixed Gear)",
   "category": "Sports Calculators > Cycling Calculators",
+  "batch": 1,
   "keywords": [
    "skid patch calculator"
   ]
@@ -81,49 +96,66 @@
   "slug": "car-cost-per-mile-calculator",
   "title": "Car Cost per Mile Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 1,
   "keywords": [
    "mileage cost calculator",
    "cost to drive calculator",
    "driving cost calculator",
    "price per mile calculator",
    "fuel cost per mile calculator",
-   "gas mileage cost calculator"
+   "gas mileage cost calculator",
+   "cost of driving calculator",
+   "drive cost calculator",
+   "gas per mile calculator",
+   "car cost per mile calculator"
   ]
  },
  {
   "slug": "annual-mileage-calculator",
   "title": "Annual Mileage Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 1,
   "keywords": [
    "annual mileage calculator",
-   "miles per year calculator"
+   "miles per year calculator",
+   "yearly mileage calculator",
+   "mileage per year calculator",
+   "average miles per year on a car calculator",
+   "car miles calculator"
   ]
  },
  {
   "slug": "ev-charging-time-calculator",
   "title": "EV Charging Time Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 1,
   "keywords": [
    "ev charging time calculator",
    "charging time calculator",
    "ev charge time calculator",
-   "charge time calculator"
+   "charge time calculator",
+   "tesla charging time calculator",
+   "ev charging speed calculator"
   ]
  },
  {
   "slug": "car-loan-apr-calculator",
   "title": "Car Loan APR Calculator",
   "category": "Finance Calculators > Loan Calculators > Auto & Vehicle Loan Calculators",
+  "batch": 1,
   "keywords": [
    "car loan apr calculator",
    "vehicle interest rate calculator",
-   "interest rate calculator car loan"
+   "interest rate calculator car loan",
+   "used car interest rate calculator",
+   "car loan calculator with fees"
   ]
  },
  {
   "slug": "malaysia-car-insurance-calculator",
   "title": "Malaysia Car Insurance Calculator",
   "category": "Finance Calculators > Insurance Calculators > Auto & Vehicle Insurance Calculators",
+  "batch": 1,
   "keywords": [
    "car insurance calculator malaysia"
   ]
@@ -132,32 +164,47 @@
   "slug": "texas-tax-title-license-calculator",
   "title": "Texas Tax, Title & License (TTL) Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "tax title and license calculator texas",
    "texas vehicle registration fees calculator",
-   "ttl calculator texas"
+   "ttl calculator texas",
+   "texas tax title and license calculator",
+   "tax title license calculator texas",
+   "texas ttl calculator",
+   "texas title transfer fee calculator",
+   "tt&l calculator texas",
+   "texas vehicle tax title and license calculator"
   ]
  },
  {
   "slug": "ifta-fuel-tax-calculator",
   "title": "IFTA Fuel Tax Calculator",
   "category": "Business & Industrial Calculators > Freight, Logistics & Warehouse Calculators",
+  "batch": 1,
   "keywords": [
-   "ifta calculator"
+   "ifta calculator",
+   "ifta mileage calculator",
+   "ifta miles calculator",
+   "ifta fuel tax calculator",
+   "ifta tax calculator"
   ]
  },
  {
   "slug": "tongue-weight-calculator",
   "title": "Trailer Tongue Weight Calculator",
   "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 1,
   "keywords": [
-   "tongue weight calculator"
+   "tongue weight calculator",
+   "trailer tongue weight calculator"
   ]
  },
  {
   "slug": "car-loan-credit-score-calculator",
   "title": "Car Loan Calculator by Credit Score",
   "category": "Finance Calculators > Loan Calculators > Auto & Vehicle Loan Calculators",
+  "batch": 1,
   "keywords": [
    "bad credit car finance calculator",
    "car payment calculator with credit score",
@@ -166,53 +213,74 @@
    "auto loan calculator credit score",
    "car loan calculator credit score",
    "car loan calculator based on credit score",
-   "auto loan calculator with credit score"
+   "auto loan calculator with credit score",
+   "rv loan calculator with credit score",
+   "car finance calculator based on credit score",
+   "car finance calculator with credit score"
   ]
  },
  {
   "slug": "boat-propeller-slip-calculator",
   "title": "Boat Propeller Slip Calculator",
   "category": "Sports Calculators > Other Sports Calculators",
+  "batch": 1,
   "keywords": [
    "prop slip calculator",
    "prop calculator",
    "mercury prop slip calculator",
    "boat prop calculator",
-   "boat propeller calculator"
+   "boat propeller calculator",
+   "mercury prop selector calculator",
+   "prop speed calculator",
+   "prop calculator wizard",
+   "mercury prop calculator",
+   "propeller calculator",
+   "propeller sizing calculator",
+   "prop diameter and pitch calculator",
+   "prop pitch calculator",
+   "propeller pitch calculator"
   ]
  },
  {
   "slug": "bac-calculator",
   "title": "Blood Alcohol (BAC) Calculator for Driving",
   "category": "Law & Government Calculators > Court, Criminal & Legal Fee Calculators",
+  "batch": 1,
   "keywords": [
    "alcohol calculator driving",
-   "dui calculator"
+   "dui calculator",
+   "drink and drive calculator"
   ]
  },
  {
   "slug": "north-carolina-vehicle-registration-fee-calculator",
   "title": "North Carolina Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
-   "nc car registration fee calculator"
+   "nc car registration fee calculator",
+   "nc weighted tag cost calculator"
   ]
  },
  {
   "slug": "negative-equity-car-calculator",
   "title": "Negative Equity Car Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Buying & Selling Calculators",
+  "batch": 1,
   "keywords": [
    "negative equity car loan calculator",
    "negative equity calculator",
    "car equity calculator",
-   "car payment calculator with negative equity"
+   "car payment calculator with negative equity",
+   "ltv calculator auto",
+   "upside down car loan calculator"
   ]
  },
  {
   "slug": "dynamic-compression-ratio-calculator",
   "title": "Dynamic Compression Ratio Calculator",
   "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 1,
   "keywords": [
    "dynamic compression calculator",
    "dynamic compression ratio calculator"
@@ -222,14 +290,18 @@
   "slug": "valve-shim-calculator",
   "title": "Valve Shim Calculator",
   "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 1,
   "keywords": [
-   "valve shim calculator"
+   "valve shim calculator",
+   "shim calculator",
+   "valve clearance calculator"
   ]
  },
  {
   "slug": "ev-range-calculator",
   "title": "EV Range Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 1,
   "keywords": [
    "ev range calculator",
    "tesla range calculator"
@@ -239,23 +311,29 @@
   "slug": "michigan-vehicle-registration-fee-calculator",
   "title": "Michigan Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "michigan registration fee calculator",
-   "michigan plate fee calculator"
+   "michigan plate fee calculator",
+   "michigan title and registration fee calculator",
+   "sos plate fee calculator"
   ]
  },
  {
   "slug": "alabama-vehicle-registration-fee-calculator",
   "title": "Alabama Car Tag & Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
-   "alabama tag cost calculator"
+   "alabama tag cost calculator",
+   "alabama vehicle registration fee calculator"
   ]
  },
  {
   "slug": "washington-vehicle-registration-fee-calculator",
   "title": "Washington Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "washington vehicle registration fee calculator"
   ]
@@ -264,15 +342,19 @@
   "slug": "driveline-angle-calculator",
   "title": "Driveline & Pinion Angle Calculator",
   "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 1,
   "keywords": [
    "pinion angle calculator",
-   "driveline angle calculator"
+   "driveline angle calculator",
+   "drive shaft angle calculator",
+   "driveshaft angle calculator"
   ]
  },
  {
   "slug": "minnesota-vehicle-registration-fee-calculator",
   "title": "Minnesota Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "mn vehicle registration fee calculator"
   ]
@@ -281,15 +363,18 @@
   "slug": "20-4-10-rule-car-calculator",
   "title": "20/4/10 Rule Car Affordability Calculator",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Buying & Selling Calculators",
+  "batch": 1,
   "keywords": [
    "20/4/10 rule calculator",
-   "20 4 10 rule calculator"
+   "20 4 10 rule calculator",
+   "20/4/10 calculator"
   ]
  },
  {
   "slug": "tennessee-vehicle-registration-fee-calculator",
   "title": "Tennessee Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "tn vehicle registration fee calculator"
   ]
@@ -298,6 +383,7 @@
   "slug": "carburetor-jet-size-calculator",
   "title": "Carburetor Jet Size Calculator",
   "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 1,
   "keywords": [
    "carburetor jet size calculator"
   ]
@@ -306,6 +392,7 @@
   "slug": "tire-stretch-calculator",
   "title": "Tire Stretch Calculator",
   "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 1,
   "keywords": [
    "tire stretch calculator",
    "tyre stretch calculator"
@@ -315,6 +402,7 @@
   "slug": "fuel-range-calculator",
   "title": "Fuel Range Calculator (Distance to Empty)",
   "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 1,
   "keywords": [
    "fuel range calculator"
   ]
@@ -323,6 +411,7 @@
   "slug": "north-carolina-car-sales-tax-calculator",
   "title": "North Carolina Car Sales Tax (Highway Use Tax) Calculator",
   "category": "Shopping Calculators > Sales Tax, VAT & Import Duty Calculators",
+  "batch": 1,
   "keywords": [
    "nc vehicle tax calculator"
   ]
@@ -331,6 +420,7 @@
   "slug": "virginia-vehicle-registration-fee-calculator",
   "title": "Virginia Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "va dmv registration fee calculator"
   ]
@@ -339,6 +429,7 @@
   "slug": "new-jersey-vehicle-registration-fee-calculator",
   "title": "New Jersey Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "nj vehicle registration fee calculator"
   ]
@@ -347,6 +438,7 @@
   "slug": "new-hampshire-vehicle-registration-fee-calculator",
   "title": "New Hampshire Vehicle Registration Fee Calculator",
   "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 1,
   "keywords": [
    "nh vehicle registration fee calculator"
   ]
@@ -355,6 +447,7 @@
   "slug": "vertical-curve-calculator",
   "title": "Vertical Curve Calculator",
   "category": "Science Calculators > Mechanical & Structural Engineering Calculators",
+  "batch": 1,
   "keywords": [
    "vertical curve calculator"
   ]
@@ -363,6 +456,7 @@
   "slug": "kentucky-car-sales-tax-calculator",
   "title": "Kentucky Car Sales Tax Calculator",
   "category": "Shopping Calculators > Sales Tax, VAT & Import Duty Calculators",
+  "batch": 1,
   "keywords": [
    "ky vehicle tax calculator"
   ]
@@ -371,8 +465,257 @@
   "slug": "crawl-ratio-calculator",
   "title": "Crawl Ratio Calculator",
   "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 1,
   "keywords": [
    "crawl ratio calculator"
+  ]
+ },
+ {
+  "slug": "axle-weight-calculator",
+  "title": "Axle Weight Distribution Calculator",
+  "category": "Business & Industrial Calculators > Freight, Logistics & Warehouse Calculators",
+  "batch": 2,
+  "keywords": [
+   "trailer axle placement calculator",
+   "dot weight limits per axle calculator",
+   "axle weight calculator",
+   "truck axle weight calculator"
+  ]
+ },
+ {
+  "slug": "car-tire-pressure-calculator",
+  "title": "Car Tire Pressure Calculator (Load & Temperature)",
+  "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 2,
+  "keywords": [
+   "car tire pressure calculator",
+   "air pressure calculator",
+   "tire air pressure calculator",
+   "tire pressure calculator car",
+   "tire pressure calculator truck",
+   "correct tire pressure calculator"
+  ]
+ },
+ {
+  "slug": "exhaust-pipe-size-calculator",
+  "title": "Exhaust Pipe Size Calculator",
+  "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 2,
+  "keywords": [
+   "exhaust diameter calculator",
+   "exhaust size calculator"
+  ]
+ },
+ {
+  "slug": "pie-cut-calculator",
+  "title": "Pie Cut Exhaust Calculator",
+  "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 2,
+  "keywords": [
+   "pie cut calculator"
+  ]
+ },
+ {
+  "slug": "mpge-calculator",
+  "title": "MPGe & Miles per kWh Calculator",
+  "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Ownership, Fuel & EV Cost Calculators",
+  "batch": 2,
+  "keywords": [
+   "miles per kwh calculator",
+   "mpge calculator"
+  ]
+ },
+ {
+  "slug": "kentucky-vehicle-registration-fee-calculator",
+  "title": "Kentucky Vehicle Registration Fee Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "kentucky vehicle registration fee calculator"
+  ]
+ },
+ {
+  "slug": "massachusetts-vehicle-registration-fee-calculator",
+  "title": "Massachusetts Vehicle Registration Fee Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "vehicle registration fee calculator massachusetts",
+   "massachusetts car registration fee calculator"
+  ]
+ },
+ {
+  "slug": "louisiana-vehicle-registration-fee-calculator",
+  "title": "Louisiana Vehicle Registration Fee Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "louisiana vehicle registration fee calculator"
+  ]
+ },
+ {
+  "slug": "engine-hours-to-miles-calculator",
+  "title": "Engine Hours to Miles Calculator",
+  "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 2,
+  "keywords": [
+   "engine hours to miles calculator",
+   "hours to miles calculator"
+  ]
+ },
+ {
+  "slug": "vin-check-digit-calculator",
+  "title": "VIN Check Digit Calculator",
+  "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 2,
+  "keywords": [
+   "vin check digit calculator",
+   "vin calculator"
+  ]
+ },
+ {
+  "slug": "hawaii-vehicle-registration-fee-calculator",
+  "title": "Hawaii (Honolulu) Vehicle Registration Fee Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "honolulu vehicle registration cost calculator"
+  ]
+ },
+ {
+  "slug": "idaho-vehicle-registration-fee-calculator",
+  "title": "Idaho Vehicle Registration Fee Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "idaho vehicle registration fee calculator"
+  ]
+ },
+ {
+  "slug": "volumetric-efficiency-calculator",
+  "title": "Volumetric Efficiency Calculator",
+  "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 2,
+  "keywords": [
+   "volumetric efficiency calculator"
+  ]
+ },
+ {
+  "slug": "boat-motor-size-calculator",
+  "title": "Boat Motor Size (HP) Calculator",
+  "category": "Sports Calculators > Other Sports Calculators",
+  "batch": 2,
+  "keywords": [
+   "boat motor size calculator"
+  ]
+ },
+ {
+  "slug": "engine-rebuild-cost-calculator",
+  "title": "Engine Rebuild Cost Calculator",
+  "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Maintenance, Repair & Upgrade Calculators",
+  "batch": 2,
+  "keywords": [
+   "engine rebuild cost calculator"
+  ]
+ },
+ {
+  "slug": "clutch-replacement-cost-calculator",
+  "title": "Clutch Replacement Cost Calculator",
+  "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Maintenance, Repair & Upgrade Calculators",
+  "batch": 2,
+  "keywords": [
+   "clutch replacement cost calculator"
+  ]
+ },
+ {
+  "slug": "uk-cycle-to-work-scheme-calculator",
+  "title": "UK Cycle to Work Scheme Calculator",
+  "category": "Sports Calculators > Cycling Calculators",
+  "batch": 2,
+  "keywords": [
+   "bike to work calculator uk"
+  ]
+ },
+ {
+  "slug": "wisconsin-car-sales-tax-calculator",
+  "title": "Wisconsin Car Sales Tax Calculator",
+  "category": "Shopping Calculators > Sales Tax, VAT & Import Duty Calculators",
+  "batch": 2,
+  "keywords": [
+   "wisconsin vehicle sales tax calculator",
+   "tax title and license calculator wi"
+  ]
+ },
+ {
+  "slug": "mississippi-vehicle-registration-fee-calculator",
+  "title": "Mississippi Car Tag & Registration Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "mississippi tag cost calculator"
+  ]
+ },
+ {
+  "slug": "tire-balancing-beads-calculator",
+  "title": "Tire Balancing Beads Calculator",
+  "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 2,
+  "keywords": [
+   "tire balancing beads calculator"
+  ]
+ },
+ {
+  "slug": "south-dakota-vehicle-registration-fee-calculator",
+  "title": "South Dakota Vehicle Registration Fee Calculator",
+  "category": "Law & Government Calculators > Government Fees & Public Finance Calculators",
+  "batch": 2,
+  "keywords": [
+   "south dakota vehicle registration fees calculator"
+  ]
+ },
+ {
+  "slug": "car-restoration-cost-calculator",
+  "title": "Car Restoration Cost Calculator",
+  "category": "Finance Calculators > Car & Vehicle Cost Calculators > Car Maintenance, Repair & Upgrade Calculators",
+  "batch": 2,
+  "keywords": [
+   "car restoration cost calculator"
+  ]
+ },
+ {
+  "slug": "tire-age-calculator",
+  "title": "Tire Age Calculator (DOT Date Code)",
+  "category": "Shopping Calculators > Vehicle, Resale & Collectibles Calculators",
+  "batch": 2,
+  "keywords": [
+   "tire age calculator"
+  ]
+ },
+ {
+  "slug": "scrub-radius-calculator",
+  "title": "Scrub Radius Calculator",
+  "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 2,
+  "keywords": [
+   "scrub radius calculator"
+  ]
+ },
+ {
+  "slug": "pennsylvania-car-sales-tax-calculator",
+  "title": "Pennsylvania Car Sales Tax, Title & Tags Calculator",
+  "category": "Shopping Calculators > Sales Tax, VAT & Import Duty Calculators",
+  "batch": 2,
+  "keywords": [
+   "vehicle tax title tags and fees calculator pa"
+  ]
+ },
+ {
+  "slug": "4-link-suspension-calculator",
+  "title": "4-Link Suspension Calculator",
+  "category": "Sports Calculators > Motorsports & Racing Calculators",
+  "batch": 2,
+  "keywords": [
+   "4 link calculator"
   ]
  }
 ]
