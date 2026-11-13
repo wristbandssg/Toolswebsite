@@ -650,6 +650,9 @@ import { trvExtraCustomCalculators } from "./calc-engine-trv-extra";
 import { vehFinCustomCalculators } from "./calc-engine-veh-fin";
 import { vehGovCustomCalculators } from "./calc-engine-veh-gov";
 import { vehTechCustomCalculators } from "./calc-engine-veh-tech";
+import { fitDietCustomCalculators } from "./calc-engine-fit-diet";
+import { fitBodyCustomCalculators } from "./calc-engine-fit-body";
+import { fitMiscCustomCalculators } from "./calc-engine-fit-misc";
 import { sciEarthCustomCalculators } from "./calc-engine-sci-earth";
 import { sciAstroCustomCalculators } from "./calc-engine-sci-astro";
 import { sciFluidCustomCalculators } from "./calc-engine-sci-fluid";
@@ -1153,6 +1156,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...vehFinCustomCalculators,
   ...vehGovCustomCalculators,
   ...vehTechCustomCalculators,
+  ...fitDietCustomCalculators,
+  ...fitBodyCustomCalculators,
+  ...fitMiscCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,
