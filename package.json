@@ -574,7 +574,10 @@
     "db:create-trv-taxi-calculators": "tsx prisma/create-trv-taxi-calculators.ts",
     "db:create-trv-rail-calculators": "tsx prisma/create-trv-rail-calculators.ts",
     "db:create-trv-trip-calculators": "tsx prisma/create-trv-trip-calculators.ts",
-    "db:create-trv-extra-calculators": "tsx prisma/create-trv-extra-calculators.ts"
+    "db:create-trv-extra-calculators": "tsx prisma/create-trv-extra-calculators.ts",
+    "db:create-veh-fin-calculators": "tsx prisma/create-veh-fin-calculators.ts",
+    "db:create-veh-gov-calculators": "tsx prisma/create-veh-gov-calculators.ts",
+    "db:create-veh-tech-calculators": "tsx prisma/create-veh-tech-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
