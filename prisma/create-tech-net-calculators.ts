@@ -1,0 +1,163 @@
+// One-time (but safe to re-run) batch setup script: 12 networking & IT tools from the tech keyword
+// check (15 Nov 2026 — Claude outputs/Tech_Keyword_Check.md), filed under Science > Computer, Network
+// & IT Calculators (new sub — created by prisma/setup-science-category.ts --apply). Formulas live in
+// src/lib/calc-engine-tech-net.ts; examples are computed from the engine. All tools are Published.
+//
+// HOW TO RUN
+//   npx tsx prisma/setup-science-category.ts --apply   (once, creates the new sub)
+//   npm run db:create-tech-net-calculators              (TRV_DRY=1 → check only, no database)
+
+import * as E from "../src/lib/calc-engine-tech-net";
+import { mk, num, dd, tx, date, T, runBatch, type ToolDef } from "./trv-tool-kit";
+
+const C = E.techNetCustomCalculators;
+const IT = "computer-network-it-calculators";
+
+const TOOLS: ToolDef[] = [
+  mk({
+    slug: "subnet-calculator", title: "IP Subnet Calculator (IPv4, CIDR & Subnet Mask)",
+    meta: "Subnet Calculator — IPv4 Network, Broadcast, Host Range & Mask",
+    desc: "Enter an IPv4 address with a CIDR prefix or subnet mask to get the network address, broadcast address, usable host range, number of hosts, wildcard mask, IP class and binary mask.",
+    inputs: [tx("ip", "IP Address (or address/prefix, e.g. 192.168.1.10/24)", "192.168.1.10"), tx("mask", "Subnet Mask or CIDR Prefix (e.g. 24 or 255.255.255.0)", "24")],
+    results: [["network", "Network Address", "t"], ["range", "Usable Host Range", "t"], ["broadcast", "Broadcast Address", "t"], ["usable", "Usable Hosts", "n", 0], ["total", "Total Addresses", "n", 0], ["mask", "Subnet Mask", "t"], ["wildcard", "Wildcard Mask (ACL)", "t"], ["cidr", "CIDR Notation", "t"], ["cls", "IP Class", "t"], ["type", "Address Type", "t"], ["binary", "Mask in Binary", "t"], ["ipBinary", "Address in Binary", "t"]],
+    fn: C["subnet-calculator"], ex: { ...T("ip", "192.168.1.10"), ...T("mask", "24") },
+    exText: (o) => `Example: 192.168.1.10/24 is in network ${o.network}. Hosts run ${o.range} (${o.usable} usable), the broadcast address is ${o.broadcast} and the wildcard mask is ${o.wildcard}.`,
+    how: "Type the address and either a prefix length (/24) or a dotted mask (255.255.255.0). You can also type both together, like 10.0.0.5/16.\n\nThe network address is the address with every host bit set to 0, and the broadcast address has every host bit set to 1. The usable hosts are everything in between. A /31 is a point-to-point link with 2 usable addresses, and a /32 is a single host.",
+    assume: "IPv4 only — use the IPv6 Subnet Calculator for IPv6. Classes (A–E) are shown for reference; modern networks are classless (CIDR). The wildcard mask is the inverse of the subnet mask, as used in Cisco ACLs and OSPF.",
+    faq: [["How many hosts are in a /24?", "256 addresses, 254 usable (the network and broadcast addresses can't be given to hosts)."], ["What is a wildcard mask?", "The subnet mask with the bits flipped: 255.255.255.0 becomes 0.0.0.255. Cisco ACLs and OSPF use it."], ["What does /27 mean?", "The first 27 bits are the network, leaving 5 host bits: 32 addresses, 30 usable, mask 255.255.255.224."]],
+  }),
+  mk({
+    slug: "ipv6-subnet-calculator", title: "IPv6 Subnet Calculator (Prefix, Range & Subnets)",
+    meta: "IPv6 Subnet Calculator — Prefix Range, Expand & Compress",
+    desc: "Enter an IPv6 address and prefix length to get the network prefix, first and last address, the number of addresses and how many smaller subnets (such as /64s) fit inside. Also expands and compresses the address.",
+    inputs: [tx("ip", "IPv6 Address (or address/prefix)", "2001:db8:abcd:12::1/48"), num("prefix", "Prefix Length (if not typed above)", 64, 0, 128, 1), num("newPrefix", "Split Into Subnets of Size /", 64, 0, 128, 1)],
+    results: [["network", "Network Prefix", "t"], ["first", "First Address", "t"], ["last", "Last Address", "t"], ["addresses", "Number of Addresses", "t"], ["subnets", "Number of Subnets of the New Size", "t"], ["expanded", "Expanded Address", "t"], ["compressed", "Compressed Address", "t"], ["type", "Address Type", "t"]],
+    fn: C["ipv6-subnet-calculator"], ex: { ...T("ip", "2001:db8:abcd:12::1/48"), prefix: 64, newPrefix: 64 },
+    exText: (o) => `Example: 2001:db8:abcd:12::1/48 belongs to ${o.network}, which runs from ${o.first} to ${o.last}. It holds ${o.subnets} /64 subnets.`,
+    how: "Type the address with its prefix (2001:db8::/32) or put the prefix in the second box. You can use :: to skip a run of zero groups.\n\nA typical ISP gives a site a /48 or /56, and each LAN uses a /64. Set the subnet size to see how many LANs your allocation holds.",
+    assume: "Addresses are compressed per RFC 5952 (leading zeros dropped, the longest run of zero groups replaced by ::). Very large counts are shown in scientific notation with the full number in brackets.",
+    faq: [["How many /64s are in a /48?", "65,536 (2¹⁶)."], ["Why do LANs use /64?", "SLAAC (stateless address autoconfiguration) needs a 64-bit interface ID, so a LAN subnet is a /64."]],
+  }),
+  mk({
+    slug: "vlsm-calculator", title: "VLSM Calculator (Variable Length Subnet Masking)",
+    meta: "VLSM Calculator — Subnet a Network by Host Count",
+    desc: "Split one IPv4 block into variable-size subnets from the number of hosts each one needs. The largest subnets are placed first, and each gets its network, host range, broadcast and prefix.",
+    inputs: [tx("network", "Starting Network (with prefix)", "192.168.10.0/24"), tx("hosts", "Hosts Needed per Subnet (comma-separated)", "100, 50, 20, 2")],
+    results: [["table", "Subnet Plan", "t"], ["used", "Addresses Used", "n", 0], ["free", "Addresses Left", "n", 0], ["pctUsed", "Block Used", "p", 1], ["next", "Next Free Address", "t"], ["count", "Subnets", "n", 0]],
+    fn: C["vlsm-calculator"], ex: { ...T("network", "192.168.10.0/24"), ...T("hosts", "100, 50, 20, 2") },
+    exText: (o) => `Example: 192.168.10.0/24 split for 100, 50, 20 and 2 hosts uses ${o.used} addresses and leaves ${o.free} free.`,
+    how: "Enter the block you were given and the number of hosts each subnet needs. Each subnet gets the smallest power-of-two size that holds its hosts plus the network and broadcast addresses. A 2-host point-to-point link becomes a /30.\n\nSubnets are allocated largest first so every one starts on a correct boundary with no overlaps.",
+    assume: "Each subnet reserves the network and broadcast addresses, so you get size − 2 usable hosts. /31 point-to-point links (RFC 3021) aren't used. Leave room for growth by asking for more hosts than you need today.",
+    faq: [["What is VLSM?", "Variable Length Subnet Masking: using different prefix lengths inside one block so each subnet is only as large as it needs to be."], ["Why sort largest first?", "Big subnets need big boundaries. Placing them first means smaller ones fill the gaps without overlapping."]],
+  }),
+  mk({
+    slug: "supernet-calculator", title: "Supernet Calculator (Route Summarization)",
+    meta: "Supernet Calculator — Summarize IPv4 Routes into One Prefix",
+    desc: "Combine several IPv4 networks into the smallest single summary route (supernet). Shows the summary prefix, mask and range, and whether it covers exactly your networks or extra addresses too.",
+    inputs: [tx("networks", "Networks to Summarize (comma-separated)", "172.16.0.0/24, 172.16.1.0/24, 172.16.2.0/24, 172.16.3.0/24")],
+    results: [["summary", "Summary Route", "t"], ["mask", "Summary Mask", "t"], ["range", "Address Range", "t"], ["addresses", "Addresses in Summary", "n", 0], ["exact", "Exact Match?", "t"], ["count", "Networks Entered", "n", 0]],
+    fn: C["supernet-calculator"], ex: T("networks", "172.16.0.0/24, 172.16.1.0/24, 172.16.2.0/24, 172.16.3.0/24"),
+    exText: (o) => `Example: four contiguous /24s from 172.16.0.0 to 172.16.3.0 summarize to ${o.summary} (${o.mask}).`,
+    how: "List the networks with their prefixes. The calculator finds the longest prefix that contains all of them, which is the route a router can advertise instead of each one.\n\nIf the result isn't an exact match, the summary also covers addresses you don't own. Advertising it could attract traffic for those networks.",
+    assume: "IPv4. A network without a prefix is treated as a /32 host route. Networks don't need to be in order.",
+    faq: [["What is route summarization?", "Advertising one larger prefix (a supernet) instead of many smaller ones, which keeps routing tables small."], ["Can any networks be summarized exactly?", "Only when they are contiguous and their combined size is a power of two that starts on a matching boundary."]],
+  }),
+  mk({
+    slug: "chmod-calculator", title: "Chmod Calculator (Linux File Permissions)",
+    meta: "Chmod Calculator — Octal ↔ rwx Linux Permissions & Umask",
+    desc: "Convert Linux/Unix file permissions between octal (755) and symbolic (rwxr-xr-x), see what owner, group and others can do, including setuid, setgid and the sticky bit. Also works out default permissions from a umask.",
+    inputs: [tx("mode", "Permissions (octal 755 / 4755 or symbolic rwxr-xr-x)", "755"), tx("umask", "Umask (optional, e.g. 022)", "022")],
+    results: [["octal", "Octal", "t"], ["symbolic", "Symbolic", "t"], ["command", "Command", "t"], ["who", "Who Can Do What", "t"], ["special", "Special Bits", "t"], ["umask", "Defaults from This Umask", "t"]],
+    fn: C["chmod-calculator"], ex: { ...T("mode", "755"), ...T("umask", "022") },
+    exText: (o) => `Example: 755 is ${o.symbolic}. The owner can read, write and execute, and everyone else can read and execute. A umask of 022 gives new ${o.umask}.`,
+    how: "Each digit is the sum of read (4), write (2) and execute (1) for the owner, the group and everyone else. 7 = rwx, 6 = rw-, 5 = r-x and 4 = r--.\n\nAn optional fourth digit in front sets the special bits: 4 = setuid, 2 = setgid and 1 = sticky (used on /tmp). The umask is subtracted from 666 for new files and from 777 for new folders.",
+    assume: "Standard POSIX permission bits. ACLs and SELinux labels are separate and not shown.",
+    faq: [["What does chmod 755 mean?", "Owner rwx, group r-x, others r-x. It's the usual setting for scripts and web folders."], ["What does chmod 644 mean?", "Owner rw-, group r--, others r--. It's the usual setting for ordinary files."], ["Is chmod 777 safe?", "Rarely. It lets every user change or replace the file."]],
+  }),
+  mk({
+    slug: "cron-expression-calculator", title: "Cron Expression Calculator (Crontab Schedule)",
+    meta: "Cron Expression Calculator — Crontab to English & Next Runs",
+    desc: "Translate a crontab expression into plain English and list the next five run times. Supports lists, ranges, steps (*/15), month and day names and @daily-style shortcuts.",
+    inputs: [tx("expr", "Cron Expression (minute hour day month weekday)", "*/15 9-17 * * 1-5"), date("start", "Show Runs From", "today")],
+    results: [["plain", "In Plain English", "t"], ["next", "Next 5 Runs", "t"], ["perDay", "Runs per Matching Day", "n", 0], ["fields", "Fields", "t"]],
+    fn: C["cron-expression-calculator"], ex: { ...T("expr", "*/15 9-17 * * 1-5"), start: 20408 },
+    exText: (o) => `Example: */15 9-17 * * 1-5 means "${o.plain}" — ${o.perDay} runs on each weekday.`,
+    how: "A crontab line has five fields: minute (0–59), hour (0–23), day of month (1–31), month (1–12 or JAN–DEC) and day of week (0–6 or SUN–SAT, where 7 is also Sunday). * means every value, a-b is a range, a,b is a list and */n means every nth value.\n\nShortcuts: @hourly, @daily, @weekly, @monthly and @yearly. If you restrict both day of month and day of week, the job runs when either one matches.",
+    assume: "Standard 5-field Vixie/Linux cron. Times are in the server's own time zone. Quartz-style seconds, L, W and # aren't supported. The first run listed can be earlier in the day than your current time.",
+    faq: [["What does */5 * * * * mean?", "Every 5 minutes."], ["How do I run a job every weekday at 9 am?", "0 9 * * 1-5"], ["What does 0 0 1 * * mean?", "Midnight on the first day of every month (same as @monthly)."]],
+  }),
+  mk({
+    slug: "network-latency-calculator", title: "Network Latency Calculator (Ping, Propagation & Throughput)",
+    meta: "Network Latency Calculator — Distance to Ping & TCP Throughput",
+    desc: "Estimate network latency from distance and medium: propagation delay over fibre, copper, radio or satellite, plus serialization and per-hop delay. Shows round-trip ping, bandwidth-delay product and the maximum TCP throughput for a window size.",
+    inputs: [num("km", "Distance (km)", 5570, 0, 50000, 1, "km"), dd("medium", "Medium", E.LAT_MEDIA, 0), num("mbps", "Link Speed (Mbps)", 1000, 0.001, 1e7, 1, "Mbps"), num("packet", "Packet Size (bytes)", 1500, 1, 65535, 1, "B"), num("hops", "Router Hops", 10, 0, 100, 1), num("hopMs", "Queuing/Processing Delay per Hop (ms)", 0.5, 0, 1000, 0.1, "ms"), num("window", "TCP Window (KB)", 64, 1, 1e6, 1, "KB")],
+    results: [["rtt", "Round-Trip Time (Ping, ms)", "n", 2], ["oneWay", "One-Way Latency (ms)", "n", 2], ["prop", "Propagation Delay (ms)", "n", 2], ["ser", "Serialization Delay (ms)", "n", 3], ["queue", "Hop Delay (ms)", "n", 2], ["bdp", "Bandwidth-Delay Product", "t"], ["tcp", "Max TCP Throughput (Mbps)", "n", 2]],
+    fn: C["network-latency-calculator"], ex: { km: 5570, medium: 0, mbps: 1000, packet: 1500, hops: 10, hopMs: 0.5, window: 64 },
+    exText: (o) => `Example: New York to London is about 5,570 km of fibre. That's ${o.prop} ms one way just for the light, so a ping is about ${o.rtt} ms. A 64 KB TCP window then caps one stream at about ${o.tcp} Mbps.`,
+    how: "Latency is mostly distance: light in fibre covers about 204 km per millisecond. Each hop adds serialization time (packet bits ÷ link speed) and some queuing.\n\nOne TCP stream can't send more than its window per round trip, so throughput ≤ window ÷ RTT. Long, fast links need a big window (window scaling) to reach full speed.",
+    assume: "Real fibre routes are often 20–50% longer than the straight-line distance, so enter the route distance if you know it. Queuing delay varies with load. A geostationary satellite path adds about 240 ms one way.",
+    faq: [["Why is satellite internet so slow to respond?", "A geostationary satellite is 35,786 km up, so each round trip travels about 143,000 km, which takes 480 ms or more."], ["What ping is good for gaming?", "Under 50 ms feels responsive, and under 20 ms is excellent."]],
+  }),
+  mk({
+    slug: "voip-bandwidth-calculator", title: "VoIP Bandwidth Calculator (Per Call & Total)",
+    meta: "VoIP Bandwidth Calculator — G.711, G.729 & Opus per Call",
+    desc: "Work out the bandwidth one VoIP call needs for a codec and packet time, including IP/UDP/RTP and Ethernet or Wi-Fi headers, then multiply by your number of simultaneous calls.",
+    inputs: [dd("codec", "Codec", E.CODECS.map(([l]) => l), 0), num("ptime", "Packet Time (ms)", 20, 1, 200, 1, "ms"), dd("l2", "Network Layer-2 Header", E.L2, 0), num("calls", "Simultaneous Calls", 10, 1, 1e6, 1)],
+    results: [["total", "Total Bandwidth (kbps, each direction)", "n", 1], ["perCall", "Per Call (kbps)", "n", 1], ["totalMbps", "Total (Mbps)", "n", 2], ["payload", "Voice Payload per Packet (bytes)", "n", 0], ["pps", "Packets per Second (per call)", "n", 0], ["overhead", "Header Overhead", "p", 1], ["both", "Note", "t"]],
+    fn: C["voip-bandwidth-calculator"], ex: { codec: 0, ptime: 20, l2: 0, calls: 10 },
+    exText: (o) => `Example: G.711 at 20 ms over Ethernet needs ${o.perCall} kbps per call, so 10 calls need ${o.total} kbps in each direction.`,
+    how: "Every voice packet carries the codec's audio plus 40 bytes of IP, UDP and RTP headers, plus the layer-2 frame header. At 20 ms there are 50 packets a second, so headers matter a lot for low-bitrate codecs like G.729.\n\nSize your upload and download for this figure each way, and add about 20% headroom.",
+    assume: "No header compression (cRTP) and no silence suppression. Bitrates are each codec's nominal rate; Opus is variable, so 24 kbps is a typical setting. VPN or tunnel headers add more.",
+    faq: [["How much bandwidth does a VoIP call use?", "About 87 kbps each way for G.711 and about 31 kbps for G.729 over Ethernet at 20 ms."], ["Does a longer packet time save bandwidth?", "Yes: fewer packets means fewer headers. But it adds delay, so 20 ms is the usual balance."]],
+  }),
+  mk({
+    slug: "poe-calculator", title: "PoE Budget Calculator (Power over Ethernet)",
+    meta: "PoE Budget Calculator — Switch Power for Cameras & APs",
+    desc: "Add up the Power over Ethernet load for your cameras, access points and phones. Checks each device against 802.3af, at or bt limits, adds the cable-loss allowance and compares the total with your switch's PoE budget.",
+    inputs: [tx("devices", "Power per Device (W, comma-separated)", "12, 12, 12, 12, 20, 20, 6, 6"), dd("std", "PoE Standard", E.POE_STD.map(([l]) => l), 1), num("budget", "Switch PoE Budget (W)", 190, 0, 1e5, 1, "W")],
+    results: [["load", "Power Needed at the Switch (W)", "n", 1], ["left", "Budget Left (W)", "n", 1], ["used", "Budget Used", "p", 1], ["verdict", "Result", "t"], ["devices", "Devices", "n", 0], ["deviceTotal", "Total Device Draw (W)", "n", 1], ["perPort", "Port Limit", "t"]],
+    fn: C["poe-calculator"], ex: { ...T("devices", "12, 12, 12, 12, 20, 20, 6, 6"), std: 1, budget: 190 },
+    exText: (o) => `Example: four 12 W cameras, two 20 W access points and two 6 W phones need about ${o.load} W from the switch on PoE+. That leaves ${o.left} W of a 190 W budget.`,
+    how: "Enter each device's maximum power draw from its data sheet. Some power is lost in the cable, so the switch must supply more than the device receives: 15.4 W per port for 12.95 W at an 802.3af device, or 30 W for 25.5 W on PoE+.\n\nCompare the total with the PoE budget on the switch's data sheet. That budget is usually smaller than ports × maximum per port.",
+    assume: "Cable loss is scaled from the standard's switch-to-device ratio, which assumes worst-case 100 m cable. Switches that allocate by class instead of actual draw reserve the full class power, so add some margin.",
+    faq: [["How much power does PoE+ give?", "Up to 30 W per port at the switch and 25.5 W at the device."], ["Which PoE do I need for a PTZ camera?", "Often PoE+ (802.3at) or 802.3bt. Check the camera's maximum draw, including any heater."]],
+  }),
+  mk({
+    slug: "uptime-sla-calculator", title: "Uptime & SLA Calculator (Allowed Downtime)",
+    meta: "SLA Uptime Calculator — 99.9% to Downtime per Year, Month, Day",
+    desc: "Turn an SLA uptime percentage like 99.9% into allowed downtime per year, quarter, month, week and day. Check a month's actual downtime against it and work out the availability of systems in series or parallel.",
+    inputs: [num("sla", "Availability / SLA (%)", 99.9, 0, 100, 0.0001, "%"), num("actual", "Actual Downtime This Month (min, optional)", 0, 0, 1e6, 0.1, "min"), tx("comps", "Component Availabilities for a System (%, optional)", "99.9, 99.95")],
+    results: [["month", "Allowed Downtime per Month", "t"], ["year", "Per Year", "t"], ["quarter", "Per Quarter", "t"], ["week", "Per Week", "t"], ["day", "Per Day", "t"], ["nines", "Number of Nines", "n", 2], ["actual", "Actual Availability This Month", "t"], ["series", "System in Series", "t"], ["parallel", "System in Parallel (Redundant)", "t"]],
+    fn: C["uptime-sla-calculator"], ex: { sla: 99.9, actual: 0, ...T("comps", "99.9, 99.95") },
+    exText: (o) => `Example: 99.9% ("three nines") allows ${o.month} of downtime a month, or ${o.year} a year. Two parts at 99.9% and 99.95% in series give ${o.series}.`,
+    how: "Downtime = (1 − availability) × time period. A month here is 1/12 of a 365.25-day year.\n\nParts in series (all must work) multiply their availabilities, so the system is worse than its weakest part. Parts in parallel (redundant, any one is enough) give 1 − the product of their failure rates, which is much better.",
+    assume: "Assumes failures are independent and fixes are instant for the series/parallel maths. Many SLAs exclude planned maintenance. Check your contract's measurement window.",
+    faq: [["How much downtime is 99.9%?", "About 43.8 minutes a month, or 8 hours 46 minutes a year."], ["How much downtime is 99.99%?", "About 4.4 minutes a month, or 52.6 minutes a year."], ["What does five nines mean?", "99.999%, which allows about 5.3 minutes of downtime a year."]],
+  }),
+  mk({
+    slug: "iops-calculator", title: "IOPS Calculator (RAID Performance & Write Penalty)",
+    meta: "IOPS Calculator — RAID 5/6/10 Read-Write IOPS & Throughput",
+    desc: "Estimate the usable IOPS of a disk array from the number of drives, drive type, RAID level and read/write mix, using the RAID write penalty. Shows read and write IOPS, throughput and how many drives a target IOPS needs.",
+    inputs: [num("drives", "Number of Drives", 8, 1, 1000, 1), dd("drive", "Drive Type", E.DRIVES.map(([l]) => l), 0), num("custom", "Custom IOPS per Drive", 0, 0, 1e7, 1), dd("raid", "RAID Level", E.RAID_LV.map(([l]) => l), 3), num("read", "Read Share (%)", 70, 0, 100, 1, "%"), num("block", "Block Size (KB)", 4, 0.5, 4096, 0.5, "KB"), num("target", "Target IOPS (optional)", 0, 0, 1e9, 1)],
+    results: [["eff", "Usable (Functional) IOPS", "n", 0], ["raw", "Raw IOPS (all drives)", "n", 0], ["reads", "Read IOPS", "n", 0], ["writes", "Write IOPS", "n", 0], ["mbps", "Throughput (MB/s)", "n", 1], ["penalty", "Write Penalty", "t"], ["need", "Drives for Target", "t"]],
+    fn: C["iops-calculator"], ex: { drives: 8, drive: 0, custom: 0, raid: 3, read: 70, block: 4, target: 0 },
+    exText: (o) => `Example: eight 7,200 rpm drives in RAID 5 with 70% reads give about ${o.eff} usable IOPS from ${o.raw} raw IOPS.`,
+    how: "Reads cost one I/O, but each write costs extra I/Os because of parity or mirroring: 2 for RAID 1/10, 4 for RAID 5 and 6 for RAID 6. Usable IOPS = raw × read% + raw × write% ÷ penalty.\n\nWrite-heavy workloads like databases and VMs lose the most on RAID 5/6, which is why RAID 10 is popular for them.",
+    assume: "Typical random small-block IOPS per drive. Real figures depend on queue depth, controller cache and block size. ZFS RAID-Z random IOPS behaves closer to a single drive per vdev, so use the result as an upper bound.",
+    faq: [["What is the RAID 5 write penalty?", "4: read data, read parity, write data, write parity."], ["How many IOPS does a hard drive do?", "About 75–100 for 7,200 rpm, 125–150 for 10k and 175–210 for 15k. SSDs do tens to hundreds of thousands."]],
+  }),
+  mk({
+    slug: "byte-calculator", title: "Byte Calculator (Bits, Bytes, KB, MB, GB, TB & GiB)",
+    meta: "Byte Calculator — Convert Bits, Bytes, MB, GB, TB, GiB & TiB",
+    desc: "Convert any data size between bits, bytes, decimal units (KB, MB, GB, TB, PB), binary units (KiB, MiB, GiB, TiB) and bits (Kb, Mb, Gb). Shows why a 1 TB drive appears as 931 GB.",
+    inputs: [num("value", "Value", 1, 0, 1e18, 0.000001), dd("unit", "Unit", E.BYTE_UNITS.map(([l]) => l), 5)],
+    results: [["bytes", "Bytes", "t"], ["bits", "Bits", "t"], ["decimal", "Decimal Units (1000)", "t"], ["binary", "Binary Units (1024)", "t"], ["bitsLine", "Bit Units", "t"], ["drive", "Drive Size Note", "t"]],
+    fn: C["byte-calculator"], ex: { value: 1, unit: 5 },
+    exText: (o) => `Example: 1 TB = ${o.bytes} bytes = ${String(o.binary).split(" | ")[2]} — that's why a 1 TB drive shows about 931 GB in Windows.`,
+    how: "Drive makers and networks use decimal units (1 KB = 1000 bytes). Windows and RAM use binary units (1 KiB = 1024 bytes), even when it labels them KB/MB/GB.\n\nLower-case b means bits: 8 bits = 1 byte. Internet speeds are in megabits per second, so divide by 8 to get megabytes per second.",
+    assume: "IEC binary prefixes (KiB, MiB …) and SI decimal prefixes (KB, MB …).",
+    faq: [["How many MB are in a GB?", "1,000 MB in a decimal GB, or 1,024 MiB in a binary GiB."], ["Why does my 1 TB drive show 931 GB?", "1 TB = 10¹² bytes = 931.3 GiB, and Windows labels GiB as GB."]],
+  }),
+];
+
+runBatch(IT, TOOLS);

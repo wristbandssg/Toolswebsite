@@ -651,6 +651,18 @@ import { vehFinCustomCalculators } from "./calc-engine-veh-fin";
 import { vehGovCustomCalculators } from "./calc-engine-veh-gov";
 import { vehTechCustomCalculators } from "./calc-engine-veh-tech";
 import { booksCustomCalculators } from "./calc-engine-books";
+import { techNetCustomCalculators } from "./calc-engine-tech-net";
+import { techSecCustomCalculators } from "./calc-engine-tech-sec";
+import { techDevCustomCalculators } from "./calc-engine-tech-dev";
+import { techEe1CustomCalculators } from "./calc-engine-tech-ee1";
+import { techEe2CustomCalculators } from "./calc-engine-tech-ee2";
+import { techGenCustomCalculators } from "./calc-engine-tech-gen";
+import { techSciCustomCalculators } from "./calc-engine-tech-sci";
+import { techShopCustomCalculators } from "./calc-engine-tech-shop";
+import { techInstallCustomCalculators } from "./calc-engine-tech-install";
+import { techBizCustomCalculators } from "./calc-engine-tech-biz";
+import { techMediaCustomCalculators } from "./calc-engine-tech-media";
+import { techMiscCustomCalculators } from "./calc-engine-tech-misc";
 import { fitDietCustomCalculators } from "./calc-engine-fit-diet";
 import { fitBodyCustomCalculators } from "./calc-engine-fit-body";
 import { fitMiscCustomCalculators } from "./calc-engine-fit-misc";
@@ -1161,6 +1173,18 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...fitBodyCustomCalculators,
   ...fitMiscCustomCalculators,
   ...booksCustomCalculators,
+  ...techNetCustomCalculators,
+  ...techSecCustomCalculators,
+  ...techDevCustomCalculators,
+  ...techEe1CustomCalculators,
+  ...techEe2CustomCalculators,
+  ...techGenCustomCalculators,
+  ...techSciCustomCalculators,
+  ...techShopCustomCalculators,
+  ...techInstallCustomCalculators,
+  ...techBizCustomCalculators,
+  ...techMediaCustomCalculators,
+  ...techMiscCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,

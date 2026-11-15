@@ -581,7 +581,20 @@
     "db:create-fit-diet-calculators": "tsx prisma/create-fit-diet-calculators.ts",
     "db:create-fit-body-calculators": "tsx prisma/create-fit-body-calculators.ts",
     "db:create-fit-misc-calculators": "tsx prisma/create-fit-misc-calculators.ts",
-    "db:create-books-calculators": "tsx prisma/create-books-calculators.ts"
+    "db:create-books-calculators": "tsx prisma/create-books-calculators.ts",
+    "db:create-tech-net-calculators": "tsx prisma/create-tech-net-calculators.ts",
+    "db:create-tech-sec-calculators": "tsx prisma/create-tech-sec-calculators.ts",
+    "db:create-tech-dev-calculators": "tsx prisma/create-tech-dev-calculators.ts",
+    "db:create-tech-ee1-calculators": "tsx prisma/create-tech-ee1-calculators.ts",
+    "db:create-tech-ee2-calculators": "tsx prisma/create-tech-ee2-calculators.ts",
+    "db:create-tech-gen-calculators": "tsx prisma/create-tech-gen-calculators.ts",
+    "db:create-tech-sci-calculators": "tsx prisma/create-tech-sci-calculators.ts",
+    "db:create-tech-shop-calculators": "tsx prisma/create-tech-shop-calculators.ts",
+    "db:create-tech-install-calculators": "tsx prisma/create-tech-install-calculators.ts",
+    "db:create-tech-biz-calculators": "tsx prisma/create-tech-biz-calculators.ts",
+    "db:create-tech-media-calculators": "tsx prisma/create-tech-media-calculators.ts",
+    "db:create-tech-misc-calculators": "tsx prisma/create-tech-misc-calculators.ts",
+    "db:setup-science-category": "tsx prisma/setup-science-category.ts --apply"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

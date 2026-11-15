@@ -1,5 +1,7 @@
 # Tech, Electronics & General Calculator keyword check (15 Nov 2026)
 
+**BUILT 15 Nov 2026:** all 115 tools below are published (12 batches, create-tech-*-calculators.ts). The 8 IT tools were moved into the new Computer, Network & IT sub. Section E answers: moves yes, percentage built new, ranked choice kept in Law, time card is a separate tool.
+
 Checked against the live database (6,940 tools, 179 categories) and every `slug:` in `prisma/` (5,986 slugs). The user didn't supply a category structure ("ata tomi check kore dio"), so the live DB taxonomy was used.
 
 ## A. Summary

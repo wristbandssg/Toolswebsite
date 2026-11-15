@@ -3,6 +3,7 @@
 // Every tool is created as Published (user, 6 Nov 2026: no tool should stay Draft).
 
 import { PrismaClient, Prisma } from "@prisma/client";
+import { sciMovedCategoryId } from "./setup-science-category";
 import { type Vals, type Out, type SciCalculator } from "../src/lib/sci-math-core";
 
 export { T } from "../src/lib/sci-math-core";
@@ -81,7 +82,7 @@ export async function upsertTools(catSlug: string, tools: ToolDef[]) {
         title: def.title,
         description: def.description,
         templateKey: "tool-template-3",
-        categoryId: cat.id,
+        categoryId: (await sciMovedCategoryId(prisma, def.slug)) ?? cat.id, // moved by setup-science-category.ts (SCI_MOVES)
         calcType: "custom",
         calcFormula: null,
         calcInputs: JSON.stringify(def.calcInputs),

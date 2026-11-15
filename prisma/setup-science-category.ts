@@ -2,7 +2,7 @@
 // the 5,593-keyword list, sent in 5 parts). Keyword check: Claude outputs/Science_Keyword_Check.md
 // (756 new tools, 19 existing tools moved in). The user then asked for no child sub-categories —
 // just the main category and its 10 sub-categories.
-//   1. Creates the main category and its 10 sub-categories.
+//   1. Creates the main category and its sub-categories (11 since 15 Nov 2026: + Computer, Network & IT).
 //   2. Moves 19 existing science / engineering tools in. Their owning create-*.ts scripts read
 //      SCI_MOVES too, so re-running them keeps the tools in place.
 //
@@ -29,6 +29,7 @@ export const SCI_EE = "electrical-electronics-engineering-calculators";
 export const SCI_ME = "mechanical-structural-engineering-calculators";
 export const SCI_ASTRO = "astronomy-space-calculators";
 export const SCI_EARTH = "earth-weather-environment-calculators";
+export const SCI_IT = "computer-network-it-calculators";
 
 export const SCI_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Scientific & Graphing Calculators", slug: SCI_CALC },
@@ -41,6 +42,8 @@ export const SCI_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Mechanical & Structural Engineering Calculators", slug: SCI_ME },
   { name: "Astronomy & Space Calculators", slug: SCI_ASTRO },
   { name: "Earth, Weather & Environment Calculators", slug: SCI_EARTH },
+  // Added 15 Nov 2026 (tech keyword check, Claude outputs/Tech_Keyword_Check.md).
+  { name: "Computer, Network & IT Calculators", slug: SCI_IT },
 ];
 
 /** Existing tools that move in: slug → sub-category slug. Owning scripts import this map. */
@@ -64,6 +67,15 @@ export const SCI_MOVES: Record<string, string> = {
   "wind-chill-calculator": SCI_EARTH,
   "density-altitude-calculator": SCI_EARTH,
   "wing-loading-calculator": SCI_EARTH,
+  // 15 Nov 2026 (tech keyword check, user: "yes" to moving these into the new IT sub-category).
+  "raid-calculator": SCI_IT,
+  "erasure-coding-calculator": SCI_IT,
+  "binary-calculator": SCI_IT,
+  "ieee-754-calculator": SCI_IT,
+  "big-o-calculator": SCI_IT,
+  "crc-calculator": SCI_IT,
+  "hamming-code-calculator": SCI_IT,
+  "bloom-filter-calculator": SCI_IT,
 };
 
 /** For owning create-*.ts scripts: the moved-to category id for a slug, if it has been moved. */
