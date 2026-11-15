@@ -28,6 +28,8 @@ export const ARTS_SUBCATEGORIES: { name: string; slug: string }[] = [
   { name: "Music Theory, Instrument & Audio Calculators", slug: MUSIC },
   { name: "Art, Film & Creator Income Calculators", slug: CREATIVE },
   { name: "Tarot, Astrology & Fun Calculators", slug: MYSTIC },
+  // Added 15 Nov 2026 for the books keyword check (Claude outputs/Books_Keyword_Check.md).
+  { name: "Books, Reading & Writing Calculators", slug: "books-reading-writing-calculators" },
 ];
 
 /** Existing tools that move in: slug → sub-category slug. Owning scripts import this map. */

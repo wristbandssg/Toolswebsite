@@ -580,7 +580,8 @@
     "db:create-veh-tech-calculators": "tsx prisma/create-veh-tech-calculators.ts",
     "db:create-fit-diet-calculators": "tsx prisma/create-fit-diet-calculators.ts",
     "db:create-fit-body-calculators": "tsx prisma/create-fit-body-calculators.ts",
-    "db:create-fit-misc-calculators": "tsx prisma/create-fit-misc-calculators.ts"
+    "db:create-fit-misc-calculators": "tsx prisma/create-fit-misc-calculators.ts",
+    "db:create-books-calculators": "tsx prisma/create-books-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

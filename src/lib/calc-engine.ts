@@ -650,6 +650,7 @@ import { trvExtraCustomCalculators } from "./calc-engine-trv-extra";
 import { vehFinCustomCalculators } from "./calc-engine-veh-fin";
 import { vehGovCustomCalculators } from "./calc-engine-veh-gov";
 import { vehTechCustomCalculators } from "./calc-engine-veh-tech";
+import { booksCustomCalculators } from "./calc-engine-books";
 import { fitDietCustomCalculators } from "./calc-engine-fit-diet";
 import { fitBodyCustomCalculators } from "./calc-engine-fit-body";
 import { fitMiscCustomCalculators } from "./calc-engine-fit-misc";
@@ -1159,6 +1160,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...fitDietCustomCalculators,
   ...fitBodyCustomCalculators,
   ...fitMiscCustomCalculators,
+  ...booksCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,
