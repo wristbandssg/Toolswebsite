@@ -1,5 +1,7 @@
 # General calculator keyword check (8 parts, 15 Nov 2026)
 
+**BUILT 15 Nov 2026:** all 25 tools below are published (3 batches: create-gen-math / gen-sci / gen-fin-calculators.ts). Section E had no answers, so the defaults were used: pregnancy/period/sleep/medical were not built, LCM/GCF stay merged into the Euclidean algorithm tool, and child BMI is in Sports > Sports Performance.
+
 Checked against the live database (7,055 tools, 180 categories). Every new slug was also checked against the DB and against every `slug:` in `prisma/` and `src/`. None of the 25 exist. You didn't supply a category structure ("ata tomi check kore dio"), so the live DB taxonomy was used.
 
 ## A. Summary

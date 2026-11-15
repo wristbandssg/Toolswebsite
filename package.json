@@ -594,7 +594,10 @@
     "db:create-tech-biz-calculators": "tsx prisma/create-tech-biz-calculators.ts",
     "db:create-tech-media-calculators": "tsx prisma/create-tech-media-calculators.ts",
     "db:create-tech-misc-calculators": "tsx prisma/create-tech-misc-calculators.ts",
-    "db:setup-science-category": "tsx prisma/setup-science-category.ts --apply"
+    "db:setup-science-category": "tsx prisma/setup-science-category.ts --apply",
+    "db:create-gen-math-calculators": "tsx prisma/create-gen-math-calculators.ts",
+    "db:create-gen-sci-calculators": "tsx prisma/create-gen-sci-calculators.ts",
+    "db:create-gen-fin-calculators": "tsx prisma/create-gen-fin-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

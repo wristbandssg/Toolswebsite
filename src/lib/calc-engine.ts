@@ -663,6 +663,9 @@ import { techInstallCustomCalculators } from "./calc-engine-tech-install";
 import { techBizCustomCalculators } from "./calc-engine-tech-biz";
 import { techMediaCustomCalculators } from "./calc-engine-tech-media";
 import { techMiscCustomCalculators } from "./calc-engine-tech-misc";
+import { genMathCustomCalculators } from "./calc-engine-gen-math";
+import { genSciCustomCalculators } from "./calc-engine-gen-sci";
+import { genFinCustomCalculators } from "./calc-engine-gen-fin";
 import { fitDietCustomCalculators } from "./calc-engine-fit-diet";
 import { fitBodyCustomCalculators } from "./calc-engine-fit-body";
 import { fitMiscCustomCalculators } from "./calc-engine-fit-misc";
@@ -1185,6 +1188,9 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...techBizCustomCalculators,
   ...techMediaCustomCalculators,
   ...techMiscCustomCalculators,
+  ...genMathCustomCalculators,
+  ...genSciCustomCalculators,
+  ...genFinCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,
