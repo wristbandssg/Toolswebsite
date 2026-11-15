@@ -597,7 +597,9 @@
     "db:setup-science-category": "tsx prisma/setup-science-category.ts --apply",
     "db:create-gen-math-calculators": "tsx prisma/create-gen-math-calculators.ts",
     "db:create-gen-sci-calculators": "tsx prisma/create-gen-sci-calculators.ts",
-    "db:create-gen-fin-calculators": "tsx prisma/create-gen-fin-calculators.ts"
+    "db:create-gen-fin-calculators": "tsx prisma/create-gen-fin-calculators.ts",
+    "db:setup-health-category": "tsx prisma/setup-health-category.ts --apply",
+    "db:create-health-calculators": "tsx prisma/create-health-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

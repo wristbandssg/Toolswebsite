@@ -533,6 +533,12 @@ No new sub-category is needed.
 
 ## E. Review Notes
 
+**UPDATE 15 Nov 2026 — health tools BUILT.** The user said "catagory make kore tool make koro … ata ami bolte paretchi na", so a new main category **Health Calculators** was created (prisma/setup-health-category.ts) with 2 subs and 12 tools (prisma/create-health-calculators.ts):
+- Pregnancy & Fertility (নতুন): due date, pregnancy week (how far along), conception date, ovulation, period, implantation/DPO, pregnancy weight gain, chance of pregnancy.
+- Sleep & Medical (নতুন): sleep (bedtime/wake-up cycles), body surface area, eGFR (CKD-EPI 2021), GMI / A1c ↔ eAG.
+- Merged into existing tools: bmi mdcalc → bmi; frostbite → wind-chill; skeletal muscle mass → lean-body-mass. Dropped: bone mass (needs a DEXA scan), pregnancy risk (too vague).
+- Existing fitness/body tools (BMI, body fat, TDEE, child BMI) were NOT moved into Health.
+
 **1. Pregnancy, period & fertility: 191 keywords (the biggest gap in this list).** There is no Health main category, so these were not built (same rule as the fitness and tech batches). Grouped, they would become about 8 tools: due date (LMP/conception/IVF), pregnancy week-by-week / how far along, conception date, ovulation & fertile window, period / menstrual cycle, implantation & DPO, pregnancy weight gain, and chance of pregnancy. Examples: accurate conception calculator, accurate due date calculator, accurate period calculator, always period calculator, am i late calculator, am i pregnant calculator, am i pregnant calculator percentage, american pregnancy calculator, baby calculator, baby calculator due date, baby center ovulation calculator, baby conception calculator, …
 
 **2. Sleep: 26 keywords.** Sleep cycle / bedtime / wake-up calculator (1–2 tools). Examples: 90 minute sleep cycle calculator, bed time calculator, bedtime calculator, circadian rhythm calculator, hours of sleep calculator, how much sleep do i need calculator, rem calculator, rem cycle calculator.

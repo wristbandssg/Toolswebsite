@@ -666,6 +666,7 @@ import { techMiscCustomCalculators } from "./calc-engine-tech-misc";
 import { genMathCustomCalculators } from "./calc-engine-gen-math";
 import { genSciCustomCalculators } from "./calc-engine-gen-sci";
 import { genFinCustomCalculators } from "./calc-engine-gen-fin";
+import { healthCustomCalculators } from "./calc-engine-health";
 import { fitDietCustomCalculators } from "./calc-engine-fit-diet";
 import { fitBodyCustomCalculators } from "./calc-engine-fit-body";
 import { fitMiscCustomCalculators } from "./calc-engine-fit-misc";
@@ -1191,6 +1192,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...genMathCustomCalculators,
   ...genSciCustomCalculators,
   ...genFinCustomCalculators,
+  ...healthCustomCalculators,
   ...sciEarthCustomCalculators,
   ...sciAstroCustomCalculators,
   ...sciFluidCustomCalculators,
