@@ -1,0 +1,1377 @@
+[
+  {
+    "slug": "drug-dosage-calculator",
+    "keyword": "drug dosage calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Human dose from mg/kg × weight, then mg → mL from the liquid strength. The existing vet-dosage tool is for pets. Pediatric amoxicillin/ibuprofen searches are merged here.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "mg to ml calculator",
+      "dosage calculator",
+      "ml to mg calculator",
+      "dose calculator mg/ml",
+      "dose calculator",
+      "easy drug dose calculator",
+      "pediatric dose calculator",
+      "mg to ml conversion calculator",
+      "pediatric dosing calculator",
+      "convert mg to ml calculator",
+      "milligrams to milliliters calculator",
+      "anesthesia dosage calculator",
+      "mg per kg dosage calculator",
+      "amoxicillin pediatric dosage calculator",
+      "med math calculator",
+      "drug calculator",
+      "amoxicillin pediatric dose calculator",
+      "drug dose calculator",
+      "medication dosage calculator",
+      "ibuprofen dose child per kg calculator",
+      "medication calculator",
+      "amoxicillin dosage calculator",
+      "amoxicillin calculator",
+      "mg/kg calculator",
+      "mg/ml calculator",
+      "peds dosing calculator",
+      "drug dosage calculator",
+      "medication dose calculator",
+      "ibuprofen dosage calculator",
+      "iu calculator",
+      "med dose calculator"
+    ],
+    "secondary": [
+      "mg to ml calculator",
+      "dosage calculator",
+      "ml to mg calculator",
+      "dose calculator mg/ml",
+      "dose calculator",
+      "easy drug dose calculator",
+      "pediatric dose calculator",
+      "mg to ml conversion calculator",
+      "pediatric dosing calculator",
+      "convert mg to ml calculator",
+      "milligrams to milliliters calculator",
+      "anesthesia dosage calculator",
+      "mg per kg dosage calculator",
+      "amoxicillin pediatric dosage calculator",
+      "med math calculator",
+      "drug calculator",
+      "amoxicillin pediatric dose calculator",
+      "drug dose calculator",
+      "medication dosage calculator",
+      "ibuprofen dose child per kg calculator",
+      "medication calculator",
+      "amoxicillin dosage calculator",
+      "amoxicillin calculator",
+      "mg/kg calculator",
+      "mg/ml calculator",
+      "peds dosing calculator",
+      "medication dose calculator",
+      "ibuprofen dosage calculator",
+      "iu calculator",
+      "med dose calculator"
+    ]
+  },
+  {
+    "slug": "prescription-refill-calculator",
+    "keyword": "prescription refill calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Days' supply = quantity ÷ daily dose, giving the run-out date and the earliest refill date (28/30/90-day fills).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "refill calculator",
+      "prescription refill calculator",
+      "prescription calculator",
+      "days supply calculator",
+      "med refill calculator",
+      "day supply calculator",
+      "28 day prescription refill calculator",
+      "medication refill calculator",
+      "pill calculator",
+      "refill date calculator",
+      "30 day prescription refill calculator",
+      "pill refill calculator",
+      "rx refill calculator",
+      "rx calculator"
+    ],
+    "secondary": [
+      "refill calculator",
+      "prescription calculator",
+      "days supply calculator",
+      "med refill calculator",
+      "day supply calculator",
+      "28 day prescription refill calculator",
+      "medication refill calculator",
+      "pill calculator",
+      "refill date calculator",
+      "30 day prescription refill calculator",
+      "pill refill calculator",
+      "rx refill calculator",
+      "rx calculator"
+    ]
+  },
+  {
+    "slug": "medication-schedule-calculator",
+    "keyword": "every 8 hours medication times calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Dose clock times for every X hours or N times a day from a first-dose time. Different from refill dates.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "medicine 3 times a day calculator",
+      "every 8 hours medication times calculator"
+    ],
+    "secondary": [
+      "medicine 3 times a day calculator"
+    ]
+  },
+  {
+    "slug": "iv-drip-rate-calculator",
+    "keyword": "drops per minute calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "IV gtt/min = volume × drop factor ÷ minutes, plus mL/hr.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "drops per minute calculator",
+      "drop factor calculator"
+    ],
+    "secondary": [
+      "drop factor calculator"
+    ]
+  },
+  {
+    "slug": "insulin-dose-calculator",
+    "keyword": "insulin dosage calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Meal bolus (carbs ÷ ICR) + correction ((BG − target) ÷ ISF). Educational only.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "insulin dosage calculator",
+      "insulin calculator",
+      "insulin correction dose calculator"
+    ],
+    "secondary": [
+      "insulin calculator",
+      "insulin correction dose calculator"
+    ]
+  },
+  {
+    "slug": "ldl-cholesterol-calculator",
+    "keyword": "cholesterol ratio calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Friedewald LDL plus TC/HDL, TG/HDL and LDL/HDL ratios with risk bands.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "ldl calculator",
+      "cholesterol ratio calculator",
+      "total cholesterol calculator",
+      "cholesterol calculator",
+      "triglycerides to hdl ratio calculator",
+      "tc/hdl ratio calculator",
+      "triglyceride to hdl ratio calculator",
+      "ldl cholesterol calculator",
+      "triglyceride hdl ratio calculator",
+      "hdl ldl ratio calculator",
+      "lipid calculator"
+    ],
+    "secondary": [
+      "ldl calculator",
+      "total cholesterol calculator",
+      "cholesterol calculator",
+      "triglycerides to hdl ratio calculator",
+      "tc/hdl ratio calculator",
+      "triglyceride to hdl ratio calculator",
+      "ldl cholesterol calculator",
+      "triglyceride hdl ratio calculator",
+      "hdl ldl ratio calculator",
+      "lipid calculator"
+    ]
+  },
+  {
+    "slug": "mean-arterial-pressure-calculator",
+    "keyword": "map blood pressure calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "MAP = DBP + (SBP − DBP)/3. Bare 'map calculator' is ambiguous (Karnaugh map), but the BP intent dominates.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "map calculator",
+      "bp map calculator",
+      "map bp calculator",
+      "map blood pressure calculator",
+      "map calculator for bp",
+      "blood pressure map calculator",
+      "map calculator nursing",
+      "mean bp calculator",
+      "mean arterial pressure calculator"
+    ],
+    "secondary": [
+      "map calculator",
+      "bp map calculator",
+      "map bp calculator",
+      "map calculator for bp",
+      "blood pressure map calculator",
+      "map calculator nursing",
+      "mean bp calculator",
+      "mean arterial pressure calculator"
+    ]
+  },
+  {
+    "slug": "blood-pressure-calculator",
+    "keyword": "blood pressure calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Classifies a reading (AHA categories), averages several readings, and gives age-based ranges incl. pediatric.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "blood pressure calculator",
+      "bp calculator",
+      "average blood pressure calculator",
+      "pediatric blood pressure calculator"
+    ],
+    "secondary": [
+      "bp calculator",
+      "average blood pressure calculator",
+      "pediatric blood pressure calculator"
+    ]
+  },
+  {
+    "slug": "absolute-neutrophil-count-calculator",
+    "keyword": "absolute neutrophil count calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "ANC = WBC × (segs + bands)% with neutropenia grade; absolute eosinophil count shown with the same inputs.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "anc calculator",
+      "anc calculator without bands",
+      "eosinophil calculator",
+      "absolute neutrophil count calculator",
+      "neutropenia calculator",
+      "absolute eosinophil calculator",
+      "eosinophil count calculator"
+    ],
+    "secondary": [
+      "anc calculator",
+      "anc calculator without bands",
+      "eosinophil calculator",
+      "neutropenia calculator",
+      "absolute eosinophil calculator",
+      "eosinophil count calculator"
+    ]
+  },
+  {
+    "slug": "cardiac-output-calculator",
+    "keyword": "cardiac output calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "CO = HR × SV and cardiac index = CO ÷ BSA; Fick option from VO2 and the O2 content difference.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "cardiac output calculator",
+      "fick calculator",
+      "cardiac index calculator",
+      "fick cardiac output calculator"
+    ],
+    "secondary": [
+      "fick calculator",
+      "cardiac index calculator",
+      "fick cardiac output calculator"
+    ]
+  },
+  {
+    "slug": "homa-ir-calculator",
+    "keyword": "homa ir calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "HOMA-IR = fasting glucose × insulin ÷ 405 (mg/dL) or ÷ 22.5 (mmol/L).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "homa ir calculator",
+      "insulin resistance calculator",
+      "homa calculator"
+    ],
+    "secondary": [
+      "insulin resistance calculator",
+      "homa calculator"
+    ]
+  },
+  {
+    "slug": "qtc-calculator",
+    "keyword": "qtc calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Corrected QT by Bazett, Fridericia (QTcF), Framingham and Hodges from QT and heart rate.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "qtc calculator",
+      "qtcf calculator"
+    ],
+    "secondary": [
+      "qtcf calculator"
+    ]
+  },
+  {
+    "slug": "adjusted-body-weight-calculator",
+    "keyword": "adjusted body weight calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "AdjBW = IBW + 0.4 × (actual − IBW), used in drug dosing. The ideal-weight tool doesn't show this.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "adjusted bw calculator",
+      "adjusted weight calculator",
+      "adjbw calculator",
+      "abw calculator"
+    ],
+    "secondary": [
+      "adjusted bw calculator",
+      "adjusted weight calculator",
+      "adjbw calculator",
+      "abw calculator"
+    ]
+  },
+  {
+    "slug": "blood-sugar-converter-calculator",
+    "keyword": "mmol to mg/dl calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Glucose mmol/L ↔ mg/dL (× 18.016). The GMI tool needs a CGM average, not a conversion.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "mmol to mg/dl calculator",
+      "mmol/l to mg/dl calculator"
+    ],
+    "secondary": [
+      "mmol/l to mg/dl calculator"
+    ]
+  },
+  {
+    "slug": "pack-year-calculator",
+    "keyword": "pack year calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Pack-years = packs/day × years smoked; flags the USPSTF 20 pack-year screening threshold.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "pack year calculator",
+      "pack year history calculator",
+      "pack years calculator"
+    ],
+    "secondary": [
+      "pack year history calculator",
+      "pack years calculator"
+    ]
+  },
+  {
+    "slug": "contact-lens-vertex-calculator",
+    "keyword": "contact lens vertex calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Glasses Rx → contact Rx at 0 mm: F/(1 − dF), sphere and cylinder. The parabola vertex tools are maths.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "contact lens vertex calculator",
+      "vertex distance calculator",
+      "vertex calculator contacts",
+      "cl vertex calculator",
+      "vertex contact lens calculator",
+      "contact vertex calculator",
+      "contact lens prescription calculator"
+    ],
+    "secondary": [
+      "vertex distance calculator",
+      "vertex calculator contacts",
+      "cl vertex calculator",
+      "vertex contact lens calculator",
+      "contact vertex calculator",
+      "contact lens prescription calculator"
+    ]
+  },
+  {
+    "slug": "blood-donation-eligibility-calculator",
+    "keyword": "when can i donate blood again calculator",
+    "main": "Health Calculators",
+    "sub": "Sleep & Medical Calculators",
+    "reason": "Next eligible date by donation type (whole blood 56 d, platelets 7 d, plasma 28 d, double red 112 d).",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "when can i donate blood again calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "sensitivity-specificity-calculator",
+    "keyword": "sensitivity and specificity calculator",
+    "main": "Science Calculators",
+    "sub": "Statistics & Probability Calculators",
+    "reason": "2×2 table → sensitivity, specificity, PPV, NPV, accuracy, likelihood ratios. Precision too (alternative: Health).",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "specificity calculator",
+      "sensitivity and specificity calculator",
+      "precision calculator"
+    ],
+    "secondary": [
+      "specificity calculator",
+      "precision calculator"
+    ]
+  },
+  {
+    "slug": "baby-growth-percentile-calculator",
+    "keyword": "infant growth chart calculator",
+    "main": "Health Calculators",
+    "sub": "Pregnancy & Fertility Calculators",
+    "reason": "WHO 0–24 mo / CDC 2–20 y weight, length/height and head-circumference percentiles (LMS). The existing percentile tool is statistics.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "birth weight percentile calculator",
+      "fetal weight percentile calculator",
+      "head circumference percentile calculator",
+      "child height percentile calculator",
+      "newborn percentile calculator",
+      "infant growth chart calculator",
+      "height weight percentile boy calculator"
+    ],
+    "secondary": [
+      "birth weight percentile calculator",
+      "fetal weight percentile calculator",
+      "head circumference percentile calculator",
+      "child height percentile calculator",
+      "newborn percentile calculator",
+      "height weight percentile boy calculator"
+    ]
+  },
+  {
+    "slug": "corrected-age-calculator",
+    "keyword": "corrected age calculator",
+    "main": "Health Calculators",
+    "sub": "Pregnancy & Fertility Calculators",
+    "reason": "Preemie corrected age = chronological age − weeks born early; corrected GA. Alternative: Science > Math next to age-calculator.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "corrected age calculator",
+      "adjusted age calculator",
+      "prematurity calculator",
+      "corrected gestational age calculator",
+      "premature corrected age calculator",
+      "premature age calculator"
+    ],
+    "secondary": [
+      "adjusted age calculator",
+      "prematurity calculator",
+      "corrected gestational age calculator",
+      "premature corrected age calculator",
+      "premature age calculator"
+    ]
+  },
+  {
+    "slug": "breast-milk-intake-calculator",
+    "keyword": "how much expressed milk to feed baby calculator",
+    "main": "Health Calculators",
+    "sub": "Pregnancy & Fertility Calculators",
+    "reason": "Ounces per feed/day from weight (≈2.5 oz/lb/day) and feeds per day, incl. formula.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "baby formula calculator",
+      "premature baby feeding calculator",
+      "how much expressed milk to feed baby calculator"
+    ],
+    "secondary": [
+      "baby formula calculator",
+      "premature baby feeding calculator"
+    ]
+  },
+  {
+    "slug": "dri-calculator",
+    "keyword": "dri calculator",
+    "main": "Food & Drink Calculators",
+    "sub": "Diet, Macro & Meal Planning Calculators",
+    "reason": "USDA/NIH Dietary Reference Intakes (vitamins, minerals, fibre, water) by age, sex and pregnancy.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "dri calculator",
+      "micronutrient calculator",
+      "usda dri calculator",
+      "dri calculator for healthcare professionals",
+      "nutrients calculator"
+    ],
+    "secondary": [
+      "micronutrient calculator",
+      "usda dri calculator",
+      "dri calculator for healthcare professionals",
+      "nutrients calculator"
+    ]
+  },
+  {
+    "slug": "net-carbs-calculator",
+    "keyword": "net carbs calculator",
+    "main": "Food & Drink Calculators",
+    "sub": "Diet, Macro & Meal Planning Calculators",
+    "reason": "Net carbs = total carbs − fibre − sugar alcohols (with the erythritol/half rule). Keto tool sets targets, it doesn't do this subtraction.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "net carb calculator",
+      "net carbs calculator"
+    ],
+    "secondary": [
+      "net carb calculator"
+    ]
+  },
+  {
+    "slug": "glycemic-load-calculator",
+    "keyword": "glycemic load calculator",
+    "main": "Food & Drink Calculators",
+    "sub": "Food Nutrition & Calorie Calculators",
+    "reason": "GL = GI × available carbs ÷ 100 with low/medium/high bands, plus a GI lookup list.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "glycemic index calculator",
+      "glycemic load calculator"
+    ],
+    "secondary": [
+      "glycemic index calculator"
+    ]
+  },
+  {
+    "slug": "unit-price-calculator",
+    "keyword": "unit price calculator",
+    "main": "Shopping Calculators",
+    "sub": "Discount, Tip & Unit Price Calculators",
+    "reason": "Compare 2–4 items by price per unit (oz, lb, g, count, roll); shows the best deal. Only per-ounce/per-pound tools exist.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "unit price calculator",
+      "unit rate calculator",
+      "price per unit calculator",
+      "price per weight calculator",
+      "price per item calculator",
+      "price per round calculator",
+      "price comparison calculator",
+      "cost comparison calculator"
+    ],
+    "secondary": [
+      "unit rate calculator",
+      "price per unit calculator",
+      "price per weight calculator",
+      "price per item calculator",
+      "price per round calculator",
+      "price comparison calculator",
+      "cost comparison calculator"
+    ]
+  },
+  {
+    "slug": "poker-odds-calculator",
+    "keyword": "poker odds calculator",
+    "main": "Sports Calculators",
+    "sub": "Sports Betting & Racing Calculators",
+    "reason": "Texas Hold'em equity/outs, pot odds and implied odds; hand-ranking helper. Alternative: Arts > Fun.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "implied odds calculator",
+      "poker probability calculator",
+      "hold em odds calculator",
+      "poker equity calculator",
+      "poker calculator odds",
+      "texas hold em calculator",
+      "online poker calculator",
+      "poker percentage calculator",
+      "which poker hand wins calculator",
+      "odds calculator poker",
+      "cardplayer odds calculator",
+      "texas hold'em odds calculator",
+      "texas holdem odds calculator",
+      "texas holdem calculator",
+      "poker calculator",
+      "holdem odds calculator",
+      "poker hand odds calculator",
+      "poker hands calculator",
+      "holdem calculator"
+    ],
+    "secondary": [
+      "implied odds calculator",
+      "poker probability calculator",
+      "hold em odds calculator",
+      "poker equity calculator",
+      "poker calculator odds",
+      "texas hold em calculator",
+      "online poker calculator",
+      "poker percentage calculator",
+      "which poker hand wins calculator",
+      "odds calculator poker",
+      "cardplayer odds calculator",
+      "texas hold'em odds calculator",
+      "texas holdem odds calculator",
+      "texas holdem calculator",
+      "poker calculator",
+      "holdem odds calculator",
+      "poker hand odds calculator",
+      "poker hands calculator",
+      "holdem calculator"
+    ]
+  },
+  {
+    "slug": "roulette-calculator",
+    "keyword": "roulette calculator",
+    "main": "Sports Calculators",
+    "sub": "Sports Betting & Racing Calculators",
+    "reason": "Bet probability, payout (35:1 etc.) and house edge for American/European wheels.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "roulette calculator",
+      "roulette payout calculator",
+      "roulette odds calculator",
+      "35 to 1 payout calculator",
+      "roulette probability calculator"
+    ],
+    "secondary": [
+      "roulette payout calculator",
+      "roulette odds calculator",
+      "35 to 1 payout calculator",
+      "roulette probability calculator"
+    ]
+  },
+  {
+    "slug": "lottery-odds-calculator",
+    "keyword": "lottery odds calculator",
+    "main": "Finance Calculators",
+    "sub": "Tax Calculators",
+    "reason": "Jackpot and prize-tier odds for Powerball, Mega Millions and custom pick-N games. Placed next to lottery-tax/payout; alternative: Statistics.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "powerball odds calculator",
+      "lottery odds calculator"
+    ],
+    "secondary": [
+      "powerball odds calculator"
+    ]
+  },
+  {
+    "slug": "gematria-calculator",
+    "keyword": "gematria calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "Hebrew, English, simple and Greek (isopsephy) letter values of a word. Only vowels numerology exists.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "gematria calculator",
+      "greek gematria calculator",
+      "hebrew gematria calculator",
+      "greek calculator",
+      "word value calculator",
+      "best gematria calculator",
+      "english gematria calculator",
+      "simple gematria calculator",
+      "free gematria calculator",
+      "jewish gematria calculator",
+      "gematria calculator hebrew"
+    ],
+    "secondary": [
+      "greek gematria calculator",
+      "hebrew gematria calculator",
+      "greek calculator",
+      "word value calculator",
+      "best gematria calculator",
+      "english gematria calculator",
+      "simple gematria calculator",
+      "free gematria calculator",
+      "jewish gematria calculator",
+      "gematria calculator hebrew"
+    ]
+  },
+  {
+    "slug": "dnd-point-buy-calculator",
+    "keyword": "5e point buy calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "D&D 5e 27-point buy with racial bonuses and modifiers; next to the dnd-dpr tool.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "point buy calculator",
+      "5e point buy calculator",
+      "point buy calculator 5e",
+      "dnd point buy calculator",
+      "dnd 5e point buy calculator",
+      "point buy 5e calculator",
+      "ability score calculator",
+      "5e stat calculator",
+      "dnd ability score calculator"
+    ],
+    "secondary": [
+      "point buy calculator",
+      "point buy calculator 5e",
+      "dnd point buy calculator",
+      "dnd 5e point buy calculator",
+      "point buy 5e calculator",
+      "ability score calculator",
+      "5e stat calculator",
+      "dnd ability score calculator"
+    ]
+  },
+  {
+    "slug": "dnd-hp-calculator",
+    "keyword": "dnd hp calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "5e hit points by class hit die, level and CON (average or max).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "dnd hp calculator",
+      "hp calculator 5e",
+      "5e hp calculator",
+      "dnd health calculator",
+      "dnd 5e hp calculator",
+      "dnd hit point calculator",
+      "hp calculator dnd",
+      "health calculator 5e",
+      "5e health calculator",
+      "hit point calculator",
+      "hit point calculator 5e"
+    ],
+    "secondary": [
+      "hp calculator 5e",
+      "5e hp calculator",
+      "dnd health calculator",
+      "dnd 5e hp calculator",
+      "dnd hit point calculator",
+      "hp calculator dnd",
+      "health calculator 5e",
+      "5e health calculator",
+      "hit point calculator",
+      "hit point calculator 5e"
+    ]
+  },
+  {
+    "slug": "dnd-encounter-xp-calculator",
+    "keyword": "5e combat calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "Encounter difficulty and XP budget from party levels and monster CRs.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "xp calculator 5e",
+      "5e combat calculator"
+    ],
+    "secondary": [
+      "xp calculator 5e"
+    ]
+  },
+  {
+    "slug": "kd-ratio-calculator",
+    "keyword": "kd ratio calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "K/D, KDA and kills needed to reach a target ratio. Alternative: Shopping > Electronics (eDPI lives there).",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "kd calculator",
+      "kda calculator",
+      "kd ratio calculator",
+      "k/d calculator",
+      "kill death ratio calculator"
+    ],
+    "secondary": [
+      "kd calculator",
+      "kda calculator",
+      "k/d calculator",
+      "kill death ratio calculator"
+    ]
+  },
+  {
+    "slug": "minecraft-stack-calculator",
+    "keyword": "minecraft stack calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "Items ↔ stacks of 64/16, shulker boxes and chests. Next to minecraft-xp.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "minecraft stack calculator",
+      "stack calculator",
+      "minecraft block calculator",
+      "stack calculator minecraft"
+    ],
+    "secondary": [
+      "stack calculator",
+      "minecraft block calculator",
+      "stack calculator minecraft"
+    ]
+  },
+  {
+    "slug": "minecraft-circle-calculator",
+    "keyword": "minecraft circle calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "Block-by-block circle/sphere layout for a given diameter.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "minecraft circle calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "korean-age-calculator",
+    "keyword": "korean age calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "East Asian age reckoning (Korean/Chinese lunar 'sui') vs international age. Alternative: Science > Math.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "korean age calculator",
+      "lunar age calculator",
+      "chinese lunar age calculator"
+    ],
+    "secondary": [
+      "lunar age calculator",
+      "chinese lunar age calculator"
+    ]
+  },
+  {
+    "slug": "half-birthday-calculator",
+    "keyword": "half birthday calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "Date six months after a birthday, with a countdown.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "half birthday calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "flag-dimensions-calculator",
+    "keyword": "american flag dimensions calculator",
+    "main": "Arts & Entertainment Calculators",
+    "sub": "Tarot, Astrology & Fun Calculators",
+    "reason": "US flag proportions (hoist 1.0 : fly 1.9, union, stripes, star sizes) for any hoist. Alternative: House & Garden.",
+    "certainty": "অনিশ্চিত",
+    "keywords": [
+      "flag calculator",
+      "american flag calculator",
+      "flag dimension calculator",
+      "us flag calculator",
+      "american flag dimensions calculator"
+    ],
+    "secondary": [
+      "flag calculator",
+      "american flag calculator",
+      "flag dimension calculator",
+      "us flag calculator"
+    ]
+  },
+  {
+    "slug": "star-rating-calculator",
+    "keyword": "5 star rating calculator",
+    "main": "Business & Industrial Calculators",
+    "sub": "HR, Marketing & Business Operations Calculators",
+    "reason": "Average rating from 1–5 star counts and the 5-star reviews needed to reach a target.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "star rating calculator",
+      "5 star rating calculator",
+      "5 star review calculator"
+    ],
+    "secondary": [
+      "star rating calculator",
+      "5 star review calculator"
+    ]
+  },
+  {
+    "slug": "meeting-cost-calculator",
+    "keyword": "meeting cost calculator",
+    "main": "Business & Industrial Calculators",
+    "sub": "HR, Marketing & Business Operations Calculators",
+    "reason": "Attendees × hourly cost × duration, per meeting and per year.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "meeting cost calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "safety-stock-calculator",
+    "keyword": "safety stock calculator",
+    "main": "Business & Industrial Calculators",
+    "sub": "Freight, Logistics & Warehouse Calculators",
+    "reason": "Safety stock = Z × σ_demand × √lead time (and the max-min method). Reorder point already exists.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "safety stock calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "valve-cv-calculator",
+    "keyword": "valve cv calculator",
+    "main": "Business & Industrial Calculators",
+    "sub": "Manufacturing, Metals & Engineering Calculators",
+    "reason": "Flow coefficient Cv from GPM, ΔP and specific gravity (liquid and gas).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "swagelok cv calculator",
+      "valve cv calculator",
+      "cv flow calculator",
+      "cv cv calculator"
+    ],
+    "secondary": [
+      "swagelok cv calculator",
+      "cv flow calculator",
+      "cv cv calculator"
+    ]
+  },
+  {
+    "slug": "intrinsic-value-calculator",
+    "keyword": "intrinsic value calculator",
+    "main": "Finance Calculators",
+    "sub": "Investment Calculators > Stock & Options Calculators",
+    "reason": "DCF / Graham-number fair value per share and margin of safety.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "intrinsic value calculator",
+      "stock valuation calculator"
+    ],
+    "secondary": [
+      "stock valuation calculator"
+    ]
+  },
+  {
+    "slug": "capm-calculator",
+    "keyword": "capm calculator",
+    "main": "Finance Calculators",
+    "sub": "Investment Calculators > Investment Returns & Planning Calculators",
+    "reason": "Expected return = rf + β(Rm − rf).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "capm calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "mirr-calculator",
+    "keyword": "mirr calculator",
+    "main": "Finance Calculators",
+    "sub": "Investment Calculators > Investment Returns & Planning Calculators",
+    "reason": "Modified IRR from cash flows, finance rate and reinvestment rate.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "mirr calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "profitability-index-calculator",
+    "keyword": "profitability index calculator",
+    "main": "Finance Calculators",
+    "sub": "Investment Calculators > Investment Returns & Planning Calculators",
+    "reason": "PI = PV of future cash flows ÷ initial investment.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "profitability index calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "book-value-calculator",
+    "keyword": "book value calculator",
+    "main": "Finance Calculators",
+    "sub": "Investment Calculators > Stock & Options Calculators",
+    "reason": "Book value and book value per share = (assets − liabilities − preferred) ÷ shares. The comic-book tool is unrelated.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "book value calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "angle-relationships-calculator",
+    "keyword": "angle calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Complementary, supplementary, vertical and exterior angles from one known angle.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "angle calculator",
+      "supplementary angles calculator",
+      "angle finder calculator",
+      "exterior angle theorem calculator",
+      "exterior angle calculator",
+      "angles calculator",
+      "trapezoid angle calculator",
+      "angle relationships calculator",
+      "angle measure calculator",
+      "geometry calculator angles",
+      "vertical angle calculator"
+    ],
+    "secondary": [
+      "supplementary angles calculator",
+      "angle finder calculator",
+      "exterior angle theorem calculator",
+      "exterior angle calculator",
+      "angles calculator",
+      "trapezoid angle calculator",
+      "angle relationships calculator",
+      "angle measure calculator",
+      "geometry calculator angles",
+      "vertical angle calculator"
+    ]
+  },
+  {
+    "slug": "interval-notation-calculator",
+    "keyword": "interval notation calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Inequality ↔ interval notation, union/intersection of intervals. The existing 'interval' tool is music intervals.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "union and intersection of intervals calculator",
+      "inequality to interval notation calculator",
+      "interval notation calculator",
+      "intervals calculator",
+      "interval notation graph calculator",
+      "solution set calculator",
+      "inequality notation calculator",
+      "number of solutions calculator",
+      "find the solution set calculator"
+    ],
+    "secondary": [
+      "union and intersection of intervals calculator",
+      "inequality to interval notation calculator",
+      "intervals calculator",
+      "interval notation graph calculator",
+      "solution set calculator",
+      "inequality notation calculator",
+      "number of solutions calculator",
+      "find the solution set calculator"
+    ]
+  },
+  {
+    "slug": "scale-factor-calculator",
+    "keyword": "scale factor calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Scale factor between similar figures, scale drawings (1:50) and scaling a length/area/volume.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "scale factor calculator",
+      "scale calculator",
+      "similar triangles calculator",
+      "similar figures calculator",
+      "resolution scale calculator",
+      "scaling calculator",
+      "scale ratio calculator",
+      "scale drawing calculator"
+    ],
+    "secondary": [
+      "scale calculator",
+      "similar triangles calculator",
+      "similar figures calculator",
+      "resolution scale calculator",
+      "scaling calculator",
+      "scale ratio calculator",
+      "scale drawing calculator"
+    ]
+  },
+  {
+    "slug": "rectangle-diagonal-calculator",
+    "keyword": "diagonal of rectangle calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Diagonal of a rectangle/square from sides (and sides from diagonal + aspect).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "diagonal calculator",
+      "diagonal measurement calculator",
+      "diagonal of a square calculator",
+      "rectangle diagonal calculator",
+      "square diagonal calculator",
+      "diagonal of rectangle calculator"
+    ],
+    "secondary": [
+      "diagonal calculator",
+      "diagonal measurement calculator",
+      "diagonal of a square calculator",
+      "rectangle diagonal calculator",
+      "square diagonal calculator"
+    ]
+  },
+  {
+    "slug": "dms-calculator",
+    "keyword": "degrees minutes seconds calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Decimal degrees ↔ DMS and add/subtract DMS angles.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "dms calculator",
+      "degree minute second calculator",
+      "degrees minutes seconds calculator"
+    ],
+    "secondary": [
+      "dms calculator",
+      "degree minute second calculator"
+    ]
+  },
+  {
+    "slug": "triangle-centers-calculator",
+    "keyword": "orthocenter calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Orthocenter, circumcenter, incenter and centroid from three vertices (centroid tool exists for areas).",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "orthocenter calculator",
+      "circumcenter calculator"
+    ],
+    "secondary": [
+      "circumcenter calculator"
+    ]
+  },
+  {
+    "slug": "golden-ratio-calculator",
+    "keyword": "golden ratio calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Split a length into φ parts / golden rectangle. golden-ratio-physique is a fitness tool.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "golden ratio calculator",
+      "golden rectangle calculator"
+    ],
+    "secondary": [
+      "golden rectangle calculator"
+    ]
+  },
+  {
+    "slug": "fibonacci-calculator",
+    "keyword": "fibonacci calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "nth Fibonacci number and sequence list. The existing Fibonacci tools are trading/betting.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "fibonacci calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "pie-chart-calculator",
+    "keyword": "pie chart calculator",
+    "main": "Science Calculators",
+    "sub": "Statistics & Probability Calculators",
+    "reason": "Values → percentages and degrees per slice, with the chart.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "pie chart calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "day-of-the-year-calculator",
+    "keyword": "day of the year calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Day number (1–366) of a date and days left in the year; date-calculator doesn't show this.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "day of the year calculator",
+      "day of year calculator"
+    ],
+    "secondary": [
+      "day of year calculator"
+    ]
+  },
+  {
+    "slug": "leap-year-calculator",
+    "keyword": "leap year calculator",
+    "main": "Science Calculators",
+    "sub": "Math Calculators",
+    "reason": "Is a year a leap year, plus leap years in a range.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "leap year calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "energy-converter-calculator",
+    "keyword": "energy conversion calculator",
+    "main": "Science Calculators",
+    "sub": "Physics Calculators",
+    "reason": "Joules ↔ kWh, calories, BTU, eV, ft-lb. unit-converter has no energy units.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "joules calculator",
+      "energy conversion calculator"
+    ],
+    "secondary": [
+      "joules calculator"
+    ]
+  },
+  {
+    "slug": "lattice-energy-calculator",
+    "keyword": "lattice energy calculator",
+    "main": "Science Calculators",
+    "sub": "Chemistry Calculators",
+    "reason": "Born–Landé / Kapustinskii lattice energy from ion charges and radii.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "lattice energy calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "hp-to-amps-calculator",
+    "keyword": "hp to amps calculator",
+    "main": "Science Calculators",
+    "sub": "Electrical & Electronics Engineering Calculators",
+    "reason": "Motor HP → full-load amps for DC, 1-phase and 3-phase with efficiency and PF.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "hp to amps calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "antipode-calculator",
+    "keyword": "antipode calculator",
+    "main": "Science Calculators",
+    "sub": "Earth, Weather & Environment Calculators",
+    "reason": "Point on the opposite side of the Earth from a lat/long.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "antipode calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "race-time-predictor-calculator",
+    "keyword": "race predictor calculator",
+    "main": "Sports Calculators",
+    "sub": "Running Calculators",
+    "reason": "Riegel formula: predict a 5K/10K/half/marathon time from a recent race.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "race predictor calculator",
+      "race prediction calculator"
+    ],
+    "secondary": [
+      "race prediction calculator"
+    ]
+  },
+  {
+    "slug": "arrow-speed-calculator",
+    "keyword": "arrow speed calculator",
+    "main": "Sports Calculators",
+    "sub": "Other Sports Calculators",
+    "reason": "Real arrow fps from IBO rating, draw length, draw weight and arrow weight.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "arrow speed calculator",
+      "bow speed calculator",
+      "arrow fps calculator",
+      "bow fps calculator"
+    ],
+    "secondary": [
+      "bow speed calculator",
+      "arrow fps calculator",
+      "bow fps calculator"
+    ]
+  },
+  {
+    "slug": "bowling-average-calculator",
+    "keyword": "bowling average calculator",
+    "main": "Sports Calculators",
+    "sub": "Other Sports Calculators",
+    "reason": "Average from game scores (total pins ÷ games); handicap tool needs this as input.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "bowling average calculator"
+    ],
+    "secondary": []
+  },
+  {
+    "slug": "pig-gestation-calculator",
+    "keyword": "pig gestation calculator",
+    "main": "Business & Industrial Calculators",
+    "sub": "Agriculture & Livestock Calculators",
+    "reason": "Sow farrowing date (114 days). Next to cattle/goat/lamb gestation. guinea-pig-gestation is a different animal.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "pig gestation calculator",
+      "swine gestation calculator",
+      "sow gestation calculator"
+    ],
+    "secondary": [
+      "swine gestation calculator",
+      "sow gestation calculator"
+    ]
+  },
+  {
+    "slug": "face-shape-calculator",
+    "keyword": "face shape calculator",
+    "main": "Shopping Calculators",
+    "sub": "Clothing, Shoe & Ring Size Calculators",
+    "reason": "Face shape from length/width measurements, for glasses and hairstyles; next to body-shape.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "face shape calculator",
+      "face calculator"
+    ],
+    "secondary": [
+      "face calculator"
+    ]
+  },
+  {
+    "slug": "quilt-backing-calculator",
+    "keyword": "quilt backing calculator",
+    "main": "House & Garden Calculators",
+    "sub": "Flooring, Tile, Paint & Interior Calculators",
+    "reason": "Backing yardage (with seams and overhang) and binding strips/yardage. Next to fabric-yardage.",
+    "certainty": "নিশ্চিত",
+    "keywords": [
+      "quilt binding calculator",
+      "backing calculator",
+      "quilt backing calculator",
+      "backing calculator quilt",
+      "quilt back calculator",
+      "backing fabric calculator"
+    ],
+    "secondary": [
+      "quilt binding calculator",
+      "backing calculator",
+      "backing calculator quilt",
+      "quilt back calculator",
+      "backing fabric calculator"
+    ]
+  },
+  {
+    "slug": "circle-skirt-calculator",
+    "keyword": "circle skirt calculator",
+    "main": "House & Garden Calculators",
+    "sub": "Flooring, Tile, Paint & Interior Calculators",
+    "reason": "Waist radius and fabric needed for full, half and quarter circle skirts.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "circle skirt calculator",
+      "half circle skirt calculator"
+    ],
+    "secondary": [
+      "half circle skirt calculator"
+    ]
+  },
+  {
+    "slug": "weighted-blanket-calculator",
+    "keyword": "weighted blanket calculator",
+    "main": "Shopping Calculators",
+    "sub": "Lifestyle, Party & Wedding Calculators",
+    "reason": "Blanket weight ≈ 10% of body weight, plus size.",
+    "certainty": "মোটামুটি",
+    "keywords": [
+      "weighted blanket calculator"
+    ],
+    "secondary": []
+  }
+]
