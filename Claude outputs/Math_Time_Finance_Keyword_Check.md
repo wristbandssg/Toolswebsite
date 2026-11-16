@@ -1,5 +1,7 @@
 # Calculator keyword check — math, time-card, finance batch (16 Nov 2026)
 
+**BUILT 16 Nov 2026:** all 5 new tools are published (create-mtf-calculators.ts).
+
 Checked against the live database (7174 tools, 183 categories). The new slugs were also checked against every `slug:` in `prisma/` and `src/`, and none exist yet. No category structure was supplied ("ata tomi check kore dio"), so the live DB taxonomy was used. **Report only — nothing built yet.**
 
 ## A. সংক্ষিপ্ত হিসাব

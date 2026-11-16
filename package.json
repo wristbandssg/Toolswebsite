@@ -608,7 +608,8 @@
     "db:create-big-fun-calculators": "tsx prisma/create-big-fun-calculators.ts",
     "db:create-big-math-calculators": "tsx prisma/create-big-math-calculators.ts",
     "db:create-big-scibiz-calculators": "tsx prisma/create-big-scibiz-calculators.ts",
-    "db:create-big-finsport-calculators": "tsx prisma/create-big-finsport-calculators.ts"
+    "db:create-big-finsport-calculators": "tsx prisma/create-big-finsport-calculators.ts",
+    "db:create-mtf-calculators": "tsx prisma/create-mtf-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
