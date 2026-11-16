@@ -5,7 +5,7 @@
  * d = L(1 − 2^(−n/12)). Helmholtz port length Lv = 23562.5·D²·Np/(Fb²·Vb) − k·D (cm, litres).
  */
 
-import { type TrvCalculator as Calc, InputError, num, pick, txt, money, nfmt } from "./trv-core";
+import { type TrvCalculator as Calc, InputError, num, pick, txt, money } from "./trv-core";
 
 const $ = (x: number, dp = 2) => money(x, "$", dp);
 const p = (v: Record<string, number>, k: string, d: number) => Math.max(0, num(v[k], d));
