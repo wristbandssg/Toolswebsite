@@ -1,6 +1,6 @@
 # Mixed calculator keyword check (16 Nov 2026)
 
-Checked against the live database (7,092 tools). Every new slug was also checked against every `slug:` in `prisma/` and `src/`, and none of the 12 exist. You didn't supply a category structure ("ata tomi check kore dio"), so the live DB taxonomy was used. Nothing is built yet; this is the check only.
+Checked against the live database (7,092 tools). Every new slug was also checked against every `slug:` in `prisma/` and `src/`, and none of the 12 exist. You didn't supply a category structure ("ata tomi check kore dio"), so the live DB taxonomy was used. **BUILT 16 Nov 2026:** all 12 new tools are published (two batches: create-mix-conv / create-mix-life-calculators.ts). The two suggested upgrades (square-footage feet + inches inputs, the unit-converter mcg unit) are not done yet.
 
 ## A. Summary
 
