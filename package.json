@@ -611,7 +611,8 @@
     "db:create-big-finsport-calculators": "tsx prisma/create-big-finsport-calculators.ts",
     "db:create-mtf-calculators": "tsx prisma/create-mtf-calculators.ts",
     "db:create-bmr-calculators": "tsx prisma/create-bmr-calculators.ts",
-    "db:create-cashadv-calculators": "tsx prisma/create-cashadv-calculators.ts"
+    "db:create-cashadv-calculators": "tsx prisma/create-cashadv-calculators.ts",
+    "db:create-light-calculators": "tsx prisma/create-light-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -675,6 +675,7 @@ import { bigMathCustomCalculators } from "./calc-engine-big-math";
 import { mtfCustomCalculators } from "./calc-engine-mtf";
 import { bmrCustomCalculators } from "./calc-engine-bmr";
 import { cashAdvanceCustomCalculators } from "./calc-engine-cashadv";
+import { lightCustomCalculators } from "./calc-engine-light";
 import { bigSciBizCustomCalculators } from "./calc-engine-big-scibiz";
 import { bigFinSportCustomCalculators } from "./calc-engine-big-finsport";
 import { genFinCustomCalculators } from "./calc-engine-gen-fin";
@@ -1213,6 +1214,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...mtfCustomCalculators,
   ...bmrCustomCalculators,
   ...cashAdvanceCustomCalculators,
+  ...lightCustomCalculators,
   ...bigSciBizCustomCalculators,
   ...bigFinSportCustomCalculators,
   ...genFinCustomCalculators,
