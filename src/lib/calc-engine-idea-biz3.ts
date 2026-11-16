@@ -98,7 +98,7 @@ export const brokerMargin: Calc = (v) => {
   return { margin: `${$(m)} per load (${((100 * m) / shipper).toFixed(1)}%)`, month: `${$(m * loads, 0)} gross margin for ${loads} loads`, bench: (m / shipper) < 0.1 ? "Thin margin (under 10%)" : (m / shipper) < 0.2 ? "Typical (10–20%)" : "Strong margin" };
 };
 export const conveyorSpeed: Calc = (v) => {
-  const d = need(p(v, "d", 4), "Enter pulley diameter."), rpm = need(p(v, "rpm", 100), "Enter RPM."), items = p(v, "i", 0), spacing = p(v, "sp", 12);
+  const d = need(p(v, "d", 4), "Enter pulley diameter."), rpm = need(p(v, "rpm", 100), "Enter RPM."), spacing = p(v, "sp", 12);
   const fpm = (Math.PI * d * rpm) / 12;
   return { fpm: `${fpm.toFixed(1)} ft/min belt speed`, mps: `${(fpm * 0.00508).toFixed(3)} m/s`, rate: spacing > 0 ? `${nfmt((fpm * 12) / spacing * 60)} items per hour at ${spacing} in spacing` : "—" };
 };
