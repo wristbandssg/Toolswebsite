@@ -762,4 +762,6 @@ Secondary keywords: cash advance calculator credit card, cash advance cost calcu
 
 ## E. Review
 
-33/40 calculator (ambiguous abbreviation), gm calculator (ambiguous abbreviation), mega calculator (ambiguous abbreviation), min calculator (ambiguous abbreviation), rpd calculator (ambiguous abbreviation), speed of light calculator (light travel time). These are left unbuilt unless you say otherwise.
+33/40 calculator (ambiguous abbreviation), gm calculator (ambiguous abbreviation), mega calculator (ambiguous abbreviation), min calculator (ambiguous abbreviation), rpd calculator (ambiguous abbreviation). These are left unbuilt unless you say otherwise.
+
+**Built afterwards:** speed of light calculator → `speed-of-light-calculator` (Science > Astronomy & Space).
