@@ -730,6 +730,7 @@ import { ideaFun1CustomCalculators } from "./calc-engine-idea-fun1";
 import { ideaFun2CustomCalculators } from "./calc-engine-idea-fun2";
 import { ideaFun3CustomCalculators } from "./calc-engine-idea-fun3";
 import { ideaAgri1CustomCalculators } from "./calc-engine-idea-agri1";
+import { ideaAgri2CustomCalculators } from "./calc-engine-idea-agri2";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -1223,6 +1224,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...bmrCustomCalculators,
   ...cashAdvanceCustomCalculators,
   ...lightCustomCalculators,
+  ...ideaAgri2CustomCalculators,
   ...ideaAgri1CustomCalculators,
   ...ideaFun3CustomCalculators,
   ...ideaFun2CustomCalculators,
