@@ -619,7 +619,8 @@
     "db:create-idea-music-calculators": "tsx prisma/create-idea-music-calculators.ts",
     "db:create-idea-fun1-calculators": "tsx prisma/create-idea-fun1-calculators.ts",
     "db:create-idea-fun2-calculators": "tsx prisma/create-idea-fun2-calculators.ts",
-    "db:create-idea-fun3-calculators": "tsx prisma/create-idea-fun3-calculators.ts"
+    "db:create-idea-fun3-calculators": "tsx prisma/create-idea-fun3-calculators.ts",
+    "db:create-idea-agri1-calculators": "tsx prisma/create-idea-agri1-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
