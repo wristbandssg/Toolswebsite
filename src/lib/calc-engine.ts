@@ -722,6 +722,7 @@ import { bizShippingCustomCalculators } from "./calc-engine-biz-shipping";
 import { bizConstructionCustomCalculators } from "./calc-engine-biz-construction";
 import { bizLandscapeCustomCalculators } from "./calc-engine-biz-landscape";
 import { bizConcreteCustomCalculators } from "./calc-engine-biz-concrete";
+import { ideaArt1CustomCalculators } from "./calc-engine-idea-art1";
 
 // Merged in country order (US first, since it was here first) — a slug is
 // unique across every country's map (US states use bare state names like
@@ -1215,6 +1216,7 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...bmrCustomCalculators,
   ...cashAdvanceCustomCalculators,
   ...lightCustomCalculators,
+  ...ideaArt1CustomCalculators,
   ...bigSciBizCustomCalculators,
   ...bigFinSportCustomCalculators,
   ...genFinCustomCalculators,
