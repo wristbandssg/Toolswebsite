@@ -14,7 +14,7 @@ const need = (x: number, msg: string) => { if (!(x > 0)) throw new InputError(ms
 export const droneBattery: Calc = (v) => {
   const shoot = p(v, "shoot", 90), flight = need(p(v, "flight", 30), "Enter flight time per battery."), reserve = p(v, "reserve", 20) / 100, have = p(v, "have", 3), charge = p(v, "charge", 70);
   const usable = flight * (1 - reserve), batt = Math.ceil(shoot / usable);
-  return { batt: `${batt} battery swaps`, usable: `${usable.toFixed(1)} usable minutes per battery (${(reserve * 100).toFixed(0)}% kept in reserve)`, charge: batt > have ? `You need ${batt - have} more batteries, or ${Math.ceil(((batt - have) * charge) / have)} min of field charging` : "Your batteries cover the shoot" };
+  return { batt: `${batt} battery swaps`, usable: `${usable.toFixed(1)} usable minutes per battery (${(reserve * 100).toFixed(0)}% kept in reserve)`, charge: batt > have ? `You need ${batt - have} more ${batt - have === 1 ? "battery" : "batteries"}, or ${Math.ceil(((batt - have) * charge) / have)} min of field charging` : "Your batteries cover the shoot" };
 };
 export const theaterRevenue: Calc = (v) => {
   const seats = p(v, "seats", 300), fill = p(v, "fill", 75) / 100, price = p(v, "price", 45), shows = p(v, "shows", 8), fees = p(v, "fees", 8) / 100;
