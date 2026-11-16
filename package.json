@@ -613,7 +613,8 @@
     "db:create-bmr-calculators": "tsx prisma/create-bmr-calculators.ts",
     "db:create-cashadv-calculators": "tsx prisma/create-cashadv-calculators.ts",
     "db:create-light-calculators": "tsx prisma/create-light-calculators.ts",
-    "db:create-idea-art1-calculators": "tsx prisma/create-idea-art1-calculators.ts"
+    "db:create-idea-art1-calculators": "tsx prisma/create-idea-art1-calculators.ts",
+    "db:create-idea-art2-calculators": "tsx prisma/create-idea-art2-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
