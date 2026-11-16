@@ -667,6 +667,13 @@ import { genMathCustomCalculators } from "./calc-engine-gen-math";
 import { genSciCustomCalculators } from "./calc-engine-gen-sci";
 import { mixConvCustomCalculators } from "./calc-engine-mix-conv";
 import { mixLifeCustomCalculators } from "./calc-engine-mix-life";
+import { bigMed1CustomCalculators } from "./calc-engine-big-med1";
+import { bigMed2CustomCalculators } from "./calc-engine-big-med2";
+import { bigLifeCustomCalculators } from "./calc-engine-big-life";
+import { bigFunCustomCalculators } from "./calc-engine-big-fun";
+import { bigMathCustomCalculators } from "./calc-engine-big-math";
+import { bigSciBizCustomCalculators } from "./calc-engine-big-scibiz";
+import { bigFinSportCustomCalculators } from "./calc-engine-big-finsport";
 import { genFinCustomCalculators } from "./calc-engine-gen-fin";
 import { healthCustomCalculators } from "./calc-engine-health";
 import { fitDietCustomCalculators } from "./calc-engine-fit-diet";
@@ -1195,6 +1202,13 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...genSciCustomCalculators,
   ...mixConvCustomCalculators,
   ...mixLifeCustomCalculators,
+  ...bigMed1CustomCalculators,
+  ...bigMed2CustomCalculators,
+  ...bigLifeCustomCalculators,
+  ...bigFunCustomCalculators,
+  ...bigMathCustomCalculators,
+  ...bigSciBizCustomCalculators,
+  ...bigFinSportCustomCalculators,
   ...genFinCustomCalculators,
   ...healthCustomCalculators,
   ...sciEarthCustomCalculators,

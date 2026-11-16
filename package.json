@@ -601,7 +601,14 @@
     "db:create-mix-life-calculators": "tsx prisma/create-mix-life-calculators.ts",
     "db:create-gen-fin-calculators": "tsx prisma/create-gen-fin-calculators.ts",
     "db:setup-health-category": "tsx prisma/setup-health-category.ts --apply",
-    "db:create-health-calculators": "tsx prisma/create-health-calculators.ts"
+    "db:create-health-calculators": "tsx prisma/create-health-calculators.ts",
+    "db:create-big-med1-calculators": "tsx prisma/create-big-med1-calculators.ts",
+    "db:create-big-med2-calculators": "tsx prisma/create-big-med2-calculators.ts",
+    "db:create-big-life-calculators": "tsx prisma/create-big-life-calculators.ts",
+    "db:create-big-fun-calculators": "tsx prisma/create-big-fun-calculators.ts",
+    "db:create-big-math-calculators": "tsx prisma/create-big-math-calculators.ts",
+    "db:create-big-scibiz-calculators": "tsx prisma/create-big-scibiz-calculators.ts",
+    "db:create-big-finsport-calculators": "tsx prisma/create-big-finsport-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

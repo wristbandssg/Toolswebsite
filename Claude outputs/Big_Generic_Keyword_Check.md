@@ -1,6 +1,6 @@
 # Big generic calculator keyword check (16 Nov 2026)
 
-Checked against the live database (7,104 tools, 183 categories). Every new slug was also checked against every `slug:` in `prisma/` and `src/`, and against tool titles; none exist. You didn't supply a category structure ("ata tomi check kore dio"), so the live DB taxonomy was used. **Report only. Nothing is built yet.**
+Checked against the live database (7,104 tools, 183 categories). Every new slug was also checked against every `slug:` in `prisma/` and `src/`, and against tool titles; none exist. You didn't supply a category structure ("ata tomi check kore dio"), so the live DB taxonomy was used. **BUILT 16 Nov 2026:** all 70 new tools are published (seven batches: create-big-med1/med2/life/fun/math/scibiz/finsport-calculators.ts). Section E items are not built.
 
 ## A. সংক্ষিপ্ত হিসাব
 
