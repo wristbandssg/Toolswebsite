@@ -646,7 +646,8 @@
     "db:create-idea-fin13-calculators": "tsx prisma/create-idea-fin13-calculators.ts",
     "db:create-idea-food1-calculators": "tsx prisma/create-idea-food1-calculators.ts",
     "db:create-idea-food2-calculators": "tsx prisma/create-idea-food2-calculators.ts",
-    "db:create-idea-food3-calculators": "tsx prisma/create-idea-food3-calculators.ts"
+    "db:create-idea-food3-calculators": "tsx prisma/create-idea-food3-calculators.ts",
+    "db:create-idea-food4-calculators": "tsx prisma/create-idea-food4-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
