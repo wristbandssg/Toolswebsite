@@ -641,7 +641,8 @@
     "db:create-idea-fin8-calculators": "tsx prisma/create-idea-fin8-calculators.ts",
     "db:create-idea-fin9-calculators": "tsx prisma/create-idea-fin9-calculators.ts",
     "db:create-idea-fin10-calculators": "tsx prisma/create-idea-fin10-calculators.ts",
-    "db:create-idea-fin11-calculators": "tsx prisma/create-idea-fin11-calculators.ts"
+    "db:create-idea-fin11-calculators": "tsx prisma/create-idea-fin11-calculators.ts",
+    "db:create-idea-fin12-calculators": "tsx prisma/create-idea-fin12-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
