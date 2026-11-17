@@ -69,7 +69,7 @@ export const superGrowth: Calc = (v) => {
   const s = need(p(v, "s", 90000), "Enter your salary."), sg = p(v, "sg", 12) / 100, ss = p(v, "ss", 0), b = p(v, "b", 60000), a = p(v, "a", 35), ra = Math.max(a + 1, p(v, "ra", 67)), r = num(v.r, 7) / 100, fee = p(v, "fee", 0.8) / 100, wg = p(v, "wg", 3) / 100, inf = p(v, "inf", 2.5) / 100;
   const n = ra - a, cc0 = s * sg + ss; let bal = b, sal = s;
   for (let k = 0; k < n; k++) { const cc = sal * sg + ss; bal = bal * (1 + r - fee) + cc * 0.85; sal *= 1 + wg; }
-  return { end: `A$${Math.round(bal).toLocaleString("en-AU")} at ${nfmt(ra)} (A$${Math.round(bal / Math.pow(1 + inf, n)).toLocaleString("en-AU")} in today's dollars)`, cc: `Concessional contributions A$${Math.round(cc0).toLocaleString("en-AU")} this year ${cc0 > 30000 ? "— over the A$30,000 cap (excess taxed at your marginal rate)" : "— within the A$30,000 cap"} · 15% contributions tax`, note: `Super guarantee ${pc(sg, 1)} · fees ${pc(fee, 2)} a year · access from preservation age 60` };
+  return { end: `A$${Math.round(bal).toLocaleString("en-AU")} at ${nfmt(ra)} (A$${Math.round(bal / Math.pow(1 + inf, n)).toLocaleString("en-AU")} in today's dollars)`, cc: `Concessional contributions A$${Math.round(cc0).toLocaleString("en-AU")} this year ${cc0 > 32500 ? "— over the A$32,500 cap for 2026-27 (excess taxed at your marginal rate)" : "— within the A$32,500 cap for 2026-27"} · 15% contributions tax`, note: `Super guarantee ${pc(sg, 1)} · fees ${pc(fee, 2)} a year · access from preservation age 60` };
 };
 
 // ---- India ----
