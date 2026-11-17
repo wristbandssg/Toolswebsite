@@ -629,7 +629,8 @@
     "db:create-idea-hr2-calculators": "tsx prisma/create-idea-hr2-calculators.ts",
     "db:create-idea-hr3-calculators": "tsx prisma/create-idea-hr3-calculators.ts",
     "db:create-idea-mfg1-calculators": "tsx prisma/create-idea-mfg1-calculators.ts",
-    "db:create-idea-fin1-calculators": "tsx prisma/create-idea-fin1-calculators.ts"
+    "db:create-idea-fin1-calculators": "tsx prisma/create-idea-fin1-calculators.ts",
+    "db:create-idea-fin2-calculators": "tsx prisma/create-idea-fin2-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
