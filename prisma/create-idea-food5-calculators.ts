@@ -7,15 +7,16 @@
 
 import * as E from "../src/lib/calc-engine-idea-food5";
 import { q, num, dd, runIdeas, type ToolDef } from "./idea-kit";
+import type { TrvCalculator as Calc } from "../src/lib/trv-core";
 
 type Rows = E.Row[];
 const NUT = "Typical values from USDA FoodData Central — brands and recipes vary; check the label when you have one.";
 const qty = num("q", "Servings", 1, 0, 1000, 0.25);
 const pickF = (rows: Rows, d = 0) => dd("f", "Food", rows.map((r) => r[0]), d);
 const RES: [string, string, "t"][] = [["kcal", "Calories", "t"], ["mac", "Macros", "t"], ["more", "Fiber, Sugar, Sodium", "t"]];
-const cat = (slug: string, title: string, desc: string, rows: Rows, fn: ToolDef["fn"] | any, d: number, faq: [string, string][]): ToolDef =>
+const cat = (slug: string, title: string, desc: string, rows: Rows, fn: Calc, d: number, faq: [string, string][]): ToolDef =>
   q({ slug, title, desc, inputs: [pickF(rows, d), qty], results: RES, fn, ex: { f: d, q: 1 }, exd: rows[d][0].toLowerCase(), how: "Calories and nutrients = per-serving values × number of servings.", assume: NUT, faq });
-const prot = (slug: string, title: string, desc: string, rows: Rows, fn: any, d: number, faq: [string, string][]): ToolDef =>
+const prot = (slug: string, title: string, desc: string, rows: Rows, fn: Calc, d: number, faq: [string, string][]): ToolDef =>
   q({ slug, title, desc, inputs: [pickF(rows, d), qty, num("t", "Your Daily Protein Target (g, optional)", 0, 0, 500, 1)], results: [["pr", "Protein", "t"], ["dens", "Protein Density", "t"], ["tgt", "Target", "t"]], fn, ex: { f: d, q: 1, t: 0 }, exd: rows[d][0].toLowerCase(), how: "Protein = per-serving protein × servings; density = protein grams per 100 kcal.", assume: NUT, faq });
 const multi = (rows: [string, number][], n: number) => Array.from({ length: n }, (_, i) => [dd(`f${i + 1}`, `Food ${i + 1}`, rows.map((r) => r[0]), i), num(`q${i + 1}`, `Food ${i + 1} Servings`, i === 0 ? 1 : 0, 0, 100, 0.25)]).flat();
 
