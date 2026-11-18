@@ -20,16 +20,16 @@
 
 import { type TrvCalculator as Calc, InputError, num, pick } from "./trv-core";
 
-type Unit = { k: string; sg: string; pl: string; sy: string; sl: string; tt: string; f?: number; to?: (x: number) => number; from?: (x: number) => number; tv?: number[]; ex?: number };
-type Dim = { note: string; u: Record<string, Unit> };
+export type Unit = { k: string; sg: string; pl: string; sy: string; sl: string; tt: string; f?: number; to?: (x: number) => number; from?: (x: number) => number; tv?: number[]; ex?: number };
+export type Dim = { note: string; u: Record<string, Unit> };
 
 const cap = (s: string) => s.replace(/(^|[\s-])([a-z])/g, (_, a, b) => a + b.toUpperCase());
 /** "key|singular|plural|symbol|factor[|slug[|title]]" */
-const U = (rows: string[], extra: Record<string, Partial<Unit>> = {}): Record<string, Unit> =>
+export const U = (rows: string[], extra: Record<string, Partial<Unit>> = {}): Record<string, Unit> =>
   Object.fromEntries(rows.map((r) => { const [k, sg, pl, sy, f, sl, tt] = r.split("|"); return [k, { k, sg, pl, sy, f: f ? Number(f) : undefined, sl: sl || pl.replace(/[^a-z0-9]+/gi, "-").toLowerCase(), tt: tt || cap(pl), ...extra[k] }]; }));
 
 const L = 1e-3; // litre base for volume
-const DIMS: Record<string, Dim> = {
+export const DIMS: Record<string, Dim> = {
   len: { note: "Exact definitions: 1 inch = 2.54 cm, 1 foot = 0.3048 m, 1 yard = 0.9144 m, 1 mile = 1,609.344 m (international yard, 1959), 1 nautical mile = 1,852 m.", u: U([
     "mm|millimeter|millimeters|mm|0.001", "cm|centimeter|centimeters|cm|0.01", "m|meter|meters|m|1", "km|kilometer|kilometers|km|1000",
     "in|inch|inches|in|0.0254", "ft|foot|feet|ft|0.3048", "yd|yard|yards|yd|0.9144", "mi|mile|miles|mi|1609.344", "nmi|nautical mile|nautical miles|nmi|1852",
@@ -162,6 +162,7 @@ export const PAIRS: [string, string, string][] = [
 const toBase = (u: Unit, x: number) => (u.to ? u.to(x) : x * (u.f as number));
 const fromBase = (u: Unit, b: number) => (u.from ? u.from(b) : b / (u.f as number));
 const conv = (a: Unit, b: Unit, x: number) => fromBase(b, toBase(a, x));
+export { conv };
 export const nf = (x: number, dp = -1) => {
   if (!Number.isFinite(x)) return "—";
   if (dp >= 0) return x.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: dp });
@@ -181,8 +182,8 @@ function formula(a: Unit, b: Unit) {
   return `${b.sy} = ${a.sy}${Math.abs(s - 1) < 1e-12 ? "" : ` × ${nf(s)}`}${Math.abs(c0) < 1e-12 ? "" : ` ${c0 < 0 ? "−" : "+"} ${nf(Math.abs(c0))}`}`;
 }
 
-export function makeConv(dim: string, ak: string, bk: string): Calc {
-  const D = DIMS[dim], A = D.u[ak], B = D.u[bk];
+export function makeConv(dim: string, ak: string, bk: string, D: Dim = DIMS[dim]): Calc {
+  const A = D.u[ak], B = D.u[bk];
   return (v) => {
     const x = num(v.x, A.ex ?? 10), back = pick(v.d, 2) === 1, dp = [-1, 0, 1, 2, 3, 4, 6][pick(v.p, 7)];
     const [from, to] = back ? [B, A] : [A, B];
@@ -196,13 +197,13 @@ export function makeConv(dim: string, ak: string, bk: string): Calc {
 }
 
 export type ConvInfo = { cat: string; slug: string; fn: Calc; title: string; desc: string; how: string; faq: string[]; note: string; a: Unit; b: Unit; ex: number };
-export const CONVS: ConvInfo[] = PAIRS.flatMap(([cat, dim, list]) => list.split(" ").map((p) => {
-  const [ak, bk] = p.split("-"), D = DIMS[dim], a = D.u[ak], b = D.u[bk];
+export const buildConvs = (pairs: [string, string, string][], dims: Record<string, Dim> = DIMS): ConvInfo[] => pairs.flatMap(([cat, dim, list]) => list.split(" ").map((p) => {
+  const [ak, bk] = p.split("-"), D = dims[dim], a = D.u[ak], b = D.u[bk];
   if (!a || !b) throw new Error(`Unknown unit in ${dim}: ${p}`);
   const ex = a.ex ?? 10, k1 = conv(a, b, 1), t = kind(a, b), fwd = formula(a, b), rev = formula(b, a);
   const how = t === "lin" ? `1 ${a.sg} = ${nf(k1)} ${b.pl}, so multiply the number of ${a.pl} by ${nf(k1)}: ${fwd}.` : `Use ${fwd}. Going the other way: ${rev}.`;
   return {
-    cat, a, b, ex, note: D.note, fn: makeConv(dim, ak, bk), slug: `${a.sl}-to-${b.sl}-converter`, title: `${a.tt} to ${b.tt} Converter`,
+    cat, a, b, ex, note: D.note, fn: makeConv(dim, ak, bk, D), slug: `${a.sl}-to-${b.sl}-converter`, title: `${a.tt} to ${b.tt} Converter`,
     desc: `Convert ${a.pl} (${a.sy}) to ${b.pl} (${b.sy}) instantly — with the exact formula and a quick conversion table.`,
     how,
     faq: t === "lin"
@@ -210,6 +211,7 @@ export const CONVS: ConvInfo[] = PAIRS.flatMap(([cat, dim, list]) => list.split(
       : [`What is the formula to convert ${a.pl} to ${b.pl}?`, `${fwd}.`, `How do I convert ${b.pl} back to ${a.pl}?`, `${rev}.`, `What is ${nf(ex)} ${a.sy} in ${b.sy}?`, `${nf(ex)} ${a.sy} = ${nf(conv(a, b, ex))} ${b.sy}.`],
   };
 }));
+export const CONVS = buildConvs(PAIRS);
 export const convCalcs: Record<string, Calc> = Object.fromEntries(CONVS.map((c) => [c.slug, c.fn]));
 
 // ---- registry (generated)
