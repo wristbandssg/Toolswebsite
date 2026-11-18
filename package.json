@@ -663,7 +663,8 @@
     "db:create-idea-math2-calculators": "tsx prisma/create-idea-math2-calculators.ts",
     "db:create-idea-stat1-calculators": "tsx prisma/create-idea-stat1-calculators.ts",
     "db:create-idea-phys1-calculators": "tsx prisma/create-idea-phys1-calculators.ts",
-    "db:create-idea-chem1-calculators": "tsx prisma/create-idea-chem1-calculators.ts"
+    "db:create-idea-chem1-calculators": "tsx prisma/create-idea-chem1-calculators.ts",
+    "db:create-idea-bio1-calculators": "tsx prisma/create-idea-bio1-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
