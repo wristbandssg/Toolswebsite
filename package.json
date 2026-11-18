@@ -676,7 +676,8 @@
     "db:create-idea-spt2-calculators": "tsx prisma/create-idea-spt2-calculators.ts",
     "db:create-idea-spt3-calculators": "tsx prisma/create-idea-spt3-calculators.ts",
     "db:create-idea-trip1-calculators": "tsx prisma/create-idea-trip1-calculators.ts",
-    "db:create-idea-hlth2-calculators": "tsx prisma/create-idea-hlth2-calculators.ts"
+    "db:create-idea-hlth2-calculators": "tsx prisma/create-idea-hlth2-calculators.ts",
+    "db:create-idea-tax1-calculators": "tsx prisma/create-idea-tax1-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
