@@ -64,3 +64,14 @@ export async function runIdeas(groups: [string, ToolDef[]][]) {
   if (process.env.IDEA_DRY) { console.log(`DRY RUN OK: ${all.length} tools`); return; }
   for (const [cat, tools] of groups) await createNew(cat, tools);
 }
+
+/** Extra-compact definition used from batch home3 on: `r` = "key:Label|key2:Label2", `faq` = [q1, a1, q2, a2]. */
+export interface TQ {
+  slug: string; fn: TrvCalculator; title: string; desc: string; in: Record<string, unknown>[]; r: string;
+  ex: Vals; exd?: string; how: string; as: string; faq: string[];
+}
+export function t(d: TQ): ToolDef {
+  const results = d.r.split("|").map((s) => { const [k, l] = s.split(":"); return [k, l, "t"] as Line; });
+  const faq: [string, string][] = []; for (let i = 0; i + 1 < d.faq.length; i += 2) faq.push([d.faq[i], d.faq[i + 1]]);
+  return q({ slug: d.slug, title: d.title, desc: d.desc, inputs: d.in, results, fn: d.fn, ex: d.ex, exd: d.exd ?? "the default inputs", how: d.how, assume: d.as, faq });
+}
