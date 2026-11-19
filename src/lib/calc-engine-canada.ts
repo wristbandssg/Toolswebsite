@@ -336,18 +336,6 @@ const NORTHWEST_TERRITORIES: ProvinceConfig = {
   lowestRate: 0.059,
 };
 
-const NUNAVUT: ProvinceConfig = {
-  name: "Nunavut",
-  brackets: [
-    { rate: 0.04, upTo: 55801 },
-    { rate: 0.07, upTo: 111602 },
-    { rate: 0.09, upTo: 181439 },
-    { rate: 0.115, upTo: Infinity },
-  ],
-  bpa: 19659,
-  lowestRate: 0.04,
-};
-
 // ---------------------------------------------------------------------------
 // Generic calculator factory — used by every jurisdiction EXCEPT Ontario and
 // Quebec, which have genuinely different mechanics (see file header) and so
@@ -533,5 +521,4 @@ export const canadaCustomCalculators: Record<string, CustomCalculator> = {
   "newfoundland-and-labrador-income-tax-calculator": makeProvincialCalculator(NEWFOUNDLAND_AND_LABRADOR),
   "yukon-income-tax-calculator": makeProvincialCalculator(YUKON),
   "northwest-territories-income-tax-calculator": makeProvincialCalculator(NORTHWEST_TERRITORIES),
-  "nunavut-income-tax-calculator": makeProvincialCalculator(NUNAVUT),
 };

@@ -229,41 +229,6 @@ const paycheckCalculator: CustomCalculator = (values) => {
 };
 
 // ---------------------------------------------------------------------------
-// Period-salary variants (Monthly/Weekly/Biweekly Salary Tax Calculators) —
-// same math as the core paycheck engine, but the visitor enters a per-period
-// salary (their monthly/weekly/biweekly pay) instead of an annual figure, so
-// it's annualized first. A small factory avoids writing the same function
-// three times.
-// ---------------------------------------------------------------------------
-
-function makePeriodSalaryCalculator(periodsPerYear: number): CustomCalculator {
-  return (values) => {
-    const periodSalary = Math.max(0, safeNumber(values.periodSalary));
-    const r = computePaycheck({
-      annualSalary: periodSalary * periodsPerYear,
-      periodsPerYear,
-      filingStatus: normalizeFilingStatus(values.filingStatus),
-      preTaxPerPeriod: Math.max(0, safeNumber(values.preTaxDeductions)),
-      postTaxPerPeriod: Math.max(0, safeNumber(values.postTaxDeductions)),
-      extraWithholdingPerPeriod: Math.max(0, safeNumber(values.extraWithholding)),
-    });
-    return {
-      grossPayPerPeriod: r.grossPayPerPeriod,
-      federalIncomeTax: r.federalIncomeTax,
-      socialSecurityTax: r.socialSecurityTax,
-      medicareTax: r.medicareTax,
-      totalDeductions: r.totalDeductions,
-      netPayPerPeriod: r.netPayPerPeriod,
-      annualNetPay: r.annualNetPay,
-    };
-  };
-}
-
-const monthlySalaryCalculator = makePeriodSalaryCalculator(12);
-const weeklySalaryCalculator = makePeriodSalaryCalculator(52);
-const biweeklySalaryCalculator = makePeriodSalaryCalculator(26);
-
-// ---------------------------------------------------------------------------
 // Gross Salary Calculator — the reverse problem: the visitor tells us the
 // take-home (net) pay they want per paycheck, and this solves for the
 // annual gross salary that would produce it. Tax isn't linear (brackets +
@@ -664,14 +629,8 @@ const effectiveTaxRateCalculator: CustomCalculator = (values) => {
 export const usTaxSalaryCustomCalculators: Record<string, CustomCalculator> = {
   // Income Tax family
   "income-tax-calculator": incomeTaxCalculator,
-  "individual-income-tax-calculator": incomeTaxCalculator,
-  "personal-income-tax-calculator": incomeTaxCalculator,
-  "retirement-income-tax-calculator": incomeTaxCalculator,
   "business-income-tax-calculator": selfEmploymentTaxCalculator,
-  "freelancer-income-tax-calculator": selfEmploymentTaxCalculator,
   "rental-income-tax-calculator": incrementalIncomeTaxCalculator,
-  "foreign-income-tax-calculator": incrementalIncomeTaxCalculator,
-  "investment-income-tax-calculator": incrementalIncomeTaxCalculator,
   "taxable-income-calculator": taxableIncomeCalculator,
   "tax-liability-calculator": taxLiabilityCalculator,
   "tax-refund-calculator": taxRefundCalculator,
@@ -679,20 +638,9 @@ export const usTaxSalaryCustomCalculators: Record<string, CustomCalculator> = {
   "effective-tax-rate-calculator": effectiveTaxRateCalculator,
 
   // Salary Tax family
-  "salary-tax-calculator": paycheckCalculator,
   "take-home-pay-calculator": paycheckCalculator,
-  "net-salary-calculator": paycheckCalculator,
-  "annual-salary-tax-calculator": paycheckCalculator,
-  "paycheck-tax-calculator": paycheckCalculator,
-  "payroll-tax-calculator": paycheckCalculator,
-  "salary-withholding-calculator": paycheckCalculator,
-  "salary-after-tax-calculator": paycheckCalculator,
   "gross-salary-calculator": grossSalaryCalculator,
-  "monthly-salary-tax-calculator": monthlySalaryCalculator,
-  "weekly-salary-tax-calculator": weeklySalaryCalculator,
-  "biweekly-salary-tax-calculator": biweeklySalaryCalculator,
   "bonus-tax-calculator": supplementalWageCalculator,
-  "commission-tax-calculator": supplementalWageCalculator,
   "overtime-tax-calculator": overtimeCalculator,
   "second-job-tax-calculator": secondJobCalculator,
 };

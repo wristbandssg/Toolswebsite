@@ -536,7 +536,6 @@ const vatRegistrationThresholdCalculator: CustomCalculator = (values) => {
 export const capitalGainsSalesVatCustomCalculators: Record<string, CustomCalculator> = {
   // Capital Gains Tax family
   "capital-gains-tax-calculator": capitalGainsCalculator,
-  "stock-capital-gains-calculator": capitalGainsCalculator,
   "crypto-capital-gains-calculator": capitalGainsCalculator,
   "long-term-capital-gains-calculator": longTermCapitalGainsCalculator,
   "short-term-capital-gains-calculator": shortTermCapitalGainsCalculator,
@@ -549,24 +548,13 @@ export const capitalGainsSalesVatCustomCalculators: Record<string, CustomCalcula
 
   // Sales Tax family
   "sales-tax-calculator": coreSalesTaxCalculator,
-  "sales-tax-exclusive-calculator": coreSalesTaxCalculator,
-  "post-tax-price-calculator": coreSalesTaxCalculator,
   "use-tax-calculator": coreSalesTaxCalculator,
-  "consumer-use-tax-calculator": coreSalesTaxCalculator,
   "reverse-sales-tax-calculator": coreSalesTaxCalculator,
-  "sales-tax-inclusive-calculator": coreSalesTaxCalculator,
-  "pre-tax-price-calculator": coreSalesTaxCalculator,
-  "city-sales-tax-calculator": combinedRateSalesTaxCalculator,
-  "county-sales-tax-calculator": combinedRateSalesTaxCalculator,
   "combined-sales-tax-calculator": combinedRateSalesTaxCalculator,
 
   // VAT family
   "vat-calculator": coreVatCalculator,
-  "vat-exclusive-calculator": coreVatCalculator,
-  "output-vat-calculator": coreVatCalculator,
   "reverse-vat-calculator": coreVatCalculator,
-  "vat-inclusive-calculator": coreVatCalculator,
-  "input-vat-calculator": coreVatCalculator,
   "vat-payable-calculator": vatPayableCalculator,
   "vat-refund-calculator": vatRefundCalculator,
   "vat-rate-calculator": vatRateCalculator,

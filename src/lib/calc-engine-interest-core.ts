@@ -81,30 +81,6 @@ export const monthlyCompoundInterestCalculator: CustomCalculator = (values) => {
   return compoundResult(principal, annualRatePercent / 100, 12, years);
 };
 
-// --- 4. Quarterly Compound Interest Calculator (n = 4, fixed) ---------------
-export const quarterlyCompoundInterestCalculator: CustomCalculator = (values) => {
-  const principal = Math.max(0, safeNumber(values.principal, 10000));
-  const annualRatePercent = Math.max(0, safeNumber(values.annualRatePercent, 6));
-  const years = Math.max(0, safeNumber(values.years, 5));
-  return compoundResult(principal, annualRatePercent / 100, 4, years);
-};
-
-// --- 5. Semiannual Compound Interest Calculator (n = 2, fixed) --------------
-export const semiannualCompoundInterestCalculator: CustomCalculator = (values) => {
-  const principal = Math.max(0, safeNumber(values.principal, 10000));
-  const annualRatePercent = Math.max(0, safeNumber(values.annualRatePercent, 6));
-  const years = Math.max(0, safeNumber(values.years, 5));
-  return compoundResult(principal, annualRatePercent / 100, 2, years);
-};
-
-// --- 6. Annual Compound Interest Calculator (n = 1, fixed) ------------------
-export const annualCompoundInterestCalculator: CustomCalculator = (values) => {
-  const principal = Math.max(0, safeNumber(values.principal, 10000));
-  const annualRatePercent = Math.max(0, safeNumber(values.annualRatePercent, 6));
-  const years = Math.max(0, safeNumber(values.years, 5));
-  return compoundResult(principal, annualRatePercent / 100, 1, years);
-};
-
 // --- 7. Continuous Compound Interest Calculator (P*e^(rt)) ------------------
 export const continuousCompoundInterestCalculator: CustomCalculator = (values) => {
   const principal = Math.max(0, safeNumber(values.principal, 10000));
@@ -201,9 +177,6 @@ export const interestCoreCustomCalculators: Record<string, CustomCalculator> = {
   "interest-calculator": interestCalculator,
   "daily-compound-interest-calculator": dailyCompoundInterestCalculator,
   "monthly-compound-interest-calculator": monthlyCompoundInterestCalculator,
-  "quarterly-compound-interest-calculator": quarterlyCompoundInterestCalculator,
-  "semiannual-compound-interest-calculator": semiannualCompoundInterestCalculator,
-  "annual-compound-interest-calculator": annualCompoundInterestCalculator,
   "continuous-compound-interest-calculator": continuousCompoundInterestCalculator,
   "daily-interest-calculator": dailyInterestCalculator,
   "monthly-interest-calculator": monthlyInterestCalculator,

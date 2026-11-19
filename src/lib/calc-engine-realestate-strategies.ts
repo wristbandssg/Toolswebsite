@@ -353,6 +353,5 @@ export const realestateStrategiesCustomCalculators: Record<string, CustomCalcula
   "brrrr-calculator": brrrrCalculator,
   "brrrr-refinance-calculator": brrrrRefinanceCalculator,
   "brrrr-cash-flow-calculator": brrrrCashFlowCalculator,
-  "buy-vs-rent-calculator": buyVsRentCalculator,
   "rent-vs-own-calculator": rentVsOwnCalculator,
 };

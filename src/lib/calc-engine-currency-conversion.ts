@@ -302,7 +302,6 @@ export const currencyConversionCustomCalculators: Record<string, CustomCalculato
   "historical-currency-converter": historicalCurrencyConverter,
   "historical-exchange-rate-calculator": historicalExchangeRateCalculator,
   "cross-currency-rate-calculator": crossCurrencyRateCalculator,
-  "currency-cross-rate-calculator": currencyCrossRateCalculator,
   "inverse-exchange-rate-calculator": inverseExchangeRateCalculator,
   "currency-pair-calculator": currencyPairCalculator,
   "multi-currency-converter": multiCurrencyConverter,

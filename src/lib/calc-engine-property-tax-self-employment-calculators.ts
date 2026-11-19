@@ -137,15 +137,6 @@ const propertyTaxCalculator: CustomCalculator = (values) => {
   };
 };
 
-const monthlyPropertyTaxCalculator: CustomCalculator = (values) => {
-  const r = readPropertyTaxCore(values);
-  return {
-    monthlyTax: r.monthlyTax,
-    annualTax: r.annualTax,
-    effectiveRate: r.effectiveRatePercent,
-  };
-};
-
 const propertyTaxRateCalculator: CustomCalculator = (values) => {
   const assessedValue = safeNumber(values.assessedValue);
   const annualTaxPaid = safeNumber(values.annualTaxPaid);
@@ -344,28 +335,15 @@ export const propertyTaxSelfEmploymentCustomCalculators: Record<string, CustomCa
   // Property Tax (11 slugs, 6 functions)
   "property-tax-calculator": propertyTaxCalculator,
   "property-tax-rate-calculator": propertyTaxRateCalculator,
-  "annual-property-tax-calculator": propertyTaxCalculator,
-  "monthly-property-tax-calculator": monthlyPropertyTaxCalculator,
   "rental-property-tax-calculator": rentalPropertyTaxCalculator,
   "property-transfer-tax-calculator": transferTaxCalculator,
   "stamp-duty-calculator": transferTaxCalculator,
   "land-tax-calculator": landTaxCalculator,
-  "real-estate-tax-calculator": propertyTaxCalculator,
-  "property-purchase-tax-calculator": transferTaxCalculator,
-  "property-sale-tax-calculator": transferTaxCalculator,
 
   // Self-Employment Tax (13 slugs, 5 functions)
   "self-employment-tax-calculator": selfEmploymentTaxCalculator,
-  "self-employment-tax-estimator": selfEmploymentTaxCalculator,
-  "freelancer-tax-calculator": selfEmploymentTaxCalculator,
-  "contractor-tax-calculator": selfEmploymentTaxCalculator,
-  "gig-worker-tax-calculator": selfEmploymentTaxCalculator,
-  "side-hustle-tax-calculator": selfEmploymentTaxCalculator,
-  "independent-contractor-tax-calculator": selfEmploymentTaxCalculator,
-  "sole-trader-tax-calculator": selfEmploymentTaxCalculator,
   "self-employed-social-security-calculator": selfEmployedSocialSecurityCalculator,
   "self-employed-medicare-calculator": selfEmployedMedicareCalculator,
   "self-employed-pension-calculator": selfEmployedPensionCalculator,
   "self-employed-vat-calculator": selfEmployedIndirectTaxCalculator,
-  "self-employed-gst-calculator": selfEmployedIndirectTaxCalculator,
 };

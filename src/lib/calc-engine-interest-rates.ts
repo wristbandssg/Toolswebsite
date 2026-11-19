@@ -156,8 +156,6 @@ export const interestRatesCustomCalculators: Record<string, CustomCalculator> = 
   "interest-rate-calculator": interestRateCalculator,
   "effective-interest-rate-calculator": effectiveInterestRateCalculator,
   "nominal-interest-rate-calculator": nominalInterestRateCalculator,
-  "nominal-to-effective-interest-rate-calculator": nominalToEffectiveInterestRateCalculator,
-  "effective-to-nominal-interest-rate-calculator": effectiveToNominalInterestRateCalculator,
   "apr-calculator": aprCalculator,
   "apr-to-apy-calculator": aprToApyCalculator,
   "apy-to-apr-calculator": apyToAprCalculator,

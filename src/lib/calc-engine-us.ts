@@ -3971,17 +3971,8 @@ const wisconsinTaxCalculator: CustomCalculator = (values) => {
 };
 
 export const usCustomCalculators: Record<string, CustomCalculator> = {
-  // Keyed by the tool's slug — this must stay in sync with the `slug` set in
-  // prisma/create-nevada-paycheck-tool.ts. Registered under BOTH the current
-  // slug ("nevada-tax-calculator") and the original one
-  // ("nevada-paycheck-calculator", kept as an alias) on purpose: the DB slug
-  // and this file deploy separately (a script run vs. a git push), so for a
-  // short window one can be renamed while the other still has the old value.
-  // Keeping both keys pointed at the same function means the calculator
-  // never 404s during that window. If you rename the slug again, add the
-  // new key here rather than replacing the old one.
+  // Keyed by the tool's slug in the database (one entry per live tool).
   "nevada-tax-calculator": nevadaTaxCalculator,
-  "nevada-paycheck-calculator": nevadaTaxCalculator,
   "alabama-tax-calculator": alabamaTaxCalculator,
   "alaska-tax-calculator": alaskaTaxCalculator,
   "arizona-tax-calculator": arizonaTaxCalculator,
