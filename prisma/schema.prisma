@@ -38,20 +38,6 @@ enum CalcType {
   custom
 }
 
-enum TopicStatus {
-  suggested
-  approved
-  rejected
-  generated
-  published
-}
-
-enum LinkStatus {
-  suggested
-  approved
-  rejected
-}
-
 enum RedirectType {
   permanent // 301
   temporary // 302
@@ -216,9 +202,6 @@ model Tool {
 
   seoMeta       SeoMeta?
   blogRelations ToolBlogRelation[]
-  linkSourceOf  InternalLinkSuggestion[] @relation("LinkSourceTool")
-  linkTargetOf  InternalLinkSuggestion[] @relation("LinkTargetTool")
-  contentPlans  AiContentPlan[]
 
   @@map("tools")
 }
@@ -317,9 +300,6 @@ model Blog {
   toolRelations ToolBlogRelation[]
   relatedFrom   BlogRelatedBlog[]        @relation("BlogFrom")
   relatedTo     BlogRelatedBlog[]        @relation("BlogTo")
-  linkSourceOf  InternalLinkSuggestion[] @relation("LinkSourceBlog")
-  linkTargetOf  InternalLinkSuggestion[] @relation("LinkTargetBlog")
-  fromAiTopic   AiContentTopic?
 
   @@map("blogs")
 }
@@ -454,65 +434,3 @@ model Redirect {
   @@map("redirects")
 }
 
-// ---------------------------------------------------------------------------
-// AI Content Planner
-// ---------------------------------------------------------------------------
-
-model AiContentPlan {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  toolId    String   @db.ObjectId
-  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
-  status    String   @default("draft") // draft | approved
-  createdAt DateTime @default(now())
-
-  topics AiContentTopic[]
-
-  @@map("ai_content_plans")
-}
-
-model AiContentTopic {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  planId       String        @db.ObjectId
-  plan         AiContentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-  topicTitle   String
-  searchIntent String?
-  keywords     String // JSON string[]
-  outline      String? // markdown
-  status       TopicStatus   @default(suggested)
-
-  blogId String? @unique @db.ObjectId
-  blog   Blog?   @relation(fields: [blogId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("ai_content_topics")
-}
-
-// ---------------------------------------------------------------------------
-// Internal Linking
-// ---------------------------------------------------------------------------
-
-model InternalLinkSuggestion {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  sourceType String // "tool" | "blog"
-  anchorText String
-  status     LinkStatus @default(suggested)
-  createdAt  DateTime   @default(now())
-
-  sourceToolId String? @db.ObjectId
-  sourceTool   Tool?   @relation("LinkSourceTool", fields: [sourceToolId], references: [id])
-
-  sourceBlogId String? @db.ObjectId
-  sourceBlog   Blog?   @relation("LinkSourceBlog", fields: [sourceBlogId], references: [id])
-
-  targetType String // "tool" | "blog"
-
-  targetToolId String? @db.ObjectId
-  targetTool   Tool?   @relation("LinkTargetTool", fields: [targetToolId], references: [id])
-
-  targetBlogId String? @db.ObjectId
-  targetBlog   Blog?   @relation("LinkTargetBlog", fields: [targetBlogId], references: [id])
-
-  @@map("internal_link_suggestions")
-}

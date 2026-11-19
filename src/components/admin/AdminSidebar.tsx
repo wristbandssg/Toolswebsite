@@ -76,17 +76,11 @@ const SECTIONS: NavSection[] = [
     title: "Marketing",
     items: [
       {
-        href: "/admin/ai-planner",
+        href: "/admin/ad-settings",
         label: "Marketing",
         icon: Megaphone,
         children: [
-          { href: "/admin/seo-tools", label: "SEO Tools" },
-          { href: "/admin/ai-planner", label: "AI Content Planner" },
-          { href: "/admin/internal-linking", label: "Internal Linking" },
-          { href: "/admin/calendar", label: "Content Calendar" },
-          { href: "/admin/search-console", label: "Search Console" },
           { href: "/admin/ad-settings", label: "Ad Settings" },
-          { href: "/admin/ai-settings", label: "AI Settings" },
         ],
       },
     ],

@@ -282,7 +282,6 @@ async function main() {
     if (!keeper) throw new Error(`Kept tool ${keep} (for ${slug}) doesn't exist.`);
     if (tool.status === "published") redirects.push([href(tool.categoryId) + slug + "/", href(keeper.categoryId) + keep + "/"]);
     if (APPLY) {
-      await prisma.internalLinkSuggestion.deleteMany({ where: { OR: [{ sourceToolId: tool.id }, { targetToolId: tool.id }] } });
       await prisma.stateCalculatorLink.updateMany({ where: { toolSlug: slug }, data: { toolSlug: keep } });
       await prisma.tool.delete({ where: { id: tool.id } });
     }
