@@ -1,5 +1,8 @@
 import { getSiteSetting, setSiteSetting } from "@/lib/site-settings";
 
+// General site settings (site name, description, logo, contact email), edited in
+// Admin → Settings and stored as one JSON row ("site_general") in site_settings.
+// Missing fields fall back to DEFAULT_SITE_SETTINGS.
 const KEY = "site_general";
 
 export interface SiteGeneralSettings {

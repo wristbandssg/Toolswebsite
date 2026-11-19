@@ -1,156 +1,27 @@
 /**
- * Calculation Logic engine (see plan doc, Section 7: Calculator Tool Builder).
+ * Calculator engine — the one entry point for running any calculator.
  *
- * This file is intentionally thin: it re-exports the shared types every
- * other file in the app imports from "@/lib/calc-engine" (unchanged, so
- * nothing outside this directory needs to change), merges every country's
- * `xxCustomCalculators` map into the single `customCalculators` registry
- * `runCalculator` looks a tool's slug up in, and hosts `runCalculator`
- * itself (country-agnostic — it doesn't know or care which country a
- * "custom" tool's slug belongs to).
+ * How a calculation works:
+ *  1. A visitor fills in a calculator on a tool page.
+ *  2. The browser POSTs the input values to /api/tools/[slug]/calculate.
+ *  3. That route loads the tool from the database and calls runCalculator()
+ *     at the bottom of this file.
+ *  4. runCalculator() looks the tool's slug up in `customCalculators` and runs
+ *     the matching function, which returns the result lines shown on the page.
  *
- * The actual tax logic lives one file per country:
- *  - calc-engine-us.ts — US federal + all 50 states (see that file's header)
- *  - calc-engine-uk.ts — UK income tax (rest of UK + Scotland)
- *  - calc-engine-canada.ts — Canada federal + all 10 provinces + 3 territories
- *  - calc-engine-india.ts — India, New Regime vs Old Regime (one national tool)
- *  - calc-engine-australia.ts — Australia, one national tool (no state income tax)
- *  - calc-engine-southafrica.ts — South Africa, one national tool (no provincial income tax)
- *  - calc-engine-pakistan.ts — Pakistan, one national tool (no provincial income tax)
- *  - calc-engine-hongkong.ts — Hong Kong, progressive vs. standard rate (lower wins)
- *  - calc-engine-malaysia.ts — Malaysia, one national tool (no state income tax)
- *  - calc-engine-philippines.ts — Philippines, one national tool (no province income tax)
- *  - calc-engine-newzealand.ts — New Zealand, one national tool (no state income tax)
- *  - calc-engine-singapore.ts — Singapore, one national tool (no state income tax)
- *  - calc-engine-us-tax-salary-calculators.ts — 30 US-federal-only "Tax
- *    Calculators" SEO variants (income tax + salary/paycheck families),
- *    filed directly under the Tax Calculators category as a
- *    national-baseline complement to calc-engine-us.ts's 50 state tools
- *  - calc-engine-capital-gains-sales-vat-calculators.ts — 32 more "Tax
- *    Calculators" tools (Capital Gains Tax, Sales Tax, VAT families), also
- *    filed directly under the Tax Calculators category
- *  - calc-engine-property-tax-self-employment-calculators.ts — 24 more
- *    "Tax Calculators" tools (Property Tax, Self-Employment Tax families),
- *    also filed directly under the Tax Calculators category
- *  - calc-engine-fica-paycheck-calculators.ts — 8 tools under the new
- *    "Tax & Paycheck Calculators" category (FICA breakdown, Dividend Tax,
- *    Estimated/Quarterly/Withholding planning)
- *  - calc-engine-uk-tax-paycheck-calculators.ts — 15 more UK tools under
- *    the existing "UK Tax & Salary Calculators" category (National
- *    Insurance, PAYE, Dividend/CGT/IHT/VAT/Stamp Duty, Self Employed/
- *    Freelance/Rental/Pension/Bonus/Overtime)
- *  - calc-engine-canada-extended-calculators.ts — 15 more Canada tools
- *    under the existing "Canada Tax & Salary Calculators" category (CPP,
- *    EI, Payroll Tax, Capital Gains/Dividend/Rental income tax — federal
- *    only, GST/HST/PST, Property Transfer Tax, Refund/Owing, Pension/
- *    Severance withholding)
- *  - calc-engine-australia-extended-calculators.ts — 15 more Australia
- *    tools under the existing "Australia Tax & Salary Calculators"
- *    category (Medicare Levy/Surcharge, GST, Capital Gains, Super/
- *    Division 293, PAYG, Payroll Tax (NSW), Dividend/Franking, Rental,
- *    Self-Employment/Contractor, FBT, HELP/HECS repayment, Working
- *    Holiday Maker tax)
- *  - calc-engine-newzealand-extended-calculators.ts — 10 more New Zealand
- *    tools under the existing "New Zealand Tax & Salary Calculators"
- *    category (PAYE secondary income, GST, ACC Levy, Self-Employed/
- *    Contractor tax, Rental, Dividend imputation, bright-line Capital
- *    Gains, Employer Payroll Obligations, KiwiSaver — NZ has no general
- *    CGT or separate payroll tax, both honestly reframed rather than
- *    invented, see that file's header)
- *  - calc-engine-singapore-extended-calculators.ts — 10 more Singapore
- *    tools under the existing "Singapore Tax & Salary Calculators"
- *    category (GST, CPF general + detailed Additional Wage contribution,
- *    Self-Employed MediSave, Corporate Tax, Property Tax, Stamp Duty
- *    (BSD+ABSD), Rental — plus Capital Gains and Dividend Tax honestly
- *    framed around Singapore's real "generally not taxed" rules, see that
- *    file's header)
- *  - calc-engine-india-extended-calculators.ts — 10 more India tools under
- *    the existing "India Tax & Salary Calculators" category (GST 2.0
- *    slabs, TDS, three distinct Capital Gains tools — general classifier,
- *    short-term, and long-term with the pre-23-Jul-2024 property
- *    indexation choice — Dividend Tax, Property Tax and Professional Tax
- *    (Mumbai/Maharashtra representative), Stamp Duty (Maharashtra
- *    representative), and presumptive-taxation Self Employment)
- *  - calc-engine-hongkong-extended-calculators.ts — 7 more Hong Kong tools
- *    under the existing "Hong Kong Tax & Salary Calculators" category
- *    (Profits Tax, Property Tax, Stamp Duty (AVD), Rental Income Tax
- *    (Property Tax vs Personal Assessment, whichever is lower), Capital
- *    Gains and Dividend Tax honestly framed around Hong Kong's "generally
- *    not taxed" rules, and MPF — an 8th "Salaries Tax" tool was skipped as
- *    a duplicate of the existing hong-kong-income-tax-calculator)
- *  - calc-engine-malaysia-extended-calculators.ts — 10 more Malaysia tools
- *    under the existing "Malaysia Tax & Salary Calculators" category (EPF,
- *    SOCSO, EIS, PCB/Monthly Tax Deduction estimate, SST, Real Property
- *    Gains Tax, Stamp Duty, Rental Income Tax, Dividend Tax (new 2% tax),
- *    and a Capital Gains Tax explainer honestly framed around Malaysia's
- *    CGT regime excluding individuals entirely)
- *  - calc-engine-philippines-extended-calculators.ts — 10 more Philippines
- *    tools under the existing "Philippines Tax & Salary Calculators"
- *    category (VAT, Withholding/EWT, Capital Gains Tax modeling its two
- *    genuinely distinct mechanisms — 6% real property vs 15% unlisted
- *    shares — Estate Tax, Donor's Tax, Percentage Tax, Documentary Stamp
- *    Tax, Real Property Tax (national statutory caps only, LGU rates
- *    vary), Dividend Tax, and Self Employed Tax comparing the 8% flat
- *    option against graduated rates + percentage tax)
- *  - calc-engine-us-transfer-tax.ts — 29 US state "Real Estate Transfer
- *    Tax" tools (the US equivalent of "stamp duty"), fifth batch of the
- *    50-state audit — every state with a genuine state-level transfer/
- *    conveyance/deed/mansion tax
- *  - calc-engine-us-corporate-tax.ts — 50 US state "Corporate Tax" tools,
- *    sixth batch of the 50-state audit, one per state including the states
- *    with no traditional corporate income tax (Nevada Commerce Tax, Ohio
- *    CAT, Texas Franchise/Margin Tax, Washington B&O — all genuine
- *    gross-receipts/margin substitutes) and the two states with no
- *    state-level business income tax of any kind (South Dakota, Wyoming —
- *    honest $0 tools, the "Missouri capital gains" precedent)
- *  - calc-engine-us-sales-tax.ts — 50 US state "Sales Tax" tools, seventh
- *    batch of the 50-state audit, one per state including the 4 states
- *    with genuinely no state-level general sales tax (Delaware, Montana,
- *    New Hampshire, Oregon — honest $0 tools), Alaska (no state rate but a
- *    real average local rate), and the two states whose closest analog is
- *    a different kind of levy (Hawaii's General Excise Tax, New Mexico's
- *    Gross Receipts Tax) disclosed plainly as such rather than mislabeled
- *  - calc-engine-us-property-tax.ts — 50 US state "Property Tax" tools,
- *    eighth batch of the 50-state audit, one per state, using each state's
- *    published average EFFECTIVE property tax rate (property tax paid as a
- *    % of value) since property tax is overwhelmingly local/county-set in
- *    the US with no single exact state rate — assumptions text discloses
- *    this plainly, with extra notes for the handful of states with a
- *    genuine small state-level component (Kentucky, Maryland, New
- *    Hampshire's SWEPT, Vermont's state-set town rates, Washington's State
- *    School Levy)
- *  - calc-engine-us-suta.ts — 50 US state "Unemployment Tax" (SUTA) tools,
- *    ninth batch of the 50-state audit, one per state: taxable wage base x
- *    new-employer rate, per employee. Colorado/Michigan/Nebraska
- *    (standard vs. construction), Mississippi (rate by employer year),
- *    North Dakota (positive- vs. negative-balance), and Wisconsin (payroll
- *    threshold) use a dropdown for their confirmed 2/3-way rate split; New
- *    Jersey is the only state that also charges SUTA to employees, so its
- *    tool returns a two-line employer/employee breakdown
- *  - calc-engine-us-income-tax-rates.ts — shared state income-tax rate
- *    table (each of the 41 income-tax states' confirmed flat/top marginal
- *    rate) and marginal/effective/total-tax estimator math, used by all 14
- *    files below. Per an explicit user decision (27 Sep 2026), this final
- *    "income-tax-derived family" batch (tenth and last batch of the
- *    50-state audit, 41 states x 14 SEO-angle variants = 574 tools) uses
- *    this SIMPLIFIED REPRESENTATIVE RATE approach rather than refactoring
- *    the existing 4000+ line calc-engine-us.ts to export its exact
- *    bracket tables — every tool built from it discloses this in its
- *    Assumptions text
- *  - calc-engine-us-tax-bracket.ts / -marginal-tax-rate.ts /
- *    -effective-tax-rate.ts / -tax-liability.ts / -tax-refund.ts /
- *    -taxable-income.ts / -tax-withholding.ts / -withholding-tax.ts /
- *    -bonus-tax.ts / -overtime-tax.ts /
- *    -freelance-tax.ts / -estimated-quarterly-tax.ts
- *    — the 12 income-tax-derived family variants (41 tools each, one per
- *    income-tax state), all built on calc-engine-us-income-tax-rates.ts
- * Adding a new country means adding one more calc-engine-<country>.ts file
- * and one more line below merging its map in — no existing country's file
- * is touched.
+ * Where the maths lives:
+ *  - Each src/lib/calc-engine-*.ts file holds a group of calculators (a country's
+ *    taxes, a science area, a batch of tools…) and ends with a map of
+ *    "tool-slug" → function.
+ *  - This file imports every one of those maps and merges them into
+ *    `customCalculators` below. Every published tool's slug must appear exactly
+ *    once — a tool whose slug is missing shows "No custom calculator".
+ *  - calc-engine-types.ts has the shared types and helpers (input fields,
+ *    safeNumber, the simple formula runner for "expression" tools).
  *
- * calc-engine-types.ts holds the shared types/helpers (CalcInputField,
- * CustomCalculator, safeNumber, runExpressionCalc, ...) every country file
- * implements against.
+ * Adding a calculator: write the function in a calc-engine-*.ts file, add its
+ * "slug": function line to that file's map, then create the tool (same slug) in
+ * the admin. Removing one: delete the tool in the admin, then its map line.
  */
 
 export type {
@@ -773,6 +644,7 @@ import { ideaCal1CustomCalculators } from "./calc-engine-idea-cal1";
 // "new-zealand-income-tax-calculator", "singapore-income-tax-calculator" —
 // see each country file's header for its own slug convention), so a plain
 // spread merge is safe: no two countries' keys collide.
+// Every calculator on the site, keyed by tool slug (merged from all calc-engine-*.ts files).
 export const customCalculators: Record<string, CustomCalculator> = {
   ...usCustomCalculators,
   ...ukCustomCalculators,
@@ -1365,6 +1237,8 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...bizConcreteCustomCalculators,
 };
 
+// Runs one tool: "custom" tools use the function registered above;
+// "expression" tools evaluate the formula stored with the tool in the database.
 export function runCalculator(
   calcType: "expression" | "custom",
   toolSlug: string,

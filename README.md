@@ -14,6 +14,21 @@ npm run dev
 - Site: http://localhost:3000
 - Admin: http://localhost:3000/admin/login
 
+## Where things live
+
+| Path | What it is |
+|---|---|
+| `src/app/(site)/` | Public pages: home, `/calculators/`, `/blog/`, authors, and `[first]/[second]/[third]` for category, calculator and page URLs |
+| `src/app/(admin)/admin/` | Admin dashboard (login required — enforced in `src/proxy.ts`) |
+| `src/app/api/` | API routes used by the admin and by calculators (`/api/tools/[slug]/calculate`) |
+| `src/lib/calc-engine.ts` | Runs every calculator; merges the `calc-engine-*.ts` files (start here for calculator code) |
+| `src/lib/views/` | Loads a tool, category or page from the database and picks its template |
+| `src/lib/templates/` | The page layouts (tool, blog, page templates) |
+| `src/lib/urls.ts` | Builds every public URL; `public-redirects.ts` + `src/proxy.ts` handle 301s |
+| `src/lib/seo.ts`, `src/app/sitemap.ts`, `src/app/robots.ts` | SEO meta, sitemap and robots.txt |
+| `src/components/` | Shared UI; `components/admin/` is admin-only |
+| `prisma/schema.prisma` | Database models (MongoDB) |
+
 ## Scripts
 
 | Script | What it does |

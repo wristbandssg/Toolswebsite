@@ -1,61 +1,18 @@
 /**
- * Malaysia Extended tax calculators — 10 more Malaysia tools filed under the
- * EXISTING "Malaysia Tax & Salary Calculators" category (created by
- * calc-engine-malaysia.ts's income tax tool): EPF, SOCSO, EIS, PCB (Monthly
- * Tax Deduction estimate), SST, Real Property Gains Tax, Stamp Duty, Rental
- * Income Tax, Dividend Tax (new 2% tax), and a Capital Gains Tax explainer.
+ * Malaysia extra tax calculators (Malaysia Tax & Salary Calculators category).
  *
- * See calc-engine.ts for how this file's `malaysiaExtendedCustomCalculators`
- * map merges into the app-wide `customCalculators` registry.
+ * Holds two live tools:
+ *  - malaysia-sst-calculator — Sales and Service Tax on a price.
+ *  - malaysia-real-property-gains-tax-calculator — RPGT on a property sale,
+ *    using the holding-period rate table.
+ * The main Malaysia income-tax tool lives in calc-engine-malaysia.ts.
  *
- * Structural/accuracy notes worth calling out (see each tool's own
- * Assumptions text for the full visitor-facing version):
- *  - Malaysia's Capital Gains Tax regime (Section 4(aa), effective 1 Jan
- *    2024) applies ONLY to companies, LLPs, trust bodies, and co-operative
- *    societies — INDIVIDUALS are entirely excluded from it, even for
- *    unlisted shares. So the "Capital Gains Tax Calculator" here is an
- *    honest explainer confirming individuals owe no CGT, following the same
- *    "reframe rather than invent" pattern already used for New Zealand,
- *    Singapore, and Hong Kong's genuinely-non-taxed categories, rather than
- *    a duplicate of the Real Property Gains Tax tool (a separate, much
- *    older regime that DOES apply to individuals disposing of real
- *    property/RPC shares).
- *  - EPF (KWSP) rates depend on BOTH citizenship/registration status AND
- *    age — including the newly-mandatory 2%/2% rate for non-Malaysian
- *    employees registered on/after 1 August 1998, effective only from
- *    1 October 2025 (a major recent change, confirmed via KWSP's own news
- *    release).
- *  - SOCSO and EIS both share the RM6,000/month wage ceiling, raised from
- *    RM5,000 effective 1 October 2024. SOCSO's real contribution schedule
- *    is a fixed wage-band table (not a pure percentage), but this
- *    calculator uses the equivalent percentage rates as a close estimate —
- *    disclosed in the tool's Assumptions text.
- *  - The Monthly Tax Deduction (PCB) Calculator is an ESTIMATE using the
- *    same annual progressive brackets as the main income tax calculator,
- *    annualized and divided by 12 — not LHDN's exact Computerized
- *    Calculation Method formula/schedule (which includes additional
- *    rounding and adjustment rules) — disclosed in the tool's Assumptions
- *    text.
- *  - The Rental Income Tax Calculator does NOT include any special
- *    below-market-rent exemption — an earlier such incentive could not be
- *    confirmed as still in force, so it's treated as discontinued rather
- *    than guessed at.
- *  - Stamp Duty models only the well-corroborated general ad valorem MOT
- *    tiers, the loan/financing instrument rate, and the first-time-
- *    homebuyer exemption (extended to 31 Dec 2027 per Budget 2026) — it
- *    does NOT include a foreign-buyer surcharge rate, since that figure
- *    could only be corroborated by secondary property-industry sources,
- *    not an official primary source, at the time of writing.
- *
- * Figures confirmed via kwsp.gov.my (KWSP/EPF), perkeso.gov.my (SOCSO/EIS),
- * hasil.gov.my (LHDN — income tax, RPGT, stamp duty, dividend tax), and
- * mysst.customs.gov.my (RMCD — SST), currently in force as of 2026 unless
- * noted — see each tool's own Assumptions text for the full disclaimer
- * shown to visitors and source notes.
+ * The map at the bottom (malaysiaExtendedCustomCalculators) is merged into the
+ * app-wide registry in calc-engine.ts — key = the tool's slug in the database.
  */
 
 import type { CalcInputValues, CustomCalculator } from "./calc-engine-types";
-import { safeNumber } from "./calc-engine-types"; // each side
+import { safeNumber } from "./calc-engine-types";
 
 // SST.
 const SALES_TAX_RATES = { exempt: 0, five: 0.05, ten: 0.1 };
