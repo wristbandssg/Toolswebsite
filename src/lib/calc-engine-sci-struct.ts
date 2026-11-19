@@ -62,7 +62,6 @@ const MAT: [string, number, number, number, number][] = [ // name, E GPa, α µm
   ["Cast iron (grey)", 110, 10.8, 200, 7200], ["Concrete", 30, 10, 30, 2400], ["Glass", 70, 9, 50, 2500], ["Douglas fir (along grain)", 13, 3.5, 50, 530], ["PVC", 3, 52, 50, 1400], ["Carbon fibre CFRP (UD)", 135, 0.5, 1500, 1600],
 ];
 export const MATERIALS = MAT.map((m) => m[0]);
-export const EXP_MODE = ["Linear expansion", "Volumetric expansion", "Thermal stress if fully restrained"];
 export const thermalExpansion: SciCalculator = (v) => {
   const k = pick(v.mat, MAT.length + 1), custom = k === MAT.length, a = (custom ? pos(v.alpha, 12) : MAT[k][2]) * 1e-6, E = (custom ? pos(v.E, 200) : MAT[k][1]) * 1e9, L = pos(v.L, 1000), dT = num(v.T2, 80) - num(v.T1, 20), m = pick(v.mode, 3);
   if (m === 1) { const dV = 3 * a * L * dT; return { result: s(dV, 8), final: s(L + dV, 10), strain: s(3 * a * dT * 1e6, 6), stress: "—" }; }
@@ -74,8 +73,6 @@ export const youngsModulus: SciCalculator = (v) => {
   const F = pos(v.F, 10000), A = pos(v.A, 50), L = pos(v.L, 100), dL = pos(v.dL, 0.1), sg = F / A, e = dL / L;
   return { E: s(fin(sg / e) / 1000, 8), stress: s(sg, 8), strain: s(e, 8), ksi: s((sg / e) * 0.1450377, 6) };
 };
-export const YM_MODE = ["From a tensile test (force, area, extension)", "From stress and strain"];
-export const SS_MODE = ["Stress from force and area", "Strain from extension", "Stress from strain (Hooke's law)", "Shear stress from force and area"];
 export const stressStrain: SciCalculator = (v) => {
   const m = pick(v.mode, 4), F = pos(v.F, 10000), A = pos(v.A, 50), L = pos(v.L, 1000), dL = pos(v.dL, 0.5), E = pos(v.E, 200) * 1000, e = pos(v.e, 0.001);
   if (m === 0) return { result: s(F / A, 8), unit: "MPa (N/mm²)", alt: `${fmt((F / A) * 145.0377, 6)} psi; strain at E = ${fmt(F / A / E, 6)}` };
@@ -99,7 +96,6 @@ export const pren: SciCalculator = (v) => {
   return { pren: s(p, 5), rating: p < 20 ? "Low — indoor / mild environments (e.g. 304)" : p < 32 ? "Moderate — e.g. 316, coastal atmospheres" : p < 40 ? "High — duplex 2205, chloride service" : "Very high — super-duplex / 6Mo, seawater", typical: "304 ≈ 19, 316 ≈ 24, 2205 ≈ 35, 2507 ≈ 42" };
 };
 const HV_TAB: [number, number | null, number | null, number | null][] = [[100, 95, null, 56], [120, 114, null, 67], [140, 133, null, 75], [160, 152, null, 82], [180, 171, null, 87], [200, 190, null, 92], [220, 209, null, 96], [240, 228, 20.3, 99.5], [260, 247, 24, null], [280, 266, 27.1, null], [300, 285, 29.8, null], [320, 304, 32.2, null], [340, 323, 34.4, null], [360, 342, 36.6, null], [380, 361, 38.8, null], [400, 380, 40.8, null], [420, 399, 42.7, null], [440, 418, 44.5, null], [460, 437, 46.1, null], [480, 456, 47.7, null], [500, 475, 49.1, null], [550, 523, 52.3, null], [600, 570, 55.2, null], [650, 618, 57.8, null], [700, 665, 60.1, null], [750, null, 62.2, null], [800, null, 64, null], [850, null, 65.5, null], [900, null, 67, null], [940, null, 68, null]];
-export const HARD_SCALES = ["Vickers HV", "Brinell HB", "Rockwell C (HRC)", "Rockwell B (HRB)"];
 const interp = (x: number, xs: number[], ys: number[]) => {
   for (let i = 0; i < xs.length - 1; i++) if ((x - xs[i]) * (x - xs[i + 1]) <= 0) return ys[i] + ((ys[i + 1] - ys[i]) * (x - xs[i])) / (xs[i + 1] - xs[i]);
   return NaN;
@@ -111,9 +107,6 @@ export const hardness: SciCalculator = (v) => {
   const get = (c: number) => { const rr = HV_TAB.filter((r) => r[c] !== null); const y = interp(HV, rr.map((r) => r[0]), rr.map((r) => r[c] as number)); return Number.isFinite(y) ? s(y, 4) : "—"; };
   return { HV: s(HV, 4), HB: get(1), HRC: get(2), HRB: get(3), uts: s(3.3 * HV, 4) };
 };
-
-// ---------- beams, stresses ----------
-export const BEAM_CASES = ["Simply supported, point load at centre", "Simply supported, uniform load", "Simply supported, point load at distance a", "Cantilever, point load at free end", "Cantilever, uniform load", "Fixed both ends, uniform load", "Fixed both ends, point load at centre"];
 export const beamDeflection: SciCalculator = (v) => {
   const k = pick(v.case, 7), L = pos(v.L, 4000), P = pos(v.P, 10) * 1000, w = pos(v.w, 5), E = pos(v.E, 200) * 1000, I = pos(v.I, 8356) * 1e4, a = Math.min(L, pos(v.a, 1000)), c = pos(v.c, 0);
   if (!E || !I || !L) throw new InputError("Span, E and I must be positive.");
@@ -127,12 +120,10 @@ export const beamDeflection: SciCalculator = (v) => {
   else { d = (P * L ** 3) / (192 * E * I); M = (P * L) / 8; R = `${fmt(P / 2000, 6)} kN each`; th = 0; }
   return { d: s(d, 6), M: s(M / 1e6, 6), R, slope: s((th * 180) / Math.PI, 6), ratio: `L/${fmt(L / d, 4)}`, stress: c ? s((M * c) / I, 6) : "enter c for stress" };
 };
-export const BS_MODE = ["From moment, I and distance c", "From moment and section modulus S"];
 export const bendingStress: SciCalculator = (v) => {
   const M = num(v.M, 20) * 1e6, sg = pick(v.mode, 2) === 0 ? (M * pos(v.c, 100)) / (pos(v.I, 8356) * 1e4) : M / (pos(v.S, 836) * 1e3), fy = pos(v.fy, 250);
   return { stress: s(fin(sg), 8), ksi: s(sg * 0.1450377, 6), util: s((100 * Math.abs(sg)) / fy, 5), ok: Math.abs(sg) <= fy ? "Below yield" : "Exceeds yield" };
 };
-export const SHEAR_MODE = ["Average shear τ = V/A", "Max beam shear, rectangular section (1.5 V/A)", "Max beam shear, solid circle (4/3 V/A)", "Fluid shear rate (velocity ÷ gap)", "Fluid shear rate in a pipe (8V/D)"];
 export const shearStress: SciCalculator = (v) => {
   const m = pick(v.mode, 5), V = pos(v.V, 10) * 1000, A = pos(v.A, 1000);
   if (m === 3) { const r = pos(v.vel, 1) / (pos(v.gap, 1) / 1000); return { result: s(r, 8), unit: "1/s shear rate", tau: pos(v.mu, 0) ? s(pos(v.mu, 0) * r, 8) : "enter viscosity for stress" }; }
@@ -159,7 +150,6 @@ export const torsion: SciCalculator = (v) => {
   const dreq = allow ? ((16 * Math.abs(T)) / (Math.PI * allow)) ** (1 / 3) : NaN;
   return { tau: s(tau, 8), twist: s((th * 180) / Math.PI, 6), J: s(J, 8), power: rpm ? s(((T / 1000) * rpm * 2 * Math.PI) / 60 / 1000, 6) : "enter rpm", dreq: Number.isFinite(dreq) ? s(dreq, 6) : "enter allowable stress" };
 };
-export const HOOP_MODE = ["Thin-wall stresses from pressure", "Required wall thickness (Barlow)", "Thick-wall (Lamé) stresses"];
 export const hoopStress: SciCalculator = (v) => {
   const m = pick(v.mode, 3), P = pos(v.P, 2), D = pos(v.D, 500), t = pos(v.t, 10), S = pos(v.S, 138), E = pos(v.E, 1) || 1, ca = pos(v.ca, 0);
   if (m === 1) { const tr = (P * D) / (2 * S * E) + ca; return { hoop: s(S, 6), axial: s(S / 2, 6), t: s(tr, 6), note: `Barlow t = PD/(2SE) + corrosion allowance; ASME VIII t = PR/(SE − 0.6P) = ${fmt((P * D) / 2 / (S * E - 0.6 * P) + ca, 6)} mm` }; }
@@ -169,7 +159,6 @@ export const hoopStress: SciCalculator = (v) => {
   }
   return { hoop: s((P * D) / (2 * t), 6), axial: s((P * D) / (4 * t), 6), t: s(t, 6), note: D / t < 20 ? "D/t < 20 — use the thick-wall (Lamé) option" : "Thin-wall valid (D/t ≥ 20)" };
 };
-export const END_COND = ["Both ends pinned (K = 1)", "Both ends fixed (K = 0.5)", "One fixed, one pinned (K = 0.699)", "One fixed, one free (K = 2)"];
 const KEFF = [1, 0.5, 0.699, 2];
 export const buckling: SciCalculator = (v) => {
   const E = pos(v.E, 200) * 1000, I = pos(v.I, 1000) * 1e4, A = pos(v.A, 5000), L = pos(v.L, 3000), K = KEFF[pick(v.end, 4)], fy = pos(v.fy, 250), sf = pos(v.sf, 2) || 1;
@@ -177,7 +166,6 @@ export const buckling: SciCalculator = (v) => {
   const scr = sl >= Cc ? Pe / A : fy - ((fy * fy) / (4 * Math.PI ** 2 * E)) * sl * sl, Pcr = Math.min(scr * A, fy * A);
   return { Pcr: s(Pcr / 1000, 6), Pe: s(Pe / 1000, 6), allow: s(Pcr / 1000 / sf, 6), slender: s(sl, 6), mode: sl >= Cc ? `Euler (long column, KL/r ≥ ${fmt(Cc, 4)})` : "Johnson (intermediate column — yielding governs)" };
 };
-export const TRUSS_SUP = ["Pin at the first support node, roller (vertical) at the second"];
 export const truss: SciCalculator = (v) => {
   const nodes = txt(v, "nodes").split(";").map((p) => p.trim().split(/[\s,]+/).map(Number)).filter((p) => p.length === 2 && p.every(Number.isFinite));
   const mem = txt(v, "members").split(/[\s,;]+/).filter(Boolean).map((p) => p.split("-").map((x) => Number(x) - 1));
@@ -215,7 +203,6 @@ export const weldStrength: SciCalculator = (v) => {
   const throat = 0.707 * leg, cap = (0.75 * 0.6 * Fexx * throat * L * n) / 1000;
   return { cap: s(cap, 6), throat: s(throat, 5), perMm: s((0.75 * 0.6 * Fexx * throat) / 1000, 6), Lreq: P ? s((P * 1000) / (0.75 * 0.6 * Fexx * throat * n), 6) : "enter load", util: P ? s((100 * P) / cap, 5) : "—" };
 };
-export const TUBE_MODE = ["Rectangular/square tube: safe load on a span", "Dead load of a slab or member"];
 export const deadLoad: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) {
     const t = pos(v.th, 150) / 1000, rho = pos(v.rho, 2400), A = pos(v.area, 20), extra = pos(v.sdl, 1);
@@ -226,26 +213,22 @@ export const deadLoad: SciCalculator = (v) => {
   const sec = section({ shape: 3, b, h, t } as Vals), M = (fy / sf) * sec.Sx, Pmid = (4 * M) / L, wU = (8 * M) / (L * L);
   return { load: s(Pmid / 1000, 6), total: s((wU * L) / 1000, 6), mass: s((sec.A * L * 7850) / 1e9, 6), note: `Bending only (S = ${fmt(sec.Sx, 6)} mm³); check deflection and local buckling` };
 };
-export const TRIB_POS = ["Interior column", "Edge column", "Corner column", "Interior beam (spacing × span)"];
 export const tributary: SciCalculator = (v) => {
   const k = pick(v.pos, 4), x = pos(v.x, 6), y = pos(v.y, 5), DL = pos(v.dl, 4), LL = pos(v.ll, 2.5);
   const A = k === 0 ? x * y : k === 1 ? (x * y) / 2 : k === 2 ? (x * y) / 4 : x * y;
   return { A: s(A, 6), service: s(A * (DL + LL), 6), factored: s(A * (1.2 * DL + 1.6 * LL), 6), perM: k === 3 ? s(x * (1.2 * DL + 1.6 * LL), 6) : "—" };
 };
-export const MMI_SHAPES = ["Solid cylinder / disc about its axis", "Hollow cylinder about its axis", "Thin ring / hoop", "Solid sphere", "Thin rod about its centre", "Thin rod about one end", "Rectangular plate about its centre (⊥ axis)"];
 export const massMoment: SciCalculator = (v) => {
   const k = pick(v.shape, 7), m = pos(v.m, 10), r = pos(v.r, 0.2), ri = pos(v.ri, 0.1), L = pos(v.L, 1), a = pos(v.a, 0.5), b = pos(v.b, 0.3), d = pos(v.dist, 0);
   const I = [0.5 * m * r * r, 0.5 * m * (r * r + ri * ri), m * r * r, 0.4 * m * r * r, (m * L * L) / 12, (m * L * L) / 3, (m * (a * a + b * b)) / 12][k];
   return { I: s(I, 8), parallel: s(I + m * d * d, 8), k: s(Math.sqrt(I / m), 6), ke: pos(v.rpm, 0) ? s(0.5 * I * ((pos(v.rpm, 0) * 2 * Math.PI) / 60) ** 2, 6) : "enter rpm" };
 };
-export const REL_MODE = ["Convert FIT ↔ MTBF", "Reliability over a mission time", "Redundant (parallel) system of identical units"];
 export const reliability: SciCalculator = (v) => {
   const m = pick(v.mode, 3), fit = pos(v.fit, 500), mtbf = pos(v.mtbf, 0), t = pos(v.t, 8760), n = Math.max(1, Math.round(pos(v.n, 2)));
   const lam = mtbf ? 1 / mtbf : fit / 1e9, R = Math.exp(-lam * t);
   const Rsys = m === 2 ? 1 - (1 - R) ** n : R;
   return { mtbf: s(1 / lam, 8), fit: s(lam * 1e9, 8), R: s(100 * Rsys, 8), F: s(100 * (1 - Rsys), 8), years: s(1 / lam / 8760, 6) };
 };
-export const FOS_MODE = ["Factor of safety from strength and stress", "Allowable stress or load from a factor of safety"];
 export const factorOfSafety: SciCalculator = (v) => {
   const S = pos(v.S, 250), x = pos(v.x, 100);
   if (pick(v.mode, 2) === 1) return { fos: s(x, 6), allow: s(S / x, 8), margin: s(x - 1, 6), ok: x >= 1.5 ? "Typical for well-known loads" : "Low — only for very well-characterised loads" };
@@ -260,7 +243,6 @@ export const linearity: SciCalculator = (v) => {
   const term = y.map((q, i) => q - (x[i] * (y[y.length - 1] - y[0])) / (x[x.length - 1] - x[0]) - (y[0] - (x[0] * (y[y.length - 1] - y[0])) / (x[x.length - 1] - x[0])));
   return { lin: s((100 * md) / fs, 6), maxdev: s(md, 6), line: `y = ${fmt(m, 6)}x ${b < 0 ? "−" : "+"} ${fmt(Math.abs(b), 6)}`, r2: s(1 - sum(dev.map((d) => d * d)) / sst, 8), terminal: s((100 * Math.max(...term.map(Math.abs))) / fs, 6) };
 };
-export const CAT_MODE = ["From sag", "From cable length"];
 export const catenary: SciCalculator = (v) => {
   const L = pos(v.L, 100), w = pos(v.w, 10), mode = pick(v.mode, 2), target = mode === 0 ? pos(v.sag, 5) : pos(v.len, 101);
   if (mode === 1 && target <= L) throw new InputError("Cable length must exceed the span.");
@@ -270,7 +252,6 @@ export const catenary: SciCalculator = (v) => {
   const a = Math.sqrt(lo * hi), H = w * a, sag = a * (Math.cosh(L / (2 * a)) - 1), len = 2 * a * Math.sinh(L / (2 * a));
   return { H: s(H, 6), Tmax: s(H + w * sag, 6), sag: s(sag, 6), len: s(len, 8), a: s(a, 6), angle: s((Math.atan(Math.sinh(L / (2 * a))) * 180) / Math.PI, 5) };
 };
-export const CPK_MODE = ["Summary statistics (mean and SD)", "Raw data"];
 export const cpk: SciCalculator = (v) => {
   let mu: number, sd: number;
   if (pick(v.mode, 2) === 1) { const d = listOf(v, "data", 2); mu = mean(d); sd = Math.sqrt(variance(d)); }
@@ -306,7 +287,6 @@ export const isoTolerance: SciCalculator = (v) => {
   const mm = (x: number) => fmt(size + x / 1000, 7);
   return { fit: `${fmt(size)} ${hole}${hg}/${shaft}${sg}: ${type}`, hole: `${mm(EI)} – ${mm(ES)} mm (${EI >= 0 ? "+" : ""}${EI}/${ES >= 0 ? "+" : ""}${ES} µm)`, shaft: `${mm(ei)} – ${mm(es)} mm (${es >= 0 ? "+" : ""}${es}/${ei >= 0 ? "+" : ""}${ei} µm)`, max: s(maxClr, 6), min: s(minClr, 6) };
 };
-export const FEATURE = ["Hole (internal feature)", "Pin / shaft (external feature)"];
 export const truePosition: SciCalculator = (v) => {
   const dx = num(v.dx, 0.03), dy = num(v.dy, 0.04), tol = pos(v.tol, 0.1), hole = pick(v.feat, 2) === 0, mmc = pos(v.mmc, 0), act = pos(v.act, 0);
   const tp = 2 * Math.hypot(dx, dy), bonus = mmc && act ? Math.max(0, hole ? act - mmc : mmc - act) : 0, allowed = tol + bonus;

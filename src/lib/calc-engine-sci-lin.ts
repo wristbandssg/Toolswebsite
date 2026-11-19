@@ -153,9 +153,6 @@ const cpText = (c: number[]) => {
     return `${k < 0 ? "− " : i ? "+ " : ""}${coef}${p > 0 ? (p > 1 ? `λ^${p}` : "λ") : ""}`;
   }).filter(Boolean).join(" ");
 };
-
-// ---------- General matrix calculator ----------
-export const MATRIX_OPS = ["A + B", "A − B", "A × B", "det(A)", "Inverse A⁻¹", "Transpose Aᵀ", "Aᵏ", "k × A", "Trace of A", "Rank of A"];
 export const matrixCalc: SciCalculator = (v) => {
   const op = pick(v.op, 10), A = mat(v, "A"), k = num(v.k, 2);
   const needB = () => mat(v, "B");
@@ -229,7 +226,6 @@ export const transpose: SciCalculator = (v) => {
   const sym = A.length === A[0].length && A.every((r, i) => r.every((x, j) => Math.abs(x - A[j][i]) < 1e-12));
   return { transpose: matText(At), size: dims(At), symmetric: sym ? 0 : 1 };
 };
-export const SYMMETRIC = ["Symmetric (A = Aᵀ)", "Not symmetric"];
 export const matrixPower: SciCalculator = (v) => {
   const A = mat(v, "A", true), k = Math.round(num(v.k, 3));
   return { result: matText(powM(A, k)), power: k };
@@ -247,7 +243,6 @@ export const rankCalc: SciCalculator = (v) => {
   const A = mat(v, "A"), r = rref(A).rank;
   return { rank: r, nullity: A[0].length - r, full: r === Math.min(A.length, A[0].length) ? 0 : 1 };
 };
-export const FULL_RANK = ["Full rank", "Rank deficient"];
 export const nullSpace: SciCalculator = (v) => {
   const A = mat(v, "A"), nb = nullBasis(A);
   return { basis: nb.length ? nb.map((b) => vecText(b)).join("\n") : "{0} — only the zero vector", nullity: nb.length, rank: A[0].length - nb.length };
@@ -308,7 +303,6 @@ export const diagonalize: SciCalculator = (v) => {
   const P = T(cols), D = diag.map((d, i) => diag.map((_, j) => (i === j ? d : 0)));
   return { result: 0, P: matText(P), D: matText(D), note: "A = P D P⁻¹ (columns of P are eigenvectors)." };
 };
-export const DIAG = ["Diagonalizable", "Not diagonalizable (over ℝ)"];
 export const luDecomp: SciCalculator = (v) => {
   const A = mat(v, "A", true);
   const r = M.lup(A);
@@ -362,7 +356,6 @@ export const linearIndependence: SciCalculator = (v) => {
   }
   return { result: indep ? 0 : 1, rank: r, relation };
 };
-export const INDEPENDENT = ["Linearly independent", "Linearly dependent"];
 export const matrixEquation: SciCalculator = (v) => {
   const A = mat(v, "A", true), B = mat(v, "B");
   if (B.length !== A.length) throw new InputError("B needs as many rows as A.");
@@ -435,7 +428,6 @@ export const complexMatrix: SciCalculator = (v) => {
   } else Object.assign(out, { determinant: "—", trace: "—", purity: "—", hermitian: 1, inverse: "—" });
   return out;
 };
-export const HERMITIAN = ["Hermitian (A = A*)", "Not Hermitian"];
 
 // ---------- Markov chains ----------
 export const transition: SciCalculator = (v) => {
@@ -455,7 +447,6 @@ export const dotProduct: SciCalculator = (v) => {
   const u = vec(v, "u"), w = vec(v, "w"), d = dot(u, w), nu = norm(u), nw = norm(w);
   return { dot: s(d, 12), angle: nu && nw ? s((Math.acos(Math.max(-1, Math.min(1, d / (nu * nw)))) * 180) / Math.PI, 10) : "—", projection: nw ? s(d / nw, 10) : "—", orthogonal: Math.abs(d) < 1e-12 ? 0 : 1 };
 };
-export const ORTHO = ["Orthogonal (dot product 0)", "Not orthogonal"];
 export const crossProduct: SciCalculator = (v) => {
   const u = vec(v, "u"), w = vec(v, "w");
   if (u.length > 3 || w.length > 3) throw new InputError("The cross product is defined for 3-D vectors.");
@@ -466,7 +457,6 @@ export const magnitude: SciCalculator = (v) => {
   const u = vec(v, "u"), m = norm(u);
   return { magnitude: s(m, 12), unit: m ? vecText(u.map((x) => x / m), 8) : "— (zero vector)", squared: s(m * m, 12) };
 };
-export const VEC_MODE = ["Components (x, y, z)", "Magnitude & direction angle (2-D)"];
 export const vectorAddition: SciCalculator = (v) => {
   const mode = pick(v.mode, 2);
   let u: number[], w: number[];
@@ -526,7 +516,6 @@ export const quaternion: SciCalculator = (v) => {
   const qt = (q: number[]) => `${fmt(q[0], 8)} ${q[1] < 0 ? "−" : "+"} ${fmt(Math.abs(q[1]), 8)}i ${q[2] < 0 ? "−" : "+"} ${fmt(Math.abs(q[2]), 8)}j ${q[3] < 0 ? "−" : "+"} ${fmt(Math.abs(q[3]), 8)}k`;
   return { result: op === 4 ? `rotated vector ${vecText(r.slice(1), 8)}` : qt(r), norm: s(Math.sqrt(n2), 12), angle: s((2 * Math.acos(Math.max(-1, Math.min(1, a[0] / Math.sqrt(n2)))) * 180) / Math.PI, 10) };
 };
-export const QUAT_OPS = ["q₁ × q₂", "q₁ + q₂", "Conjugate q₁*", "Inverse q₁⁻¹", "Rotate vector (x₂, y₂, z₂) by q₁"];
 
 export const sciLinCustomCalculators: Record<string, SciCalculator> = {
   "matrix-calculator": matrixCalc,

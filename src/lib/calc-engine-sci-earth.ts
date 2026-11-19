@@ -22,9 +22,6 @@ const fin = (x: number) => {
 const es = (T: number) => 0.61121 * Math.exp((18.678 - T / 234.5) * (T / (257.14 + T))); // kPa
 const isaP = (hm: number) => 101.325 * (1 - 2.25577e-5 * hm) ** 5.25588;
 const FT = 0.3048;
-
-// ---------- humidity & comfort ----------
-export const DEW_MODE = ["Dew point from temperature and RH", "Relative humidity from temperature and dew point"];
 export const dewPoint: SciCalculator = (v) => {
   const T = num(v.T, 25);
   if (pick(v.mode, 2) === 1) { const Td = num(v.Td, 15), rh = (100 * es(Td)) / es(T); return { Td: s(Td, 5), rh: s(Math.min(100, rh), 5), frost: "—", spread: s(T - Td, 5), comfort: comfort(Td) }; }
@@ -33,7 +30,6 @@ export const dewPoint: SciCalculator = (v) => {
   return { Td: s(Td, 5), rh: s(RH, 5), frost: Number.isFinite(fp) ? s(fp, 5) : "above freezing", spread: s(T - Td, 5), comfort: comfort(Td) };
 };
 const comfort = (Td: number) => (Td < 10 ? "Dry" : Td < 16 ? "Comfortable" : Td < 18 ? "Slightly humid" : Td < 21 ? "Humid" : Td < 24 ? "Very humid, uncomfortable" : "Oppressive");
-export const TEMP_UNIT = ["°C", "°F"];
 export const heatIndex: SciCalculator = (v) => {
   const f = pick(v.unit, 2) === 1, T = f ? num(v.T, 95) : (num(v.T, 35) * 9) / 5 + 32, R = Math.min(100, pos(v.rh, 50));
   let HI = 0.5 * (T + 61 + (T - 68) * 1.2 + R * 0.094);
@@ -51,7 +47,6 @@ export const airDensity: SciCalculator = (v) => {
   const pa = (1 - (P / 101.325) ** 0.190284) * 145366.45, da = (1 - ((rho / 1.225) ** 0.234969)) * 145442.16;
   return { rho: s(rho, 6), lbft3: s(rho * 0.062428, 6), pa: s(pa, 6), da: s(da, 6), ratio: s(100 * (rho / 1.225), 5) };
 };
-export const AQI_POLL = ["PM2.5 (24-h, µg/m³)", "PM10 (24-h, µg/m³)", "Ozone O₃ (8-h, ppm)", "Carbon monoxide CO (8-h, ppm)", "Sulfur dioxide SO₂ (1-h, ppb)", "Nitrogen dioxide NO₂ (1-h, ppb)"];
 const AQI_BP: number[][] = [[0, 9, 35.4, 55.4, 125.4, 225.4, 325.4], [0, 54, 154, 254, 354, 424, 604], [0, 0.054, 0.07, 0.085, 0.105, 0.2, 0.604], [0, 4.4, 9.4, 12.4, 15.4, 30.4, 50.4], [0, 35, 75, 185, 304, 604, 1004], [0, 53, 100, 360, 649, 1249, 2049]];
 const AQI_I = [0, 50, 100, 150, 200, 300, 500];
 const AQI_CAT = ["Good", "Moderate", "Unhealthy for sensitive groups", "Unhealthy", "Very unhealthy", "Hazardous"];
@@ -95,13 +90,11 @@ export const takeoff: SciCalculator = (v) => {
   const d = base * fDa * fW * fWind * fS * fSl;
   return { d: s(d, 5), m: s(d * FT, 5), da: s(da, 5), factor: s(d / base, 4), safe: s(d * 1.5, 5) };
 };
-export const SURFACES = ["Paved, dry", "Dry short grass (+15%)", "Wet grass (+30%)", "Soft / long grass (+25%)"];
 export const stallSpeed: SciCalculator = (v) => {
   const vs = pos(v.vs, 50), Wmax = pos(v.wmax, 2550), W = pos(v.w, 2200), bank = Math.min(89, num(v.bank, 30)), nlim = pos(v.n, 3.8);
   const n = 1 / Math.cos(bank * RAD), vsw = vs * Math.sqrt(W / Wmax);
   return { vsw: s(vsw, 5), turn: s(vsw * Math.sqrt(n), 5), n: s(n, 5), va: s(vs * Math.sqrt(nlim), 5), vaw: s(vs * Math.sqrt(nlim) * Math.sqrt(W / Wmax), 5) };
 };
-export const TURN_MODE = ["Aircraft (speed and bank angle)", "Road vehicle (wheelbase and steering angle)"];
 export const turnRadius: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) {
     const L = pos(v.wb, 2.7), a = num(v.steer, 35) * RAD, R = L / Math.sin(a), track = pos(v.track, 1.6);
@@ -111,7 +104,6 @@ export const turnRadius: SciCalculator = (v) => {
   return { R: s(R, 6), ft: s(R / FT, 6), rate: s((V / R) / RAD, 5), bank: s(Math.atan(((3 * RAD) * V) / G0) / RAD, 5), note: `Rate in °/s; standard rate (3°/s) needs the bank shown` };
 };
 export const BEAUFORT = [[0.5, "Calm"], [1.5, "Light air"], [3.3, "Light breeze"], [5.5, "Gentle breeze"], [7.9, "Moderate breeze"], [10.7, "Fresh breeze"], [13.8, "Strong breeze"], [17.1, "Near gale"], [20.7, "Gale"], [24.4, "Strong gale"], [28.4, "Storm"], [32.6, "Violent storm"], [Infinity, "Hurricane force"]] as [number, string][];
-export const WIND_UNITS = ["m/s", "km/h", "mph", "knots", "ft/s"];
 const WF = [1, 1 / 3.6, 0.44704, 0.514444, 0.3048];
 export const windSpeed: SciCalculator = (v) => {
   const ms = pos(v.x, 10) * WF[pick(v.unit, 5)], h1 = pos(v.h1, 10), h2 = pos(v.h2, 80), alpha = pos(v.alpha, 0.143), bf = BEAUFORT.findIndex(([lim]) => ms < lim);
@@ -123,7 +115,6 @@ export const wingCube: SciCalculator = (v) => {
   const cls = wcl < 4 ? "Glider / slow flyer" : wcl < 7 ? "Trainer / park flyer" : wcl < 10 ? "Sport" : wcl < 13 ? "Aerobatic / fast sport" : "Scale / warbird (fast)";
   return { wcl: s(wcl, 5), wl: s(wl, 5), cls, metric: s(wcl * 0.03, 5) };
 };
-export const WCL_UNIT = ["Imperial (oz, ft²)", "Metric (kg, dm²)"];
 export const trueAltitude: SciCalculator = (v) => {
   const ia = num(v.ia, 8000), elev = num(v.elev, 1000), oat = num(v.oat, -10) + 273.15, isaT = 288.15 - 0.0019812 * ia;
   const ta = elev + (ia - elev) * (oat / isaT);
@@ -134,20 +125,15 @@ export const horizon: SciCalculator = (v) => {
   const d = (h: number) => Math.sqrt(2 * Re * h + h * h);
   return { km: s((d(h1) + d(h2)) / 1000, 6), mi: s((d(h1) + d(h2)) / 1609.344, 6), nmi: s((d(h1) + d(h2)) / 1852, 6), one: s(d(h1) / 1000, 6) };
 };
-export const HOR_KIND = ["Geometric (no refraction)", "With standard optical refraction"];
 export const earthCurvature: SciCalculator = (v) => {
   const dkm = pos(v.d, 10), h = pos(v.h, 1.7), k = pick(v.refr, 2) === 0 ? 0.13 : 0, Re = RE / (1 - k), d = dkm * 1000;
   const dh = Math.sqrt(2 * Re * h + h * h), hidden = d > dh ? Math.sqrt((d - dh) ** 2 + Re * Re) - Re : 0, drop = (d * d) / (2 * Re);
   return { hidden: s(hidden, 6), drop: s(drop, 6), horizon: s(dh / 1000, 6), ft: s(hidden / FT, 6) };
 };
-export const REFR = ["Standard refraction (k = 0.13)", "No refraction"];
 export const lightning: SciCalculator = (v) => {
   const t = pos(v.t, 6), T = num(v.T, 20), c = 331.3 * Math.sqrt(1 + T / 273.15), d = c * t;
   return { km: s(d / 1000, 5), mi: s(d / 1609.344, 5), c: s(c, 5), safe: t <= 30 ? "Within 30 s (≈ 10 km): seek shelter now — the 30-30 rule" : "Storm is farther than ~10 km — stay alert" };
 };
-
-// ---------- geography & geology ----------
-export const SLOPE_MODE = ["From rise and run", "From angle (degrees)", "From percent grade"];
 export const slope: SciCalculator = (v) => {
   const m = pick(v.mode, 3), run0 = pos(v.run, 100);
   const r = m === 0 ? num(v.rise, 8) / run0 : m === 1 ? Math.tan(num(v.ang, 4.57) * RAD) : num(v.pct, 8) / 100;
@@ -159,7 +145,6 @@ export const triangulation: SciCalculator = (v) => {
   const da = (b * Math.sin(B)) / Math.sin(Cc), db = (b * Math.sin(A)) / Math.sin(Cc), perp = da * Math.sin(A);
   return { da: s(da, 6), db: s(db, 6), perp: s(perp, 6), C: s(Cc / RAD, 6), xy: `(${fmt(da * Math.cos(A), 6)}, ${fmt(perp, 6)}) from point A` };
 };
-export const DIP_MODE = ["Apparent dip from true dip", "Plate motion rate from distance and age"];
 export const apparentDip: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) { const d = pos(v.dist, 500), age = pos(v.age, 10); const r = (d * 1e5) / (age * 1e6); return { result: s(r, 6), unit: "cm/yr", alt: `${fmt(r * 10, 5)} mm/yr = ${fmt(r / 100, 5)} m/yr` }; }
   const td = num(v.dip, 40) * RAD, b = num(v.beta, 30) * RAD, ad = Math.atan(Math.tan(td) * Math.sin(b));
@@ -170,14 +155,12 @@ export const geoid: SciCalculator = (v) => {
   const x = k === 0 ? h - N : k === 1 ? H + N : h - H;
   return { result: s(x, 8), H: s(k === 0 ? x : H, 8), h: s(k === 1 ? x : h, 8), N: s(k === 2 ? x : N, 8) };
 };
-export const GEOID_SOLVE = ["Orthometric height H (MSL) = h − N", "Ellipsoidal height h (GPS) = H + N", "Geoid undulation N = h − H"];
 export const quake: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   if (m === 1) { const a = num(v.m1, 7), b = num(v.m2, 6), d = a - b; return { E: s(10 ** (1.5 * d), 6), tnt: s(10 ** d, 6), mag: s(d, 4), note: "Energy ratio (×) and ground amplitude ratio (×) between the two" }; }
   const M = m === 2 ? Math.log10(pos(v.amp, 10)) + 3 * Math.log10(8 * pos(v.dt, 20)) - 2.92 : num(v.M, 6.5), E = 10 ** (1.5 * M + 4.8);
   return { E: s(E, 6), tnt: s(E / 4.184e9, 6), mag: s(M, 4), note: M < 3 ? "Minor — rarely felt" : M < 5 ? "Light — felt, little damage" : M < 6 ? "Moderate — damage to weak buildings" : M < 7 ? "Strong — destructive in populated areas" : M < 8 ? "Major — serious damage over large areas" : "Great — devastating" };
 };
-export const QUAKE_MODE = ["Energy from magnitude", "Compare two magnitudes", "Local magnitude from amplitude and S−P time"];
 export const geomagDecl: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 0) {
     const d = num(v.decl, -1.5), tb = num(v.bearing, 90), yrs = num(v.years, 0), rate = num(v.rate, 0.1), dd = d + rate * yrs;
@@ -187,7 +170,6 @@ export const geomagDecl: SciCalculator = (v) => {
   const decl = Math.atan2(Math.sin(pL - lon) * Math.cos(pl), Math.cos(lat) * Math.sin(pl) - Math.sin(lat) * Math.cos(pl) * Math.cos(pL - lon)) / RAD;
   return { mag: s(decl, 5), tru: "—", decl: s(decl, 5), note: "Dipole estimate only (errors of several degrees) — use the NOAA/BGS World Magnetic Model for navigation" };
 };
-export const DECL_MODE = ["Convert bearings with a known declination", "Rough estimate from location (dipole model)"];
 
 // ---------- soils ----------
 export const soilTexture: SciCalculator = (v) => {
@@ -224,7 +206,6 @@ export const angleRepose: SciCalculator = (v) => {
   const h = pos(v.h, 1.4), r = pos(v.r, 2), a = Math.atan(h / r);
   return { ang: s(a / RAD, 6), h: s(h, 6), V: s((Math.PI * r * r * h) / 3, 6), note: a / RAD < 25 ? "Very free-flowing" : a / RAD < 35 ? "Free-flowing" : a / RAD < 45 ? "Fair flow" : "Cohesive / poor flow" };
 };
-export const REPOSE_MODE = ["Angle from pile height and radius", "Pile height & volume from angle and radius"];
 export const percolation: SciCalculator = (v) => {
   const drops = txt(v, "drops") ? listOf(v, "drops", 1) : [pos(v.drop, 0.5)], interval = pos(v.int, 30), metric = pick(v.unit, 2) === 1;
   const last = drops[drops.length - 1] / (metric ? 2.54 : 1);
@@ -232,10 +213,6 @@ export const percolation: SciCalculator = (v) => {
   const mpi = interval / last;
   return { mpi: s(mpi, 5), mpcm: s(interval / (last * 2.54), 5), rate: s(60 / mpi, 5), ok: mpi < 1 ? "Too fast — poor treatment (may need sand filter)" : mpi <= 60 ? "Usually acceptable for a conventional septic drain field" : mpi <= 120 ? "Slow — special design (mound) may be needed" : "Too slow for a drain field" };
 };
-export const PERC_UNIT = ["Inches", "Centimetres"];
-
-// ---------- temperature & quality ----------
-export const TEMP_SCALES = ["Kelvin (K)", "Fahrenheit (°F)", "Celsius (°C)", "Rankine (°R)"];
 export const tempConvert: SciCalculator = (v) => {
   const k = pick(v.from, 4), x = num(v.x, 300), K = k === 0 ? x : k === 1 ? ((x - 32) * 5) / 9 + 273.15 : k === 2 ? x + 273.15 : (x * 5) / 9;
   if (K < 0) throw new InputError("Below absolute zero.");
@@ -262,13 +239,10 @@ export const eui: SciCalculator = (v) => {
   const site = el + gas + other, src = el * 2.8 + gas * 1.05 + other;
   return { kwhm2: s(site / Am2, 6), kbtu: s((site * 3.412) / (Am2 / 0.09290304), 6), source: s(src / Am2, 6), co2: s((el * 0.37 + gas * 0.184) / Am2, 6), cmp: site / Am2 < 100 ? "Low (efficient)" : site / Am2 < 250 ? "Typical for offices/retail" : "High — audit recommended" };
 };
-export const AREA_UNIT = ["m²", "ft²"];
 
 // ---------- carbon footprints ----------
 const GRID: [string, number][] = [["World average", 0.48], ["United States", 0.37], ["United Kingdom", 0.21], ["European Union", 0.25], ["Canada", 0.12], ["Australia", 0.62], ["India", 0.71], ["China", 0.58], ["Bangladesh", 0.55], ["Malaysia", 0.58], ["Singapore", 0.41], ["France", 0.06], ["Germany", 0.38], ["Custom factor", 0]];
-export const GRIDS = GRID.map((g) => `${g[0]}${g[1] ? ` (${g[1]} kg/kWh)` : ""}`);
 const gridF = (v: { [k: string]: number | undefined }) => { const k = pick(v.grid, GRID.length); return k === GRID.length - 1 ? pos(v.gf, 0.4) : GRID[k][1]; };
-export const DIETS = ["Meat-heavy", "Average omnivore", "Low meat", "Vegetarian", "Vegan"];
 const DIET_T = [3.3, 2.5, 1.9, 1.7, 1.5];
 export const carbonFootprint: SciCalculator = (v) => {
   const n = Math.max(1, Math.round(pos(v.people, 2))), el = pos(v.kwh, 4000) * gridF(v), gas = pos(v.gas, 500) * 2.02, car = pos(v.km, 12000) * 0.17, fl = pos(v.fh, 10) * 90, diet = DIET_T[pick(v.diet, 5)] * 1000 * n, goods = pos(v.spend, 3000) * 0.3;
@@ -279,15 +253,12 @@ export const ecoFootprint: SciCalculator = (v) => {
   const food = [1.6, 1.2, 1.0, 0.8, 0.6][pick(v.diet, 5)], home = pos(v.area, 40) * 0.008, energy = pos(v.kwh, 3000) * 0.00025, car = pos(v.km, 10000) * 0.00015, fl = pos(v.fh, 8) * 0.012, goods = [0.3, 0.6, 1.0][pick(v.goods, 3)], gha = 0.5 + food + home + energy + car + fl + goods;
   return { gha: s(gha, 5), earths: s(gha / 1.6, 4), parts: `food ${fmt(food, 3)}, housing ${fmt(home + energy, 3)}, transport ${fmt(car + fl, 3)}, goods ${fmt(goods, 3)}, shared services 0.5 gha`, day: gha > 1.6 ? `Overshoot — if everyone lived like you, resources for the year would run out around day ${Math.round((365 * 1.6) / gha)}` : "Within Earth's biocapacity" };
 };
-export const GOODS = ["Low consumption", "Average", "High consumption"];
 const GAS_GWP: [string, number][] = [["CO₂", 1], ["Methane CH₄ (fossil)", 29.8], ["Methane CH₄ (biogenic)", 27], ["Nitrous oxide N₂O", 273], ["HFC-134a", 1530], ["HFC-32", 771], ["R-410A blend", 2256], ["Sulfur hexafluoride SF₆", 25200], ["Nitrogen trifluoride NF₃", 17400]];
-export const GHG_GASES = GAS_GWP.map((g) => g[0]);
 export const ghgEquiv: SciCalculator = (v) => {
   const k = pick(v.gas, GAS_GWP.length), kg = pos(v.kg, 1000), t = (kg * GAS_GWP[k][1]) / 1000;
   return { t: s(t, 8), gwp: GAS_GWP[k][1], equiv: `≈ ${fmt(t / 4.6, 4)} cars driven for a year; ${fmt((t * 1000) / 8.887, 5)} US gallons of petrol; ${fmt(t / 0.06, 5)} tree seedlings grown 10 years; ${fmt(t / 5.1, 4)} homes' electricity for a year`, note: "GWP100 values from IPCC AR6" };
 };
 const FOOD: [string, number][] = [["Beef", 99.5], ["Lamb", 39.7], ["Cheese", 23.9], ["Pork", 12.3], ["Poultry", 9.9], ["Farmed fish", 13.6], ["Eggs", 4.7], ["Milk (L)", 3.2], ["Rice", 4.5], ["Tofu", 3.2], ["Bread / wheat", 1.6], ["Vegetables", 0.5], ["Fruit", 0.9], ["Nuts", 0.4]];
-export const FOOD_LIST = FOOD.map((f) => f[0]).join(", ");
 export const foodCarbon: SciCalculator = (v) => {
   const q = txt(v, "amounts") ? listOf(v, "amounts", 1) : [];
   if (q.length > FOOD.length) throw new InputError(`Enter up to ${FOOD.length} amounts, in the order listed.`);
@@ -301,8 +272,6 @@ export const offset: SciCalculator = (v) => {
 };
 export const FUELS = ["Petrol / gasoline (2.31 kg/L)", "Diesel (2.68 kg/L)", "LPG (1.51 kg/L)", "Electric (kWh/100 km × grid)"];
 const FUEL_K = [2.31, 2.68, 1.51];
-export const ECON_UNIT = ["L/100 km (or kWh/100 km)", "US mpg (or mi/kWh)"];
-export const EURO = ["Euro 6 petrol (0.06 g/km NOx)", "Euro 6 diesel (0.08)", "Euro 5 diesel (0.18)", "Euro 4 diesel (0.25)", "Pre-2005 (0.5)", "Electric (0)"];
 const NOX = [0.06, 0.08, 0.18, 0.25, 0.5, 0];
 export const carCarbon: SciCalculator = (v) => {
   const km = pos(v.km, 15000), f = pick(v.fuel, 4), e = pos(v.econ, 7), mpg = pick(v.eunit, 2) === 1;
@@ -316,7 +285,6 @@ export const flightCarbon: SciCalculator = (v) => {
   return { kg: s(kg, 6), t: s(kg / 1000, 6), perPax: s(kg / pax, 6), trees: Math.ceil(kg / 22), note: `${fmt(f)} kg CO₂/passenger-km ${rf > 1 ? "× 1.9 radiative forcing" : "(CO₂ only)"}; 8% route uplift` };
 };
 export const TRIP = ["Return trip", "One way"];
-export const RF_OPT = ["Include non-CO₂ warming (×1.9)", "CO₂ only"];
 export const electricityCo2: SciCalculator = (v) => {
   const kwh = pos(v.kwh, 4000), g = gridF(v), kwp = pos(v.kwp, 5), yieldK = pos(v.yield, 1300), co2 = kwh * g, gen = kwp * yieldK, embodied = kwp * 1500;
   return { kg: s(co2, 6), t: s(co2 / 1000, 6), avoided: s(gen * g, 6), payback: g ? s(embodied / (gen * g), 4) : "—", lifecycle: s((embodied / (gen * 25)) * 1000, 4) };

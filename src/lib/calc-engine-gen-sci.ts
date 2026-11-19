@@ -42,7 +42,6 @@ const GROUPS: [string, string, U[]][] = [
   ["Energy", "J", [["Joule (J)", 1], ["Kilojoule (kJ)", 1000], ["Calorie (cal)", 4.184], ["Kilocalorie (kcal / food Calorie)", 4184], ["Watt-hour (Wh)", 3600], ["Kilowatt-hour (kWh)", 3.6e6], ["BTU", 1055.05585262]]],
   ["Pressure", "Pa", [["Pascal (Pa)", 1], ["Kilopascal (kPa)", 1000], ["Bar", 100000], ["PSI (lb/in²)", 6894.757293168], ["Atmosphere (atm)", 101325], ["mmHg (torr)", 133.322387415], ["inHg", 3386.389]]],
 ];
-export const UNIT_OPTIONS = GROUPS.flatMap(([g, , us]) => us.map((u) => `${g} — ${u[0]}`));
 const FLAT = GROUPS.flatMap(([g, base, us], gi) => us.map((u) => ({ g, gi, base, u })));
 const toBase = (u: U, x: number) => (typeof u[1] === "number" ? x * u[1] : u[1](x));
 const fromBase = (u: U, x: number) => (typeof u[1] === "number" ? x / u[1] : u[2]!(x));
@@ -55,9 +54,6 @@ export const unitConverter: Calc = (v) => {
   const factor = typeof f.u[1] === "number" && typeof t.u[1] === "number" ? `1 ${f.u[0].split(" (")[0].toLowerCase()} = ${show(f.u[1] / t.u[1], 10)} ${t.u[0].split(" (")[0].toLowerCase()}` : "Temperature scales use offsets, not a single factor";
   return { result: `${show(x, 12)} ${f.u[0]} = ${show(r, 10)} ${t.u[0]}`, value: sig(r, 12), factor, group: f.g, all };
 };
-
-// ------------------------------------------------------------------ speed, distance, time
-export const SDT_SOLVE = ["Speed (from distance & time)", "Distance (from speed & time)", "Time (from distance & speed)"];
 export const SDT_DIST = ["Miles", "Kilometres", "Metres", "Feet", "Nautical miles"];
 const DIST_M = [1609.344, 1000, 1, 0.3048, 1852];
 export const SDT_SPEED = ["mph", "km/h", "m/s", "ft/s", "knots"];
@@ -119,9 +115,6 @@ export const weightedAverage: Calc = (v) => {
   const table = xs.map((x, i) => `${show(x)} × ${show(ws[i])} = ${show(x * ws[i])}  (weight share ${show((ws[i] / W) * 100, 4)}%)`).join("\n");
   return { result: sig(wa, 12), sumW: sig(W, 12), sumWX: sig(wx, 12), plain: sig(plain, 12), diff: `${wa >= plain ? "+" : "−"}${show(Math.abs(wa - plain), 8)} vs the simple average`, table };
 };
-
-// ------------------------------------------------------------------ dice probability
-export const DICE_CMP = ["Exactly the target", "At least the target", "At most the target", "More than the target", "Less than the target"];
 export const diceProbability: Calc = (v) => {
   const n = Math.round(num(v.n, 2)), s = Math.round(num(v.sides, 6)), t = Math.round(num(v.target, 7)), cmp = pick(v.cmp, 5);
   if (n < 1 || n > 100) throw new InputError("Use 1 to 100 dice.");
@@ -145,10 +138,6 @@ export const diceProbability: Calc = (v) => {
     stats: `Mean ${show(mean)}, standard deviation ${show(sd, 6)}`,
   };
 };
-
-// ------------------------------------------------------------------ relative humidity (Magnus–Alduchov–Eskridge)
-export const RH_MODES = ["Relative humidity from temperature & dew point", "Dew point from temperature & relative humidity"];
-export const TEMP_UNITS = ["°F", "°C"];
 const A_ = 17.625, B_ = 243.04;
 const es = (c: number) => 6.1094 * Math.exp((A_ * c) / (B_ + c)); // saturation vapour pressure, hPa
 export const relativeHumidity: Calc = (v) => {

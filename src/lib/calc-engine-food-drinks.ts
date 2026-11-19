@@ -211,7 +211,6 @@ export const espresso: CustomCalculator = (v) => {
 };
 
 export const METHODS: [string, number, number][] = [["Drip / auto-drip (1:16)", 16, 0], ["Pour over / V60 (1:16)", 16, 1], ["Chemex (1:16)", 16, 1], ["French press (1:15)", 15, 2], ["AeroPress (1:13)", 13, 3], ["Moka pot (1:7)", 7, 4], ["Percolator (1:17)", 17, 2]];
-export const GRIND_LABELS = ["Medium", "Medium-fine", "Coarse", "Fine-medium", "Fine"];
 export const coffeeRatio: CustomCalculator = (v) => {
   const m = METHODS[pick(v.method, METHODS.length)];
   const ratio = m[1] * [1.1, 1, 0.9][pick(v.strength, 3)];

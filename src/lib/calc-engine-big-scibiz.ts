@@ -24,7 +24,6 @@ const usd = (x: number) => `$${x.toLocaleString("en-US", { minimumFractionDigits
 
 // ------------------------------------------------------------------ energy converter
 export const EN_UNITS: [string, number][] = [["joules (J)", 1], ["kilojoules (kJ)", 1e3], ["megajoules (MJ)", 1e6], ["watt-hours (Wh)", 3600], ["kilowatt-hours (kWh)", 3.6e6], ["calories (cal)", 4.184], ["kilocalories / food Calories (kcal)", 4184], ["BTU", 1055.05585262], ["therms", 105505585.262], ["electronvolts (eV)", 1.602176634e-19], ["foot-pounds (ft·lbf)", 1.3558179483], ["ergs", 1e-7]];
-export const EN_LABELS = EN_UNITS.map((u) => u[0]);
 export const energyConverter: Calc = (v) => {
   const x = num(v.value, 1), from = EN_UNITS[pick(v.from, EN_UNITS.length)], to = EN_UNITS[pick(v.to, EN_UNITS.length)];
   const j = x * from[1];
@@ -43,7 +42,6 @@ export const LE_PRESETS: [string, number, number, number, number, number, number
   // name, z+, z−, r+ pm, r− pm, ν, Madelung M, Born n
   ["Custom", 1, 1, 102, 181, 2, 1.74756, 8], ["NaCl", 1, 1, 102, 181, 2, 1.74756, 8], ["KCl", 1, 1, 138, 181, 2, 1.74756, 9], ["LiF", 1, 1, 76, 133, 2, 1.74756, 6], ["NaF", 1, 1, 102, 133, 2, 1.74756, 7], ["KBr", 1, 1, 138, 196, 2, 1.74756, 9.5], ["MgO", 2, 2, 72, 140, 2, 1.74756, 7], ["CaO", 2, 2, 100, 140, 2, 1.74756, 8], ["CaF₂", 2, 1, 100, 133, 3, 2.51939, 8], ["CsCl", 1, 1, 167, 181, 2, 1.76267, 10.5],
 ];
-export const LE_LABELS = LE_PRESETS.map((p) => p[0]);
 export const latticeEnergy: Calc = (v) => {
   const i = pick(v.preset, LE_PRESETS.length), p = LE_PRESETS[i];
   const [zc, za, rc, ra, nu, M, n] = i === 0 ? [num(v.zc, 1), num(v.za, 1), num(v.rc, 102), num(v.ra, 181), num(v.nu, 2), num(v.madelung, 1.74756), num(v.born, 8)] : p.slice(1) as number[];
@@ -59,9 +57,6 @@ export const latticeEnergy: Calc = (v) => {
     trend: "Lattice energy rises with higher charges and smaller ions.",
   };
 };
-
-// ------------------------------------------------------------------ HP to amps
-export const HP_PHASES = ["DC", "Single-phase AC", "Three-phase AC"];
 export const hpToAmps: Calc = (v) => {
   const hp = num(v.hp, 10), V = num(v.volts, 230), ph = pick(v.phase, 3), eff = num(v.eff, 90) / 100, pf = num(v.pf, 0.85);
   if (!(hp > 0) || !(V > 0) || !(eff > 0) || eff > 1) throw new InputError("Enter horsepower, voltage and an efficiency of 1–100%.");
@@ -107,9 +102,6 @@ export const starRating: Calc = (v) => {
     positive: `${show(((c[3] + c[4]) / n) * 100, 3)}% positive (4–5 stars)`,
   };
 };
-
-// ------------------------------------------------------------------ meeting cost
-export const MC_PAY = ["Average annual salary", "Average hourly rate"];
 export const meetingCost: Calc = (v) => {
   const ppl = num(v.people, 8), pay = num(v.pay, 75000), mode = pick(v.payType, 2), mins = num(v.minutes, 60), per = num(v.perWeek, 1), load = num(v.load, 1.3);
   if (!(ppl > 0) || !(pay > 0) || !(mins > 0)) throw new InputError("Enter attendees, pay and meeting length.");
@@ -125,8 +117,6 @@ export const meetingCost: Calc = (v) => {
 
 // ------------------------------------------------------------------ safety stock
 export const SS_LEVELS: [string, number][] = [["90%", 1.2816], ["95%", 1.6449], ["97.5%", 1.96], ["98%", 2.0537], ["99%", 2.3263], ["99.5%", 2.5758], ["99.9%", 3.0902]];
-export const SS_LEVEL_LABELS = SS_LEVELS.map((s) => s[0]);
-export const SS_METHODS = ["Statistical (service level × demand and lead-time variability)", "Max–min (max daily × max lead time − average × average)"];
 export const safetyStock: Calc = (v) => {
   const m = pick(v.method, 2), d = num(v.demand, 100), sd = num(v.sdDemand, 20), lt = num(v.lead, 7), sdl = num(v.sdLead, 0), dmax = num(v.maxDemand, 140), ltmax = num(v.maxLead, 10);
   if (!(d > 0) || !(lt > 0)) throw new InputError("Enter average daily demand and lead time.");
@@ -139,9 +129,6 @@ export const safetyStock: Calc = (v) => {
     method: m === 0 ? `Z = ${z} for a ${lvl} service level: SS = Z × √(LT × σd² + d² × σLT²)` : "SS = max daily demand × max lead time − average daily demand × average lead time",
   };
 };
-
-// ------------------------------------------------------------------ valve Cv
-export const CV_MODES = ["Liquid: find Cv from flow", "Liquid: find flow from Cv", "Gas: find Cv from flow (scfm)"];
 export const valveCv: Calc = (v) => {
   const m = pick(v.mode, 3), q = num(v.flow, 10), cv = num(v.cv, 2), dp = num(v.dp, 10), sg = num(v.sg, 1), p1 = num(v.p1, 100), tf = num(v.temp, 68);
   if (!(dp > 0) || !(sg > 0)) throw new InputError("Enter a pressure drop and specific gravity above zero.");
@@ -174,7 +161,6 @@ export const pigGestation: Calc = (v) => {
 // ------------------------------------------------------------------ lottery odds
 const nCk = (n: number, k: number) => { if (k < 0 || k > n) return 0; let r = 1; for (let i = 1; i <= k; i++) r = (r * (n - k + i)) / i; return Math.round(r); };
 export const LO_GAMES: [string, number, number, number][] = [["Powerball (5 of 69 + 1 of 26)", 69, 5, 26], ["Mega Millions (5 of 70 + 1 of 24)", 70, 5, 24], ["Lotto America (5 of 52 + 1 of 10)", 52, 5, 10], ["Lucky for Life (5 of 48 + 1 of 18)", 48, 5, 18], ["EuroMillions (5 of 50 + 2 of 12)", 50, 5, -12], ["Custom pick-N game", 0, 0, 0]];
-export const LO_LABELS = LO_GAMES.map((g) => g[0]);
 export const lotteryOdds: Calc = (v) => {
   const gi = pick(v.game, LO_GAMES.length), g = LO_GAMES[gi], t = Math.max(1, Math.round(num(v.tickets, 1)));
   const [N, K, B] = gi === LO_GAMES.length - 1 ? [Math.round(num(v.pool, 49)), Math.round(num(v.pick, 6)), Math.round(num(v.bonus, 0))] : [g[1], g[2], g[3]];

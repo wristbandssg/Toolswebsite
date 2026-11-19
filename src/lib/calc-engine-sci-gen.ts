@@ -66,7 +66,6 @@ const ABO_GENO: Record<string, [string, number][]> = {
 };
 const RH_GENO: Record<string, [string, number][]> = { "+": [["DD", 0.61 ** 2], ["Dd", 2 * 0.61 * 0.39]], "-": [["dd", 1]], "?": [["DD", 0.61 ** 2], ["Dd", 2 * 0.61 * 0.39], ["dd", 0.39 ** 2]] };
 export const ABO_TYPES = ["A", "B", "AB", "O"];
-export const RH_TYPES = ["Rh+ (positive)", "Rh− (negative)", "Unknown"];
 const norm = (l: [string, number][]) => { const t = sum(l.map(([, w]) => w)); return l.map(([g, w]) => [g, w / t] as [string, number]); };
 export const bloodType: SciCalculator = (v) => {
   const t1 = ABO_TYPES[pick(v.a1, 4)], t2 = ABO_TYPES[pick(v.a2, 4)], r1 = ["+", "-", "?"][pick(v.r1, 3)], r2 = ["+", "-", "?"][pick(v.r2, 3)];
@@ -112,9 +111,6 @@ export const heightGenetics: SciCalculator = (v) => {
   return { cm: s(mid, 6), range: `${fmt(mid - 8.5, 5)}–${fmt(mid + 8.5, 5)} cm`, ft: ftin(mid), rangeFt: `${ftin(mid - 8.5)} – ${ftin(mid + 8.5)}` };
 };
 export const SEX = ["Boy", "Girl"];
-
-// ---------- population genetics & ecology ----------
-export const HW_MODE = ["Genotype counts (AA, Aa, aa)", "Allele frequency p", "Recessive phenotype frequency (q²)"];
 export const hardyWeinberg: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   let p: number, chi: number | string = "—", pv: number | string = "—";
@@ -131,7 +127,6 @@ export const hardyWeinberg: SciCalculator = (v) => {
   const q = 1 - p;
   return { p: s(p, 8), q: s(q, 8), AA: s(p * p, 8), Aa: s(2 * p * q, 8), aa: s(q * q, 8), chi, pval: pv, eq: typeof pv === "number" ? (pv < 0.05 ? "Deviates from Hardy-Weinberg equilibrium (p < 0.05)" : "Consistent with equilibrium") : "—" };
 };
-export const POP_MODE = ["Exponential (continuous)", "Discrete (compound) growth", "Logistic (carrying capacity K)", "Growth rate from two counts"];
 export const populationGrowth: SciCalculator = (v) => {
   const m = pick(v.mode, 4), N0 = pos(v.N0, 1000), r = num(v.r, 5) / 100, t = pos(v.t, 10), K = pos(v.K, 10000);
   if (m === 3) {
@@ -142,7 +137,6 @@ export const populationGrowth: SciCalculator = (v) => {
   const dbl = m === 1 ? Math.log(2) / Math.log(1 + r) : Math.LN2 / r;
   return { Nt: s(fin(Nt), 8), rate: s(100 * r, 8), doubling: r > 0 ? s(dbl, 8) : "—", note: m === 2 ? `dN/dt now = ${fmt(r * Nt * (1 - Nt / K), 6)} per time unit` : `Change ${fmt(Nt - N0, 8)}` };
 };
-export const CK_MODE = ["Logistic projection with known K", "Estimate K from three equally spaced counts"];
 export const carryingCapacity: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) {
     const [a, b, c] = [pos(v.n0, 100), pos(v.n1, 400), pos(v.n2, 900)], den = b * b - a * c;
@@ -178,8 +172,6 @@ export const hemocytometer: SciCalculator = (v) => {
   const avg = mean(c), cells = avg * dil * 1e4, total = cells * vol, live = sum(c);
   return { conc: s(cells, 6), total: s(total, 6), viability: dead ? s((100 * live) / (live + dead), 5) : "enter dead count", avg: s(avg, 6) };
 };
-export const SEED_MODE = ["Cells per well", "Cells per cm² (surface density)"];
-export const PLATE_AREAS = ["96-well (0.32 cm²)", "48-well (0.95 cm²)", "24-well (1.9 cm²)", "12-well (3.8 cm²)", "6-well (9.6 cm²)", "T-25 (25 cm²)", "T-75 (75 cm²)", "100 mm dish (55 cm²)"];
 const AREA = [0.32, 0.95, 1.9, 3.8, 9.6, 25, 75, 55];
 export const cellSeeding: SciCalculator = (v) => {
   const conc = pos(v.conc, 1e6), wells = Math.max(1, Math.round(pos(v.wells, 24))), vol = pos(v.vol, 0.5), over = 1 + pos(v.over, 10) / 100;
@@ -194,13 +186,11 @@ export const doublingTime: SciCalculator = (v) => {
   const n = Math.log2(N / N0);
   return { td: s(t / n, 8), doublings: s(n, 8), rate: s(Math.log(N / N0) / t, 8), perDay: s((n / t) * 24, 6) };
 };
-export const CFU_MODE = ["Single plate", "Average of several plates"];
 export const cfu: SciCalculator = (v) => {
   const cols = pick(v.mode, 2) === 0 ? [pos(v.colonies, 120)] : listOf(v, "list", 1), dil = pos(v.dil, 1e5), vol = pos(v.vol, 0.1);
   const c = mean(cols), x = (c * dil) / vol;
   return { cfu: s(x, 6), log: s(Math.log10(x), 5), mean: s(c, 6), countable: c >= 30 && c <= 300 ? "Countable (30–300)" : "Outside 30–300 — use another dilution" };
 };
-export const LR_MODE = ["From counts before and after", "From percent reduction", "From log reduction"];
 export const logReduction: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   const L = m === 0 ? Math.log10(pos(v.before, 1e6) / Math.max(1e-300, pos(v.after, 10))) : m === 1 ? -Math.log10(1 - Math.min(99.999999999, pos(v.pct, 99.9)) / 100) : pos(v.log, 3);
@@ -218,7 +208,6 @@ export const dmso: SciCalculator = (v) => {
   const sv = (target * V) / (stock * 1000), dm = (100 * sv) / V;
   return { stockUl: s(sv, 6), medium: s(V - sv, 6), dmso: s(dm, 6), advice: dm > max ? `DMSO ${fmt(dm, 4)}% exceeds ${fmt(max)}% — make an intermediate dilution or a more concentrated stock (≥ ${fmt((target * 100) / (max * 1000), 5)} mM).` : "DMSO within limit" };
 };
-export const SA_MODE = ["Enzyme: units and protein", "Enzyme: from ΔA/min (spectrophotometric assay)", "Radioactivity per mole"];
 export const specificActivity: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   if (m === 2) {
@@ -239,7 +228,6 @@ export const ramanShift: SciCalculator = (v) => {
   const sh = num(v.shift, 1000), l = 1e7 / (1e7 / l0 - sh);
   return { shift: s(sh, 8), lambda: s(fin(l), 8), energy: s(sh * 1.23984198e-4 * 1000, 6) };
 };
-export const RAMAN_MODE = ["Shift from wavelengths", "Scattered wavelength from shift"];
 
 // ---------- lab instruments & measurements ----------
 export const columnVolume: SciCalculator = (v) => {
@@ -277,7 +265,6 @@ export const saToV: SciCalculator = (v) => {
   return { ratio: s(SA / V, 8), SA: s(SA, 8), V: s(V, 8), simplified: `${fmt(SA / V, 5)} : 1` };
 };
 export const SHAPES = ["Cube (side a)", "Sphere (radius a)", "Cylinder (radius a, height b)", "Rectangular prism (a × b × c)"];
-export const STDADD_MODE = ["Percent recovery (spike recovery)", "Standard addition (unknown from spiked series)"];
 export const standardAddition: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 0) {
     const sp = num(v.spiked, 19.2), un = num(v.unspiked, 9.8), add = pos(v.added, 10);

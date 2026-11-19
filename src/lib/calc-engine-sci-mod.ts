@@ -28,14 +28,12 @@ export const timeDilation: SciCalculator = (v) => {
   const b = beta(v), g = 1 / Math.sqrt(1 - b * b), t0 = pos(v.t0, 1), L0 = pos(v.L0, 1);
   return { t: s(g * t0), gamma: s(g, 12), L: s(L0 / g), speed: s(b * C), diff: s(g * t0 - t0) };
 };
-export const COUL_SOLVE = ["Force F", "Charge q₁", "Distance r"];
 export const coulomb: SciCalculator = (v) => {
   const k = pick(v.solve, 3), q2 = num(v.q2, 2e-6), F = num(v.F, 0), q1 = num(v.q1, 1e-6), r = pos(v.r, 0.05);
   const x = fin(k === 0 ? (KC * q1 * q2) / (r * r) : k === 1 ? (F * r * r) / (KC * q2) : Math.sqrt(Math.abs((KC * q1 * q2) / F)));
   const Fv = k === 0 ? x : F, q1v = k === 1 ? x : q1;
   return { result: s(x), type: q1v * q2 > 0 ? "Repulsive (like charges)" : q1v * q2 < 0 ? "Attractive (opposite charges)" : "No force", magnitude: s(Math.abs(Fv)), k: s(KC, 10) };
 };
-export const EMC_SOLVE = ["Energy from mass", "Mass from energy"];
 export const emc2: SciCalculator = (v) => {
   const toE = pick(v.solve, 2) === 0, m = toE ? pos(v.m, 0.001) : pos(v.E, 9e13) / (C * C), E = m * C * C;
   return { E: s(E), m: s(m), kwh: s(E / 3.6e6), mev: s(E / QE / 1e6), tnt: s(E / 4.184e9, 8) };
@@ -45,7 +43,6 @@ export const magneticFlux: SciCalculator = (v) => {
   const phi = B * A * Math.cos(th);
   return { phi: s(phi), maxwell: s(phi * 1e8), linkage: s(N * phi), density: s(B, 10) };
 };
-export const PHOTON_MODE = ["Wavelength (nm)", "Frequency (Hz)", "Energy (eV)"];
 export const photonEnergy: SciCalculator = (v) => {
   const m = pick(v.mode, 3), x = pos(v.x, 500);
   if (!x) throw new InputError("Enter a positive value.");
@@ -72,7 +69,6 @@ export const magneticForce: SciCalculator = (v) => {
   const N = pos(v.N, 500), L = pos(v.L, 0.2), Bs = fin((MU0 * N * I) / L);
   return { result: s(Bs), unit: "T (field)", extra: `${fmt(Bs * 1e4, 8)} gauss; n = ${fmt(N / L)} turns/m` };
 };
-export const COOL_MODE = ["Temperature after time t", "Time to reach a temperature", "Find k from one measurement"];
 export const newtonCooling: SciCalculator = (v) => {
   const m = pick(v.mode, 3), T0 = num(v.T0, 90), Ta = num(v.Ta, 20);
   let k = pos(v.k, 0.05);
@@ -89,7 +85,6 @@ export const newtonCooling: SciCalculator = (v) => {
   const t = pos(v.t, 30);
   return { result: s(Ta + (T0 - Ta) * Math.exp(-k * t), 8), k: s(k, 8), half: s(Math.LN2 / k, 8), label: "temperature" };
 };
-export const EFIELD_MODE = ["Point charge: E = kq/r²", "Parallel plates: E = V/d"];
 export const electricField: SciCalculator = (v) => {
   const E = pick(v.mode, 2) === 0 ? fin((KC * num(v.q, 1e-9)) / pos(v.r, 0.1) ** 2) : fin(num(v.V, 100) / pos(v.d, 0.01));
   const qt = num(v.qt, QE);
@@ -102,7 +97,6 @@ export const rydberg: SciCalculator = (v) => {
   const series = ["Lyman (UV)", "Balmer (visible)", "Paschen (IR)", "Brackett (IR)", "Pfund (IR)", "Humphreys (IR)"][n1 - 1] ?? "far infrared";
   return { nm: s(lam * 1e9), eV: s((H * C * inv) / QE), f: s(C * inv), inv: s(inv), series };
 };
-export const THERMO_MODE = ["First law: ΔU = Q − W", "Isothermal ideal gas", "Isobaric ideal gas", "Adiabatic ideal gas"];
 export const thermodynamics: SciCalculator = (v) => {
   const m = pick(v.mode, 4);
   if (m === 0) {
@@ -122,7 +116,6 @@ export const thermodynamics: SciCalculator = (v) => {
   const T2 = T1 * (V1 / V2) ** (g - 1), dU = n * Cv * (T2 - T1);
   return { W: s(-dU), Q: 0, dU: s(dU), T2: s(T2), note: `PV^γ constant; P₂ = ${fmt((n * R_GAS * T2) / V2, 8)} Pa` };
 };
-export const DEB_MODE = ["Mass and velocity", "Electron accelerated through a voltage", "Particle with kinetic energy (eV)"];
 export const deBroglie: SciCalculator = (v) => {
   const m = pick(v.mode, 3), mass = pos(v.m, ME);
   let p: number;
@@ -157,7 +150,6 @@ export const particleBox: SciCalculator = (v) => {
   const dE = En(n + 1) - En(n);
   return { J: s(En(n)), eV: s(En(n) / QE), next: s(dE / QE), lambda: s(((H * C) / dE) * 1e9), ground: s(En(1) / QE) };
 };
-export const POT_MODE = ["Point charge: V = kq/r", "Uniform field: V = E·d", "Cell EMF: ε = V + Ir"];
 export const electricPotential: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   if (m === 2) {
@@ -167,7 +159,6 @@ export const electricPotential: SciCalculator = (v) => {
   const V = m === 0 ? fin((KC * num(v.Q, 1e-9)) / pos(v.r, 0.1)) : num(v.E, 1000) * num(v.d, 0.05);
   return { V: s(V), U: s(V * num(v.q, 1)), note: "U = qV is the potential energy of charge q" };
 };
-export const FARADAY_MODE = ["Changing flux: ε = −NΔΦ/Δt", "Moving rod: ε = BLv", "Rotating coil (generator peak): ε = NBAω"];
 export const faraday: SciCalculator = (v) => {
   const m = pick(v.mode, 3), N = Math.max(1, Math.round(pos(v.N, 100))), R = pos(v.R, 0);
   let e: number;

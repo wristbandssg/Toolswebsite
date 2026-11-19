@@ -11,9 +11,6 @@
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, compileFn, polyCoeffs, polyText, simplifyText, listOf, matrixOf, polyRoots, complexText } from "./sci-math-core";
-
-// ---------- Exponent rules ----------
-export const EXP_RULES = ["Product: aᵐ · aⁿ = aᵐ⁺ⁿ", "Quotient: aᵐ ÷ aⁿ = aᵐ⁻ⁿ", "Power of a power: (aᵐ)ⁿ = aᵐⁿ", "Negative exponent: a⁻ⁿ = 1/aⁿ", "Fractional: a^(m/n) = ⁿ√(aᵐ)", "Zero exponent: a⁰ = 1"];
 export const exponentRules: SciCalculator = (v) => {
   const a = num(v.a, 2), m = num(v.m, 3), n = num(v.n, 4), r = pick(v.rule, 6);
   const [exp, text] = [
@@ -62,9 +59,6 @@ export const domainRange: SciCalculator = (v) => {
   const mn = Math.min(...ys), mx = Math.max(...ys);
   return { undefinedAt: desc, rangeMin: sig(mn, 10), rangeMax: sig(mx, 10), range: `[${fmt(mn, 6)}, ${fmt(mx, 6)}] within the window${mx > 1e6 || mn < -1e6 ? " (grows without bound near an asymptote)" : ""}` };
 };
-
-// ---------- Radicals ----------
-export const RAD_OPS = ["Simplify ⁿ√a", "Rationalise a / √b", "Add c₁√a + c₂√b"];
 const simpRad = (a: number, n: number): [number, number] => {
   let out = 1, inside = Math.round(a);
   for (let k = 2; k ** n <= inside; k++) while (inside % k ** n === 0) {
@@ -122,9 +116,6 @@ export const piecewise: SciCalculator = (v) => {
     }).join("\n"),
   };
 };
-
-// ---------- Logarithm properties ----------
-export const LOG_MODE = ["Expand log_b(xᵖ · yᵠ / zʳ)", "Condense p·log x + q·log y − r·log z"];
 export const logProperties: SciCalculator = (v) => {
   const b = num(v.base, 10), x = pos(v.x, 8), y = pos(v.y, 5), z = pos(v.z, 2), p = num(v.p, 2), q = num(v.q, 1), r = num(v.r, 3);
   if (!(b > 0) || b === 1 || !(x > 0) || !(y > 0) || !(z > 0)) throw new InputError("Base must be positive and not 1, and x, y, z must be positive.");
@@ -133,9 +124,6 @@ export const logProperties: SciCalculator = (v) => {
   const value = p * L(x) + q * L(y) - r * L(z);
   return { value: sig(value, 12), expanded: `${fmt(p)}·${bt}(${fmt(x)}) + ${fmt(q)}·${bt}(${fmt(y)}) − ${fmt(r)}·${bt}(${fmt(z)})`, condensed: `${bt}( ${fmt(x)}^${fmt(p)} · ${fmt(y)}^${fmt(q)} / ${fmt(z)}^${fmt(r)} )`, check: `argument = ${fmt((x ** p * y ** q) / z ** r, 10)}` };
 };
-
-// ---------- Upper & lower bounds ----------
-export const ROUND_UNITS = ["Nearest 1,000", "Nearest 100", "Nearest 10", "Nearest 1", "1 decimal place", "2 decimal places", "3 decimal places", "1 significant figure", "2 significant figures", "3 significant figures"];
 export const bounds: SciCalculator = (v) => {
   const x = num(v.x, 7.4), u = pick(v.unit, 10);
   let half: number;
@@ -155,9 +143,6 @@ export const absEquation: SciCalculator = (v) => {
   const x1 = (c - b) / a, x2 = (-c - b) / a;
   return { solutions: c === 0 ? `x = ${fmt(x1, 10)}` : `x = ${fmt(Math.max(x1, x2), 10)} or x = ${fmt(Math.min(x1, x2), 10)}`, x1: sig(Math.max(x1, x2), 12), x2: sig(Math.min(x1, x2), 12) };
 };
-
-// ---------- Even / odd function ----------
-export const PARITY = ["Even — f(−x) = f(x), symmetric about the y-axis", "Odd — f(−x) = −f(x), symmetric about the origin", "Neither even nor odd", "Both (f(x) = 0)"];
 export const evenOdd: SciCalculator = (v) => {
   const f = compileFn(txt(v, "fx"));
   const xs = [0.37, 0.9, 1.3, 2.1, 3.7, 5.2, 8.9];
@@ -181,10 +166,6 @@ export const percentChange: SciCalculator = (v) => {
   const ch = ((b - a) / Math.abs(a)) * 100;
   return { change: sig(ch, 10), difference: sig(b - a, 12), multiplier: sig(b / a, 10), direction: ch >= 0 ? 0 : 1, formula: `(${fmt(b)} − ${fmt(a)}) ÷ |${fmt(a)}| × 100 = ${fmt(ch, 8)}%` };
 };
-export const DIRECTION = ["Increase", "Decrease"];
-
-// ---------- Jacobi / Gauss-Seidel ----------
-export const ITER_METHOD = ["Gauss-Seidel", "Jacobi"];
 export const gaussSeidel: SciCalculator = (v) => {
   const m = matrixOf(txt(v, "aug"));
   const n = m.length;
@@ -209,8 +190,6 @@ export const gaussSeidel: SciCalculator = (v) => {
   if (!x.every(Number.isFinite)) throw new InputError("The iteration diverged — make the matrix diagonally dominant.");
   return { solution: x.map((xi, i) => `x${i + 1} = ${fmt(xi, 10)}`).join(",  "), iterations: it, converged: err <= tol ? 0 : 1, dominant: dd_ ? 0 : 1, table: rows.join("\n") };
 };
-export const CONVERGED = ["Converged", "Not converged within the iteration limit"];
-export const DOMINANT = ["Yes — diagonally dominant (convergence guaranteed)", "No — may not converge"];
 
 // ---------- Bisection & secant ----------
 export const bisection: SciCalculator = (v) => {
@@ -284,7 +263,6 @@ export const logEquation: SciCalculator = (v) => {
   const x = (b ** d - c) / a;
   return { x: sig(x, 12), working: `log_${fmt(b)}(${fmt(a)}x ${c < 0 ? "−" : "+"} ${fmt(Math.abs(c))}) = ${fmt(d)}  →  ${fmt(a)}x ${c < 0 ? "−" : "+"} ${fmt(Math.abs(c))} = ${fmt(b)}^${fmt(d)} = ${fmt(b ** d)}  →  x = ${fmt(x, 10)}`, valid: a * x + c > 0 ? 0 : 1 };
 };
-export const VALID = ["Valid — the log's argument is positive", "Extraneous — the argument isn't positive"];
 export const expEquation: SciCalculator = (v) => {
   const a = num(v.a, 5), b = num(v.base, 2), c = num(v.c, 1), d = num(v.d, 80), k = num(v.k, 0);
   const rhs = (d - k) / a;
@@ -292,9 +270,6 @@ export const expEquation: SciCalculator = (v) => {
   const x = Math.log(rhs) / (c * Math.log(b));
   return { x: sig(x, 12), working: `${fmt(a)}·${fmt(b)}^(${fmt(c)}x) ${k < 0 ? "−" : "+"} ${fmt(Math.abs(k))} = ${fmt(d)} → ${fmt(b)}^(${fmt(c)}x) = ${fmt(rhs, 10)} → x = ln(${fmt(rhs, 8)}) / (${fmt(c)}·ln ${fmt(b)}) = ${fmt(x, 10)}` };
 };
-
-// ---------- Factored ↔ standard form (quadratics) ----------
-export const FACTOR_DIR = ["Factored → standard", "Standard → factored"];
 export const factoredForm: SciCalculator = (v) => {
   const dir = pick(v.dir, 2), a = num(v.a, 2);
   if (dir === 0) {
@@ -310,9 +285,6 @@ export const factoredForm: SciCalculator = (v) => {
   const term = (r: number) => (r === 0 ? "x" : `(x ${r > 0 ? "−" : "+"} ${fmt(Math.abs(r), 8)})`);
   return { result: `${a === 1 ? "" : fmt(a)}${term(r1)}${term(r2)}`, roots: `${fmt(r1, 10)}, ${fmt(r2, 10)}`, vertex: `(${fmt(-b / (2 * a))}, ${fmt(c - (b * b) / (4 * a))})` };
 };
-
-// ---------- Parallel / perpendicular ----------
-export const LINE_REL = ["Parallel", "Perpendicular", "Neither", "Same line (coincident)"];
 export const parallelPerpendicular: SciCalculator = (v) => {
   const a1 = num(v.a1, 2), b1 = num(v.b1, -1), c1 = num(v.c1, 3), a2 = num(v.a2, 1), b2 = num(v.b2, 2), c2 = num(v.c2, 4);
   const det = a1 * b2 - a2 * b1;
@@ -323,9 +295,6 @@ export const parallelPerpendicular: SciCalculator = (v) => {
   const inter = Math.abs(det) < 1e-12 ? "none" : `(${fmt((c1 * b2 - c2 * b1) / det, 10)}, ${fmt((a1 * c2 - a2 * c1) / det, 10)})`;
   return { relation: rel, slopes: `m₁ = ${slope(a1, b1)}, m₂ = ${slope(a2, b2)}`, intersection: inter };
 };
-
-// ---------- Table → equation ----------
-export const TABLE_MODEL = ["Linear (constant first differences)", "Quadratic (constant second differences)", "Exponential (constant ratio)", "No simple pattern found"];
 export const functionTable: SciCalculator = (v) => {
   const xs = listOf(v, "xs", 3), ys = listOf(v, "ys", 3);
   if (xs.length !== ys.length) throw new InputError("Enter the same number of x and y values.");
@@ -350,9 +319,6 @@ export const functionTable: SciCalculator = (v) => {
   }
   return { model: 3, equation: "try the Lagrange Interpolation or Regression calculators", next: "—" };
 };
-
-// ---------- Sequences ----------
-export const SEQ = ["Geometric (×r)", "Arithmetic (+d)"];
 export const sequence: SciCalculator = (v) => {
   const t = pick(v.type, 2), a1 = num(v.a1, 3), r = num(v.r, 2), n = Math.max(1, Math.round(pos(v.n, 10)));
   if (t === 1) {

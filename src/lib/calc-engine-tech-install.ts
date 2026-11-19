@@ -37,9 +37,6 @@ const fracIn = (x: number) => {
   const g = f % 8 === 0 ? 8 : f % 4 === 0 ? 4 : f % 2 === 0 ? 2 : 1;
   return `${w ? `${w} ` : ""}${f / g}/${16 / g}"`;
 };
-
-// ------------------------------------------------------------------ conduit bending
-export const BEND_MODES = ["Offset (two equal bends)", "3-point saddle (45° centre)", "90° stub-up"];
 export const BEND_ANGLES = [10, 22.5, 30, 45, 60];
 export const EMT_SIZES: [string, number][] = [["½\" EMT", 5], ["¾\" EMT", 6], ["1\" EMT", 8], ["1¼\" EMT", 11]];
 export const conduitBend: Calc = (v) => {
@@ -61,9 +58,6 @@ export const conduitBend: Calc = (v) => {
   if (mark <= 0) throw new InputError(`The stub must be longer than the ${take}" take-up for ${name}.`);
   return { main: `Mark at ${fracIn(mark)} from the end`, mult: "—", shrink: "—", first: `Stub ${fracIn(H)} − take-up ${take}" = ${fracIn(mark)}; line the bender's arrow up with the mark`, between: r2(mark), note: `${name} hand bender take-up (deduct) ${take}"` };
 };
-
-// ------------------------------------------------------------------ pull box (NEC 314.28)
-export const PULL_TYPES = ["Straight pull", "Angle or U pull"];
 export const pullBox: Calc = (v) => {
   const big = pos(v.largest, 2), type = pick(v.type, 2);
   if (big <= 0) throw new InputError("Enter the largest raceway trade size in inches.");
@@ -145,9 +139,6 @@ export const serverPower: Calc = (v) => {
   const kwhM = (fac / 1000) * hours * 30.4375;
   return { monthly: r2(kwhM * price), yearly: r2(kwhM * 12 * price), kwh: nfmt(Math.round(kwhM)), it: r2(it / 1000), facility: r2(fac / 1000), btu: nfmt(Math.round(it * 3.412)), tons: r2((it * 3.412) / 12000), amps: `${r1(it / 208)} A at 208 V / ${r1(it / 230)} A at 230 V (IT load)`, perServer: money((kwhM * price) / Math.max(1, n), "$", 2) };
 };
-
-// ------------------------------------------------------------------ weld settings
-export const WELD_PROCESSES = ["MIG (GMAW) — mild steel, short-circuit", "Flux-core (FCAW) — mild steel", "TIG (GTAW) DC — steel / stainless", "TIG (GTAW) AC — aluminium", "Stick (SMAW) — E6013 / E7018"];
 export const weldSettings: Calc = (v) => {
   const p = pick(v.process, 5);
   const tIn = pick(v.units, 2) === 1 ? pos(v.thick, 3) / 25.4 : pos(v.thick, 0.125);

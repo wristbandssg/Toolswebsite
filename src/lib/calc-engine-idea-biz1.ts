@@ -29,14 +29,12 @@ export const strengthGain: Calc = (v) => {
   const k = [1, 1.25, 0.7][hot], f = f28 * (t * k) / (4 + 0.85 * t * k);
   return { f: `${nfmt(Math.min(f, f28 * 1.2))} psi at ${t} days`, pct: `${Math.min(120, (100 * f) / f28).toFixed(0)}% of 28-day strength`, note: f / f28 >= 0.7 ? "Usually enough to strip forms and take light loads" : "Keep formwork and shoring in place" };
 };
-export const CURE = ["Normal (70 °F, moist)", "Warm / accelerated", "Cold (40–50 °F)"];
 export const wcRatio: Calc = (v) => {
   const water = need(p(v, "w", 300), "Enter water."), cement = need(p(v, "c", 600), "Enter cement."), unit = pick(v.u, 2);
   const r = unit === 0 ? water / cement : (water * 8.34) / cement;
   const psi = r <= 0.41 ? 5000 : r <= 0.48 ? 4000 + ((0.48 - r) / 0.07) * 1000 : r <= 0.57 ? 3000 + ((0.57 - r) / 0.09) * 1000 : r <= 0.68 ? 2000 + ((0.68 - r) / 0.11) * 1000 : 1500;
   return { r: `w/c = ${r.toFixed(3)}`, psi: `≈ ${nfmt(psi)} psi expected 28-day strength (ACI 211)`, note: r > 0.5 ? "Above 0.50 — not recommended for exposure to freezing or salts" : "Suitable for durable exterior concrete" };
 };
-export const WC_UNIT = ["Both in pounds", "Water in gallons, cement in pounds"];
 export const truckLoads: Calc = (v) => {
   const yd = need(p(v, "yd", 85), "Enter cubic yards."), truck = need(p(v, "t", 10), "Enter truck size."), waste = p(v, "w", 5) / 100, mins = p(v, "m", 30);
   const tot = yd * (1 + waste), loads = Math.ceil(tot / truck);
@@ -81,14 +79,12 @@ export const retainingBlock: Calc = (v) => {
   const courses = Math.ceil((h * 12) / bh) + 1, per = Math.ceil((l * 12) / bl);
   return { blocks: `${nfmt(courses * per)} blocks (${courses} courses incl. 1 buried)`, caps: `${Math.ceil((l * 12) / 16)} caps`, grid: h > 4 ? `Geogrid every ${grid} courses, about ${nfmt(Math.floor(courses / grid) * l)} ft of grid (embed 0.6–0.8 × height)` : "Walls under 4 ft often need no geogrid — check the manufacturer" };
 };
-export const SLAB_USE = ["Sidewalk / patio", "Residential garage", "Driveway (cars)", "Light commercial / delivery vans", "Warehouse with forklifts", "Heavy industrial / trucks"];
 const SLAB_T = [4, 4, 5, 6, 7, 8];
 export const slabThickness: Calc = (v) => {
   const u = pick(v.u, 6), sub = pick(v.s, 3);
   const t = SLAB_T[u] + [0.5, 0, 0][sub] * (u > 2 ? 2 : 1);
   return { t: `${t} in minimum slab thickness`, joint: `Control joints every ${Math.round(t * 2.5)}–${Math.round(t * 3)} ft`, note: sub === 0 ? "Soft subgrade: compact and add 4–6 in of base" : "Good subgrade on compacted granular base" };
 };
-export const SUBGRADE = ["Soft clay / poor", "Average", "Well-compacted granular"];
 // ---- construction estimating
 export const gcOverhead: Calc = (v) => {
   const direct = p(v, "d", 500000), oh = p(v, "oh", 10) / 100, profit = p(v, "pr", 8) / 100, bond = p(v, "b", 1.5) / 100, ins = p(v, "i", 1) / 100;
@@ -102,7 +98,6 @@ export const steelTonnage: Calc = (v) => {
   const tons = (lf * LBFT[s] * (1 + conn)) / 2000;
   return { tons: `${tons.toFixed(2)} tons`, lb: `${nfmt(lf * LBFT[s])} lb of ${SHAPES[s]} + ${(conn * 100).toFixed(0)}% connections`, cost: `${$(tons * price, 0)} at ${$(price, 0)}/ton erected` };
 };
-export const SOIL = ["Sand / gravel (swell 12%)", "Common earth / loam (25%)", "Clay (30%)", "Rock, blasted (50%)"];
 const SWELL = [0.12, 0.25, 0.3, 0.5], SHRINK = [0.05, 0.1, 0.15, -0.3];
 export const excavationSwell: Calc = (v) => {
   const l = p(v, "l", 60), w = p(v, "w", 40), d = p(v, "d", 8), s = pick(v.s, 4), truck = need(p(v, "t", 14), "Enter truck capacity.");
@@ -157,7 +152,6 @@ export const earnedValue: Calc = (v) => {
   const ev = bac * pct, cpi = ev / ac, spi = ev / pv;
   return { cpi: `CPI ${cpi.toFixed(2)} · SPI ${spi.toFixed(2)}`, eac: `${$(bac / cpi, 0)} estimate at completion`, var: `Cost variance ${$(ev - ac, 0)} · schedule variance ${$(ev - pv, 0)}`, verdict: `${cpi >= 1 ? "Under" : "Over"} budget, ${spi >= 1 ? "ahead of" : "behind"} schedule` };
 };
-export const WASTE = ["Lumber framing (10%)", "Drywall (12%)", "Tile (10–15%)", "Concrete (5%)", "Roofing shingles (10–15%)", "Brick / block (5%)", "Paint (10%)", "Carpet (10%)"];
 const WF = [10, 12, 12, 5, 12, 5, 10, 10];
 export const wasteFactor: Calc = (v) => {
   const m = pick(v.m, WF.length), qty = need(p(v, "q", 1000), "Enter quantity needed."), extra = p(v, "x", 0);
@@ -169,7 +163,6 @@ export const formwork: Calc = (v) => {
   const area = type === 0 ? 2 * l * h * n : type === 1 ? 2 * (l + w) * h * n : (2 * h + w) * l * n;
   return { area: `${nfmt(area)} ft² of contact area`, ply: `${Math.ceil((area * 1.1) / 32)} sheets of 4×8 form plywood`, note: ["Wall (both faces)", "Column (4 sides)", "Beam (2 sides + soffit)"][type] };
 };
-export const FORM = ["Wall", "Column", "Beam"];
 export const ductWeight: Calc = (v) => {
   const w = p(v, "w", 24), h = p(v, "h", 12), l = p(v, "l", 200), gauge = pick(v.g, 5), seams = p(v, "s", 15) / 100;
   const psf = [2.156, 1.656, 1.406, 1.156, 0.906][gauge], area = ((2 * (w + h)) / 12) * l * (1 + seams);

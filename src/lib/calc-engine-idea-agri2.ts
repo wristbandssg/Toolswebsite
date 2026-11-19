@@ -59,7 +59,6 @@ export const lambWean: Calc = (v) => {
   const adj = [1, 0.85, 0.75][type], w = birth + adg0 * days * adj;
   return { w: `${w.toFixed(1)} lb weaning weight`, adj: `${(adj * 100).toFixed(0)}% factor for ${["single", "twin", "triplet"][type]}`, kg: `${(w * 0.4536).toFixed(1)} kg` };
 };
-export const BIRTH_TYPE = ["Single", "Twin", "Triplet"];
 export const goatFeed: Calc = (v) => {
   const n = p(v, "n", 10), wt = p(v, "wt", 120), dmi = p(v, "dmi", 3.5) / 100, grain = p(v, "g", 0.5);
   const hay = n * wt * dmi / 0.9;
@@ -85,7 +84,6 @@ export const beefYield: Calc = (v) => {
   const take = live * dress * cut * (bone ? 0.92 : 1);
   return { take: `${nfmt(take)} lb of packaged beef`, steaks: `≈ ${nfmt(take * 0.3)} lb steaks · ${nfmt(take * 0.25)} lb roasts · ${nfmt(take * 0.4)} lb ground beef`, freezer: `${(take / 35).toFixed(1)} ft³ of freezer space (35 lb per ft³)` };
 };
-export const BONE = ["Bone-in cuts", "Mostly boneless"];
 export const hangingPig: Calc = (v) => {
   const live = need(p(v, "live", 270), "Enter live weight."), dress = p(v, "dr", 72) / 100;
   const hang = live * dress;
@@ -96,7 +94,6 @@ export const freezerBeef: Calc = (v) => {
   const frac = [1, 0.5, 0.25, 0.125][share], h = hang * frac, cost = h * (price + proc) + kill * frac, take = h * yieldP;
   return { per: `${$(cost / take)} per lb of take-home beef`, total: `${$(cost)} for ${["a whole", "a half", "a quarter", "an eighth"][share]}`, take: `${nfmt(take)} lb take-home` };
 };
-export const SHARE = ["Whole", "Half", "Quarter", "Eighth"];
 export const turkeyCost: Calc = (v) => {
   const n = p(v, "n", 25), poult = p(v, "pt", 8), feed = p(v, "f", 80), fp = p(v, "fp", 0.32), proc = p(v, "proc", 10), price = p(v, "pr", 4.5), wt = p(v, "wt", 20);
   const cost = n * (poult + feed * fp + proc), rev = n * 0.95 * wt * price;
@@ -129,7 +126,6 @@ export const microgreens: Calc = (v) => {
   const rev = trays * yieldOz * price * cycles, cost = trays * (seed + soil) * cycles;
   return { profit: `${$(rev - cost, 0)} a month`, rev: `${$(rev, 0)} revenue from ${nfmt(trays * cycles)} trays`, tray: `${$(yieldOz * price - seed - soil)} profit per tray` };
 };
-export const HEMP = ["CBD flower", "Grain", "Fiber"];
 export const hempYield: Calc = (v) => {
   const t = pick(v.t, 3), acres = p(v, "a", 10), y = p(v, "y", [1500, 900, 6000][t]), price = p(v, "pr", [3, 0.6, 0.12][t]), cost = p(v, "c", [6000, 500, 400][t]);
   return { yield: `${nfmt(y * acres)} lb total (${nfmt(y)} lb/acre)`, profit: `${$((y * price - cost) * acres, 0)} profit`, per: `${$(y * price - cost)} per acre` };
@@ -144,7 +140,6 @@ export const xmasTree: Calc = (v) => {
   const trees = acres * per * surv, rev = trees * price, tot = acres * per * cost;
   return { profit: `${$(rev - tot, 0)} per rotation`, year: `${$((rev - tot) / years, 0)} a year over ${years} years`, trees: `${nfmt(trees)} saleable trees` };
 };
-export const DEP_METHOD = ["Straight-line", "Declining balance (150%)"];
 export const farmDepreciation: Calc = (v) => {
   const cost = p(v, "cost", 250000), salvage = p(v, "sv", 50000), life = Math.max(1, Math.round(p(v, "life", 10))), m = pick(v.m, 2), year = Math.max(1, Math.min(life, Math.round(p(v, "yr", 1))));
   if (m === 0) { const d = (cost - salvage) / life; return { dep: `${$(d, 0)} per year`, book: `${$(cost - d * year, 0)} book value after year ${year}`, note: "Straight-line" }; }
@@ -157,13 +152,11 @@ export const customRates: Calc = (v) => {
   const o = pick(v.o, OPS.length), qty = p(v, "q", 200), adj = 1 + num(v.adj, 0) / 100, r = RATES[o] * adj;
   return { rate: `${$(r)} per ${o === 6 ? "bale" : o === 7 ? "bushel" : "acre"}`, total: `${$(r * qty, 0)} for ${nfmt(qty)}`, note: "Typical Midwest US custom rates — check your state's annual survey" };
 };
-export const GRAINS = ["Corn (56 lb/bu)", "Soybeans (60)", "Wheat (60)", "Barley (48)", "Oats (32)", "Sorghum (56)"];
 const TW = [56, 60, 60, 48, 32, 56];
 export const truckBushels: Calc = (v) => {
   const g = pick(v.g, 6), net = need(p(v, "net", 50000), "Enter net load weight (lb)."), l = p(v, "l", 0);
   return { bu: `${nfmt(net / TW[g], 1)} bushels`, check: l ? `Box volume ${nfmt(l * 0.8036, 0)} bu struck at 0.8036 bu/ft³` : "Enter box ft³ to check volume", t: `${(net / 2204.6).toFixed(2)} tonnes` };
 };
-export const BT_MODE = ["Bushels → tons", "Tons → bushels"];
 export const buToTons: Calc = (v) => {
   const g = pick(v.g, 6), x = p(v, "x", 1000), mode = pick(v.mode, 2), tw = TW[g];
   return mode === 0 ? { out: `${((x * tw) / 2000).toFixed(2)} short tons`, metric: `${((x * tw) / 2204.6).toFixed(2)} metric tonnes`, note: `${tw} lb per bushel` } : { out: `${nfmt((x * 2000) / tw, 1)} bushels`, metric: `${nfmt((x * 2204.6) / tw, 1)} bushels per metric tonne basis`, note: `${tw} lb per bushel` };
@@ -173,7 +166,6 @@ export const hayPrice: Calc = (v) => {
   const ton = mode === 0 ? (price * 2000) / wt : price, perBale = mode === 0 ? price : (price * wt) / 2000;
   return { ton: `${$(ton)} per ton`, bale: `${$(perBale)} per ${wt} lb bale`, lb: `${$(ton / 2000, 3)} per lb` };
 };
-export const HP_MODE = ["I have a price per bale", "I have a price per ton"];
 export const roundVsSquare: Calc = (v) => {
   const rp = p(v, "rp", 55), rw = need(p(v, "rw", 900), "Enter round bale weight."), rwaste = p(v, "rwa", 15) / 100, sp = p(v, "sp", 7), sw = need(p(v, "sw", 50), "Enter square bale weight."), swaste = p(v, "swa", 5) / 100;
   const r = rp / (rw * (1 - rwaste)) * 2000, s = sp / (sw * (1 - swaste)) * 2000;
@@ -189,14 +181,12 @@ export const tankDays: Calc = (v) => {
   const days = gal / (head * per);
   return { days: `${days.toFixed(1)} days`, hours: `${(days * 24).toFixed(0)} hours`, refill: `Refill ${nfmt(head * per)} gallons a day` };
 };
-export const BARN = ["Beef cows (40 ft² each)", "Dairy cows free-stall (80)", "Horses (12×12 stall)", "Sheep / goats (15)", "Pigs finishing (8)", "Chickens (4)"];
 const BA = [40, 80, 144, 15, 8, 4];
 export const barnSize: Calc = (v) => {
   const a = pick(v.a, 6), n = p(v, "n", 20), extra = p(v, "x", 25) / 100;
   const ft = n * BA[a] * (1 + extra), side = Math.sqrt(ft / 2);
   return { area: `${nfmt(ft)} ft²`, dims: `About ${Math.ceil(side * 2)} × ${Math.ceil(side)} ft`, note: `${BA[a]} ft² per animal + ${(extra * 100).toFixed(0)}% for alleys, feed and storage` };
 };
-export const HORSE = ["Pony (under 14 hh)", "Average horse (14–16 hh)", "Large horse / draft (16+ hh)", "Foaling stall"];
 const STALL = [[10, 10], [12, 12], [12, 14], [14, 16]];
 export const horseStall: Calc = (v) => {
   const h = pick(v.h, 4), n = Math.max(1, Math.round(p(v, "n", 6))), aisle = p(v, "a", 12);
@@ -209,7 +199,6 @@ export const beeSyrup: Calc = (v) => {
   const sugarPerGal = t === 0 ? 8.3 : 11.5, waterPerGal = t === 0 ? 0.5 : 0.36;
   return { sugar: `${nfmt(sugarPerGal * gal * hives, 1)} lb sugar`, water: `${(waterPerGal * gal * hives).toFixed(1)} gallons of water`, note: `${gal} gal of ${SYRUP[t]} syrup per hive × ${hives} hives` };
 };
-export const POLL = ["Almonds (2 per acre)", "Apples (1)", "Blueberries (3)", "Cherries (1)", "Cranberries (3)", "Pumpkins / squash (1)", "Watermelon (1)", "Cucumbers (1)"];
 const PR = [2, 1, 3, 1, 3, 1, 1, 1];
 export const pollination: Calc = (v) => {
   const c = pick(v.c, PR.length), acres = p(v, "a", 40), fee = p(v, "fee", 200);

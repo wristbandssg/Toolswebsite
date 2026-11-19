@@ -42,7 +42,6 @@ export const manaCurve: Calc = (v) => {
   let pr = 0; for (let k = needL; k <= Math.min(lands, seen); k++) pr += (C(lands, k) * C(deck - lands, seen - k)) / C(deck, seen);
   return { chance: `${(pr * 100).toFixed(1)}% to have ${needL}+ lands by turn ${turn}`, seen: `${seen} cards seen (${play ? "on the play" : "on the draw"})`, avg: `${((seen * lands) / deck).toFixed(2)} lands expected` };
 };
-export const PLAYDRAW = ["On the draw", "On the play"];
 export const warhammerHit: Calc = (v) => {
   const n = Math.round(p(v, "n", 20)), hit = Math.min(6, Math.max(2, Math.round(p(v, "hit", 3)))), wound = Math.min(6, Math.max(2, Math.round(p(v, "wound", 4)))), save = Math.min(7, Math.max(2, Math.round(p(v, "save", 4)))), dmg = p(v, "dmg", 1);
   const ph = (7 - hit) / 6, pw = (7 - wound) / 6, pf = save >= 7 ? 1 : (save - 1) / 6;
@@ -67,7 +66,6 @@ export const blackjack: Calc = (v) => {
   return { edge: `${edge.toFixed(2)}% house edge with basic strategy`, loss: `${$(edge / 100 * p(v, "bet", 25) * p(v, "hands", 80))} expected loss per hour at ${$(p(v, "bet", 25), 0)} × ${p(v, "hands", 80)} hands`, note: pays ? "6:5 blackjack adds about 1.4% to the house edge — avoid it" : "3:2 payout" };
 };
 export const S17 = ["Dealer hits soft 17 (H17)", "Dealer stands on soft 17 (S17)"];
-export const PAYS = ["Blackjack pays 3:2", "Blackjack pays 6:5"];
 export const CRAPS = ["Pass line", "Don't pass", "Field", "Any 7", "Hard 6 or 8", "Place 6 or 8", "Any craps"];
 const CR_EDGE = [1.41, 1.36, 5.56, 16.67, 9.09, 1.52, 11.11];
 const CR_WIN = [0.4929, 0.4793, 0.4444, 0.1667, 0.0909, 0.4545, 0.1111];
@@ -124,7 +122,6 @@ export const spades: Calc = (v) => {
   if (nil === 1) score += 100; else if (nil === 2) score -= 100;
   return { score: `${score >= 0 ? "+" : ""}${score} this round${note}`, bags: `${newBags % 10} bags carried forward`, made: won >= bid ? "Contract made" : "Set — lost 10 × bid" };
 };
-export const NIL = ["No nil bid", "Nil made (+100)", "Nil failed (−100)"];
 export const hearts: Calc = (v) => {
   const h = Math.round(p(v, "h", 5)), q = pick(v.q, 2), shoot = pick(v.s, 2);
   return shoot ? { pts: "0 for you, 26 to every opponent (shot the moon)", note: "All 13 hearts and the Queen of Spades", total: "26" } : { pts: `${h + (q ? 13 : 0)} points`, note: `${h} hearts${q ? " + Queen of Spades (13)" : ""}`, total: "Lowest score wins at 100" };
@@ -135,7 +132,6 @@ export const rummy: Calc = (v) => {
   return { pts: `${pts} points in hand`, parts: `${faces} face cards ×10, ${aces} aces ×${ace ? 11 : 1}, ${pips} in number cards`, note: "Losers' deadwood goes to the winner" };
 };
 export const ACE = ["Ace = 1", "Ace = 11 (or 15 in some rules)"];
-export const BRIDGE_SUIT = ["♣ Clubs", "♦ Diamonds", "♥ Hearts", "♠ Spades", "No trump"];
 export const bridgeScore: Calc = (v) => {
   const lvl = Math.min(7, Math.max(1, Math.round(p(v, "lvl", 4)))), suit = pick(v.suit, 5), tricks = Math.round(p(v, "tricks", 10)), dbl = pick(v.dbl, 3), vul = pick(v.vul, 2);
   const needT = 6 + lvl, mult = [1, 2, 4][dbl];
@@ -155,7 +151,6 @@ export const bridgeScore: Calc = (v) => {
   return { score: `+${score}`, detail: `${trickPts} trick points${game ? " — game" : " — part score"}, ${over} overtrick(s)`, bonus: lvl >= 6 ? "Slam bonus included" : "Duplicate scoring" };
 };
 export const DBL = ["Undoubled", "Doubled", "Redoubled"];
-export const VUL = ["Not vulnerable", "Vulnerable"];
 export const euchre: Calc = (v) => {
   const tricks = Math.min(5, Math.round(p(v, "t", 3))), makers = pick(v.m, 2), alone = pick(v.a, 2);
   let pts = 0, note = "";
@@ -163,7 +158,6 @@ export const euchre: Calc = (v) => {
   else { pts = tricks >= 3 ? 2 : 0; note = tricks >= 3 ? "Euchred the makers" : "Defended but makers made it"; }
   return { pts: pts < 0 ? `Opponents +${-pts}` : `+${pts} points`, note, game: "First to 10 wins" };
 };
-export const MAKERS = ["Defending", "Called trump (makers)"];
 export const golfCards: Calc = (v) => {
   const rounds = txt(v, "rounds").split(/[\s,;]+/).filter(Boolean).map(Number);
   if (!rounds.length || rounds.some((x) => !Number.isFinite(x))) throw new InputError("Enter each hole's score separated by commas.");

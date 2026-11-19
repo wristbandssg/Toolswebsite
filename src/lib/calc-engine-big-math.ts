@@ -114,9 +114,6 @@ export const intervalNotation: Calc = (v) => {
     intersection: B ? ivText(inter(A.set, B.set)) : "—",
   };
 };
-
-// ------------------------------------------------------------------ scale factor
-export const SF_MODES = ["Find the scale factor (original → new)", "Scale drawing → real size (1 : N)", "Real size → scale drawing (1 : N)", "Scale a length, area and volume by k"];
 export const scaleFactor: Calc = (v) => {
   const m = pick(v.mode, 4), a = num(v.a, 4), b = num(v.b, 10), n = num(v.n, 50), k = num(v.k, 2.5);
   if (m === 0) {
@@ -143,9 +140,6 @@ export const rectangleDiagonal: Calc = (v) => {
   const d = Math.hypot(l, w);
   return { diagonal: show(d), sides: `${show(l)} × ${show(w)}${Math.abs(l - w) < 1e-12 ? " (square: diagonal = side × √2)" : ""}`, angle: `${deg(Math.atan(w / l) / DEG)} with the long side`, area: show(l * w), perimeter: show(2 * (l + w)) };
 };
-
-// ------------------------------------------------------------------ DMS
-export const DMS_MODES = ["Decimal degrees → DMS", "DMS → decimal degrees", "Add two DMS angles", "Subtract DMS angles"];
 const toDms = (x: number) => { const s = x < 0 ? "−" : "", a = Math.abs(x); let d = Math.floor(a), mm = Math.floor((a - d) * 60), ss = (a - d - mm / 60) * 3600; ss = Math.round(ss * 1000) / 1000; if (ss >= 60) { ss -= 60; mm += 1; } if (mm >= 60) { mm -= 60; d += 1; } return `${s}${d}° ${mm}′ ${show(ss, 8)}″`; };
 export const dms: Calc = (v) => {
   const m = pick(v.mode, 4);
@@ -173,7 +167,6 @@ export const triangleCenters: Calc = (v) => {
 
 // ------------------------------------------------------------------ golden ratio
 export const PHI = (1 + Math.sqrt(5)) / 2;
-export const GR_MODES = ["My length is the whole (split it)", "My length is the longer part", "My length is the shorter part"];
 export const goldenRatio: Calc = (v) => {
   const m = pick(v.mode, 3), x = num(v.length, 100);
   if (!(x > 0)) throw new InputError("Enter a length above zero.");
@@ -192,9 +185,6 @@ export const fibonacci: Calc = (v) => {
   if (chk > 0) { const t = (x: number) => { const r = Math.round(Math.sqrt(x)); return r * r === x; }; isFib = chk > 1e15 ? "Number too large to check here" : t(5 * chk * chk + 4) || t(5 * chk * chk - 4) ? `${nfmt(chk)} is a Fibonacci number` : `${nfmt(chk)} is not a Fibonacci number`; }
   return { fn: fn.length > 60 ? `${fn.slice(0, 30)}…${fn.slice(-10)} (${fn.length} digits)` : fn, digits: `${fn.length} digit${fn.length === 1 ? "" : "s"}`, sequence: `${first.join(", ")}${n > 15 ? ", …" : ""}`, sum: `Sum of F(0)…F(${n}) = F(${n + 2}) − 1 = ${sum.length > 40 ? `${sum.length} digits` : sum}`, ratio: n > 1 ? `F(n)/F(n−1) → φ ≈ 1.6180339887` : "—", check: isFib };
 };
-
-// ------------------------------------------------------------------ day of the year
-export const DY_MODES = ["Date → day number", "Year + day number → date"];
 export const dayOfYear: Calc = (v) => {
   let d: number;
   if (pick(v.mode, 2) === 1) { const y = Math.round(num(v.year, 2026)), n = Math.round(num(v.day, 100)); const len = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0 ? 366 : 365; if (n < 1 || n > len) throw new InputError(`Day number must be 1–${len} in ${y}.`); d = dayNum(y, 1, 1) + n - 1; }

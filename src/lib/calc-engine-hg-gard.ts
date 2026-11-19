@@ -51,9 +51,6 @@ const RAD = Math.PI / 180;
 const dayNum = (y: number, m: number, d: number) => Date.UTC(y, m - 1, d) / 864e5;
 const yearOf = (day: number) => new Date(day * 864e5).getUTCFullYear();
 const dayOfYear = (day: number) => Math.floor(day - dayNum(yearOf(day), 1, 1)) + 1;
-
-// ---------- Tree & yard services ----------
-export const TREE_TYPES = ["Deciduous / shade tree", "Pine or other conifer", "Palm"];
 export const treeRemovalCost: CustomCalculator = (v) => {
   const h = pos(v.height, 40);
   let base = h < 30 ? 400 : h < 60 ? 900 : h < 80 ? 1500 : 2200;
@@ -86,9 +83,6 @@ export const lawnAerationCost: CustomCalculator = (v) => {
   const seed = pick(v.overseed, 2) ? a * 0.15 : 0;
   return { totalCost: r2(aer + seed), aerationCost: r2(aer), overseedCost: r2(seed), diyRentalCost: r2(pos(v.rental, 90) + seed * 0.4) };
 };
-
-// ---------- Lawn ----------
-export const GRASS_TYPES = ["Tall fescue", "Kentucky bluegrass", "Perennial ryegrass", "Fine fescue", "Bermuda (hulled)", "Zoysia", "Centipede", "Bahia"];
 const SEED_RATE: [number, number][] = [[8, 4], [3, 1.5], [8, 4], [5, 2.5], [2, 1], [1.5, 1], [0.5, 0.25], [8, 4]];
 export const grassSeed: CustomCalculator = (v) => {
   const rate = SEED_RATE[pick(v.grass, SEED_RATE.length)][pick(v.mode, 2)];
@@ -109,8 +103,6 @@ export const lawnTopDressing: CustomCalculator = (v) => {
   const yd = (pos(v.area) * pos(v.depth, 0.25)) / 12 / 27;
   return { cubicYards: r2(yd), cubicFeet: r1(yd * 27), tons: r2(yd * [0.8, 1.35, 1.1][pick(v.material, 3)]), bags: ceil(yd * 27) };
 };
-
-export const PRE_UNITS = ["Dry product (oz)", "Liquid product (fl oz)", "Granular product (lb)"];
 export const preEmergent: CustomCalculator = (v) => {
   const k = pos(v.area) / 1000;
   const product = k * pos(v.ratePer1000, 0.5);
@@ -152,9 +144,6 @@ export const pottingSoil: CustomCalculator = (v) => {
   const bagQt = [8, 16, 25.7, 38.6, 51.4][pick(v.bag, 5)];
   return { quarts: r1(cuFt * 25.7), liters: r1(cuFt * 28.32), cubicFeet: r2(cuFt), bags: ceil((cuFt * 25.7) / bagQt) };
 };
-
-
-export const CROPS = ["Tomato", "Pepper", "Eggplant", "Broccoli", "Cabbage", "Lettuce", "Onion", "Cucumber", "Squash / zucchini", "Basil", "Marigold", "Melon"];
 const CROP_DAYS: [number, number][] = [[-49, 7], [-63, 14], [-63, 14], [-49, -14], [-49, -21], [-35, -14], [-77, -28], [-21, 14], [-21, 14], [-42, 14], [-49, 7], [-21, 14]];
 export const seedStarting: CustomCalculator = (v) => {
   const frost = num(v.lastFrost, dayNum(2027, 4, 20));
@@ -174,7 +163,6 @@ export const frostDate: CustomCalculator = (v) => {
 
 // ---------- Growing environment ----------
 const svp = (c: number) => 0.6108 * Math.exp((17.27 * c) / (c + 237.3));
-export const VPD_STAGES = ["Too low — risk of mold, slow transpiration", "Propagation / clones (0.4–0.8 kPa)", "Vegetative growth (0.8–1.2 kPa)", "Flowering (1.2–1.6 kPa)", "Too high — plants stress and close stomata"];
 export const vpd: CustomCalculator = (v) => {
   const air = (num(v.airTemp, 77) - 32) / 1.8, leaf = air + num(v.leafOffset, -2) / 1.8;
   const avp = svp(air) * (pos(v.humidity, 60) / 100);
@@ -182,10 +170,7 @@ export const vpd: CustomCalculator = (v) => {
   const stage = leafVpd < 0.4 ? 0 : leafVpd < 0.8 ? 1 : leafVpd < 1.2 ? 2 : leafVpd <= 1.6 ? 3 : 4;
   return { leafVpd: r2(leafVpd), stage, airVpd: r2(airVpd), svpAir: r2(svp(air)), actualVp: r2(avp) };
 };
-
-export const DLI_CROPS = ["Seedlings / clones (6–12)", "Leafy greens & herbs (12–17)", "Houseplants, low light (2–6)", "Fruiting vegetables (20–30)", "High-light flowering crops (35–45)"];
 const DLI_RANGE: [number, number][] = [[6, 12], [12, 17], [2, 6], [20, 30], [35, 45]];
-export const DLI_STATUS = ["Below the target range — add light or hours", "Within the target range", "Above the target range — reduce intensity or hours"];
 export const parDli: CustomCalculator = (v) => {
   const areaM2 = pos(v.areaSqFt, 16) * 0.0929;
   const ppfd = pos(v.fixturePpf) > 0 && areaM2 ? (pos(v.fixturePpf) * 0.85) / areaM2 : pos(v.ppfd, 400);
@@ -200,8 +185,6 @@ export const growRoom: CustomCalculator = (v) => {
   const cfm = (vol / Math.max(0.5, pos(v.exchangeMinutes, 3))) * (pick(v.carbonFilter, 2) ? 1.25 : 1) * 1.2;
   return { exhaustCfm: Math.round(cfm), co2CuFt: r2(co2CuFt), co2Lb: r2(co2CuFt * 0.0283 * 1.98 * 2.2046), roomCuFt: Math.round(vol), dehumidifierPints: Math.round(pos(v.plants) * pos(v.waterPerPlant, 0.5) * 0.9 * 8) };
 };
-
-export const GREENHOUSE_COVERS = ["Single glass", "Single-layer poly film", "Double poly film (inflated)", "Twin-wall polycarbonate"];
 const COVER_U = [1.13, 1.15, 0.7, 0.65];
 export const greenhouseHeater: CustomCalculator = (v) => {
   const L = pos(v.length), W = pos(v.width), H = pos(v.eaveHeight, 7);
@@ -227,7 +210,6 @@ export const sunHours: CustomCalculator = (v) => {
   const direct = pos(v.directHours);
   return { daylightHours: r1((2 * w0) / 15), noonSunAngle: r1(90 - Math.abs(lat - dec)), sunCategory: direct >= 6 ? 0 : direct >= 3 ? 1 : direct >= 1.5 ? 2 : 3, declination: r1(dec) };
 };
-export const SUN_CATEGORIES = ["Full sun (6+ hours)", "Part sun / part shade (3–6 hours)", "Shade-tolerant only (1.5–3 hours)", "Full shade (under 1.5 hours)"];
 
 // ---------- Water ----------
 export const rainwaterCollection: CustomCalculator = (v) => {
@@ -258,9 +240,6 @@ export const hoseFlow: CustomCalculator = (v) => {
   const hoseGal = (Math.PI / 4) * d * d * L * 12 / 231;
   return { gpm: r1(q), hoseVolumeGallons: r2(hoseGal), fillMinutes: q ? Math.round(pos(v.fillGallons) / q) : 0, gph: Math.round(q * 60) };
 };
-
-// ---------- Trees & wood ----------
-export const TREE_SPECIES = ["Red oak", "White oak", "Pin oak", "Sugar maple", "Red maple", "Silver maple", "American elm", "White birch", "Black walnut", "Shagbark hickory", "White ash", "Cottonwood", "Quaking aspen", "Basswood / linden", "Dogwood", "Redbud", "White pine", "Scotch pine", "Norway spruce", "Black cherry"];
 const GROWTH = [4.0, 5.0, 3.0, 5.5, 4.5, 3.0, 4.0, 5.0, 4.5, 7.5, 4.0, 2.0, 2.0, 3.0, 7.0, 7.0, 5.0, 3.5, 4.5, 5.0];
 export const treeAge: CustomCalculator = (v) => {
   const dia = pos(v.diameter) > 0 ? pos(v.diameter) : pos(v.circumference, 60) / Math.PI;
@@ -286,8 +265,6 @@ export const rootProtectionArea: CustomCalculator = (v) => {
   const area = Math.min(707, Math.PI * radius * radius);
   return { rpaRadiusM: r2(Math.sqrt(area / Math.PI)), rpaAreaM2: r1(area), squareSideM: r1(Math.sqrt(area)), combinedDiameterMm: Math.round(d) };
 };
-
-export const WOOD_SPECIES = ["Red oak", "White oak", "Sugar maple", "Ash", "Birch", "Cherry", "Pine", "Poplar"];
 const CORD_LB = [3600, 4200, 3700, 3500, 3000, 2900, 2200, 2100];
 const SEASON_CORDS = [0.5, 1.5, 4];
 export const firewoodCord: CustomCalculator = (v) => {
@@ -298,7 +275,6 @@ export const firewoodCord: CustomCalculator = (v) => {
 
 const PITCH = [0.25, 0.325, 0.375, 0.375, 0.404];
 const WRAP = [8, 10.8, 10.5, 12.5, 14];
-export const CHAIN_PITCHES = ['1/4"', '.325"', '3/8" low profile', '3/8"', '.404"'];
 export const chainsawChain: CustomCalculator = (v) => {
   const p = pick(v.pitch, 5);
   const len = 2 * pos(v.barLength, 18) + WRAP[p];
@@ -328,12 +304,8 @@ export const hammockHang: CustomCalculator = (v) => {
   const sag = Math.sqrt(Math.max(0, (pos(v.hammockLength, 11) / 2) ** 2 - (ridge / 2) ** 2));
   return { hangHeightIn: Math.round(pos(v.sitHeight, 18) + (sag + rise) * 12), strapLengthFt: r1(strap), forcePerStrapLb: Math.round(pos(v.weight, 200) / (2 * Math.sin(ang))), ridgelineFt: r1(ridge) };
 };
-
-// ---------- Compost ----------
-export const COMPOST_MATERIALS = ["Grass clippings", "Food scraps", "Coffee grounds", "Cow / horse manure", "Chicken manure", "Dry leaves", "Straw", "Wood chips / sawdust", "Cardboard", "Newspaper"];
 const CN = [20, 15, 20, 20, 7, 60, 80, 400, 350, 175];
 const NPCT = [2.4, 2.5, 2.0, 1.7, 3.5, 0.9, 0.6, 0.1, 0.15, 0.3];
-export const COMPOST_STATUS = ["Too much nitrogen — add browns (leaves, straw, cardboard)", "In the ideal range (25–35:1)", "Too much carbon — add greens (grass, food scraps, manure)"];
 export const compost: CustomCalculator = (v) => {
   const items = [[v.m1, v.lb1], [v.m2, v.lb2], [v.m3, v.lb3]].map(([m, lb]) => [pick(m, CN.length), pos(lb)] as [number, number]);
   let N = 0, C = 0;

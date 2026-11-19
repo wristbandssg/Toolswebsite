@@ -39,7 +39,6 @@ function stairCore(totalRise: number, maxRiser: number, tread: number) {
   const treads = risers - 1;
   return { risers, riser, treads, run: treads * tread };
 }
-export const STAIR_COMFORT = ["Steep — 2R + T below 24 in", "Comfortable — 2R + T between 24 and 25.5 in", "Shallow — 2R + T above 25.5 in", "Over the code — riser above 7¾ in"];
 export const stair: CustomCalculator = (v) => {
   const s = stairCore(pos(v.totalRise, 108), pos(v.targetRiser, 7.5), pos(v.tread, 10.5));
   const twoRT = 2 * s.riser + pos(v.tread, 10.5);
@@ -68,8 +67,6 @@ export const stairLanding: CustomCalculator = (v) => {
   const run1 = (r1n - 1) * tread, run2 = (r2n - 1) * tread;
   return { risers: s.risers, riserHeight: r2(s.riser), flight1Risers: r1n, flight2Risers: r2n, flight1Run: r1(run1), flight2Run: r1(run2), landingHeight: r2(r1n * s.riser), straightRunTotal: r1(run1 + pos(v.landingDepth, 36) + run2) };
 };
-
-export const STAIR_ANGLES = ["Ramp territory (under 20°) — use a ramp or long steps", "Gentle stairs (20–30°)", "Ideal stairs (30–37°)", "Steep stairs (37–42°) — allowed only near the IRC limit", "Ship's ladder / ladder (over 42°)"];
 export const stairAngle: CustomCalculator = (v) => {
   const a = Math.atan(pos(v.rise, 7.5) / Math.max(0.01, pos(v.run, 10))) * DEG;
   return { angleDeg: r1(a), category: a < 20 ? 0 : a < 30 ? 1 : a <= 37 ? 2 : a <= 42 ? 3 : 4, slopePercent: r1((pos(v.rise, 7.5) / Math.max(0.01, pos(v.run, 10))) * 100), handrailAngleDeg: r1(a) };
@@ -90,12 +87,10 @@ export const spiralStaircase: CustomCalculator = (v) => {
   const walkDepth = (2 * Math.PI * walk * deg) / 360;
   return { risers, riserHeight: r2(riser), treads, degreesPerTread: r1(deg), walklineTreadIn: r2(walkDepth), compliant: walkDepth >= 6.75 && riser <= 9.5 && D >= 52 ? 1 : 0, openingIn: D + 2 };
 };
-export const SPIRAL_OK = ["Check — tread or width may be under the IRC spiral-stair minimums", "Meets the IRC spiral-stair minimums used here"];
 
 // ---------- Deck structure ----------
 const DEPTH = [7.25, 9.25, 11.25];
 const SYPFB = [925, 800, 750];
-export const BEAMS = ["2-ply 2×8", "2-ply 2×10", "2-ply 2×12", "3-ply 2×10", "3-ply 2×12"];
 const BEAM_PLY = [2, 2, 2, 3, 3], BEAM_D = [0, 1, 2, 1, 2];
 export const SPECIES = ["Southern yellow pine No. 2", "Douglas fir-larch No. 2", "Hem-fir No. 2", "Spruce-pine-fir No. 2"];
 const FB = [0, 900, 850, 875], CF = [1.2, 1.1, 1.0], EM = [1.4e6, 1.6e6, 1.3e6, 1.4e6];
@@ -173,7 +168,6 @@ export const fencePost: CustomCalculator = (v) => {
   const gw = pos(v.gateWidth, 4);
   return { posts, linePosts: Math.max(0, posts - 2 - Math.round(pos(v.corners)) - gates * 2), sections, gatePostSize: gw <= 4 ? 0 : gw <= 6 ? 1 : 2 };
 };
-export const GATE_POSTS = ["4×4 posts are fine (gate up to 4 ft)", "Use 6×6 gate posts (gate 4–6 ft)", "Use 6×6 or steel posts with a cane bolt / wheel (over 6 ft)"];
 
 export const fencePostDepth: CustomCalculator = (v) => {
   const h = pos(v.height, 6) * 12;
@@ -240,21 +234,15 @@ function fenceCost(rates: number[][], walk: number, drive: number): CustomCalcul
     return { totalCost: r2(total), ...spread(total), perFoot: L ? r2(total / L) : 0 };
   };
 }
-export const VINYL_STYLES = ["Picket", "Privacy", "Ranch rail (2–3 rail)"];
 export const vinylFenceCost = fenceCost([[22, 26, 30], [28, 32, 36], [14, 16, 18]], 450, 1500);
-export const METAL_STYLES = ["Aluminum", "Steel / ornamental", "Wrought iron"];
 export const metalFenceCost = fenceCost([[28, 32, 38], [32, 38, 45], [45, 55, 65]], 500, 2500);
-export const COMPOSITE_STYLES = ["Composite privacy", "Composite semi-privacy"];
 export const compositeFenceCost = fenceCost([[45, 55, 65], [40, 48, 58]], 600, 2000);
-export const POOL_FENCES = ["Removable mesh", "Aluminum", "Vinyl", "Wrought iron", "Frameless glass"];
 const POOL_RATE = [20, 35, 30, 55, 150];
 export const poolFenceCost: CustomCalculator = (v) => {
   const L = pos(v.length, 120);
   const total = L * (pos(v.customRate) || POOL_RATE[pick(v.type, 5)]) + Math.max(1, pos(v.gates, 1)) * 600;
   return { totalCost: r2(total), ...spread(total), perFoot: L ? r2(total / L) : 0 };
 };
-
-export const GATES = ["Wood walk gate", "Vinyl walk gate", "Chain link walk gate", "Aluminum walk gate", "Wood double drive gate", "Vinyl double drive gate", "Aluminum double drive gate", "Wrought iron driveway gate"];
 const GATE_RATE = [350, 450, 250, 500, 1200, 1500, 2000, 3500];
 export const gateCost: CustomCalculator = (v) => {
   const total = Math.max(1, pos(v.count, 1)) * GATE_RATE[pick(v.gate, GATE_RATE.length)] + (pick(v.opener, 2) ? 2000 : 0);
@@ -271,8 +259,6 @@ export const deckStainingCost: CustomCalculator = (v) => {
   const total = Math.max(400, a * (pos(v.rate, 3) + (pick(v.prep, 2) ? 1 : 0)) * (pick(v.stain, 2) ? 1.15 : 1) + pos(v.railingFeet) * 5 + pos(v.stairs) * 50);
   return { totalCost: r2(total), ...spread(total), perSqFt: a ? r2(total / a) : 0 };
 };
-
-export const STAIN_TYPES = ["Transparent / toner", "Semi-transparent", "Solid stain", "Deck paint / resurfacer"];
 const STAIN_COV = [250, 200, 150, 75];
 export const stain: CustomCalculator = (v) => {
   const isFence = pick(v.mode, 2) === 1;
@@ -280,31 +266,23 @@ export const stain: CustomCalculator = (v) => {
   const gal = (area * Math.max(1, pos(v.coats, 2))) / STAIN_COV[pick(v.stain, 4)] * (pick(v.rough, 2) ? 1.3 : 1);
   return { gallons: r1(gal), area: Math.round(area), oneGallonCans: ceil(gal), fiveGallonPails: ceil(gal / 5) };
 };
-
-export const PORCH_TYPES = ["Open porch (deck-style)", "Covered porch (with roof)", "Screened porch", "Enclosed three-season porch"];
 const PORCH_RATE = [35, 70, 90, 150];
 export const porchCost: CustomCalculator = (v) => {
   const a = pos(v.depth, 8) * pos(v.width, 20);
   const total = a * (pos(v.customRate) || PORCH_RATE[pick(v.type, 4)]) + pos(v.railingFeet) * 35 + pos(v.steps) * 150;
   return { totalCost: r2(total), ...spread(total), area: Math.round(a), perSqFt: a ? r2(total / a) : 0 };
 };
-
-export const STAIRCASES = ["Straight, basic wood", "Straight, carpeted", "Straight, hardwood", "L- or U-shaped with landing", "Spiral (kit, installed)", "Floating / custom"];
 const STAIRCASE_RATE = [2500, 3500, 6000, 8000, 5000, 15000];
 export const staircaseCost: CustomCalculator = (v) => {
   const total = STAIRCASE_RATE[pick(v.type, STAIRCASE_RATE.length)] * Math.max(0.5, pos(v.floorHeight, 9) / 9) + pos(v.railingFeet) * pos(v.railingPerFoot, 60);
   return { totalCost: r2(total), ...spread(total) };
 };
-
-export const AWNINGS = ["Fixed fabric", "Retractable (manual)", "Retractable (motorized)", "Aluminum / metal", "Polycarbonate or glass"];
 const AWNING_RATE = [25, 35, 55, 30, 60];
 export const awningCost: CustomCalculator = (v) => {
   const a = pos(v.width, 12) * pos(v.projection, 10);
   const total = a * AWNING_RATE[pick(v.type, 5)] + pos(v.install, 500);
   return { totalCost: r2(total), ...spread(total), area: Math.round(a), projectionMinFt: r1((pos(v.windowHeight) / 12) / 3), projectionMaxFt: r1((pos(v.windowHeight) / 12) / 2) };
 };
-
-export const GAZEBO_SIZES = ["8 × 8 ft (2–4 people, benches)", "10 × 10 ft (table for 4)", "12 × 12 ft (table for 6 or lounge set)", "12 × 16 ft (table for 8, or hot tub)", "14 × 20 ft or larger (big dining / entertaining)"];
 export const gazeboSize: CustomCalculator = (v) => {
   const people = pos(v.people, 6);
   let a = people * 15 + [0, 50, 90][pick(v.furniture, 3)] + (pick(v.hotTub, 2) ? 100 : 0) + (pick(v.grill, 2) ? 30 : 0);
@@ -320,8 +298,6 @@ export const firePitGlass: CustomCalculator = (v) => {
   const lb = (areaSqIn * depth) / 17.28; // ≈ 100 lb per cu ft bulk
   return { pounds: Math.ceil(lb), bags10lb: ceil(lb / 10), cost: r2(Math.ceil(lb) * pos(v.pricePerLb, 4)), glassDepthIn: r2(depth) };
 };
-
-export const PERGOLA_BEAMS = ["2-ply 2×8 (posts up to 8 ft apart)", "2-ply 2×10 (up to 10 ft)", "2-ply 2×12 (up to 12 ft)", "Over 12 ft — use a larger timber (e.g. 6×10) or steel, engineered"];
 export const pergola: CustomCalculator = (v) => {
   const L = pos(v.length, 12), W = pos(v.width, 12), oh = pos(v.overhang, 1);
   const sp = Math.max(1, pos(v.postSpacing, 10));
@@ -330,8 +306,6 @@ export const pergola: CustomCalculator = (v) => {
   const slats = Math.floor((W * 12) / pos(v.slatSpacing, 12)) + 1;
   return { posts: postsPerSide * 2, beamBoards: 4, beamLengthFt: r1(L + 2 * oh), rafters, rafterLengthFt: r1(W + 2 * oh), topSlats: slats, beamSize: sp <= 8 ? 0 : sp <= 10 ? 1 : sp <= 12 ? 2 : 3, concreteBags: postsPerSide * 2 * 3 };
 };
-
-export const BALCONIES = ["Wood or composite (deck-style)", "Prefab steel / bolt-on", "Cantilevered concrete", "Juliet balcony (railing only)"];
 export const balconyCost: CustomCalculator = (v) => {
   const t = pick(v.type, 4), a = pos(v.depth, 5) * pos(v.width, 10);
   const railing = (t === 3 ? pos(v.width, 10) : pos(v.width, 10) + 2 * pos(v.depth, 5)) * [40, 60, 200][pick(v.railing, 3)];

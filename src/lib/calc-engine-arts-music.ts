@@ -234,8 +234,6 @@ export const neckAngle: CustomCalculator = (v) => {
   const angle = d > 0 ? (Math.atan(rise / d) * 180) / Math.PI : 0;
   return { neckAngleDegrees: round2(angle), riseNeeded: round2(rise), shimThickness: Math.round(Math.tan((angle * Math.PI) / 180) * nonNeg(v.heelLength) * 1000) / 1000, angleIsZeroOrLess: angle <= 0 ? 1 : 0 };
 };
-
-export const CYMBAL_CLASSES = ["Paper thin", "Thin", "Medium-thin", "Medium", "Medium-heavy", "Heavy"];
 export const cymbalWeight: CustomCalculator = (v) => {
   const dia = pick(v.diameterUnit, 2) === 1 ? nonNeg(v.diameter) / 2.54 : nonNeg(v.diameter, 18);
   const g = pick(v.weightUnit, 2) === 1 ? nonNeg(v.weight) * 453.592 : nonNeg(v.weight, 1500);

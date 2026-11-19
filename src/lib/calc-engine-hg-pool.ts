@@ -32,17 +32,12 @@ const r1 = (x: number) => Math.round(x * 10) / 10;
 const ceil = (x: number) => Math.ceil(x - 1e-9);
 const spread = (t: number) => ({ costLow: r2(t * 0.85), costHigh: r2(t * 1.25) });
 const k10 = (g: number) => pos(g, 15000) / 10000;
-
-// ---------- Chlorine ----------
-export const CHLORINE_PRODUCTS = ["Liquid chlorine 12.5% (fl oz)", "Liquid chlorine 10% (fl oz)", "Bleach 8.25% (fl oz)", "Bleach 6% (fl oz)", "Cal-hypo 65% (oz by weight)", "Dichlor 56% (oz by weight)", "Trichlor 90% (oz by weight)"];
 const CL_PER_PPM = [10.7, 12.8, 15.5, 21.3, 2.0, 2.4, 1.5];
 const clDose = (gal: number, ppm: number, product: number) => k10(gal) * Math.max(0, ppm) * CL_PER_PPM[pick(product, 7)];
 export const poolChlorine: CustomCalculator = (v) => {
   const oz = clDose(v.gallons, pos(v.target, 4) - pos(v.current, 1), v.product);
   return { amount: r1(oz), cups: r2(oz / 8), quarts: r2(oz / 32), gallonsProduct: r2(oz / 128), pounds: r2(oz / 16) };
 };
-
-export const SHOCK_GOALS = ["Regular shock (raise to 10 ppm)", "SLAM / algae (FC = 40% of CYA)", "Custom target"];
 export const poolShock: CustomCalculator = (v) => {
   const g = pick(v.goal, 3);
   const target = g === 0 ? 10 : g === 1 ? Math.max(10, pos(v.cya, 40) * 0.4) : pos(v.customTarget, 10);
@@ -82,8 +77,6 @@ export const pondSalt: CustomCalculator = (v) => {
   const lb = (pos(v.gallons, 1000) * 8.34 * pos(v.salinity, 0.1)) / 100;
   return { saltLb: r1(lb), saltKg: r1(lb * 0.4536), perDayLb: r1(lb / Math.max(1, pos(v.days, 3))), ppm: Math.round(pos(v.salinity, 0.1) * 10000) };
 };
-
-export const LSI_STATUS = ["Corrosive (below −0.3) — etching and metal damage", "Balanced (−0.3 to +0.3)", "Scale-forming (above +0.3) — cloudy water and scale"];
 const lsiCalc = (ph: number, tempF: number, ch: number, ta: number, cya: number, tds: number) => {
   const T = (tempF - 32) / 1.8 + 273.15;
   const A = (Math.log10(Math.max(1, tds)) - 1) / 10, B = -13.12 * Math.log10(T) + 34.55;
@@ -128,8 +121,6 @@ export const pondVolume: CustomCalculator = (v) => {
   const gal = cuFt * 7.48;
   return { gallons: Math.round(gal), liters: Math.round(cuFt * 28.32), koi: Math.floor(gal / 250), pumpGph: Math.round(gal), surfaceSqFt: Math.round(shapeArea(pick(v.shape, 4), pos(v.length, 12), pos(v.width, 8))) };
 };
-
-export const TANK_SHAPES = ["Vertical cylinder", "Horizontal cylinder", "Rectangular"];
 export const waterTank: CustomCalculator = (v) => {
   const s = pick(v.shape, 3), D = pos(v.diameter, 48), L = pos(v.length, 60), W = pos(v.width, 48), H = pos(v.height, 60);
   const fill = pos(v.fillHeight, 30);
@@ -203,9 +194,6 @@ export const poolFillTime: CustomCalculator = (v) => {
   const gal = pos(v.gallons, 20000), gpm = pos(v.hoseGpm, 9) * Math.max(1, Math.round(pos(v.hoses, 1)));
   return { hours: r1(gal / (gpm * 60)), days: r1(gal / (gpm * 60 * 24)), waterCost: r2((gal / 1000) * pos(v.pricePer1000, 10)), trucks: ceil(gal / 6000) };
 };
-
-// ---------- Costs ----------
-export const POOL_FINISHES = ["Plaster (marcite)", "Quartz aggregate", "Pebble (e.g. PebbleTec, Diamond Brite)", "Fiberglass refinish (gelcoat)", "Vinyl liner replacement"];
 const FINISH_RATE = [6, 8.5, 12, 8, 4];
 export const poolResurfacingCost: CustomCalculator = (v) => {
   const L = pos(v.length, 32), W = pos(v.width, 16), D = pos(v.avgDepth, 5);
@@ -220,16 +208,12 @@ export const poolMaintenanceCost: CustomCalculator = (v) => {
   const yearly = monthly * pos(v.months, 12) + pos(v.openClose) * 300 + pos(v.repairs, 500);
   return { monthlyCost: r2(monthly), yearlyCost: r2(yearly) };
 };
-
-export const POOL_REMOVALS = ["Above-ground pool removal", "Inground — partial fill-in (break & bury)", "Inground — full removal"];
 export const poolRemovalCost: CustomCalculator = (v) => {
   const t = pick(v.type, 3), f = Math.max(0.6, pos(v.area, 512) / 512);
   const fill = t === 0 ? 0 : pos(v.area, 512) * pos(v.depth, 5) / 27 * (t === 1 ? 0.9 : 1) * pos(v.fillPerYard, 30);
   const total = [1500, 6000, 12000][t] * f + fill + pos(v.permit, 400);
   return { totalCost: r2(total), ...spread(total), fillCost: r2(fill) };
 };
-
-export const POND_TYPES = ["Backyard liner pond (with pump & filter)", "Farm / stock pond (excavated)"];
 export const pondCost: CustomCalculator = (v) => {
   const a = pos(v.area, 200);
   if (pick(v.type, 2) === 0) { const t = a * pos(v.backyardPerSqFt, 20); return { totalCost: r2(t), ...spread(t), cubicYards: r1((a * pos(v.depth, 3)) / 27) }; }

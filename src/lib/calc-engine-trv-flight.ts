@@ -56,7 +56,6 @@ export const flightDistance: TrvCalculator = (v) => {
 // 3. flight-cost-calculator
 export const CABIN = ["Economy", "Premium economy", "Business", "First"];
 const CABIN_X = [1, 1.8, 4, 6.5];
-export const BOOK = ["3+ months ahead", "1–3 months ahead", "2–4 weeks ahead", "Under 2 weeks", "Last minute (under 3 days)"];
 const BOOK_X = [0.9, 1, 1.15, 1.4, 1.8];
 export const flightCost: TrvCalculator = (v) => {
   const { km, label } = tripKm(v, 1000), mi = km / KM_PER_MI, cab = pick(v.cabin, 4), bk = pick(v.book, 5), rt = pick(v.rt, 2) === 1 ? 2 : 1, pax = Math.max(1, Math.round(pos(v.pax, 1)));
@@ -80,9 +79,6 @@ export const jetLag: TrvCalculator = (v) => {
     tip: east ? "Flying east is harder: your body clock has to run ahead. Consider a small melatonin dose at the new bedtime (ask a doctor)." : "Flying west is easier: staying up a little later comes naturally.",
   };
 };
-
-// 5. us-flight-delay-refund-calculator
-export const REFUND_EVENT = ["Flight cancelled", "Departure or arrival changed (delay)", "Downgraded to a lower cabin", "Extra connection added / airport changed"];
 export const usRefund: TrvCalculator = (v) => {
   const ev = pick(v.event, 4), intl = pick(v.intl, 2) === 1, hrs = pos(v.hrs, 3.5), took = pick(v.took, 2) === 1, price = pos(v.price, 450), unused = pos(v.unused, 100) / 100;
   const sig = ev === 0 || ev === 2 || ev === 3 || hrs >= (intl ? 6 : 3);
@@ -96,10 +92,6 @@ export const usRefund: TrvCalculator = (v) => {
     note: "US law has no fixed cash compensation for delays; many airlines promise meal vouchers for 3+ hour controllable delays (see the DOT Airline Customer Service Dashboard). EU/UK departures may also qualify for EU261/UK261 compensation.",
   };
 };
-
-// 6. uk261-flight-delay-compensation-calculator
-export const UK_EVENT = ["Delayed on arrival", "Cancelled (told under 14 days before)", "Denied boarding (overbooked)"];
-export const UK_CAUSE = ["Airline's fault (technical, crew, scheduling)", "Extraordinary (weather, ATC, security, strike by non-airline staff)"];
 export const uk261: TrvCalculator = (v) => {
   const { km, label } = tripKm(v, 1200), ev = pick(v.event, 3), cause = pick(v.cause, 2), hrs = pos(v.hrs, 3.5), pax = Math.max(1, Math.round(pos(v.pax, 1)));
   const band = km <= 1500 ? 0 : km <= 3500 ? 1 : 2, AMT = [220, 350, 520], LIM = [2, 3, 4];
@@ -110,10 +102,6 @@ export const uk261: TrvCalculator = (v) => {
   else why = `Eligible: ${["up to 1,500 km", "1,500–3,500 km", "over 3,500 km"][band]} band`;
   return { total: per * pax, per, status: why, dist: `${nfmt(r0(km))} km (${label})`, care: hrs >= [2, 3, 4][band] ? "Right to care: meals, drinks and hotel if overnight" : "Care starts after 2 h (short), 3 h (medium) or 4 h (long) delays" };
 };
-
-// 7. flight-tax-calculator
-export const TAX_MODE = ["US domestic ticket", "US international ticket", "UK departure (Air Passenger Duty)"];
-export const APD_BAND = ["Domestic UK", "Band A (up to 2,000 miles)", "Band B (2,001–5,500 miles)", "Band C (over 5,500 miles)"];
 const APD_R = [7, 15, 94, 102], APD_S = [15, 32, 258, 280];
 export const flightTax: TrvCalculator = (v) => {
   const mode = pick(v.mode, 3), base = pos(v.base, 300), seg = Math.round(pos(v.segs, 2)), rt = pick(v.rt, 2) === 1, pax = Math.max(1, Math.round(pos(v.pax, 1)));
@@ -135,9 +123,6 @@ export const flightArrival: TrvCalculator = (v) => {
   const dur = Number(m[1]) * 60 + Number(m[2] ?? 0), o = num(v.otz, -5), d = num(v.dtz, 0), arrLocal = dep + dur + (d - o) * 60;
   return { arr: clockText(arrLocal), dur: durText(dur), diff: `${d - o >= 0 ? "+" : ""}${d - o} h time difference`, utc: `Departs ${clockText(dep - o * 60)} UTC · arrives ${clockText(dep + dur - o * 60)} UTC`, home: `${clockText(dep + dur)} back home when you land` };
 };
-
-// 9. layover-calculator
-export const CONN = ["Domestic → domestic", "Domestic → international", "International → domestic (customs & re-check bags)", "International → international (transit)"];
 const MCT = [45, 60, 90, 75];
 export const layover: TrvCalculator = (v) => {
   const a = parseClock(txt(v, "arr"), "Arrival time"), d0 = parseClock(txt(v, "dep"), "Next departure time"), day = Math.round(pos(v.days, 0));
@@ -147,9 +132,6 @@ export const layover: TrvCalculator = (v) => {
   const risk = spare < 0 ? "⛔ Below the minimum connection time — very likely to miss it" : spare < 30 ? "⚠️ Tight — little room for a late arrival" : spare < 120 ? "✅ Comfortable" : lay >= 360 ? "🧳 Long — enough time to leave the airport if visa rules allow" : "✅ Plenty of time";
   return { lay: durText(lay), risk, mct: durText(mct), spare: spare >= 0 ? durText(spare) : `${durText(-spare)} short`, out: lay >= 360 ? `About ${durText(lay - 180)} free outside the airport (allowing 3 h for travel and security)` : "Stay airside" };
 };
-
-// 10. aircraft-range-calculator
-export const FUEL_U = ["US gallons", "Litres", "Pounds (lb)", "Kilograms"];
 const toGal = (x: number, u: number) => (u === 0 ? x : u === 1 ? x / 3.78541 : u === 2 ? x / 6.7 : (x * 2.20462) / 6.7);
 export const aircraftRange: TrvCalculator = (v) => {
   const u = pick(v.fu, 4), fuel = toGal(pos(v.fuel, 50), u), burn = toGal(pos(v.burn, 9), u), kt = pos(v.kt, 120), resv = pos(v.res, 45), wind = num(v.wind, 0);

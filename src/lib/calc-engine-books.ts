@@ -37,11 +37,6 @@ const usd = (x: number) => money(x, "$", 2);
 const ceil2 = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
 const hm = (min: number) => { const m = Math.max(0, Math.round(min)); const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; };
 
-// ------------------------------------------------------------------ KDP print cost & royalty
-export const KDP_FORMATS = ["Paperback", "Hardcover"];
-export const KDP_INKS = ["Black ink", "Standard colour (paperback only)", "Premium colour"];
-export const KDP_TRIMS = ["Regular trim (up to 6.12\" × 9\")", "Large trim (wider than 6.12\" or taller than 9\")"];
-
 export function kdpPrintCost(format: number, ink: number, large: boolean, pages: number): number {
   if (format === 0) {
     if (ink === 0) { if (pages < 24 || pages > 828) throw new InputError("KDP black-ink paperbacks must have 24–828 pages."); return pages <= 108 ? (large ? 2.84 : 2.3) : 1 + pages * (large ? 0.017 : 0.012); }
@@ -90,9 +85,6 @@ export const kindleCalc: Calc = (v) => {
     r70: ok70 ? usd(r70) : "Not eligible at this price", r35: r2(r35), delivery, monthlySales: r2(best * sales), ku: r2(ku), total: r2(best * sales + ku),
   };
 };
-
-// ------------------------------------------------------------------ Amazon BSR → sales
-export const BSR_STORES = ["Kindle Store (eBooks)", "Books (paperback & hardcover)"];
 const BSR_TABLE: [number, number][][] = [
   [[1, 4000], [10, 1500], [100, 350], [1000, 60], [5000, 18], [10000, 10], [50000, 2.5], [100000, 1], [200000, 0.5], [500000, 0.15], [1000000, 0.05], [3000000, 0.01]],
   [[1, 3000], [10, 1100], [100, 250], [1000, 45], [5000, 12], [10000, 6], [50000, 1.5], [100000, 0.7], [200000, 0.35], [500000, 0.1], [1000000, 0.04], [5000000, 0.005]],
@@ -194,9 +186,6 @@ export const audiobookCalc: Calc = (v) => {
     words: r0(total * 155), pages: r0((total * 155) / 250), wpm: r0(155 * speed),
   };
 };
-
-// ------------------------------------------------------------------ book page count
-export const PC_SOURCES = ["Word count", "Manuscript pages (Word / Google Docs)"];
 export const SPACING: [string, number][] = [["Double-spaced, 12 pt (~250 words/page)", 250], ["1.5-spaced, 12 pt (~350 words/page)", 350], ["Single-spaced, 12 pt (~500 words/page)", 500]];
 export const TRIMS: [string, number][] = [["5\" × 8\"", 260], ["5.25\" × 8\"", 280], ["5.5\" × 8.5\"", 300], ["6\" × 9\"", 350], ["7\" × 10\"", 450], ["8.5\" × 11\"", 600], ["Mass-market 4.25\" × 6.87\"", 230]];
 export const FONTS: [string, number][] = [["10 pt", 1.15], ["11 pt (typical)", 1], ["12 pt", 0.87], ["14 pt large print", 0.65]];
@@ -208,9 +197,6 @@ export const pageCountCalc: Calc = (v) => {
   const body = Math.ceil(words / wpp), raw = body + extra, pages = raw % 2 ? raw + 1 : raw;
   return { pages, body, wpp: r0(wpp), words: r0(words), kind: wordClass(words), spineWhite: r2(pages * 0.002252), spineCream: r2(pages * 0.0025), readTime: hm(words / 238) };
 };
-
-// ------------------------------------------------------------------ beat sheet (Save the Cat)
-export const BEAT_MODES = ["Screenplay (pages)", "Novel (words)"];
 // [key, name, screenplay page start, screenplay page end, novel % start, novel % end]
 export const BEATS: [string, string, number, number, number, number][] = [
   ["opening", "Opening Image", 1, 1, 0, 1], ["theme", "Theme Stated", 5, 5, 5, 5], ["setup", "Set-Up", 1, 10, 1, 10],

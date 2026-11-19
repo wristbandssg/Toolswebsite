@@ -45,9 +45,6 @@ export const FR_CLASSES: [string, number][] = [["Class 1 — car (under 2 m tall
 export const FRANCE: MileRoad = { cur: "EUR", sym: "€", unit: "km", full: 775, classes: FR_CLASSES, methods: [["Card / cash at the barrier", 0.095], ["Télépéage badge (Bip&Go, Ulys)", 0.095]] };
 export const IT_CLASSES: [string, number][] = [["Class A — car / motorcycle", 1], ["Class B — 2 axles over 1.3 m (van, SUV with high front)", 1.03], ["Class 3 — 3 axles (car + trailer)", 1.35], ["Class 4 — 4 axles", 2.0], ["Class 5 — 5+ axles", 2.4]];
 export const ITALY: MileRoad = { cur: "EUR", sym: "€", unit: "km", full: 760, classes: IT_CLASSES, methods: [["Card / cash", 0.085], ["Telepass / UnipolMove", 0.085]] };
-
-// 407 ETR: distance-based with time-of-day rates + trip toll charge + video charge
-export const E407_TIME = ["Weekend / off-peak", "Weekday mid-day", "Weekday peak (6–10 am, 3–7 pm)"];
 export const etr407: TrvCalculator = (v) => {
   const km = pos(v.dist, 30), t = pick(v.time, 3), rate = pos(v.rate, 0) || [0.38, 0.48, 0.62][t], cls = pick(v.cls, 3), mult = [1, 2, 3][cls], tag = pick(v.tag, 2) === 1;
   const trip = 1.0 * mult, cam = tag ? 0 : 4.95, toll = km * rate * mult, one = toll + trip + cam, rt = pick(v.rt, 2) === 1 ? 2 : 1, trips = Math.round(pos(v.trips, 0));

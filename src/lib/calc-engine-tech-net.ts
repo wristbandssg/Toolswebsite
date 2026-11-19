@@ -297,9 +297,6 @@ export const cronExpression: Calc = (v) => {
   const perDay = c.min.set.size * c.hour.set.size;
   return { plain: parts.join(", ").replace(/^./, (x) => x.toUpperCase()), next: runs.join("\n") || "never (no matching date in the next 8 years)", perDay, fields: `minute: ${c.f[0]} | hour: ${c.f[1]} | day of month: ${c.f[2]} | month: ${c.f[3]} | day of week: ${c.f[4]}` };
 };
-
-// ------------------------------------------------------------------ network latency
-export const LAT_MEDIA = ["Fibre optic (≈ 204,000 km/s)", "Copper cable (≈ 0.66c)", "Radio / microwave / free space (c)", "Geostationary satellite (adds ≈ 71,600 km each way)"];
 export const networkLatency: Calc = (v) => {
   const km = pos(v.km), med = pick(v.medium, 4);
   const speed = [204190, 0.66 * 299792.458, 299792.458, 299792.458][med];

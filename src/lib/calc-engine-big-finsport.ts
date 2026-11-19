@@ -23,9 +23,6 @@ const show = (x: number, s = 6) => (Number.isFinite(x) ? nfmt(sig(x, s), 8).repl
 const usd = (x: number) => `${x < 0 ? "−" : ""}$${Math.abs(x).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const pc = (x: number, s = 4) => `${show(x * 100, s)}%`;
 const list = (raw: string, min: number) => { const a = raw.split(/[\s,;]+/).filter(Boolean).map((p) => { const n = Number(p.replace(/[$,]/g, "")); if (!Number.isFinite(n)) throw new InputError(`"${p}" isn't a number.`); return n; }); if (a.length < min) throw new InputError(`Enter at least ${min} values.`); return a; };
-
-// ------------------------------------------------------------------ intrinsic value
-export const IV_METHODS = ["Discounted cash flow (2-stage DCF)", "Graham number √(22.5 × EPS × BVPS)", "Graham formula EPS × (8.5 + 2g) × 4.4 ÷ Y"];
 export const intrinsicValue: Calc = (v) => {
   const m = pick(v.method, 3), price = num(v.price, 150);
   let iv: number, working: string;
@@ -184,11 +181,7 @@ export const pokerOdds: Calc = (v) => {
     method: `${nfmt(N)} simulated deals (fixed seed, about ±1% accuracy)`,
   };
 };
-
-// ------------------------------------------------------------------ roulette
-export const RO_WHEELS = ["European (single zero, 37 pockets)", "American (double zero, 38 pockets)"];
 export const RO_BETS: [string, number, number][] = [["Straight up (1 number)", 1, 35], ["Split (2)", 2, 17], ["Street (3)", 3, 11], ["Corner (4)", 4, 8], ["Five-number / top line (American)", 5, 6], ["Six line (6)", 6, 5], ["Dozen or column (12)", 12, 2], ["Red/black, odd/even, high/low (18)", 18, 1]];
-export const RO_LABELS = RO_BETS.map((b) => b[0]);
 export const roulette: Calc = (v) => {
   const am = pick(v.wheel, 2) === 1, [name, k, pay] = RO_BETS[pick(v.bet, RO_BETS.length)], stake = num(v.stake, 10), spins = Math.max(1, Math.round(num(v.spins, 100)));
   if (k === 5 && !am) throw new InputError("The five-number bet only exists on the American wheel.");

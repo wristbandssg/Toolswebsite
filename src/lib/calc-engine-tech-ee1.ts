@@ -46,10 +46,6 @@ export function nearestE24(x: number) {
   for (const m of [...E24, 10]) { const c = m * dec; const e = Math.abs(Math.log(c / x)); if (e < err) { err = e; best = c; } }
   return Number(best.toPrecision(3));
 }
-
-// ------------------------------------------------------------------ watts ↔ amps ↔ volts
-export const PHASES = ["DC", "AC single-phase", "AC three-phase (line-to-line voltage)", "AC three-phase (line-to-neutral voltage)"];
-export const WA_MODES = ["Watts → amps", "Amps → watts", "Watts & amps → volts"];
 export const POWER_UNITS: [string, number][] = [["W", 1], ["kW", 1000], ["hp (output)", 745.7]];
 export const wattsToAmps: Calc = (v) => {
   const ph = pick(v.phase, 4), mode = pick(v.mode, 3);
@@ -76,9 +72,6 @@ export const kvaToAmps: Calc = (v) => {
   const next = std.find((s) => s * 1000 >= va * 0.9999);
   return { amps: sig(I, 5), kva: sig(va / 1000, 5), mva: sig(va / 1e6, 4), va: sig(va, 6), formula: three ? "I = kVA × 1000 ÷ (√3 × V)" : "I = kVA × 1000 ÷ V", std: next ? `${next} kVA` : "above 5,000 kVA", mode: three ? "Three-phase" : "Single-phase" };
 };
-
-// ------------------------------------------------------------------ kVA ↔ kW (power factor)
-export const KW_MODES = ["kVA → kW", "kW → kVA"];
 export const kvaToKw: Calc = (v) => {
   const pf = Math.min(1, Math.max(0.01, num(v.pf, 0.8)));
   const mode = pick(v.mode, 2);
@@ -93,7 +86,6 @@ export const kvaToKw: Calc = (v) => {
 // ------------------------------------------------------------------ capacitor code
 const TOL: Record<string, string> = { B: "±0.1 pF", C: "±0.25 pF", D: "±0.5 pF", F: "±1%", G: "±2%", J: "±5%", K: "±10%", M: "±20%", Z: "+80% / −20%" };
 const VCODE: Record<string, number> = { "0G": 4, "0L": 5.5, "0J": 6.3, "1A": 10, "1C": 16, "1E": 25, "1V": 35, "1H": 50, "1J": 63, "1K": 80, "2A": 100, "2Q": 110, "2B": 125, "2C": 160, "2Z": 180, "2D": 200, "2P": 220, "2E": 250, "2F": 315, "2V": 350, "2G": 400, "2W": 450, "2H": 500, "2J": 630, "3A": 1000 };
-export const CAP_MODES = ["Code → value", "Value → code"];
 export const CAP_UNITS: [string, number][] = [["pF", 1], ["nF", 1e3], ["µF", 1e6]];
 export const capacitorCode: Calc = (v) => {
   const mode = pick(v.mode, 2);
@@ -117,9 +109,6 @@ export const capacitorCode: Calc = (v) => {
   else if (pf >= 1) code = `${String(sig(pf, 2)).replace(".", "R")}`;
   return { pf: `${sig(pf, 4)} pF`, nf: `${sig(pf / 1e3, 4)} nF`, uf: `${sig(pf / 1e6, 4)} µF`, code, tol, volts };
 };
-
-// ------------------------------------------------------------------ op-amp gain
-export const OPAMP = ["Inverting", "Non-inverting", "Voltage follower (buffer)"];
 export const opAmpGain: Calc = (v) => {
   const cfg = pick(v.config, 3);
   const rf = pos(v.rf, 100), rin = pos(v.rin, 10);
@@ -132,9 +121,6 @@ export const opAmpGain: Calc = (v) => {
   const gbw = pos(v.gbw, 1);
   return { gain: sig(g, 5), db: sig(20 * Math.log10(Math.abs(g)), 4), vout: sig(vout, 5), clip: Math.abs(ideal) > lim ? `Clipped — the ideal output ${sig(ideal, 4)} V exceeds the ±${sig(lim, 3)} V swing` : "Within the output swing", bw: gbw > 0 ? eng((gbw * 1e6) / noise, "Hz") : "—", zin: cfg === 0 ? `${sig(rin, 4)} kΩ` : "Very high (op-amp input)", formula: ["G = −Rf ÷ Rin", "G = 1 + Rf ÷ Rin", "G = 1"][cfg] };
 };
-
-// ------------------------------------------------------------------ active filter design
-export const FILTERS = ["Sallen-Key low-pass (2nd order)", "Sallen-Key high-pass (2nd order)", "Multiple-feedback band-pass", "Twin-T notch (band-stop)"];
 export const activeFilter: Calc = (v) => {
   const t = pick(v.type, 4);
   const f = pos(v.f0, 1000), Q = Math.max(0.1, pos(v.q, 0.707)), C = pos(v.cap, 10) * 1e-9, G = Math.max(0.01, pos(v.gain, 1));
@@ -155,9 +141,6 @@ export const activeFilter: Calc = (v) => {
   const R = 1 / (w * C);
   return { r: `R = ${ohm(R)} (×2), R/2 = ${ohm(R / 2)}`, c: `C = ${eng(C, "F")} (×2), 2C = ${eng(2 * C, "F")}`, gainRes: "Passive twin-T; add op-amp feedback to raise Q", k: 1, dB: 0, note: `Notch at ${sig(f, 4)} Hz. Passive Q ≈ 0.25; use 1% parts for a deep notch.` };
 };
-
-// ------------------------------------------------------------------ LM317
-export const LM_MODES = ["Find Vout from R1 & R2", "Find R2 for a target Vout"];
 export const lm317: Calc = (v) => {
   const mode = pick(v.mode, 2), r1 = pos(v.r1, 240);
   if (r1 <= 0) throw new InputError("Enter R1 (240 Ω is typical).");
@@ -182,9 +165,6 @@ export const boost: Calc = (v) => {
   const C = (iout * D) / (fs * dv);
   return { d: Math.round(D * 1000) / 10, L: eng(L, "H"), C: eng(C, "F"), iin: sig(iin, 4), ipk: sig(iin + di / 2, 4), pin: sig(iin * vin, 4), diode: `≥ ${sig(iout * 1.5, 3)} A, ≥ ${sig(vout * 1.25, 3)} V Schottky` };
 };
-
-// ------------------------------------------------------------------ ADC
-export const ADC_MODES = ["Voltage → digital code", "Digital code → voltage"];
 export const adc: Calc = (v) => {
   const n = Math.round(pos(v.bits, 12)), vref = pos(v.vref, 3.3);
   if (n < 1 || n > 32 || vref <= 0) throw new InputError("Enter 1–32 bits and a reference voltage above 0.");

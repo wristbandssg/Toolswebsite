@@ -82,7 +82,6 @@ export const correlation: SciCalculator = (v) => {
   const z = Math.atanh(Math.max(-0.999999999, Math.min(0.999999999, r))), sez = 1 / Math.sqrt(n - 3);
   return { r: s(r, 10), r2: s(r * r, 10), strength: ar < 0.1 ? 0 : ar < 0.3 ? 1 : ar < 0.5 ? 2 : ar < 0.7 ? 3 : ar < 0.9 ? 4 : 5, direction: r > 0 ? "positive" : r < 0 ? "negative" : "none", t: Number.isFinite(t) ? s(t, 8) : "∞", p: ar === 1 ? 0 : s(pT2(t, n - 2), 8), ci: n > 3 ? `${g(Math.tanh(z - 1.959964 * sez))} to ${g(Math.tanh(z + 1.959964 * sez))}` : "needs n > 3" };
 };
-export const STRENGTH = ["Negligible", "Weak", "Moderate", "Moderately strong", "Strong", "Very strong"];
 export const covariance: SciCalculator = (v) => {
   const { x, y, n } = xy(v, 2);
   const { mx, my, sxx, syy, sxy } = stats(x, y);
@@ -169,7 +168,6 @@ export const polynomialRegression: SciCalculator = (v) => {
   const r = polyFit(x, y, d);
   return { equation: polyEq(r.beta), coefficients: r.beta.map((c, k) => `a${k} (x^${k}) = ${fmt(c, 10)}`).join("\n"), r2: s(r.r2, 8), adj: Number.isFinite(r.adj) ? s(r.adj, 8) : "—", rmse: s(Math.sqrt(r.sse / x.length), 8), predictions: preds(v, (q) => sum(r.beta.map((c, k) => c * q ** k))) };
 };
-export const DEGREES = ["1 (linear)", "2 (quadratic)", "3 (cubic)", "4 (quartic)", "5 (quintic)", "6"];
 
 // ---------- R², residuals, multiple & logistic regression ----------
 export const coefDetermination: SciCalculator = (v) => {
@@ -235,7 +233,6 @@ export const covarianceMatrix: SciCalculator = (v) => {
   const show = (A: number[][]) => A.map((r) => r.map((c) => fmt(c, 6)).join("   ")).join("\n");
   return { cov: show(C), corr: show(R), means: means.map((q, j) => `x${j + 1}: ${fmt(q, 8)}`).join(", "), size: `${k} × ${k} from ${n} observations`, total: s(sum(C.map((r, i) => r[i])), 8) };
 };
-export const COV_TYPE = ["Sample (n − 1)", "Population (n)"];
 
 export const sciRegCustomCalculators: Record<string, SciCalculator> = {
   "linear-regression-calculator": linearRegression,

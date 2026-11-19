@@ -46,7 +46,6 @@ export const coefficientVariation: SciCalculator = (v) => {
   if (!m) throw new InputError("The mean is 0, so the coefficient of variation is undefined.");
   return { cv: s((sd(a) / Math.abs(m)) * 100, 10), rsd: s((sd(a) / Math.abs(m)) * 100, 10), cvPop: s((sd(a, false) / Math.abs(m)) * 100, 10), mean: s(m, 12), sd: s(sd(a), 12) };
 };
-export const CI_TYPES = ["Mean (σ unknown — t)", "Mean (σ known — z)", "Proportion (Wald)", "Proportion (Wilson)"];
 export const confidenceInterval: SciCalculator = (v) => {
   const t = pick(v.type, 4), conf = pos(v.conf, 95) / 100, n = Math.max(2, Math.round(pos(v.n, 30)));
   if (!(conf > 0 && conf < 1)) throw new InputError("Confidence must be between 0 and 100%.");
@@ -82,7 +81,6 @@ export const standardError: SciCalculator = (v) => {
   const a = data(v, "data", 2), se = sd(a) / Math.sqrt(a.length);
   return { se: s(se, 12), mean: s(mean(a), 12), n: a.length, ci95: `${fmt(mean(a) - tInv(0.975, a.length - 1) * se, 8)} to ${fmt(mean(a) + tInv(0.975, a.length - 1) * se, 8)}` };
 };
-export const SE_MODE = ["From raw data", "From SD and n"];
 export const meanAbsDev: SciCalculator = (v) => {
   const a = data(v), m = mean(a), md = median(a);
   return { mad: s(mean(a.map((x) => Math.abs(x - m))), 12), aboutMedian: s(mean(a.map((x) => Math.abs(x - md))), 12), medianAbsDev: s(median(a.map((x) => Math.abs(x - md))), 12), mean: s(m, 12) };
@@ -112,7 +110,6 @@ export const frequencyDist: SciCalculator = (v) => {
   }
   return { table: rows.join("\n"), classes: nc, width: s(width, 8), boundaries: `first class boundary ${fmt(lo - 0.5 * (width / 10), 8)} (half a unit below)` };
 };
-export const UNC_MODE = ["Repeated measurements (standard uncertainty)", "Propagate: sum or difference", "Propagate: product or quotient", "Propagate: power xⁿ"];
 export const uncertainty: SciCalculator = (v) => {
   const m = pick(v.mode, 4);
   if (m === 0) {
@@ -133,7 +130,6 @@ export const sampleProportion: SciCalculator = (v) => {
   const p = x / n, se = Math.sqrt((p * (1 - p)) / n), z = 1.959964;
   return { phat: s(p, 10), percent: s(100 * p, 8), se: s(se, 8), ci: `${fmt(Math.max(0, p - z * se), 6)} to ${fmt(Math.min(1, p + z * se), 6)} (95%)`, normalOk: n * p >= 10 && n * (1 - p) >= 10 ? 0 : 1 };
 };
-export const NORMAL_OK = ["Yes — np ≥ 10 and n(1 − p) ≥ 10", "No — use an exact (binomial) method"];
 export const rms: SciCalculator = (v) => {
   const a = data(v);
   const r = Math.sqrt(mean(a.map((x) => x * x)));
@@ -240,7 +236,6 @@ export const kappa: SciCalculator = (v) => {
   const k = (po - pe) / (1 - pe);
   return { kappa: s(k, 8), observed: s(po, 8), expected: s(pe, 8), strength: k < 0 ? 0 : k <= 0.2 ? 1 : k <= 0.4 ? 2 : k <= 0.6 ? 3 : k <= 0.8 ? 4 : 5 };
 };
-export const KAPPA_LABEL = ["Less than chance", "Slight (0–0.20)", "Fair (0.21–0.40)", "Moderate (0.41–0.60)", "Substantial (0.61–0.80)", "Almost perfect (0.81–1)"];
 export const pooledSD: SciCalculator = (v) => {
   const s1 = pos(v.s1, 4), n1 = pos(v.n1, 20), s2 = pos(v.s2, 5), n2 = pos(v.n2, 25);
   const pv = ((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2) / (n1 + n2 - 2);

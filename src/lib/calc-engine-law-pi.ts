@@ -43,13 +43,6 @@ function round2(n: number): number {
 
 const nonNeg = (v: number, d = 0) => Math.max(0, safeNumber(v, d));
 
-export const FAULT_RULES: [string, number][] = [
-  ["Pure comparative (e.g. CA, NY, FL, MI, WA)", 0],
-  ["Modified — barred at 51% (e.g. TX, IL, PA, OH, MI tort, NJ)", 1],
-  ["Modified — barred at 50% (e.g. GA, CO, TN, AR)", 2],
-  ["Contributory negligence — any fault bars (AL, MD, NC, VA, DC)", 3],
-];
-
 export function faultFactor(rule: number, faultPercent: number): number {
   const f = Math.min(100, nonNeg(faultPercent)) / 100;
   const r = Math.round(safeNumber(rule));

@@ -42,9 +42,6 @@ const interp = (x: number, xs: number[], ys: number[]) => {
   const n = xs.length - 1;
   return ys[n] + ((x - xs[n]) * (ys[n] - ys[n - 1])) / (xs[n] - xs[n - 1]);
 };
-
-// ---------- Psychrometrics ----------
-export const HEAT_STRESS = ["Comfortable (wet bulb under 70 °F)", "Caution (70–78 °F)", "Dangerous for hard work (78–86 °F)", "Extreme — limit exposure (86–95 °F)", "Beyond human tolerance (95 °F+)"];
 export const wetBulb: CustomCalculator = (v) => {
   const T = toC(num(v.temp, 90)), RH = Math.max(1, Math.min(100, pos(v.humidity, 50)));
   const tw = T * Math.atan(0.151977 * Math.sqrt(RH + 8.313659)) + Math.atan(T + RH) - Math.atan(RH - 1.676331) + 0.00391838 * RH ** 1.5 * Math.atan(0.023101 * RH) - 4.686035;
@@ -67,7 +64,6 @@ export const deltaT: CustomCalculator = (v) => {
   const status = heating ? (dt < 30 ? 0 : dt <= 70 ? 1 : 2) : dt < 16 ? 0 : dt <= 22 ? 1 : 2;
   return { deltaT: r1(dt), status, btuPerHour: Math.round(1.08 * pos(v.cfm, 1200) * dt) };
 };
-export const DELTA_STATUS = ["Low — check refrigerant charge, airflow too high, or undersized equipment", "Normal range", "High — check for low airflow (dirty filter or coil, closed vents)"];
 
 // ---------- Refrigerant ----------
 const PT_T = [-20, -10, 0, 10, 20, 30, 40, 45, 50, 60, 70, 80, 90, 100, 110, 120, 130];
@@ -76,23 +72,18 @@ const PT: number[][] = [
   [10.1, 16.5, 24.0, 32.8, 43.0, 54.9, 68.5, 76.0, 84.0, 101.6, 121.4, 143.6, 168.4, 195.9, 226.4, 259.9, 296.8], // R-22
   [-3.7, 1.9, 6.5, 12.0, 18.4, 26.1, 35.0, 40.1, 45.4, 57.4, 71.1, 86.7, 104.3, 124.1, 146.3, 171.1, 198.7], // R-134a
 ];
-export const REFRIGERANTS = ["R-410A", "R-22", "R-134a"];
 const satTemp = (r: number, psig: number) => interp(psig, PT[r], PT_T);
 const satPress = (r: number, f: number) => interp(f, PT_T, PT[r]);
 export const refrigerantPt: CustomCalculator = (v) => {
   const r = pick(v.refrigerant, 3);
   return { satTempF: r1(satTemp(r, num(v.pressure, 118))), pressureAtTempPsig: r1(satPress(r, num(v.temp, 40))), r134aChargeOz: r1(pos(v.r12Charge) * 0.85) };
 };
-
-export const SUPERHEAT_STATUS = ["Low — risk of liquid flood-back; check charge and airflow", "Typical range (8–14 °F for a TXV system at the condenser)", "High — likely undercharged or restricted"];
 export const superheat: CustomCalculator = (v) => {
   const r = pick(v.refrigerant, 3);
   const st = satTemp(r, num(v.suctionPressure, 118));
   const sh = num(v.lineTemp, 52) - st;
   return { superheatF: r1(sh), satTempF: r1(st), status: sh < 5 ? 0 : sh <= 15 ? 1 : 2 };
 };
-
-export const SUBCOOL_STATUS = ["Low — possible undercharge", "Typical range (8–14 °F on most TXV systems — check the data plate)", "High — possible overcharge or restriction"];
 export const subcooling: CustomCalculator = (v) => {
   const r = pick(v.refrigerant, 3);
   const st = satTemp(r, num(v.liquidPressure, 317));
@@ -132,7 +123,6 @@ export const commercialHvacSize: CustomCalculator = (v) => {
   const tons = pos(v.area, 10000) / sqftPerTon;
   return { tons: r1(tons), btuPerHour: Math.round(tons * 12000), rooftopUnits: ceil(tons / Math.max(1, pos(v.maxUnitTons, 25))), sqFtPerTon: sqftPerTon };
 };
-export const COMMERCIAL_TYPES = ["Office", "Retail store", "Restaurant", "Warehouse (cooled)", "Medical / clinic", "School / classroom", "Server / IT room"];
 
 export const metalBuildingHvac: CustomCalculator = (v) => {
   const a = pos(v.area, 2400), hf = Math.max(1, pos(v.height, 14) / 10);
@@ -165,7 +155,6 @@ export const saunaHeater: CustomCalculator = (v) => {
 };
 
 const BOILER_F = [30, 40, 50, 60];
-export const COMBI_SIZES = ["24–27 kW combi (1 bathroom)", "28–32 kW combi (1–2 bathrooms)", "33–40 kW combi (2 bathrooms)", "System or regular boiler with a cylinder (3+ bathrooms)"];
 export const boilerSize: CustomCalculator = (v) => {
   const btu = pos(v.area, 2000) * BOILER_F[pick(v.climate, 4)] * [1.2, 1, 0.85][pick(v.insulation, 3)];
   const baths = Math.round(pos(v.bathrooms, 1));
@@ -219,8 +208,6 @@ export const returnAirDuct: CustomCalculator = (v) => {
   const g = GRILLES.find(([a, b]) => a * b >= cfm * 0.5) ?? GRILLES[GRILLES.length - 1]; // ≈ 200 sq in of grille per ton
   return { returnDuctIn: ROUND.find((d) => d >= D - 0.05) ?? Math.ceil(D), freeAreaSqIn: Math.round(freeIn), grilleWidthIn: g[0], grilleHeightIn: g[1], cfm: Math.round(cfm) };
 };
-
-export const EXHAUST_DUCTS = ["3–4 in duct (up to 50 cfm)", "4 in duct (short runs up to ~25 ft)", "6 in duct", "8 in duct"];
 export const exhaustFanDuct: CustomCalculator = (v) => {
   const cfm = pos(v.cfm, 80), run = pos(v.runFeet, 15);
   const d = cfm <= 50 ? 0 : cfm <= 110 && run <= 25 ? 1 : cfm <= 200 ? 2 : 3;
@@ -286,7 +273,6 @@ export const geothermalLoop: CustomCalculator = (v) => {
   const ft = tons * LOOP_FT[t] * soil;
   return { loopFeet: Math.round(ft), bores: t === 1 ? ceil(ft / 300) : 0, trenchFeet: t === 0 ? Math.round(ft / 2) : 0, gpmOpenLoop: t === 3 ? r1(tons * 1.5) : 0, landSqFt: t === 0 ? Math.round((ft / 2) * 10) : 0 };
 };
-export const LOOP_TYPES = ["Horizontal (trenches)", "Vertical (bores)", "Pond / lake loop", "Open loop (well water)"];
 
 // ---------- Running costs ----------
 export const acRunningCost: CustomCalculator = (v) => {
@@ -330,8 +316,6 @@ export const hvacReplacementCost: CustomCalculator = (v) => {
   const total = base * [1, 1.15, 1.35][pick(v.tier, 3)] - pos(v.rebates);
   return { totalCost: r2(total), ...spread(total) };
 };
-
-export const HEAT_PUMP_TYPES = ["Ducted air-source", "Ductless mini-split (multi-zone)", "Cold-climate ducted", "Dual-fuel (with gas backup)"];
 export const heatPumpCost: CustomCalculator = (v) => {
   const tons = pos(v.tons, 3);
   const gross = tons * [2800, 3500, 3600, 3000][pick(v.type, 4)] + (pick(v.ductwork, 2) ? 5000 : 0) + (pick(v.electrical, 2) ? 2000 : 0);
@@ -354,8 +338,6 @@ export const ductCleaningCost: CustomCalculator = (v) => {
   const total = 100 + pos(v.vents, 12) * 30 + (pick(v.dryer, 2) ? 125 : 0) + (pick(v.sanitize, 2) ? 100 : 0) + (pick(v.coil, 2) ? 200 : 0);
   return { totalCost: r2(total * Math.max(1, Math.round(pos(v.systems, 1)))), ...spread(total) };
 };
-
-export const BOILER_TYPES = ["Gas combi boiler", "Gas system / regular boiler", "High-efficiency condensing gas boiler", "Oil boiler", "Electric boiler"];
 export const boilerCost: CustomCalculator = (v) => {
   const total = [7000, 8000, 9500, 9000, 5500][pick(v.type, 5)] * Math.max(0.8, pos(v.kw, 30) / 30) + (pick(v.flush, 2) ? 600 : 0) - pos(v.rebates);
   return { totalCost: r2(total), ...spread(total) };
@@ -387,7 +369,6 @@ export const chimneyFlue: CustomCalculator = (v) => {
 };
 
 const TANKS = [{ w: 27, h: 44, l: 60, vertical: true }, { w: 27, h: 44, l: 60, vertical: false }, { w: 27, h: 44, l: 72, vertical: true }];
-export const TANK_TYPES = ["275 gal oval, standing upright", "275 gal oval, lying flat", "330 gal oval, standing upright"];
 export const oilTankLevel: CustomCalculator = (v) => {
   const t = TANKS[pick(v.tank, 3)], r = t.w / 2;
   const segment = (hh: number) => { const x = Math.max(0, Math.min(2 * r, hh)); return r * r * Math.acos((r - x) / r) - (r - x) * Math.sqrt(Math.max(0, 2 * r * x - x * x)); };
@@ -406,9 +387,6 @@ export const oilTankLevel: CustomCalculator = (v) => {
   const gal = area(pos(v.depth, 20)) * t.l / 231;
   return { gallons: Math.round(gal), percentFull: r1((gal / full) * 100), gallonsToFill: Math.round(full * 0.9 - gal), capacityGallons: Math.round(full) };
 };
-
-// ---------- U-value ----------
-export const LAYER_MATS = ["None", "PIR board (Kingspan / Celotex) λ 0.022", "Mineral wool / Rockwool λ 0.035", "EPS λ 0.038", "XPS λ 0.034", "Brick λ 0.77", "Dense concrete block λ 1.13", "Aerated block λ 0.15", "Timber λ 0.13", "Plasterboard λ 0.21", "Render / plaster λ 0.50", "Air cavity (R 0.18)"];
 const LAMBDA = [0, 0.022, 0.035, 0.038, 0.034, 0.77, 1.13, 0.15, 0.13, 0.21, 0.5, 0];
 export const uValue: CustomCalculator = (v) => {
   let R = 0.13 + 0.04;

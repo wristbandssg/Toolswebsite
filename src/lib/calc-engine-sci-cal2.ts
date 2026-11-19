@@ -54,7 +54,6 @@ export const partialDerivative: SciCalculator = (v) => {
   }
   return { derivative: `${label} = ${tidy(d)}`, valueAt: s(compileFn(d, V)(...pt), 12), gradient: `∇f = (${V.map((w) => fmt(compileFn(derivTextVars(e, V, w), V)(...pt), 8)).join(", ")})` };
 };
-export const PD_ORDER = ["First partial", "Second partial (same variable)", "Mixed second partial"];
 export const hessian: SciCalculator = (v) => {
   const e = txt(v, "f"), useZ = /(?<![A-Za-z_])z(?![A-Za-z_])/.test(e);
   const V = useZ ? ["x", "y", "z"] : ["x", "y"];
@@ -72,10 +71,6 @@ export const hessian: SciCalculator = (v) => {
   }
   return { matrix: H.map((r) => "[ " + r.map((x) => fmt(x, 8)).join("  ") + " ]").join("\n"), determinant: s(det, 12), classification: cls, gradient: `(${grad.map((g) => fmt(g, 8)).join(", ")})` };
 };
-export const HESS_CLASS = ["Local minimum (H positive definite)", "Local maximum (H negative definite)", "Saddle point", "Test inconclusive (det H = 0)", "Not a critical point (∇f ≠ 0) — H shows the local curvature"];
-
-// ---------- Integration applications ----------
-export const RIEMANN = ["Left endpoints", "Right endpoints", "Midpoints", "Trapezoidal"];
 export const riemann: SciCalculator = (v) => {
   const f = compileFn(txt(v, "fx")), a = num(v.a, 0), b = num(v.b, 2), n = Math.max(1, Math.min(100000, Math.round(pos(v.n, 4)))), m = pick(v.method, 4);
   const h = (b - a) / n;
@@ -90,7 +85,6 @@ export const riemann: SciCalculator = (v) => {
   const exact = integrate(f, a, b);
   return { sum: s(S * h, 12), exact: s(exact, 12), error: s(S * h - exact, 6), terms: `Δx = ${fmt(h, 8)}; heights: ${parts.join(", ")}${n > 10 ? ", …" : ""}` };
 };
-export const REV_METHOD = ["Disk / washer about the x-axis", "Shell method about the y-axis", "Disk / washer about the y-axis (x = f(y))"];
 export const volumeRevolution: SciCalculator = (v) => {
   const f = compileFn(txt(v, "f")), gs = txt(v, "g"), g = gs ? compileFn(gs) : () => 0;
   const a = num(v.a, 0), b = num(v.b, 2), m = pick(v.method, 3);
@@ -108,7 +102,6 @@ export const areaUnder: SciCalculator = (v) => {
   const net = integrate(f, a, b), total = integrate((x) => Math.abs(f(x)), a, b);
   return { total: s(total, 12), net: s(net, 12), average: s(net / (b - a), 10), crossings: roots(f, a, b, 4000).filter((x) => x > a && x < b).map((x) => fmt(x, 8)).join(", ") || "none" };
 };
-export const ARC_MODE = ["y = f(x)", "Parametric x(t), y(t)"];
 export const arcLength: SciCalculator = (v) => {
   const m = pick(v.mode, 2), a = num(v.a, 0), b = num(v.b, 1);
   if (m === 0) {
@@ -130,8 +123,6 @@ export const improper: SciCalculator = (v) => {
   const conv = Number.isFinite(val) && Math.abs(val) < 1e12;
   return { value: conv ? s(val, 10) : "diverges", converges: conv ? 0 : 1 };
 };
-export const CONVERGES = ["Converges", "Diverges"];
-export const INF_UPPER = ["Upper limit is ∞", "Finite upper limit b (singularity at an endpoint)"];
 
 // ---------- Function behaviour ----------
 export const inflection: SciCalculator = (v) => {
@@ -159,7 +150,6 @@ export const inflection: SciCalculator = (v) => {
     }
   })() };
 };
-export const OPT_GOAL = ["Maximise", "Minimise"];
 export const optimization: SciCalculator = (v) => {
   const f = compileFn(txt(v, "fx")), a = num(v.a, 0), b = num(v.b, 10), goal = pick(v.goal, 2);
   const g = goal === 0 ? (x: number) => -f(x) : f;
@@ -176,7 +166,6 @@ export const ivt: SciCalculator = (v) => {
   const cs = between ? roots((x) => f(x) - N, Math.min(a, b), Math.max(a, b), 4000) : [];
   return { guaranteed: between ? 0 : 1, c: cs.length ? cs.map((c) => fmt(c, 10)).join(", ") : "—", values: `f(${fmt(a)}) = ${fmt(fa, 8)}, f(${fmt(b)}) = ${fmt(fb, 8)}` };
 };
-export const IVT_RESULT = ["Yes — N is between f(a) and f(b), so some c in [a, b] has f(c) = N (if f is continuous)", "Not guaranteed — N isn't between f(a) and f(b)"];
 export const lhopital: SciCalculator = (v) => {
   const ns = txt(v, "num"), ds = txt(v, "den"), a = num(v.a, 0);
   const N = compileFn(ns), D = compileFn(ds);
@@ -255,7 +244,6 @@ export const infiniteSum: SciCalculator = (v) => {
   const converging = alt ? last < 1e-3 : last * N < 1e-3 * Math.max(1, Math.abs(S));
   return { sum: converging ? s(est, 12) : "doesn't appear to converge", partial: s(S, 12), lastTerm: s(last, 6), type: alt ? 0 : 1 };
 };
-export const SUM_TYPE = ["Alternating series", "Positive / same-sign terms"];
 
 // ---------- ODEs ----------
 const rk4 = (f: (x: number, y: number) => number, x0: number, y0: number, x1: number, n: number) => {
@@ -298,7 +286,6 @@ export const exactDE: SciCalculator = (v) => {
   const homo = Number.isFinite(k) && [[0.7, 1.9], [2.1, 0.4]].every(([a, b]) => Math.abs(M(3 * a, 3 * b) - 3 ** k * M(a, b)) < 1e-8 * Math.max(1, Math.abs(M(3 * a, 3 * b))) && Math.abs(N(3 * a, 3 * b) - 3 ** k * N(a, b)) < 1e-8 * Math.max(1, Math.abs(N(3 * a, 3 * b))));
   return { exact: exact ? 0 : 1, test: `∂M/∂y = ${tidy(My)},  ∂N/∂x = ${tidy(Nx)}`, homogeneous: homo ? `homogeneous of degree ${fmt(k, 4)} — substitute y = vx` : "not homogeneous", y: s(y, 12) };
 };
-export const EXACT = ["Exact (∂M/∂y = ∂N/∂x)", "Not exact — look for an integrating factor"];
 export const secondOrderODE: SciCalculator = (v) => {
   const a = num(v.a, 1), b = num(v.b, 3), c = num(v.c, 2), F = num(v.F, 0), y0 = num(v.y0, 1), yp0 = num(v.yp0, 0), t = num(v.t, 1);
   if (a === 0) throw new InputError("a can't be 0 (that's a first-order equation).");
@@ -324,7 +311,6 @@ export const secondOrderODE: SciCalculator = (v) => {
   }
   return { solution: general, valueAt: s(val, 12), characteristic: `${fmt(a)}r² + ${fmt(b)}r + ${fmt(c)} = 0 → ${roots_}`, damping: D > 0 ? 0 : D === 0 ? 1 : 2 };
 };
-export const DAMPING = ["Overdamped (two real roots)", "Critically damped (repeated root)", "Underdamped / oscillating (complex roots)"];
 export const slopeField: SciCalculator = (v) => {
   const f = compileFn(txt(v, "fxy"), ["x", "y"]);
   const x0 = num(v.x0, -3), x1 = num(v.x1, 3), y0 = num(v.y0, -3), y1 = num(v.y1, 3);
@@ -424,7 +410,6 @@ export const inverseDft: SciCalculator = (v) => {
   }
   return { signal: out.join(", "), length: N };
 };
-export const Z_FORMS = ["Unit impulse δ[n]", "Unit step u[n]", "aⁿ u[n]", "n·aⁿ u[n]", "cos(ωn) u[n]", "sin(ωn) u[n]", "Inverse: X(z) = N(z⁻¹)/D(z⁻¹) by long division"];
 export const zTransform: SciCalculator = (v) => {
   const form = pick(v.form, 7), a = num(v.a, 0.5), w = num(v.w, 1), z = num(v.z, 2);
   if (form === 6) {

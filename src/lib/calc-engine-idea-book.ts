@@ -13,8 +13,6 @@ const $ = (x: number, dp = 2) => money(x, "$", dp);
 const p = (v: Record<string, number>, k: string, d: number) => Math.max(0, num(v[k], d));
 const need = (x: number, msg: string) => { if (!(x > 0)) throw new InputError(msg); return x; };
 const hm = (min: number) => (min >= 60 ? `${Math.floor(min / 60)} h ${Math.round(min % 60)} min` : `${Math.round(min)} min`);
-
-export const FONT = ["Novel 6×9 in (≈275 words/page)", "Trade 5.5×8.5 in (≈250)", "Mass market (≈300)", "Large print (≈180)", "Manuscript double-spaced (≈250)", "Single-spaced A4/Letter (≈500)"];
 const WPP = [275, 250, 300, 180, 250, 500];
 export const pageCount: Calc = (v) => {
   const w = p(v, "words", 80000), wpp = WPP[pick(v.font, WPP.length)];
@@ -31,7 +29,6 @@ export const audiobookLength: Calc = (v) => {
   const min = w / wpm;
   return { len: hm(min), atSpeed: `${hm(min / Math.max(speed, 0.1))} at ${speed}× playback`, pfh: `${(min / 60).toFixed(1)} finished hours` };
 };
-export const KDP_TYPE = ["Ebook", "Paperback"];
 export const kdpRoyalty: Calc = (v) => {
   const type = pick(v.type, 2), price = need(p(v, "price", 4.99), "Enter a list price."), mb = p(v, "mb", 2), pages = p(v, "pages", 300), sold = p(v, "sold", 100);
   let r: number, note: string;
@@ -44,7 +41,6 @@ export const selfPubCost: Calc = (v) => {
   const total = words * (edit + proof) + cover + format + isbn + mkt;
   return { total: $(total, 0), editing: $(words * edit, 0) + " editing", proof: $(words * proof, 0) + " proofreading", other: `${$(cover, 0)} cover · ${$(format, 0)} formatting · ${$(isbn, 0)} ISBN · ${$(mkt, 0)} marketing` };
 };
-export const BOOK_INK = ["Black & white", "Standard colour", "Premium colour"];
 export const printCost: Calc = (v) => {
   const pages = need(p(v, "pages", 300), "Enter page count."), ink = pick(v.ink, 3), qty = p(v, "qty", 1);
   const per = ink === 0 ? 1 + 0.012 * pages : ink === 1 ? 1 + 0.036 * pages : 1 + 0.07 * pages;
@@ -60,13 +56,11 @@ export const nanowrimo: Calc = (v) => {
   const target = (goal / 30) * day, left = goal - done, daysLeft = 30 - day + 1;
   return { perDay: `${nfmt(left / daysLeft)} words a day from today`, par: `${nfmt(target)} words is on pace for day ${day}`, status: done >= target ? `${nfmt(done - target)} words ahead` : `${nfmt(target - done)} words behind` };
 };
-export const SPEECH = ["Slow (120 wpm)", "Average (140 wpm)", "Conversational (160 wpm)", "Fast (180 wpm)"];
 const SP = [120, 140, 160, 180];
 export const speechLength: Calc = (v) => {
   const w = p(v, "words", 1000), wpm = SP[pick(v.pace, 4)], target = p(v, "target", 5);
   return { len: hm(w / wpm), words: `${nfmt(target * wpm)} words for a ${target}-minute speech`, pace: `${wpm} words per minute` };
 };
-export const ESSAY = ["Double-spaced 12 pt", "Single-spaced 12 pt", "1.5-spaced 12 pt"];
 const EPP = [275, 550, 400];
 export const essayPages: Calc = (v) => {
   const w = p(v, "words", 1500), e = EPP[pick(v.sp, 3)];
@@ -81,7 +75,6 @@ export const writingRate: Calc = (v) => {
   const words = need(p(v, "words", 1500), "Enter article length."), price = p(v, "price", 300), hrs = p(v, "hrs", 4), target = p(v, "target", 60);
   return { perWord: `${$(price / words, 3)} per word`, hourly: `${$(price / Math.max(hrs, 0.1))} per hour`, quote: `${$(target * hrs)} quote to earn ${$(target, 0)}/hour (${$((target * hrs) / words, 3)}/word)` };
 };
-export const EDIT_TYPE = ["Proofreading ($0.01–0.02/word)", "Copy editing ($0.02–0.03)", "Line editing ($0.03–0.05)", "Developmental editing ($0.05–0.10)"];
 const ER = [0.015, 0.025, 0.04, 0.075];
 export const editingCost: Calc = (v) => {
   const w = p(v, "words", 80000), t = pick(v.type, 4), rate = ER[t];
@@ -97,7 +90,6 @@ export const pagesPerDay: Calc = (v) => {
   const per = (pages - done) / days;
   return { per: `${Math.ceil(per)} pages a day`, time: `${hm(per / Math.max(ppm, 0.01))} of reading a day`, finish: `${pages - done} pages left` };
 };
-export const BIBLE = ["Whole Bible (1,189 chapters)", "New Testament (260)", "Old Testament (929)", "Psalms (150)", "Gospels (89)"];
 const BC = [1189, 260, 929, 150, 89];
 export const biblePlan: Calc = (v) => {
   const ch = BC[pick(v.part, BC.length)], days = need(p(v, "days", 365), "Enter the number of days.");
@@ -128,7 +120,6 @@ export const coverBleed: Calc = (v) => {
   const spine = pages * [0.002252, 0.0025, 0.002347][paper], fw = 2 * w + spine + 2 * bleed, fh = h + 2 * bleed;
   return { size: `${fw.toFixed(3)} × ${fh.toFixed(3)} in full cover`, spine: `${spine.toFixed(3)} in spine`, px: `${Math.round(fw * 300)} × ${Math.round(fh * 300)} px at 300 DPI` };
 };
-export const PAPER = ["White paper", "Cream paper", "Colour paper"];
 export const ebookSize: Calc = (v) => {
   const words = p(v, "words", 80000), imgs = p(v, "imgs", 10), kb = p(v, "kb", 300);
   const mb = (words * 6) / 1e6 * 0.4 + (imgs * kb) / 1024 + 0.1;
@@ -151,7 +142,6 @@ export const screenplayMinute: Calc = (v) => {
   const mpp = [1, 1.2, 0.8][genre], tot = pages + eighths / 8;
   return { min: hm(tot * mpp), mpp: `${mpp} min per page`, note: `${tot.toFixed(3)} pages (scene length in eighths: ${Math.round(tot * 8)}/8)` };
 };
-export const SP_GENRE = ["Drama / standard", "Action-heavy", "Dialogue-heavy comedy"];
 export const comicPanels: Calc = (v) => {
   const pages = p(v, "pages", 22), panels = p(v, "ppp", 5), mins = p(v, "mins", 60), rate = p(v, "rate", 150);
   const tot = pages * panels;
@@ -175,7 +165,6 @@ export const dsPages: Calc = (v) => {
   const w = p(v, "words", 2500), font = pick(v.font, 3), wpp = [275, 250, 300][font];
   return { pages: `${(w / wpp).toFixed(1)} pages double-spaced`, single: `${(w / (wpp * 2)).toFixed(1)} pages single-spaced`, words: `${wpp} words per double-spaced page` };
 };
-export const DS_FONT = ["Times New Roman 12", "Arial / Calibri 12", "Garamond 12"];
 export const slidesPerMin: Calc = (v) => {
   const mins = p(v, "mins", 20), spm = p(v, "spm", 1), qa = p(v, "qa", 5);
   const talk = Math.max(0, mins - qa);
@@ -191,7 +180,6 @@ export const thesisPlan: Calc = (v) => {
   const writeWeeks = Math.max(0.5, weeks - edit), perWeek = (goal - done) / writeWeeks;
   return { perWeek: `${nfmt(perWeek)} words a week`, perDay: `${nfmt(perWeek / Math.max(days, 1))} words a day (${days} days a week)`, plan: `${writeWeeks} weeks drafting + ${edit} weeks revising` };
 };
-export const CITE = ["Humanities (8 per 1,000 words)", "Social sciences (6)", "Sciences (4)", "Law (12)"];
 const CR = [8, 6, 4, 12];
 export const citationCount: Calc = (v) => {
   const w = p(v, "words", 10000), r = CR[pick(v.field, 4)];
@@ -209,7 +197,6 @@ export const narrationCost: Calc = (v) => {
   const hrs = words / wpm / 60;
   return { cost: share ? "$0 upfront (royalty share)" : $(hrs * pfh, 0), hours: `${hrs.toFixed(1)} finished hours`, note: share ? "Narrator receives 50% of royalties instead of a fee" : `${$(pfh, 0)} per finished hour` };
 };
-export const NARR = ["Per finished hour", "Royalty share"];
 export const ghostwriter: Calc = (v) => {
   const words = p(v, "words", 60000), rate = p(v, "rate", 0.5), interviews = p(v, "iv", 20), ivr = p(v, "ivr", 100);
   const total = words * rate + interviews * ivr;

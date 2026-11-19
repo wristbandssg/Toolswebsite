@@ -44,10 +44,6 @@ function manual(a: number, b: number) {
   if (m < 0) { y -= 1; m += 12; }
   return { y, m, d };
 }
-
-// ------------------------------------------------------------------ chronological age
-export const CA_METHODS = ["Test-manual subtraction (borrow 30 days)", "Calendar-exact (real month lengths)"];
-export const CA_ROUND = ["Don't round (most tests, e.g. WISC-V, WIAT-4)", "Round 15+ days up to the next month"];
 export const chronologicalAge: Calc = (v) => {
   const b = dateIn(v, "birth", 17532), t = dateIn(v, "test", today());
   if (b > t) throw new InputError("The date of birth is after the test date.");
@@ -126,14 +122,8 @@ export const generation: Calc = (v) => {
     neighbours: `${i > 0 ? `Before: ${GENERATIONS[i - 1][0]} (${GENERATIONS[i - 1][1]}–${GENERATIONS[i - 1][2]})` : ""}${i > 0 && i < GENERATIONS.length - 1 ? " · " : ""}${i < GENERATIONS.length - 1 ? `After: ${GENERATIONS[i + 1][0]} (${GENERATIONS[i + 1][1]}–${GENERATIONS[i + 1][2]})` : ""}`,
   };
 };
-
-// ------------------------------------------------------------------ miles to steps
-export const MS_UNITS = ["Miles", "Kilometres"];
-export const MS_HUNITS = ["Inches", "Centimetres"];
-export const MS_SEX = ["Male", "Female"];
 /** Step length ÷ height: walking 0.415 / 0.413 (as step-calculator), jogging ≈ 0.55, running ≈ 0.65. */
 export const MS_PACE: [string, number, number][] = [["Walking (≈ 3 mph)", 0.415, 20], ["Brisk walking (≈ 3.5–4 mph)", 0.45, 16], ["Jogging (≈ 5–6 mph)", 0.55, 11], ["Running (≈ 7–8 mph)", 0.65, 8]];
-export const MS_PACE_LABELS = MS_PACE.map((p) => p[0]);
 export const milesToSteps: Calc = (v) => {
   const d = num(v.distance, 1), du = pick(v.unit, 2);
   if (!(d > 0)) throw new InputError("Enter a distance above zero.");
@@ -156,10 +146,6 @@ export const milesToSteps: Calc = (v) => {
     goal: `10,000 steps ≈ ${show((10000 * stepCm) / 160934.4, 3)} miles (${show((10000 * stepCm) / 100000, 3)} km)`,
   };
 };
-
-// ------------------------------------------------------------------ day trading
-export const DT_SIDE = ["Long (buy, then sell)", "Short (sell, then buy back)"];
-export const DT_LEV = ["Cash account (1×)", "Margin, overnight (2×)", "Margin, intraday (4×)"];
 export const dayTrading: Calc = (v) => {
   const acct = num(v.account, 30000), riskPct = num(v.risk, 1), entry = num(v.entry, 50), stop = num(v.stop, 49), target = num(v.target, 52.5);
   const comm = Math.max(0, num(v.commission, 0)), short = pick(v.side, 2) === 1, lev = [1, 2, 4][pick(v.leverage, 3)];
@@ -187,16 +173,10 @@ export const dayTrading: Calc = (v) => {
     pdt: acct < 25000 ? "Under $25,000: the US pattern-day-trader rule limits margin accounts to 3 day trades in 5 business days. Check your broker's current rule." : "At or above the $25,000 US pattern-day-trader minimum for margin accounts.",
   };
 };
-
-// ------------------------------------------------------------------ surface feet per minute
-export const SFM_MODES = ["RPM → SFM (cutting speed)", "SFM → RPM (spindle speed)", "Material → recommended RPM"];
-export const SFM_DUNITS = ["Inches", "Millimetres"];
 /** Typical starting SFM [HSS, carbide] (Machinery's Handbook-style ranges, mid values). */
 export const SFM_MATS: [string, number, number][] = [
   ["Aluminium", 250, 800], ["Brass / bronze", 150, 500], ["Mild steel (1018)", 100, 400], ["Alloy steel (4140)", 70, 300], ["Tool steel", 50, 200], ["Stainless steel (304)", 50, 250], ["Cast iron", 80, 300], ["Titanium", 40, 150], ["Plastics / acrylic", 300, 800], ["Wood", 600, 1500],
 ];
-export const SFM_MAT_LABELS = SFM_MATS.map((m) => m[0]);
-export const SFM_TOOLS = ["High-speed steel (HSS)", "Carbide"];
 export const surfaceFeet: Calc = (v) => {
   const m = pick(v.mode, 3), dRaw = num(v.diameter, 0.5), du = pick(v.dunit, 2);
   const dIn = du === 0 ? dRaw : dRaw / 25.4;

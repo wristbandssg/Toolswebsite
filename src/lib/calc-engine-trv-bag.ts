@@ -17,7 +17,6 @@
 import { type TrvCalculator, type Vals, InputError, pos, pick, r1, r2, money, nfmt } from "./trv-core";
 
 const LB_PER_KG = 2.20462;
-export const WU = ["kg", "lb"];
 
 export interface PieceZone { name: string; free: number; fees: [number, number, number]; online?: number; ow: [number, number][]; oversize: number }
 export interface PiecePreset { cur: string; sym: string; unit: "lb" | "kg"; zones: PieceZone[] }
@@ -117,9 +116,6 @@ export const excessBaggage: TrvCalculator = (v) => {
   one += pos(v.owfee, 0) * Math.round(pos(v.heavy, 0));
   return { total: r2(one * pax * rt), one: r2(one), extra: `${Math.max(0, bags - free)} paid bag(s)`, cheaper: "Prepaying online is often $5–$30 cheaper per bag", model: "Piece concept" };
 };
-
-// luggage-size-calculator
-export const SIZE_RULE = ["US carry-on 22 × 14 × 9 in", "US personal item 18 × 14 × 8 in", "EU carry-on 55 × 40 × 23 cm, 8 kg", "Ryanair priority cabin bag 55 × 40 × 20 cm, 10 kg", "easyJet large cabin bag 56 × 45 × 25 cm, 15 kg", "Gulf carriers carry-on 55 × 38 × 20 cm, 7 kg", "Checked bag 62 linear in (158 cm), 50 lb (23 kg)", "Checked bag 62 linear in, 70 lb (32 kg) — premium"];
 const RULES: { dims?: [number, number, number]; linear?: number; kg?: number }[] = [
   { dims: [55.88, 35.56, 22.86] }, { dims: [45.72, 35.56, 20.32] }, { dims: [55, 40, 23], kg: 8 }, { dims: [55, 40, 20], kg: 10 }, { dims: [56, 45, 25], kg: 15 }, { dims: [55, 38, 20], kg: 7 }, { linear: 158, kg: 23 }, { linear: 158, kg: 32 },
 ];
