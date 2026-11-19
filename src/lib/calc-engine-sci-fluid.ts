@@ -30,7 +30,6 @@ export const hydrostatic: SciCalculator = (v) => {
   const Pg = rho * G0 * h;
   return { gauge: s(Pg / 1000, 8), abs: s((Pg + Patm) / 1000, 8), detail: PA(Pg), force: A ? s((Pg * A) / 1000, 8) : "enter area", head: s(Pg / (1000 * G0), 6) };
 };
-export const RE_FLUID = ["Water at 20 °C", "Air at 20 °C, 1 atm", "Custom (density & viscosity)"];
 export const reynolds: SciCalculator = (v) => {
   const k = pick(v.fluid, 3), V = pos(v.V, 1), L = pos(v.L, 0.05);
   const nu = k === 0 ? 1.004e-6 : k === 1 ? 1.516e-5 : pos(v.mu, 0.001) / pos(v.rho, 1000);
@@ -48,7 +47,6 @@ export const buoyancy: SciCalculator = (v) => {
   const Fb = rho * V * G0, W = m * G0, rhoObj = m / V;
   return { Fb: s(Fb, 8), W: s(W, 8), apparent: s(W - Fb, 8), floats: rhoObj < rho ? `Floats — ${fmt((100 * rhoObj) / rho, 5)}% submerged` : rhoObj > rho ? "Sinks" : "Neutrally buoyant", density: s(rhoObj, 6) };
 };
-export const BERN_MODE = ["Downstream pressure P₂", "Dynamic pressure from speed", "Venturi / orifice flow from ΔP"];
 export const bernoulli: SciCalculator = (v) => {
   const m = pick(v.mode, 3), rho = pos(v.rho, 1000);
   if (m === 1) { const V = pos(v.v1, 10), q = 0.5 * rho * V * V; return { result: s(q / 1000, 8), unit: "kPa dynamic pressure", extra: PA(q) }; }
@@ -77,7 +75,6 @@ export const residence: SciCalculator = (v) => {
   const t = (V / 1000) / Qm3h;
   return { h: s(t, 8), min: s(t * 60, 8), s: s(t * 3600, 8), turnovers: s(24 / t, 6) };
 };
-export const FLOW_UNITS = ["L/min", "m³/h", "m³/day", "US gpm"];
 export const nitrogen: SciCalculator = (v) => {
   const P1g = num(v.p1, 100), T1 = num(v.t1, 20) + 273.15, T2 = num(v.t2, 50) + 273.15, Patm = (pos(v.patm, 1.01325) || 1.01325) * (1 - 2.25577e-5 * num(v.alt, 0)) ** 5.25588;
   const P1a = P1g + Patm, P2a = (P1a * T2) / T1;
@@ -91,7 +88,6 @@ export const froude: SciCalculator = (v) => {
 // ---------- properties ----------
 const waterRho = (T: number) => (999.83952 + 16.945176 * T - 7.9870401e-3 * T ** 2 - 46.170461e-6 * T ** 3 + 105.56302e-9 * T ** 4 - 280.54253e-12 * T ** 5) / (1 + 16.87985e-3 * T);
 const waterMu = (T: number) => 2.414e-5 * 10 ** (247.8 / (T + 273.15 - 140));
-export const PROP_FLUID = ["Water (liquid, 0–150 °C)", "Dry air (ideal gas)"];
 export const fluidProps: SciCalculator = (v) => {
   const T = num(v.T, 20);
   if (pick(v.fluid, 2) === 1) {
@@ -102,7 +98,6 @@ export const fluidProps: SciCalculator = (v) => {
   const rho = waterRho(T), mu = waterMu(T), cp = 4217.4 - 3.720283 * T + 0.1412855 * T * T - 2.654387e-3 * T ** 3 + 2.093236e-5 * T ** 4, k = 0.5706 + 0.001756 * T - 6.46e-6 * T * T;
   return { rho: s(rho, 7), mu: s(mu, 6), nu: s(mu / rho, 6), cp: s(cp, 5), k: s(k, 5), Pr: s((mu * cp) / k, 5) };
 };
-export const VISC_MODE = ["Dynamic ↔ kinematic conversion", "Blend two liquids (Refutas)"];
 export const viscosity: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) {
     const n1 = pos(v.nu1, 100), n2 = pos(v.nu2, 10), x = Math.min(1, pos(v.x1, 50) / 100), vbn = (n: number) => 14.534 * Math.log(Math.log(n + 0.8)) + 10.975;
@@ -113,12 +108,10 @@ export const viscosity: SciCalculator = (v) => {
   const cP = unit === 0 ? x : unit === 1 ? x * 1000 : x * (rho / 1000), cSt = cP / (rho / 1000);
   return { cP: s(cP, 8), cSt: s(cSt, 8), pas: s(cP / 1000, 8), ssu: cSt > 20 ? s(cSt * 4.632, 5) : "below the SSU range", note: "1 cP = 1 mPa·s; cSt = cP ÷ (density in g/cm³)" };
 };
-export const VISC_UNITS = ["Centipoise (cP, mPa·s)", "Pascal-second (Pa·s)", "Centistokes (cSt)"];
 const STEAM: [number, number, number, number][] = [[0.01, 0, 2500.9, 205.99], [10, 42, 2519.2, 106.3], [20, 83.9, 2537.4, 57.76], [30, 125.7, 2555.6, 32.88], [40, 167.5, 2573.5, 19.52], [50, 209.3, 2591.3, 12.03], [60, 251.2, 2608.8, 7.667], [70, 293, 2626.1, 5.04], [80, 334.9, 2643, 3.405], [90, 376.9, 2659.5, 2.359], [100, 419.2, 2675.6, 1.672], [120, 503.8, 2706, 0.8915], [140, 589.2, 2733.5, 0.5085], [160, 675.5, 2757.4, 0.3068], [180, 763.1, 2777.2, 0.1938], [200, 852.3, 2792, 0.1272], [220, 943.6, 2801.1, 0.08609], [240, 1037.6, 2803, 0.0597], [260, 1135, 2796.6, 0.0422], [280, 1236.7, 2779.9, 0.03017], [300, 1344.8, 2749.6, 0.02167], [320, 1462.2, 2700.6, 0.01549], [340, 1594.5, 2622, 0.0108], [360, 1761.7, 2481.5, 0.006947], [373.95, 2084.3, 2084.3, 0.003106]];
 const N4 = [0.11670521452767e4, -0.72421316703206e6, -0.17073846940092e2, 0.1202082470247e5, -0.32325550322333e7, 0.1491510861353e2, -0.48232657361591e4, 0.40511340542057e6, -0.23855557567849, 0.65017534844798e3];
 export const psat = (Tc: number) => { const T = Tc + 273.15, th = T + N4[8] / (T - N4[9]), A = th * th + N4[0] * th + N4[1], B = N4[2] * th * th + N4[3] * th + N4[4], C = N4[5] * th * th + N4[6] * th + N4[7]; return ((2 * C) / (-B + Math.sqrt(B * B - 4 * A * C))) ** 4; };
 const tsat = (Pmpa: number) => { const b = Pmpa ** 0.25, E = b * b + N4[2] * b + N4[5], F = N4[0] * b * b + N4[3] * b + N4[6], Gg = N4[1] * b * b + N4[4] * b + N4[7], D = (2 * Gg) / (-F - Math.sqrt(F * F - 4 * E * Gg)); return (N4[9] + D - Math.sqrt((N4[9] + D) ** 2 - 4 * (N4[8] + N4[9] * D))) / 2 - 273.15; };
-export const STEAM_MODE = ["By temperature", "By absolute pressure"];
 export const steamTable: SciCalculator = (v) => {
   let T: number, P: number;
   if (pick(v.mode, 2) === 0) { T = num(v.T, 100); if (T < 0.01 || T > 373.946) throw new InputError("Saturation exists from 0.01 to 373.946 °C."); P = psat(T); }
@@ -157,7 +150,6 @@ export const machNumber: SciCalculator = (v) => {
   return { M: s(M, 6), a: s(a, 6), akmh: s(a * 3.6, 6), regime: M < 0.8 ? "Subsonic" : M < 1.2 ? "Transonic" : M < 5 ? "Supersonic" : "Hypersonic", q: s(0.5 * (101325 / (287.05 * T)) * V * V / 1000, 6) };
 };
 export const SPEED_UNITS = ["m/s", "km/h", "mph", "knots"];
-export const THRUST_MODE = ["Jet / rocket (momentum + pressure thrust)", "Propeller static thrust (momentum theory)", "Thrust-to-weight ratio"];
 export const thrust: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   if (m === 2) { const F = pos(v.F, 1000), W = pos(v.mass, 50) * G0; return { F: s(F, 8), kgf: s(F / G0, 6), twr: s(F / W, 6), note: F / W > 1 ? "Can climb vertically" : "Cannot lift itself vertically" }; }
@@ -166,15 +158,11 @@ export const thrust: SciCalculator = (v) => {
   const F = md * (Ve - V0) + (Pe - Pa) * Ae;
   return { F: s(F, 8), kgf: s(F / G0, 6), twr: s(F / (md * G0), 6), note: `Effective exhaust velocity ${fmt(F / md, 6)} m/s; Isp ${fmt(F / md / G0, 5)} s` };
 };
-export const LIFT_SOLVE = ["Lift force", "Lift coefficient CL", "Wing area for a lift", "Speed for a lift (stall speed at CL max)"];
 export const lift: SciCalculator = (v) => {
   const k = pick(v.solve, 4), rho = pos(v.rho, 1.225), V = pos(v.V, 30), S = pos(v.S, 16), CL = pos(v.CL, 1.2), L = pos(v.L, 10000);
   const x = fin(k === 0 ? 0.5 * rho * V * V * S * CL : k === 1 ? L / (0.5 * rho * V * V * S) : k === 2 ? L / (0.5 * rho * V * V * CL) : Math.sqrt((2 * L) / (rho * S * CL)));
   return { result: s(x, 8), loading: s((k === 2 ? L / x : k === 0 ? x : L) / (k === 2 ? 1 : S) / G0, 6), kmh: k === 3 ? s(x * 3.6, 6) : "—", q: s(0.5 * rho * V * V, 6) };
 };
-
-// ---------- open channel & piping ----------
-export const CHANNEL = ["Rectangular (width b, depth y)", "Trapezoidal (bottom b, depth y, side slope z:1)", "Circular pipe, partly full (diameter D, depth y)"];
 export const manning: SciCalculator = (v) => {
   const k = pick(v.shape, 3), b = pos(v.b, 2), y = pos(v.y, 0.5), z = pos(v.z, 1.5), D = pos(v.D, 1), n = pos(v.n, 0.013), S = pos(v.S, 0.001);
   let A: number, P: number, T: number;
@@ -184,7 +172,6 @@ export const manning: SciCalculator = (v) => {
   const R = A / P, V = (1 / n) * R ** (2 / 3) * Math.sqrt(S), Q = V * A;
   return { Q: s(Q, 8), V: s(V, 6), A: s(A, 6), R: s(R, 6), Fr: s(V / Math.sqrt((G0 * A) / T), 6), lps: s(Q * 1000, 8) };
 };
-export const PIPE_MODE = ["Thrust force at a bend or dead end", "Sag between supports (water-filled pipe)"];
 export const pipeRestraint: SciCalculator = (v) => {
   const P = pos(v.P, 10) * 1e5, D = pos(v.D, 200) / 1000;
   if (pick(v.mode, 2) === 1) {
@@ -216,9 +203,6 @@ export const evaporation: SciCalculator = (v) => {
   const P = 101.325, xs = (0.622 * pws(Tw)) / (P - pws(Tw)), pa = RH * pws(Ta), x = (0.622 * pa) / (P - pa), th = 25 + 19 * V, g = (th * A * Math.max(0, xs - x)) / 3600;
   return { kgh: s(g * 3600, 6), lday: s(g * 86400, 6), heat: s(g * 2450, 6), mmday: s((g * 86400) / A, 6) };
 };
-
-// ---------- heat transfer ----------
-export const HT_MODE = ["Conduction through a wall", "Convection", "Radiation between surfaces", "Composite wall (layers in series)"];
 export const heatTransfer: SciCalculator = (v) => {
   const m = pick(v.mode, 4), A = pos(v.A, 10), dT = num(v.dT, 20);
   if (m === 1) { const h = pos(v.h, 10), q = h * A * dT; return { q: s(q, 8), R: s(1 / (h * A), 8), U: s(h, 6), flux: s(q / A, 6) }; }
@@ -232,8 +216,6 @@ export const heatTransfer: SciCalculator = (v) => {
   const k = pos(v.k, 0.04), L = pos(v.L, 100) / 1000, q = (k * A * dT) / L;
   return { q: s(q, 8), R: s(L / (k * A), 8), U: s(k / L, 6), flux: s(q / A, 6) };
 };
-export const HX_FLOW = ["Counter-flow", "Parallel-flow"];
-export const HX_MODE = ["Area needed for a duty", "Duty from area"];
 export const heatExchanger: SciCalculator = (v) => {
   const Thi = num(v.thi, 90), Tho = num(v.tho, 60), Tci = num(v.tci, 20), Tco = num(v.tco, 40), counter = pick(v.flow, 2) === 0, U = pos(v.U, 500);
   const d1 = counter ? Thi - Tco : Thi - Tci, d2 = counter ? Tho - Tci : Tho - Tco;
@@ -248,9 +230,7 @@ export const heatSink: SciCalculator = (v) => {
   const need = (Tj - Ta) / P - Rjc - Rcs;
   return { rsa: s(need, 6), tj: Rsa ? s(Ta + P * (Rjc + Rcs + Rsa), 6) : "enter a heat sink Rsa", tc: Rsa ? s(Ta + P * (Rcs + Rsa), 6) : "—", ok: need <= 0 ? "Not possible — reduce power or Rjc/Rcs" : `Choose a heat sink ≤ ${fmt(need, 4)} °C/W` };
 };
-export const DIFF_MODE = ["Particle in liquid (Stokes-Einstein)", "Gas pair (Fuller equation)", "Diffusion distance or time"];
 const FULLER: [string, number, number][] = [["Air", 28.97, 19.7], ["H₂", 2.016, 6.12], ["He", 4.003, 2.67], ["N₂", 28.01, 18.5], ["O₂", 32, 16.3], ["CO₂", 44.01, 26.7], ["H₂O", 18.02, 13.1], ["NH₃", 17.03, 20.7], ["CH₄", 16.04, 25.14], ["Ar", 39.95, 16.2]];
-export const GAS_SPECIES = FULLER.map((f) => f[0]);
 export const diffusion: SciCalculator = (v) => {
   const m = pick(v.mode, 3), T = num(v.T, 25) + 273.15;
   if (m === 2) { const D = pos(v.D, 1e-9), t = pos(v.t, 3600), x = Math.sqrt(2 * D * t); return { D: s(D, 6), x: s(x * 1000, 6), t: s(((pos(v.x, 1) / 1000) ** 2) / (2 * D), 6), unit: "x in mm after time t; t in s to reach distance x" }; }
@@ -262,7 +242,6 @@ export const diffusion: SciCalculator = (v) => {
   const eta = pos(v.eta, 0.00089), r = pos(v.r, 5) * 1e-9, D = (KB * T) / (6 * Math.PI * eta * r);
   return { D: s(D, 6), x: s(D * 1e4, 6), t: s(Math.sqrt(2 * D * 1) * 1e6, 6), unit: "D in m²/s (and cm²/s); 1-second diffusion distance in µm" };
 };
-export const HR_MODE = ["Heat rate from efficiency", "Heat rate from fuel use and output"];
 export const heatRate: SciCalculator = (v) => {
   let eff: number;
   if (pick(v.mode, 2) === 1) { const fuel = pos(v.fuel, 1000), hv = pos(v.hv, 50), kw = pos(v.kw, 5000); eff = (kw * 3600) / (fuel * hv * 1000); }

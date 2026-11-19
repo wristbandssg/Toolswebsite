@@ -66,7 +66,6 @@ export const tokyoMetro: TrvCalculator = (v) => {
 const TFL: [string, number, number, number, number][] = [
   ["Zone 1 only", 3.0, 2.9, 9.3, 46.7], ["Zones 1–2", 3.7, 3.0, 9.3, 46.7], ["Zones 1–3", 4.1, 3.2, 11.0, 55.1], ["Zones 1–4", 4.9, 3.5, 13.4, 67.4], ["Zones 1–5", 5.9, 3.9, 15.9, 80.1], ["Zones 1–6", 6.5, 4.1, 17.1, 85.6], ["Zone 2 only (not via Zone 1)", 2.1, 2.0, 9.3, 46.7], ["Zones 2–6 (not via Zone 1)", 2.9, 2.0, 11.0, 55.1],
 ];
-export const TFL_ZONES = TFL.map((z) => z[0]);
 export const londonTube: TrvCalculator = (v) => {
   const z = TFL[pick(v.zone, TFL.length)], peak = pick(v.peak, 2) === 0, per = Math.max(1, Math.round(pos(v.per, 2))), days = clamp(Math.round(pos(v.days, 5)), 1, 7), weeks = pos(v.weeks, 4.33);
   const fare = peak ? z[1] : z[2], day = Math.min(fare * per, z[3]), week = Math.min(day * days, z[4]), month = week * weeks;
@@ -82,9 +81,6 @@ export const ukSeason: TrvCalculator = (v) => {
   const best = [...opts].sort((a, b) => a[1] - b[1])[0];
   return { best: `${best[0]}: ${money(best[1], "£")} a year`, monthly: r2(month), annual: r2(annual), daily: r2(dayYear), weekYear: r2(weekYear), save: r2(dayYear - annual) };
 };
-
-// ------------------------------------------------------------- Singapore MRT
-export const SG_TYPE = ["Adult (card)", "Senior / PWD concession", "Student concession"];
 export const sgMrt: TrvCalculator = (v) => {
   const km = pos(v.km, 12), t = pick(v.type, 3), adult = km <= 3.2 ? 1.19 : Math.min(2.38, 1.19 + (km - 3.2) * 0.0322);
   const fare = t === 0 ? adult : t === 1 ? Math.min(1.15, adult * 0.6) : Math.min(0.97, adult * 0.48), trips = Math.round(pos(v.trips, 44)), pass = [128, 64, 55][t];
@@ -103,7 +99,6 @@ export const wmata: TrvCalculator = (v) => {
   return { one: r2(one), rt: r2(one * 2), month: r2(one * trips), parts: `${nfmt(mi, 1)} composite miles · ${["peak", "off-peak", "late-night/weekend flat"][t]} fare` };
 };
 const LIRR_Z: [string, number][] = [["Zone 1 — within NYC (Queens/Brooklyn)", 8.75], ["Zone 3 — Nassau inner (e.g. Valley Stream, Great Neck)", 11.0], ["Zone 4 — Nassau (e.g. Mineola, Hempstead)", 13.0], ["Zone 7 — outer Nassau / western Suffolk (e.g. Hicksville, Huntington)", 15.25], ["Zone 9 — Suffolk (e.g. Babylon, Ronkonkoma)", 17.0], ["Zone 10 — Suffolk (e.g. Patchogue, Stony Brook)", 19.0], ["Zone 12 — eastern Suffolk", 22.0], ["Zone 14 — Montauk / Greenport", 29.75]];
-export const LIRR_ZONES = LIRR_Z.map((z) => z[0]);
 export const lirr: TrvCalculator = (v) => {
   const z = LIRR_Z[pick(v.zone, LIRR_Z.length)], t = pick(v.time, 3), city = pick(v.zone, LIRR_Z.length) === 0 && t === 2;
   const one = city ? 5 : t === 0 ? z[1] : z[1] * 0.73, disc = pick(v.who, 2) === 1 ? 0.5 : 1, trips = Math.round(pos(v.trips, 40));

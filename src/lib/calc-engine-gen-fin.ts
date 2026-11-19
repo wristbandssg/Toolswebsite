@@ -62,9 +62,6 @@ export const sp500Return: Calc = (v) => {
     extremes: `Best year ${by} (${pc(best, 1)}), worst ${wy} (${pc(worst, 1)}), ${down} down year${down === 1 ? "" : "s"}`,
   };
 };
-
-// ------------------------------------------------------------------ Roth vs traditional 401(k)
-export const ROTH_SIDE = ["Yes — invest the traditional 401(k) tax savings in a taxable account", "No — compare the accounts only"];
 export const roth401k: Calc = (v) => {
   const c = num(v.contrib, 10000), yrs = Math.round(num(v.years, 30)), r = num(v.ret, 7) / 100, tNow = num(v.tnow, 22) / 100, tRet = num(v.tret, 15) / 100;
   const match = num(v.match, 0), age = Math.round(num(v.age, 35)), side = pick(v.side, 2) === 0, drag = num(v.drag, 15) / 100;
@@ -93,7 +90,6 @@ const B_MFJ = [[24800, 0.1], [100800, 0.12], [211400, 0.22], [403550, 0.24], [51
 const B_MFS = B_MFJ.map(([u, r]) => [u === Infinity ? Infinity : u / 2, r] as const);
 const taxOn = (ti: number, br: readonly (readonly [number, number])[]) => { let t = 0, lo = 0; for (const [up, r] of br) { if (ti <= lo) break; t += (Math.min(ti, up) - lo) * r; lo = up; } return t; };
 const ctc = (kids: number, agi: number, thr: number) => Math.max(0, kids * 2200 - Math.ceil(Math.max(0, agi - thr) / 1000) * 50);
-export const CLAIM = ["Spouse A claims the children (if filing separately)", "Spouse B claims the children"];
 export const mfjVsMfs: Calc = (v) => {
   const ia = num(v.ia, 90000), ib = num(v.ib, 40000), da = num(v.da, 0), db = num(v.db, 0), kids = Math.round(num(v.kids, 1)), who = pick(v.who, 2);
   if (ia < 0 || ib < 0 || da < 0 || db < 0 || kids < 0) throw new InputError("Use amounts of 0 or more.");
@@ -194,7 +190,6 @@ export const bmiChildTeen: Calc = (v) => {
 
 // ------------------------------------------------------------------ bid bond cost
 export const BOND_TIERS = ["Standard (good credit & financials)", "Preferred (strong, established contractor)", "Higher risk (new business or weaker credit)"];
-export const BID_FEE = ["Free (typical for bonded contractors)", "Flat fee", "Percentage of the bond amount"];
 const PP_SCHEDULE: [number, number][] = [[100000, 0.025], [500000, 0.015], [2500000, 0.01], [5000000, 0.0075], [7500000, 0.007], [Infinity, 0.0065]];
 const ppPremium = (c: number) => { let t = 0, lo = 0; for (const [u, r] of PP_SCHEDULE) { if (c <= lo) break; t += (Math.min(c, u) - lo) * r; lo = u; } return t; };
 export const bidBond: Calc = (v) => {

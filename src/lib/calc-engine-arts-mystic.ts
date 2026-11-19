@@ -63,9 +63,6 @@ function readName(v: Record<string, number>, key: string) {
 
 // ---------- Tarot ----------
 export const MAJORS = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
-export const MAJOR_LABELS = MAJORS.map((n, i) => `${i} — ${n}`);
-/** Arcana 1–22 labels (index 0 unused). */
-export const ARCANA_LABELS = ["—", ...MAJORS.slice(1).map((n, i) => `${i + 1} — ${n}`), "22 — The Fool"];
 const MAJOR_KEYS = ["new beginnings, spontaneity, a leap of faith", "willpower, skill, making things happen", "intuition, mystery, inner knowledge", "nurturing, abundance, creativity", "structure, authority, stability", "tradition, teaching, belief systems", "love, union, an important choice", "drive, determination, victory", "courage, patience, inner strength", "solitude, reflection, seeking truth", "cycles, luck, turning points", "fairness, truth, cause and effect", "pause, surrender, a new perspective", "endings, transformation, release", "balance, moderation, healing", "temptation, attachment, shadow side", "sudden change, upheaval, revelation", "hope, renewal, inspiration", "illusion, intuition, the unknown", "joy, success, vitality", "awakening, reckoning, a calling", "completion, wholeness, achievement"];
 const SUITS: [string, string, string[]][] = [
   ["Wands", "Fire", ["inspiration, a spark", "planning, choices", "expansion, foresight", "celebration, home", "conflict, competition", "recognition, victory", "standing your ground", "speed, movement", "resilience, persistence", "burden, responsibility", "enthusiasm, exploration", "action, adventure", "confidence, warmth", "leadership, vision"]],
@@ -78,8 +75,6 @@ export const DECK: [string, string, number, number][] = [
   ...MAJORS.map((n, i) => [n, MAJOR_KEYS[i], i, -1] as [string, string, number, number]),
   ...SUITS.flatMap(([suit, , keys], s) => RANKS.map((r, i) => [`${r} of ${suit}`, keys[i], i + 1, s] as [string, string, number, number])),
 ];
-export const KEYWORD_LABELS = DECK.map(([n, k]) => `${n}: ${k}`);
-export const COMBO_THEMES = ["Two Major Arcana — a major life lesson or turning point", "Major + Minor Arcana — a big theme showing up in everyday events", "Same suit — the message is concentrated in one area of life", "Fire + Water (Wands + Cups) — passion meets emotion; act from the heart", "Fire + Air (Wands + Swords) — ideas fuel action; move fast but think", "Fire + Earth (Wands + Pentacles) — turn inspiration into something tangible", "Water + Air (Cups + Swords) — feelings and logic pull in different directions", "Water + Earth (Cups + Pentacles) — emotional and material security support each other", "Air + Earth (Swords + Pentacles) — plans and practicality; think it through, then build"];
 const ELEM_PAIR: Record<string, number> = { "0-1": 3, "0-2": 4, "0-3": 5, "1-2": 6, "1-3": 7, "2-3": 8 };
 export const tarotCombination: CustomCalculator = (v) => {
   const a = DECK[pick(v.card1, DECK.length)];
@@ -139,7 +134,6 @@ export const arcanaCompatibility: CustomCalculator = (v) => {
 
 // ---------- Numerology ----------
 const LETTER = (ch: string) => { const c = ch.toUpperCase().charCodeAt(0) - 64; return c >= 1 && c <= 26 ? ((c - 1) % 9) + 1 : 0; };
-export const NUMBER_MEANINGS = ["—", "1 — independent leader", "2 — diplomat, partner", "3 — creative communicator", "4 — builder, organiser", "5 — free spirit, adventurer", "6 — nurturer, carer", "7 — seeker, thinker", "8 — achiever, manager", "9 — humanitarian, idealist", "", "11 — master intuitive", "", "", "", "", "", "", "", "", "", "", "22 — master builder", ...Array(10).fill(""), "33 — master teacher"];
 export const vowelsNumerology: CustomCalculator = (v) => {
   const name = readName(v, "fullName").replace(/[^A-Za-z]/g, "");
   const yVowel = pick(v.yAsVowel, 2) === 1;
@@ -162,8 +156,6 @@ export const psychicNumber: CustomCalculator = (v) => {
   grid.forEach((c, i) => { out[`count${i + 1}`] = c; });
   return out;
 };
-
-export const CARD_LABELS = ["Joker", ...["Hearts", "Clubs", "Diamonds", "Spades"].flatMap((s) => ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"].map((r) => `${r} of ${s}`))];
 export const cardology: CustomCalculator = (v) => {
   const { m, d } = ymd(v.birthDate);
   const solar = 55 - (2 * m + d);
@@ -182,9 +174,6 @@ export const zodiacMatch: CustomCalculator = (v) => {
   const k = Math.min(d, 12 - d);
   return { compatibility: ASPECT_SCORE[k], aspect: k, element1: a % 4, element2: b % 4, sameElement: a % 4 === b % 4 ? 1 : 0 };
 };
-
-export const SEALS = ["Red Dragon", "White Wind", "Blue Night", "Yellow Seed", "Red Serpent", "White Worldbridger", "Blue Hand", "Yellow Star", "Red Moon", "White Dog", "Blue Monkey", "Yellow Human", "Red Skywalker", "White Wizard", "Blue Eagle", "Yellow Warrior", "Red Earth", "White Mirror", "Blue Storm", "Yellow Sun"];
-export const TONES = ["—", "Magnetic", "Lunar", "Electric", "Self-Existing", "Overtone", "Rhythmic", "Resonant", "Galactic", "Solar", "Planetary", "Spectral", "Crystal", "Cosmic"];
 const isLeapDay = (day: number) => { const { m, d } = ymd(day); return m === 2 && d === 29; };
 export const galacticSignature: CustomCalculator = (v) => {
   let day = Math.round(safeNumber(v.birthDate));
@@ -209,16 +198,9 @@ function sunLongitude(jd: number) {
   const omega = 125.04 - 1934.136 * t;
   return norm360(l0 + c - 0.00569 - 0.00478 * Math.sin(rad(omega)));
 }
-export const STEMS = ["甲 Jia (Yang Wood)", "乙 Yi (Yin Wood)", "丙 Bing (Yang Fire)", "丁 Ding (Yin Fire)", "戊 Wu (Yang Earth)", "己 Ji (Yin Earth)", "庚 Geng (Yang Metal)", "辛 Xin (Yin Metal)", "壬 Ren (Yang Water)", "癸 Gui (Yin Water)"];
-export const BRANCHES = ["子 Zi (Rat)", "丑 Chou (Ox)", "寅 Yin (Tiger)", "卯 Mao (Rabbit)", "辰 Chen (Dragon)", "巳 Si (Snake)", "午 Wu (Horse)", "未 Wei (Goat)", "申 Shen (Monkey)", "酉 You (Rooster)", "戌 Xu (Dog)", "亥 Hai (Pig)"];
-const STEM_SHORT = ["甲 Jia", "乙 Yi", "丙 Bing", "丁 Ding", "戊 Wu", "己 Ji", "庚 Geng", "辛 Xin", "壬 Ren", "癸 Gui"];
-const BRANCH_SHORT = ["子 Zi", "丑 Chou", "寅 Yin", "卯 Mao", "辰 Chen", "巳 Si", "午 Wu", "未 Wei", "申 Shen", "酉 You", "戌 Xu", "亥 Hai"];
-const ANIMALS = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
 const STEM_ELEM = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
 const BRANCH_ELEM = [4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4];
 export const FIVE_ELEMENTS = ["Wood", "Fire", "Earth", "Metal", "Water"];
-/** 60 sexagenary labels: index n has stem n % 10 and branch n % 12. */
-export const PILLAR_LABELS = [...Array(60)].map((_, n) => `${STEM_SHORT[n % 10]} ${BRANCH_SHORT[n % 12]} — ${["Yang", "Yin"][n % 2]} ${FIVE_ELEMENTS[STEM_ELEM[n % 10]]} ${ANIMALS[n % 12]}`);
 const sexagenary = (stem: number, branch: number) => { for (let n = 0; n < 60; n++) if (n % 10 === stem && n % 12 === branch) return n; return 0; };
 export const bazi: CustomCalculator = (v) => {
   const day = Math.round(safeNumber(v.birthDate));
@@ -299,9 +281,6 @@ export const speedPlayback: CustomCalculator = (v) => {
   const at = sec / speed;
   return { newHours: Math.floor(at / 3600), newMinutes: Math.floor((at % 3600) / 60), newSeconds: Math.round(at % 60), totalNewMinutes: round2(at / 60), timeSavedMinutes: round2((sec - at) / 60), percentSaved: round2(sec > 0 ? (1 - at / sec) * 100 : 0) };
 };
-
-// ---------- Just for fun ----------
-export const VERDICTS = ["Better as friends", "There's a spark", "A sweet match", "Very compatible", "Made for each other"];
 export const compatibilityName: CustomCalculator = (v) => {
   const s = (readName(v, "name1") + readName(v, "name2")).toLowerCase();
   let nums = ["l", "o", "v", "e", "s"].map((c) => s.split(c).length - 1);

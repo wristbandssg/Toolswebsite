@@ -52,13 +52,11 @@ export const balance: SciCalculator = (v) => {
   });
   return { balanced: b.text, coefficients: b.coeffs.join(" : "), check: check.join(", "), type: b.reactants.length === 1 && b.products.length > 1 ? "Decomposition" : b.reactants.length > 1 && b.products.length === 1 ? "Synthesis (combination)" : b.reactants.some((r) => r === "O2") && b.products.some((p) => p === "CO2") ? "Combustion" : "Other / exchange" };
 };
-export const GM_MODE = ["Grams → moles", "Moles → grams", "Particles → moles"];
 export const gramsToMoles: SciCalculator = (v) => {
   const mw = mwOf(v), m = pick(v.mode, 3), x = pos(v.x, 36.03);
   const mol = m === 0 ? x / mw : m === 1 ? x : x / NA;
   return { moles: s(mol), grams: s(mol * mw), particles: s(mol * NA), mw: s(mw, 8), mmol: s(mol * 1000) };
 };
-export const YIELD_MODE = ["Percent yield from actual and theoretical", "Actual yield from percent yield"];
 export const percentYield: SciCalculator = (v) => {
   const th = pos(v.theo, 10);
   if (!th) throw new InputError("Theoretical yield must be positive.");
@@ -83,7 +81,6 @@ export const stoichiometry: SciCalculator = (v) => {
   const molG = pick(v.unit, 2) === 0 ? pos(v.amount, 44) / mw[gi] : pos(v.amount, 1), per = molG / b.coeffs[gi];
   return { balanced: b.text, table: all.map((sp, i) => `${sp}: ${fmt(per * b.coeffs[i], 8)} mol = ${fmt(per * b.coeffs[i] * mw[i], 8)} g`).join("\n"), extent: s(per, 8), givenMol: s(molG, 8) };
 };
-export const AMOUNT_UNIT = ["grams", "moles"];
 export const pne: SciCalculator = (v) => {
   const e = findElement(txt(v, "element") || "C"), A = Math.round(pos(v.A, 0)) || Math.round(e.mass), q = Math.round(num(v.charge, 0));
   if (A < e.z) throw new InputError(`Mass number must be at least the atomic number (${e.z}).`);
@@ -108,7 +105,6 @@ export const electronConfiguration: SciCalculator = (v) => {
   const block = (z >= 57 && z <= 71) || (z >= 89 && z <= 103) ? "f" : groupOf(z) <= 2 || z === 2 ? "s" : groupOf(z) >= 13 ? "p" : "d";
   return { short: c.short, full: c.full, valence: c.valence, unpaired: c.unpaired, info: `${e.name}, Z = ${z}, period ${period}, ${block}-block, group ${groupOf(z)}; last subshell filled ${last}`, magnetic: c.unpaired ? "Paramagnetic" : "Diamagnetic" };
 };
-export const AAM_MODE = ["Average from isotopes", "Abundances of two isotopes from the average"];
 export const averageAtomicMass: SciCalculator = (v) => {
   const m = listOf(v, "masses", 1);
   if (pick(v.mode, 2) === 1) {
@@ -133,7 +129,6 @@ export const theoreticalYield: SciCalculator = (v) => {
   const e = pos(v.mass, 100) / mw[ri] / b.coeffs[ri], y = e * b.coeffs[pi] * mw[pi], act = pos(v.actual, 0);
   return { yield: s(y, 10), moles: s(e * b.coeffs[pi], 8), pct: act ? s((100 * act) / y, 8) : "enter actual yield", balanced: b.text };
 };
-export const HL_MODE = ["Amount remaining after time", "Time to decay to an amount", "Half-life from a measurement"];
 export const halfLife: SciCalculator = (v) => {
   const m = pick(v.mode, 3), N0 = pos(v.N0, 100);
   let t12 = pos(v.half, 5730), t = pos(v.t, 1000), N = pos(v.N, 50);
@@ -143,7 +138,6 @@ export const halfLife: SciCalculator = (v) => {
   const lam = Math.LN2 / t12;
   return { result: s(m === 0 ? N : m === 1 ? t : t12), N: s(N), fraction: s((100 * N) / N0, 8), lambda: s(lam), tau: s(1 / lam), halves: s(t / t12, 8) };
 };
-export const NERNST_MODE = ["Electrochemical cell: E = E° − (RT/nF) ln Q", "Ion equilibrium (membrane) potential", "Goldman-Hodgkin-Katz (K⁺, Na⁺, Cl⁻)"];
 export const nernst: SciCalculator = (v) => {
   const m = pick(v.mode, 3), T = num(v.T, 37) + 273.15, RTF = (R * T) / FARADAY;
   if (m === 0) {
@@ -161,7 +155,6 @@ export const nernst: SciCalculator = (v) => {
   const E = RTF * Math.log((pK * Ko + pNa * Nao + pCl * Cli) / (pK * Ki + pNa * Nai + pCl * Clo));
   return { E: s(E, 8), mv: s(E * 1000, 8), note: "Resting membrane potential (inside relative to outside)" };
 };
-export const MM_MODE = ["Moles → particles", "Particles → moles", "Grams → particles"];
 export const molesToMolecules: SciCalculator = (v) => {
   const m = pick(v.mode, 3), x = pos(v.x, 2), f = txt(v, "formula");
   const mol = m === 0 ? x : m === 1 ? x / NA : x / mwOf(v);
@@ -234,7 +227,6 @@ export const oxidationNumber: SciCalculator = (v) => {
   }
   return { states: ent.map(([el]) => `${el}: ${(ox.get(el) ?? 0) > 0 ? "+" : ""}${fmt(ox.get(el) ?? 0, 4)}`).join(", "), check: `Sum = ${fmt(total, 6)} (charge ${q})`, note: ent.some(([el]) => !Number.isInteger(ox.get(el) ?? 0)) ? "Fractional value = average over atoms of that element." : "Assigned with standard rules." };
 };
-export const ARR_MODE = ["Rate constant k from A, Ea and T", "Activation energy from two rate constants", "k at a new temperature"];
 export const arrhenius: SciCalculator = (v) => {
   const m = pick(v.mode, 3), T1 = num(v.T1, 25) + 273.15, T2 = num(v.T2, 35) + 273.15, Ea = pos(v.Ea, 50) * 1000;
   if (m === 0) {
@@ -265,8 +257,6 @@ export const equilibriumConstant: SciCalculator = (v) => {
   const x = (a + b) / 2, c = init.map((c0, i) => c0 + (i < 2 ? -1 : 1) * co[i] * x);
   return { K: s(K, 8), conc: ["A", "B", "C", "D"].map((n, i) => (co[i] ? `[${n}] = ${fmt(c[i], 8)} M` : "")).filter(Boolean).join(", "), x: s(x, 10), direction: x >= 0 ? "Shifts toward products" : "Shifts toward reactants" };
 };
-export const ICE_MODE = ["Equilibrium concentrations from K (ICE table)", "K from equilibrium concentrations"];
-export const BEER_SOLVE = ["Absorbance A", "Molar absorptivity ε", "Concentration c"];
 export const beerLambert: SciCalculator = (v) => {
   const k = pick(v.solve, 3), l = pos(v.l, 1), T = pos(v.T, 0);
   const A = T ? -Math.log10(T / 100) : num(v.A, 0.5), e = pos(v.e, 6220), c = pos(v.c, 1e-4);
@@ -274,13 +264,11 @@ export const beerLambert: SciCalculator = (v) => {
   const AA = k === 0 ? x : A;
   return { result: s(x), A: s(AA, 8), transmittance: s(100 * 10 ** -AA, 8), absorbed: s(100 - 100 * 10 ** -AA, 8) };
 };
-export const DENS_SOLVE = ["Density ρ", "Mass m", "Volume V"];
 export const density: SciCalculator = (v) => {
   const k = pick(v.solve, 3), rho = pos(v.rho, 1), m = pos(v.m, 100), V = pos(v.V, 100);
   const x = fin(k === 0 ? m / V : k === 1 ? rho * V : m / rho), r = k === 0 ? x : rho;
   return { result: s(x), kgm3: s(r * 1000, 8), lbft3: s(r * 62.42796, 8), sg: s(r / 0.99997, 8) };
 };
-export const RATE_MODE = ["Rate from rate law", "Reaction order from initial rates", "Integrated rate law (concentration after time)"];
 export const ORDER = ["Zero order", "First order", "Second order"];
 export const rateLaw: SciCalculator = (v) => {
   const m = pick(v.mode, 3), k = pos(v.k, 0.1);
@@ -311,7 +299,6 @@ const MO_DIATOMIC = (ve: number, mixing: boolean) => {
   }
   return { b, a, unp, conf: conf.join(" ") };
 };
-export const BO_MODE = ["Diatomic molecule or ion (MO theory)", "From electron counts"];
 export const bondOrder: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) {
     const b = pos(v.b, 10), a = pos(v.a, 4);
@@ -335,7 +322,6 @@ export const unsaturation: SciCalculator = (v) => {
   return { dou: s(d, 6), detail: `DoU = (2C + 2 + N − H − X)/2 = (2·${C} + 2 + ${N} − ${H} − ${X})/2`, meaning: d < 0 || !Number.isInteger(d) ? "Check the formula — DoU should be a whole number ≥ 0." : `${fmt(d)} ring(s) and/or π bond(s)` };
 };
 const gcdI = (a: number, b: number): number => (b ? gcdI(b, a % b) : Math.abs(a));
-export const MILLER_MODE = ["Miller indices from intercepts", "d-spacing for (hkl) in a cubic lattice"];
 export const miller: SciCalculator = (v) => {
   const a = pos(v.a, 0.3615);
   let h: number, k: number, l: number;
@@ -356,14 +342,12 @@ export const miller: SciCalculator = (v) => {
   return { hkl: `(${bar(h)} ${bar(k)} ${bar(l)})`, d: sq ? s(a / Math.sqrt(sq), 8) : "—", sum: sq, bragg: sq ? s((2 * Math.asin(Math.min(1, 0.15406 / (2 * (a / Math.sqrt(sq))))) * 180) / Math.PI, 8) : "—" };
 };
 const HALF: [string, number, number][] = [["F₂/F⁻", 2.87, 2], ["Au³⁺/Au", 1.5, 3], ["Cl₂/Cl⁻", 1.36, 2], ["O₂/H₂O (acid)", 1.23, 4], ["Br₂/Br⁻", 1.07, 2], ["Ag⁺/Ag", 0.8, 1], ["Fe³⁺/Fe²⁺", 0.77, 1], ["I₂/I⁻", 0.54, 2], ["Cu²⁺/Cu", 0.34, 2], ["H⁺/H₂", 0, 2], ["Pb²⁺/Pb", -0.13, 2], ["Sn²⁺/Sn", -0.14, 2], ["Ni²⁺/Ni", -0.25, 2], ["Fe²⁺/Fe", -0.44, 2], ["Zn²⁺/Zn", -0.76, 2], ["Al³⁺/Al", -1.66, 3], ["Mg²⁺/Mg", -2.37, 2], ["Na⁺/Na", -2.71, 1], ["Li⁺/Li", -3.04, 1]];
-export const HALF_CELLS = HALF.map(([n, e]) => `${n} (E° = ${e >= 0 ? "+" : ""}${e.toFixed(2)} V)`);
 export const cellPotential: SciCalculator = (v) => {
   const c = HALF[pick(v.cathode, HALF.length)], a = HALF[pick(v.anode, HALF.length)], T = num(v.T, 25) + 273.15, Q = pos(v.Q, 1);
   const n = pos(v.n, 0) || (c[2] * a[2]) / gcdI(c[2], a[2]), E0 = c[1] - a[1], E = E0 - ((R * T) / (n * FARADAY)) * Math.log(Q || 1);
   return { E0: s(E0, 6), E: s(E, 8), dG: s((-n * FARADAY * E0) / 1000, 8), K: s(Math.exp((n * FARADAY * E0) / (R * T)), 6), spont: E > 0 ? "Spontaneous (galvanic)" : "Non-spontaneous (needs electrolysis)", n };
 };
 const METALS: [string, number, number, number][] = [["Copper (Cu²⁺)", 63.546, 2, 8.96], ["Nickel (Ni²⁺)", 58.693, 2, 8.908], ["Zinc (Zn²⁺)", 65.38, 2, 7.14], ["Chromium (Cr⁶⁺, hard chrome)", 51.996, 6, 7.19], ["Silver (Ag⁺)", 107.87, 1, 10.49], ["Gold (Au⁺, cyanide bath)", 196.97, 1, 19.32], ["Tin (Sn²⁺)", 118.71, 2, 7.27], ["Cadmium (Cd²⁺)", 112.41, 2, 8.65]];
-export const PLATING_METALS = METALS.map((m) => m[0]);
 export const electroplating: SciCalculator = (v) => {
   const [, M, n, rho] = METALS[pick(v.metal, METALS.length)], I = pos(v.I, 2), t = pos(v.t, 30) * 60, A = pos(v.area, 50), eff = pos(v.eff, 95) / 100;
   const Q = I * t, mass = (Q * eff * M) / (n * FARADAY);

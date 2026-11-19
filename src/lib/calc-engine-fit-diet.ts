@@ -29,7 +29,6 @@ import { type TrvCalculator as Calc, InputError, txt, pos, pick, r0, r1, r2, nfm
 
 export const LB = 0.45359237, IN = 2.54;
 export const ACT = [1.2, 1.375, 1.55, 1.725, 1.9];
-export const ACT_LABELS = ["Sedentary (desk job, little exercise)", "Light (exercise 1–3 days a week)", "Moderate (exercise 3–5 days a week)", "Very active (hard exercise 6–7 days)", "Extra active (physical job + training)"];
 
 /** Body inputs: sex (0 male, 1 female), units (0 US lb/in, 1 metric kg/cm), age, weight, height. */
 export function body(v: Record<string, number>) {
@@ -174,9 +173,6 @@ export const carbCycling: Calc = (v) => {
   if (hiCarb <= 0 || loFat <= 0) throw new InputError("Your calories are too low for this split — lower protein or choose a smaller deficit.");
   return { hiCal: r0(hi), loCal: r0(lo), protein: r0(p), hiCarb: r0(hiCarb), hiFat: r0(hiFat), loCarb: r0(loCarb), loFat: r0(loFat), weekly: r0(7 * target), tdee: r0(tdee) };
 };
-
-// ------------------------------------------------------------------ carb intake
-export const CARB_GOALS: [string, number][] = [["Weight loss (moderate carb, 40%)", 0], ["Low-carb weight loss (under 130 g)", 1], ["General health (45–65% of calories)", 2], ["Build muscle (4–7 g per kg)", 3], ["Endurance training (6–10 g per kg)", 4]];
 export const carbIntake: Calc = (v) => {
   const b = body(v), tdee = mifflin(b.male, b.kg, b.cm, b.age) * ACT[pick(v.activity, 5)], g = pick(v.goal, 5), meals = Math.max(1, Math.round(pos(v.meals, 3)));
   const min = floorKcal(b.male);
@@ -218,9 +214,6 @@ export const reverseDiet: Calc = (v) => {
   for (let w = 1; w <= Math.min(weeks, 12); w++) plan.push(`Wk ${w}: ${fmtK(Math.min(target, cur + step * w))}`);
   return { weeks, plan: plan.join(" · ") + (weeks > 12 ? " …" : ""), carbsPerWeek: r0((step * 0.75) / 4), fatPerWeek: r0((step * 0.25) / 9), total: r0(target - cur) };
 };
-
-// --------------------------------------------------------------------- PSMF
-export const PSMF_ACT = ["Inactive", "Aerobic exercise", "Weight training"];
 export const psmfCalc: Calc = (v) => {
   const us = pick(v.units, 2) === 0, male = pick(v.sex, 2) === 0, w = pos(v.weight, us ? 200 : 90), bf = pos(v.bodyFat, 25), a = pick(v.activity, 3);
   if (bf <= 3 || bf >= 70) throw new InputError("Enter a body fat percentage between 4 and 69.");
@@ -230,9 +223,6 @@ export const psmfCalc: Calc = (v) => {
   const tdee = katch(kg * (1 - bf / 100)) * [1.3, 1.45, 1.45][a];
   return { protein: r0(p), calories: r0(cal), fat, carbs, category: `Category ${cat + 1}`, duration: ["11–12 days, then a 2–3 day refeed", "2–6 weeks, with one 5-hour refeed (or two free meals) a week", "6–12 weeks, with one free meal a week"][cat], weekly: r2(((tdee - cal) * 7) / (us ? 3500 : 7700)), perLb };
 };
-
-// ------------------------------------------------------------- zigzag / calorie cycling
-export const ZIG_PATTERNS = ["2 high days (weekend)", "1 high day a week", "Alternate high and low days"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export const zigzagDiet: Calc = (v) => {
   const b = body(v), tdee = mifflin(b.male, b.kg, b.cm, b.age) * ACT[pick(v.activity, 5)], def = pos(v.deficit, 500), pat = pick(v.pattern, 3);

@@ -82,7 +82,6 @@ export const sunriseSunset: SciCalculator = (v) => {
   const len = e.polar ? (e.polar === "day" ? 24 : 0) : (e.set - e.rise) / 60;
   return { rise: e.polar ? (e.polar === "day" ? "Sun doesn't set (polar day)" : "Sun doesn't rise (polar night)") : hm(e.rise), set: e.polar ? "—" : hm(e.set), noon: hm(e.noon), length: `${Math.floor(len)} h ${Math.round((len % 1) * 60)} min`, civil: civ.polar ? "—" : `${hm(civ.rise)} – ${hm(civ.set)}`, nautical: nau.polar ? "—" : `${hm(nau.rise)} – ${hm(nau.set)}`, astro: ast.polar ? "—" : `${hm(ast.rise)} – ${hm(ast.set)}` };
 };
-export const SHADOW_MODE = ["Sun elevation known", "From date, time and location"];
 export const shadowLength: SciCalculator = (v) => {
   const h = pos(v.h, 2);
   let el: number, az: number | string = "—";
@@ -116,7 +115,6 @@ const ECLIPSES: [string, string, string][] = [
   ["2029-01-14", "Partial solar", "North America"], ["2029-06-12", "Partial solar", "Arctic, Scandinavia"], ["2029-06-26", "Total lunar", "Americas, Europe, Africa"], ["2029-07-11", "Partial solar", "Southern South America"], ["2029-12-05", "Partial solar", "Southern South America, Antarctica"], ["2029-12-20", "Total lunar", "Americas, Europe, Africa, Asia"],
   ["2030-06-01", "Annular solar", "North Africa, Europe, Russia"], ["2030-06-15", "Partial lunar", "Europe, Africa, Asia, Australia"], ["2030-11-25", "Total solar", "Southern Africa, Australia"], ["2030-12-09", "Penumbral lunar", "Americas, Europe, Africa, Asia"],
 ];
-export const ECL_KIND = ["All eclipses", "Solar eclipses only", "Lunar eclipses only"];
 export const eclipses: SciCalculator = (v) => {
   const { y, mo, d } = parseDate(v, "date", "2026-11-09"), from = `${y}-${String(mo).padStart(2, "0")}-${String(d).padStart(2, "0")}`, k = pick(v.kind, 3);
   const list = ECLIPSES.filter(([dt, t]) => dt >= from && (k === 0 || (k === 1 ? t.includes("solar") : t.includes("lunar")))).slice(0, 8);
@@ -138,9 +136,7 @@ export const eclipses: SciCalculator = (v) => {
 
 // ---------- orbits & gravity ----------
 const BODIES: [string, number, number, number][] = [["Sun", 1.32712440018e20, 6.957e8, 274], ["Mercury", 2.2032e13, 2.4397e6, 3.7], ["Venus", 3.24859e14, 6.0518e6, 8.87], ["Earth", 3.986004418e14, 6.371e6, 9.807], ["Moon", 4.9048695e12, 1.7374e6, 1.62], ["Mars", 4.282837e13, 3.3895e6, 3.71], ["Jupiter", 1.26686534e17, 6.9911e7, 24.79], ["Saturn", 3.7931187e16, 5.8232e7, 10.44], ["Uranus", 5.793939e15, 2.5362e7, 8.69], ["Neptune", 6.836529e15, 2.4622e7, 11.15], ["Pluto", 8.71e11, 1.1883e6, 0.62]];
-export const BODY_NAMES = [...BODIES.map((b) => b[0]), "Custom mass"];
 const gmOf = (v: Vals, key = "body") => { const k = pick(v[key], BODIES.length + 1); return k === BODIES.length ? { GM: G * pos(v.M, 5.972e24), R: pos(v.R, 6371) * 1000, name: "custom body" } : { GM: BODIES[k][1], R: BODIES[k][2], name: BODIES[k][0] }; };
-export const ORB_MODE = ["Period from semi-major axis", "Semi-major axis from period"];
 export const orbitalPeriod: SciCalculator = (v) => {
   const { GM, R, name } = gmOf(v), toA = pick(v.mode, 2) === 1;
   const a = toA ? Math.cbrt((GM * (pos(v.T, 1.5) * 3600) ** 2) / (4 * Math.PI ** 2)) : pos(v.a, 6771) * 1000;
@@ -161,23 +157,17 @@ export const hohmann: SciCalculator = (v) => {
   const dv1 = Math.abs(vp - v1), dv2 = Math.abs(v2 - va), t = Math.PI * Math.sqrt(at ** 3 / GM);
   return { dv: s((dv1 + dv2) / 1000, 8), dv1: s(dv1 / 1000, 8), dv2: s(dv2 / 1000, 8), t: s(t / 3600, 8), ecc: s(Math.abs(r2 - r1) / (r1 + r2), 6) };
 };
-export const ORBIT_REF = ["Altitudes above the surface (km)", "Radii from the centre (km)"];
-export const ROCKET_MODE = ["Δv from masses and Isp", "Propellant needed for a Δv"];
 export const rocketEq: SciCalculator = (v) => {
   const isp = pos(v.isp, 311), ve = isp * 9.80665, m0 = pos(v.m0, 500000), mf = pos(v.mf, 150000);
   if (pick(v.mode, 2) === 1) { const dv = pos(v.dv, 9400), R = Math.exp(dv / ve), mfin = m0 / R; return { dv: s(dv, 8), ratio: s(R, 8), prop: s(m0 - mfin, 8), ve: s(ve, 6), frac: s(100 * (1 - 1 / R), 6) }; }
   if (mf >= m0) throw new InputError("Final mass must be less than initial mass.");
   return { dv: s(ve * Math.log(m0 / mf), 8), ratio: s(m0 / mf, 8), prop: s(m0 - mf, 8), ve: s(ve, 6), frac: s(100 * (1 - mf / m0), 6) };
 };
-
-// ---------- stars, black holes, cosmology ----------
-export const BH_UNIT = ["Solar masses", "Kilograms", "Earth masses"];
 export const schwarzschild: SciCalculator = (v) => {
   const u = pick(v.unit, 3), x = pos(v.m, 10), M = u === 0 ? x * MSUN : u === 1 ? x : x * 5.9722e24, rs = (2 * G * M) / (C * C);
   const hbar = 1.054571817e-34, kB = 1.380649e-23, T = (hbar * C ** 3) / (8 * Math.PI * G * M * kB), life = (5120 * Math.PI * G * G * M ** 3) / (hbar * C ** 4);
   return { rs: s(rs, 8), km: s(rs / 1000, 8), photon: s(1.5 * rs / 1000, 8), isco: s(3 * rs / 1000, 8), T: s(T, 6), life: s(life / 3.15576e7, 6), rho: s(M / ((4 / 3) * Math.PI * rs ** 3), 6) };
 };
-export const LUM_MODE = ["Luminosity from radius and temperature", "Temperature from peak wavelength (Wien)"];
 export const luminosity: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) { const lam = pos(v.lam, 502) * 1e-9, T = 2.897771955e-3 / lam; return { L: "—", Lsun: "—", T: s(T, 8), peak: s(lam * 1e9, 8), Mabs: "—" }; }
   const R = pos(v.R, 1) * RSUN, T = pos(v.T, 5772), L = 4 * Math.PI * R * R * SB * T ** 4;
@@ -203,7 +193,6 @@ export const asteroid: SciCalculator = (v) => {
   const Dtc = 1.161 * (rho / rt) ** (1 / 3) * L ** 0.78 * vel ** 0.44 * 9.80665 ** -0.22 * Math.sin(th) ** (1 / 3), Dfr = Dtc < 3200 ? 1.25 * Dtc : (1.17 * Dtc ** 1.13) / 3200 ** 0.13;
   return { E: s(E, 6), mt: s(mt, 6), mass: s(m, 6), crater: s(Dfr, 6), note: L < 50 ? "Small stony bodies usually break up in the atmosphere (airburst) — crater shown assumes it reaches the ground" : "Crater estimate per Collins et al. (2005)" };
 };
-export const RS_MODE = ["From observed and emitted wavelengths", "From redshift z", "From recession velocity"];
 export const redshift: SciCalculator = (v) => {
   const m = pick(v.mode, 3), H0 = pos(v.H0, 70);
   const z = m === 0 ? pos(v.obs, 700) / pos(v.emit, 656.28) - 1 : m === 1 ? num(v.z, 0.1) : (() => { const b = num(v.vel, 30000) / (C / 1000); if (Math.abs(b) >= 1) throw new InputError("Velocity must be below c."); return Math.sqrt((1 + b) / (1 - b)) - 1; })();
@@ -222,7 +211,6 @@ export const parallax: SciCalculator = (v) => {
   const p = pos(v.p, 768.5) / (pick(v.unit, 2) === 0 ? 1000 : 1), m = num(v.mag, 0), dpc = 1 / p;
   return { pc: s(dpc, 8), ly: s((dpc * PC) / LY, 8), au: s((dpc * PC) / AU, 8), M: s(m - 5 * Math.log10(dpc / 10), 6), mod: s(5 * Math.log10(dpc / 10), 6) };
 };
-export const PAR_UNIT = ["Milliarcseconds (mas)", "Arcseconds (″)"];
 
 export const sciAstroCustomCalculators: Record<string, SciCalculator> = {
   "moon-phase-calculator": moonPhase,

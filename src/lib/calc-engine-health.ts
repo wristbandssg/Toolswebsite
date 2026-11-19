@@ -67,9 +67,6 @@ export const dueDate: Calc = (v) => {
     range: `Most babies arrive between ${range(due - 14, due + 7)} (only about 4% on the due date itself)`,
   };
 };
-
-// ------------------------------------------------------------------ pregnancy week (how far along)
-export const WEEK_FROM = ["My due date", "First day of my last period (LMP)"];
 export const pregnancyWeek: Calc = (v) => {
   const m = pick(v.from, 2), d = dateIn(v, "date", TODAY() + 150), asof = dateIn(v, "asof", TODAY());
   const lmp = m === 0 ? d - 280 : d + (cycleOf(v) - 28);
@@ -77,10 +74,6 @@ export const pregnancyWeek: Calc = (v) => {
   const next = lmp + (g.w + 1) * 7;
   return { weeks: g.weeks, month: g.month, tri: g.tri, size: g.size, due: dayText(g.due), left: g.left, next: `Week ${g.w + 1} starts ${dayText(next)}`, pct: g.pct };
 };
-
-// ------------------------------------------------------------------ conception date
-export const YES_NO = ["No", "Yes — check a date of sex"];
-export const CONC_FROM = ["My due date", "First day of my last period (LMP)", "Baby's birth date (born near term)"];
 export const conceptionDate: Calc = (v) => {
   const m = pick(v.from, 3), d = dateIn(v, "date", TODAY() + 150);
   const c = m === 1 ? d + cycleOf(v) - 14 : d - 266;
@@ -119,9 +112,6 @@ export const period: Calc = (v) => {
     pms: late ? "—" : `PMS days: ${range(nextStart - 5, nextStart - 1)}`, ovulation: `Ovulation ≈ ${dayText(nextStart - 14)} (fertile ${range(nextStart - 19, nextStart - 13)})`, list,
   };
 };
-
-// ------------------------------------------------------------------ implantation / DPO
-export const DPO_FROM = ["I know my ovulation date", "Estimate from my last period & cycle length"];
 export const implantation: Calc = (v) => {
   const m = pick(v.from, 2), asof = dateIn(v, "asof", TODAY());
   const ov = m === 0 ? dateIn(v, "ov", TODAY() - 7) : dateIn(v, "lmp", TODAY() - 21) + cycleOf(v) - 14;
@@ -133,10 +123,6 @@ export const implantation: Calc = (v) => {
     stage, ovulation: dayText(ov),
   };
 };
-
-// ------------------------------------------------------------------ pregnancy weight gain (IOM 2009)
-export const PREG_UNITS = ["US (inches & pounds)", "Metric (cm & kg)"];
-export const PREG_TYPE = ["Single baby", "Twins"];
 export const pregnancyWeightGain: Calc = (v) => {
   const metric = pick(v.units, 2) === 1, twins = pick(v.type, 2) === 1;
   const h = num(v.height, metric ? 165 : 65), w0 = num(v.pre, metric ? 63.5 : 140), wk = Math.round(num(v.week, 20)), cur = num(v.now, 0);
@@ -165,9 +151,6 @@ export const pregnancyWeightGain: Calc = (v) => {
     now: Number.isFinite(lo) ? `${f(lo)} – ${f(hi)} by week ${wk}` : "—", weekly: twins ? "Twins: follow your provider's plan" : `${f(S[cls][2])} – ${f(S[cls][3])} per week after the first trimester`, status, kcal,
   };
 };
-
-// ------------------------------------------------------------------ chance of pregnancy
-export const CHANCE_MODES = ["From one time having sex (dates)", "Over several months of trying"];
 const WILCOX: Record<number, number> = { [-5]: 0.1, [-4]: 0.16, [-3]: 0.14, [-2]: 0.27, [-1]: 0.31, 0: 0.33 };
 const perCycle = (age: number) => (age < 30 ? 0.25 : age < 35 ? 0.2 : age < 38 ? 0.15 : age < 41 ? 0.1 : age < 43 ? 0.05 : 0.02);
 export const chanceOfPregnancy: Calc = (v) => {
@@ -190,9 +173,6 @@ export const chanceOfPregnancy: Calc = (v) => {
     ovday: dayText(ov), fertile: range(ov - 5, ov), advice: `Take a pregnancy test from ${dayText(Math.max(lmp + c, sex + 14))}`,
   };
 };
-
-// ------------------------------------------------------------------ sleep calculator
-export const SLEEP_MODES = ["I want to wake up at…", "I'm going to bed at…", "How much sleep I got (bedtime → wake time)", "How much sleep I need (by age)"];
 const AGE_NEED: [number, string][] = [[0.33, "14–17 hours (newborn, incl. naps)"], [1, "12–16 hours (infant, incl. naps)"], [3, "11–14 hours (toddler, incl. naps)"], [6, "10–13 hours (preschool, incl. naps)"], [13, "9–12 hours"], [18, "8–10 hours"], [65, "7–9 hours"], [200, "7–8 hours"]];
 export const sleep: Calc = (v) => {
   const m = pick(v.mode, 4), lat = Math.max(0, Math.min(90, Math.round(num(v.latency, 15)))), age = num(v.age, 30);
@@ -209,9 +189,6 @@ export const sleep: Calc = (v) => {
   const opts = [6, 5, 4, 3].map((n) => { const x = m === 0 ? t - n * 90 - lat : t + lat + n * 90; return `${fmt12(x)} — ${n} cycles, ${(n * 1.5).toFixed(1)} h of sleep${n === 5 || n === 6 ? " (best)" : ""}`; });
   return { best: m === 0 ? `Go to bed at ${opts[1].split(" — ")[0]} or ${opts[0].split(" — ")[0]}` : `Wake up at ${opts[1].split(" — ")[0]} or ${opts[0].split(" — ")[0]}`, options: opts.join("\n"), cycles: "Each sleep cycle lasts about 90 minutes (light → deep → REM sleep)", note: `Includes ${lat} min to fall asleep`, need, slept: "—" };
 };
-
-// ------------------------------------------------------------------ body surface area
-export const BSA_UNITS = ["Metric (cm & kg)", "US (inches & pounds)"];
 export const bsa: Calc = (v) => {
   const us = pick(v.units, 2) === 1;
   const h = us ? num(v.height, 70) * 2.54 : num(v.height, 175), w = us ? num(v.weight, 165) * 0.45359237 : num(v.weight, 75);
@@ -220,10 +197,6 @@ export const bsa: Calc = (v) => {
   const g = w * 1000, boyd = 0.0003207 * h ** 0.3 * g ** (0.7285 - 0.0188 * Math.log10(g));
   return { bsa: `${most.toFixed(2)} m²`, raw: Number(most.toFixed(3)), dubois: `${dub.toFixed(2)} m²`, haycock: `${hay.toFixed(2)} m²`, gehan: `${geh.toFixed(2)} m²`, boyd: `${boyd.toFixed(2)} m²`, avg: `${((most + dub + hay + geh + boyd) / 5).toFixed(2)} m² (average of 5 formulas; typical adult ≈ 1.7–1.9 m²)` };
 };
-
-// ------------------------------------------------------------------ eGFR (CKD-EPI 2021)
-export const EGFR_SEX = ["Female", "Male"];
-export const SCR_UNITS = ["mg/dL", "µmol/L"];
 const NORM: [number, number][] = [[30, 116], [40, 107], [50, 99], [60, 93], [70, 85], [200, 75]];
 export const egfr: Calc = (v) => {
   const female = pick(v.sex, 2) === 0, age = Math.round(num(v.age, 50)), raw = num(v.scr, 1);
@@ -236,10 +209,6 @@ export const egfr: Calc = (v) => {
   const typ = NORM.find(([x]) => age < x)![1];
   return { egfr: `${Math.round(g)} mL/min/1.73 m²`, raw: Math.round(g), stage, typical: `About ${typ} is average at age ${age}`, scr: `${scr.toFixed(2)} mg/dL (${(scr * 88.4).toFixed(0)} µmol/L)`, note: g < 60 ? "Below 60 for 3 months or more suggests chronic kidney disease — discuss with your doctor" : "Stages G1–G2 only count as CKD if there are other signs of kidney damage (e.g. protein in the urine)" };
 };
-
-// ------------------------------------------------------------------ GMI & A1c
-export const GMI_MODES = ["GMI from average CGM glucose", "A1c → estimated average glucose (eAG)", "Average glucose → estimated A1c"];
-export const GLU_UNITS = ["mg/dL", "mmol/L"];
 export const gmi: Calc = (v) => {
   const m = pick(v.mode, 3), mmol = pick(v.unit, 2) === 1, x = num(v.x, mmol ? 8.3 : 150);
   if (!(x > 0)) throw new InputError("Enter a value above 0.");

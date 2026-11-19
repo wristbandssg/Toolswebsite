@@ -41,9 +41,6 @@ const spread = (t: number) => ({ costLow: r2(t * 0.85), costHigh: r2(t * 1.25) }
 const DEG = 180 / Math.PI;
 const pf = (rise: number) => Math.sqrt(1 + (rise / 12) ** 2);
 const STORY = [1, 1.15, 1.3];
-
-// ---------- Geometry ----------
-export const PITCH_CLASSES = ["Flat (under 2/12) — membrane roofing", "Low slope (2/12–4/12) — limited shingle use, extra underlayment", "Conventional (4/12–9/12) — shingles, walkable", "Steep (over 9/12) — needs roof jacks / harness"];
 export const roofPitch: CustomCalculator = (v) => {
   const run = pos(v.run, 12) || 12;
   const rise = pos(v.rise, 6);
@@ -105,7 +102,6 @@ export const birdsmouth: CustomCalculator = (v) => {
   const vertical = depth / Math.cos(Math.atan(p / 12));
   return { plumbCutIn: r2(plumb), seatCutIn: seat, heightAbovePlateIn: r2(vertical - plumb), okay: plumb <= depth / 3 ? 1 : 0, maxSeatIn: r2(((depth / 3) * 12) / Math.max(0.01, p)) };
 };
-export const BIRDSMOUTH_OK = ["Too deep — cut is over 1/3 of the rafter depth; shorten the seat or use a bigger rafter", "OK — cut is within 1/3 of the rafter depth"];
 
 export const TRUSS_TYPES = ["Common (Fink / W)", "King post", "Scissor", "Mono (single slope)", "Attic (room-in-attic)", "Gambrel"];
 const WEB = [1.3, 0.6, 1.4, 1.0, 1.6, 1.5];
@@ -175,7 +171,6 @@ export const purlinSpacing: CustomCalculator = (v) => {
   const size = ts <= 2 ? 0 : ts <= 4 ? 1 : ts <= 6 ? 2 : 3;
   return { spacingIn: spacing, rows, linearFeet: Math.ceil(rows * pos(v.roofLength, 30) * Math.max(1, pos(v.sides, 2))), purlinSize: size };
 };
-export const PURLIN_SIZES = ["2×4 laid flat (trusses up to 2 ft apart)", "2×4 on edge (trusses up to 4 ft apart)", "2×6 on edge (up to 6 ft)", "2×8 on edge or steel purlins (over 6 ft) — get it engineered"];
 
 // ---------- Shingles & materials ----------
 export const shingle: CustomCalculator = (v) => {
@@ -183,8 +178,6 @@ export const shingle: CustomCalculator = (v) => {
   const sq = a / 100;
   return { bundles: ceil(sq * pos(v.bundlesPerSquare, 3)), squares: r2(sq), starterBundles: ceil(pos(v.eavesRakes) / 105), ridgeCapBundles: ceil(pos(v.hipRidge) / 33), underlaymentRolls: ceil(sq / 10), nailsLb: ceil(sq * 2.5) };
 };
-
-export const ROOF_MATS = ["3-tab asphalt shingles", "Architectural shingles", "Designer / luxury shingles", "Metal panels", "Concrete tile", "Clay tile", "Slate", "Wood shakes"];
 const MAT_LB = [230, 300, 400, 100, 950, 1100, 900, 350];
 export const shingleWeight: CustomCalculator = (v) => {
   const sq = pos(v.squares, 20), lb = sq * MAT_LB[pick(v.material, MAT_LB.length)] * Math.max(1, pos(v.layers, 1));
@@ -214,7 +207,6 @@ export const metalRoof: CustomCalculator = (v) => {
   const area = pos(v.roofLength, 40) * (pos(v.run, 14) + 2 / 12) * sides;
   return { panels: perSide * sides, panelLengthFt: r2(pos(v.run, 14) + 2 / 12), screws: t === 0 ? Math.round(area * 0.8) : 0, clips: t === 0 ? 0 : Math.round(area / 2.5), ridgeCapFt: sides > 1 ? Math.ceil(pos(v.roofLength, 40)) : 0, trimFt: Math.ceil(pos(v.roofLength, 40) * sides + pos(v.run, 14) * 2 * sides), minSlope: [3, 3, 0.5][t] };
 };
-export const METAL_TYPES = ["Exposed-fastener (corrugated / ribbed)", "Snap-lock standing seam", "Mechanically seamed standing seam"];
 
 export const roofTile: CustomCalculator = (v) => {
   const PER_M2 = [60, 9.8, 16, 9.6], GAUGE = [100, 345, 250, 340];
@@ -223,7 +215,6 @@ export const roofTile: CustomCalculator = (v) => {
   const rows = ceil((slope * 1000) / GAUGE[t]);
   return { tiles: Math.ceil(area * PER_M2[t] * 1.05), roofAreaM2: r1(area), battenMetres: Math.ceil(rows * width * sides * 1.05), ridgeTiles: ceil(pos(v.ridgeLength, 10) / 0.45), membraneM2: Math.ceil(area * 1.1) };
 };
-export const TILE_TYPES = ["Plain tiles (265 × 165 mm)", "Concrete interlocking (e.g. Marley Modern)", "Clay pantiles", "Double Roman"];
 
 export const slateRoof: CustomCalculator = (v) => {
   const len = [12, 14, 16, 18, 20, 24][pick(v.slateLength, 6)], w = pos(v.slateWidth, 10) || len / 2;
@@ -239,7 +230,6 @@ export const flatRoofMaterial: CustomCalculator = (v) => {
   const order = strips * sheet * (L + 1);
   return { membraneSqFt: Math.ceil(order), strips, adhesiveGallons: pick(v.membrane, 3) < 2 ? ceil((L * W * 2) / 65) : 0, seamTapeFt: Math.max(0, strips - 1) * Math.ceil(L), edgeTrimFt: Math.ceil(2 * (L + W)), insulationBoards: ceil((L * W) / 32) };
 };
-export const MEMBRANES = ["EPDM 10 ft wide", "EPDM 20 ft wide", "TPO 10 ft wide (heat-welded)"];
 
 export const flatRoofSlope: CustomCalculator = (v) => {
   const run = pos(v.run, 20), per = [0.25, 0.125, 0.5][pick(v.slope, 3)];
@@ -269,7 +259,6 @@ export const gutter: CustomCalculator = (v) => {
 };
 
 const GPF = [1, 1.05, 1.1, 1.2, 1.3];
-export const GUTTER_SIZES = ["5 in K-style", "6 in K-style", "7 in K-style or box gutter / extra downspouts"];
 export const gutterSize: CustomCalculator = (v) => {
   const eff = pos(v.roofArea, 1500) * GPF[pick(v.pitch, 5)];
   const demand = eff * pos(v.intensity, 6);
@@ -284,25 +273,18 @@ export const snowGuard: CustomCalculator = (v) => {
   const perRow = ceil((pos(v.eaveLength, 40) * 12) / spacing);
   return { guards: perRow * rows, rows, perRow, spacingIn: spacing };
 };
-
-// ---------- Costs ----------
-export const METAL_ROOF_TYPES = ["Exposed-fastener steel (corrugated / ribbed)", "Standing seam steel", "Standing seam aluminum", "Stone-coated / metal shingles", "Copper or zinc"];
 const METAL_RATE = [9, 14, 17, 12, 30];
 export const metalRoofCost: CustomCalculator = (v) => {
   const a = pos(v.roofArea, 2000);
   const total = a * (pos(v.customRate) || METAL_RATE[pick(v.type, 5)]) + (pick(v.tearOff, 2) ? a * 1.5 : 0);
   return { totalCost: r2(total), ...spread(total), costPerSquare: a ? r2((total / a) * 100) : 0 };
 };
-
-export const FLAT_ROOF_TYPES = ["EPDM (rubber)", "TPO", "PVC", "Modified bitumen", "Built-up (tar & gravel)", "Liquid coating overlay"];
 const FLAT_RATE = [8, 9, 11, 7, 8, 5];
 export const flatRoofCost: CustomCalculator = (v) => {
   const a = pos(v.area, 1000);
   const total = Math.max(1500, a * (pos(v.customRate) || FLAT_RATE[pick(v.type, 6)]) + (pick(v.tearOff, 2) ? a * 1.5 : 0) + (pick(v.insulation, 2) ? a * 2 : 0));
   return { totalCost: r2(total), ...spread(total), costPerSqFt: a ? r2(total / a) : 0 };
 };
-
-export const COMMERCIAL_SYSTEMS = ["TPO", "EPDM", "PVC", "Modified bitumen", "Built-up (BUR)", "Standing seam metal", "Spray foam (SPF)", "Coating restoration"];
 const COMM_RATE = [8, 7.5, 10, 7, 8, 14, 6, 4];
 export const commercialRoofCost: CustomCalculator = (v) => {
   const a = pos(v.area, 20000);
@@ -323,7 +305,6 @@ export const roofCoatingCost: CustomCalculator = (v) => {
   const total = Math.max(500, pos(v.area, 2000) * rate);
   return { totalCost: r2(total), ...spread(total), costPerSqFt: r2(rate) };
 };
-export const COATING_TYPES = ["Asphalt shingle rejuvenation (e.g. Roof Maxx)", "Silicone coating", "Acrylic coating", "Elastomeric coating", "Spray foam + coating"];
 
 export const roofPaint: CustomCalculator = (v) => {
   const cov = [100, 250, 100][pick(v.product, 3)];
@@ -331,7 +312,6 @@ export const roofPaint: CustomCalculator = (v) => {
   const buckets = ceil(gal / 5);
   return { gallons: r1(gal), buckets5gal: buckets, materialCost: r2(buckets * pos(v.bucketPrice, 150)), proCost: r2(pos(v.area, 1500) * pos(v.proRate, 2)) };
 };
-export const ROOF_PAINTS = ["Elastomeric roof coating", "Acrylic roof paint", "Silicone roof coating"];
 
 export const roofCleaningCost: CustomCalculator = (v) => {
   const total = Math.max(300, pos(v.area, 2000) * [0.35, 0.6, 0.3][pick(v.method, 3)] * STORY[pick(v.stories, 3)]);
@@ -371,8 +351,6 @@ export const soffitFasciaCost: CustomCalculator = (v) => {
   const total = soffitC + fasciaC;
   return { totalCost: r2(total), ...spread(total), soffitCost: r2(soffitC), fasciaCost: r2(fasciaC) };
 };
-
-export const DORMERS = ["Gable (doghouse) dormer", "Shed dormer (priced per ft of width)", "Hip dormer", "Eyebrow dormer"];
 export const dormerCost: CustomCalculator = (v) => {
   const t = pick(v.type, 4);
   const each = t === 1 ? pos(v.width, 12) * 2500 : [15000, 0, 18000, 20000][t];
@@ -381,7 +359,6 @@ export const dormerCost: CustomCalculator = (v) => {
 };
 
 const LIFE = [20, 25, 50, 50, 75, 20];
-export const LIFE_TYPES = ["3-tab asphalt (20 yr)", "Architectural shingles (25 yr)", "Metal (50 yr)", "Tile (50 yr)", "Slate (75 yr)", "Flat / TPO / EPDM (20 yr)"];
 export const roofDepreciation: CustomCalculator = (v) => {
   const life = pos(v.customLife) || LIFE[pick(v.type, LIFE.length)];
   const dep = Math.min(1, pos(v.age, 10) / life);
@@ -397,7 +374,6 @@ function regionalRoof(rates: number[], extras: (v: Record<string, number>, a: nu
     return { totalCost: r2(total), ...spread(total), costPerSquare: a ? r2((total / a) * 100) : 0 };
   };
 }
-export const REGIONAL_MATERIALS = ["Architectural shingles", "Metal (standing seam)", "Concrete tile", "Clay tile", "Flat roof (TPO / mod-bit)"];
 export const floridaRoofCost = regionalRoof([6, 14, 13, 18, 9], (v, a) => (pick(v.hvhz, 2) ? a * 1.2 : 0) + (pick(v.secondaryBarrier, 2) ? a * 0.6 : 0));
 export const austinRoofCost = regionalRoof([5.5, 13, 12, 17, 9], (v, a) => (pick(v.class4, 2) ? a * 0.75 : 0) + (pick(v.tearOff2, 2) ? a * 0.5 : 0));
 

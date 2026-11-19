@@ -13,8 +13,6 @@ import { type TrvCalculator as Calc, InputError, num, pick } from "./trv-core";
 
 export const C_KMS = 299792.458;
 const KM: Record<string, number> = { km: 1, mi: 1.609344, m: 0.001, au: 149597870.7, ly: 9460730472580.8 };
-export const LIGHT_MODES = ["Light travel time for a distance", "How far light goes in a time", "Speed as a fraction of light speed"];
-export const DIST_UNITS = ["Kilometers", "Miles", "Meters", "Astronomical units (AU)", "Light-years"];
 const DIST_KEYS = ["km", "mi", "m", "au", "ly"];
 export const PRESETS: [string, number][] = [
   ["Custom distance", 0],
@@ -29,7 +27,6 @@ export const PRESETS: [string, number][] = [
   ["Around Earth's equator (40,075 km)", 40075],
   ["New York → London (5,570 km)", 5570],
 ];
-export const TIME_UNITS = ["Seconds", "Minutes", "Hours", "Days", "Years"];
 const SEC = [1, 60, 3600, 86400, 31557600];
 export const SPEED_UNITS = ["km/s", "km/h", "mph", "m/s"];
 const KMS = [1, 1 / 3600, 1.609344 / 3600, 0.001];

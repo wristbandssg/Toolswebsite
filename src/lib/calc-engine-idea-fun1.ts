@@ -177,7 +177,6 @@ export const biorhythm: Calc = (v) => {
   const lab = (x: number) => (Math.abs(x) < 10 ? "critical day" : x > 0 ? "high" : "low");
   return { phys: `Physical ${c(23).toFixed(0)}% (${lab(c(23))})`, emo: `Emotional ${c(28).toFixed(0)}% (${lab(c(28))})`, intel: `Intellectual ${c(33).toFixed(0)}% (${lab(c(33))})`, days: `${nfmt(d)} days old on ${dayText(t)}` };
 };
-export const GENDER = ["Male", "Female"];
 const KUA_DIR = ["", "E, SE, S, N", "NE, W, NW, SW", "S, N, SE, E", "N, S, E, SE", "", "W, SW, NE, NW", "NW, NE, SW, W", "SW, NW, W, NE", "E, SE, N, S"];
 export const kuaNumber: Calc = (v) => {
   let y = Math.round(num(v.year, 1990)); const g = pick(v.g, 2), feb = pick(v.early, 2);
@@ -188,7 +187,6 @@ export const kuaNumber: Calc = (v) => {
   if (k === 5) k = g === 0 ? 2 : 8;
   return { kua: String(k), group: [1, 3, 4, 9].includes(k) ? "East group" : "West group", dirs: `Best directions: ${KUA_DIR[k]}` };
 };
-export const EARLY = ["No", "Yes — born before Feb 4 (Chinese solar new year)"];
 export const ageAnimals: Calc = (v) => {
   const age = Math.max(0, num(v.age, 30));
   const dog = age <= 1 ? age * 15 : age <= 2 ? 15 + (age - 1) * 9 : 24 + (age - 2) * 5;

@@ -65,7 +65,6 @@ function framesToTc(fr: number, nom: number, df: boolean) {
   const p = (x: number) => String(x).padStart(2, "0");
   return `${neg ? "−" : ""}${p(h)}:${p(mi)}:${p(s)}${df ? ";" : ":"}${p(f)}`;
 }
-export const TC_OPS = ["Add (A + B)", "Subtract (A − B)", "Convert A only"];
 export const timecode: Calc = (v) => {
   const fi = pick(v.fps, FPS.length), [, nom, df] = FPS[fi];
   const a = tcToFrames(txt(v, "a"), nom, df), op = pick(v.op, 3);
@@ -76,9 +75,6 @@ export const timecode: Calc = (v) => {
   const feet = Math.floor(Math.abs(r) / 16), ff = Math.abs(r) % 16;
   return { tc: framesToTc(r, nom, df), frames: nfmt(r), seconds: sig(secs, 8), real: `${Math.floor(cs / 3600)} h ${Math.floor((cs % 3600) / 60)} min ${r2(cs % 60)} s of real time`, film: `${nfmt(feet)} ft + ${ff} frames (35 mm, 16 frames/ft)`, mode: df ? "Drop-frame (semicolon before frames)" : "Non-drop-frame" };
 };
-
-// ------------------------------------------------------------------ shutter angle
-export const SA_MODES = ["Shutter angle → shutter speed", "Shutter speed → shutter angle"];
 function parseSpeed(s: string) {
   const t = s.trim().replace(/s$/i, "");
   const m = t.match(/^1\/(\d*\.?\d+)$/);
@@ -176,7 +172,6 @@ export const crossover: Calc = (v) => {
 
 // ------------------------------------------------------------------ speaker wire
 const GAUGES: [string, number][] = [["10 AWG (5.26 mm²)", 5.26], ["12 AWG (3.31 mm²)", 3.31], ["14 AWG (2.08 mm²)", 2.08], ["16 AWG (1.31 mm²)", 1.31], ["18 AWG (0.82 mm²)", 0.823], ["20 AWG (0.52 mm²)", 0.518], ["22 AWG (0.33 mm²)", 0.326]];
-export const GAUGE_LABELS = GAUGES.map(([l]) => l);
 export const speakerWire: Calc = (v) => {
   const L = pos(v.length, 15) * (pick(v.units, 2) === 1 ? 0.3048 : 1), Z = pos(v.ohms, 8), maxLoss = pos(v.loss, 5) / 100;
   if (L <= 0 || Z <= 0) throw new InputError("Enter the wire length and speaker impedance.");

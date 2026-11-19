@@ -338,7 +338,6 @@ const Z14_LOTS = [8, 15, 25, 50, 90, 150, 280, 500, 1200, 3200, 10000, 35000, 15
 /** Code letter index (A = 0) for levels I, II, III by lot-size row. */
 const Z14_CODES = [[0, 0, 1], [0, 1, 2], [1, 2, 3], [2, 3, 4], [2, 4, 5], [3, 5, 6], [4, 6, 7], [5, 7, 8], [6, 8, 9], [7, 9, 10], [8, 10, 11], [9, 11, 12], [10, 12, 13], [11, 13, 14], [12, 14, 15]];
 export const Z14_N = [2, 3, 5, 8, 13, 20, 32, 50, 80, 125, 200, 315, 500, 800, 1250, 2000];
-export const Z14_LETTERS = "ABCDEFGHJKLMNPQR";
 export const Z14_AQLS = [0.25, 0.4, 0.65, 1.0, 1.5, 2.5, 4.0, 6.5];
 const AC_SEQ = [0, -1, -2, 1, 2, 3, 5, 7, 10, 14, 21]; // −1 = arrow up, −2 = arrow down
 export function z14Plan(lot: number, level: number, aqlIdx: number) {

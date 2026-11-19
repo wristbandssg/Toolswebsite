@@ -27,11 +27,6 @@ export const airbnbFee: TrvCalculator = (v) => {
   const guest = sub + gFee + sub * tax, payout = sub - hFee;
   return { guest: r2(guest), payout: r2(payout), fees: r2(gFee + hFee), gfee: r2(gFee), hfee: r2(hFee), night: r2(guest / nights), note: model === 0 ? "Split fee: guest pays a service fee, host pays 3%" : "Host-only fee: guest sees one all-in price; host pays the whole fee" };
 };
-
-// ---------- DVC
-export const DVC_TIER = ["Value (e.g. Disney's Riviera off-property style / Vero Beach)", "Standard (Saratoga Springs, Old Key West, Animal Kingdom value)", "Deluxe (Beach Club, Boardwalk, Riviera, Polynesian villas)", "Premium (Bay Lake Tower lake view, Grand Floridian, Aulani ocean view)"];
-export const DVC_SEASON = ["Adventure (lowest)", "Choice", "Dream", "Magic", "Premier (highest)"];
-export const DVC_ROOM = ["Deluxe Studio", "One-Bedroom Villa", "Two-Bedroom Villa", "Grand Villa"];
 export const dvcPoints: TrvCalculator = (v) => {
   const base = [10, 12, 15, 19][pick(v.tier, 4)] * [0.7, 0.85, 1, 1.2, 1.4][pick(v.season, 5)] * [1, 2, 2.9, 6][pick(v.room, 4)];
   const wk = Math.round(pos(v.wk, 4)), we = Math.round(pos(v.we, 2)), pts = Math.round(base * wk + base * 1.25 * we), ppp = pos(v.ppp, 21);
@@ -100,25 +95,18 @@ export const disneyTrip: TrvCalculator = (v) => {
   const ll = pos(v.ll, 25) * (adults + kids) * days, travel = pos(v.travel, 1200), extra = pos(v.extra, 300), total = tickets + hotel + food + ll + travel + extra;
   return { total: r2(total), tickets: r2(tickets), hotel: r2(hotel), food: r2(food), ll: r2(ll), other: r2(travel + extra), per: r2(total / Math.max(1, adults + kids)) };
 };
-
-// ---------- charter bus
-export const BUS = ["Minibus (up to 25 passengers)", "Mid-size coach (35 passengers)", "Full-size coach (56 passengers)", "Double-decker (80 passengers)"];
 export const charterBus: TrvCalculator = (v) => {
   const b = pick(v.bus, 4), hr = pos(v.rate, 0) || [130, 160, 190, 260][b], hrs = Math.max(pos(v.min, 5), pos(v.hrs, 6)), mi = pos(v.mi, 0), mode = pick(v.mode, 2);
   const base = mode === 0 ? hr * hrs : mi * ([4, 4.75, 5.5, 7][b]), driver = Math.round(pos(v.nights, 0)) * pos(v.hotel, 150), fees = pos(v.fees, 0), tip = (base * pos(v.tip, 10)) / 100, pax = Math.max(1, Math.round(pos(v.pax, 40)));
   const total = base * (1 + pos(v.fuel, 0) / 100) + driver + fees + tip;
   return { total: r2(total), per: r2(total / pax), base: r2(base), tip: r2(tip), extras: r2(driver + fees + base * pos(v.fuel, 0) / 100), rule: mode === 0 ? `${money(hr)}/hour × ${hrs} h (minimum ${pos(v.min, 5)} h)` : `${nfmt(mi)} miles × ${money([4, 4.75, 5.5, 7][b])}/mile` };
 };
-
-// ---------- Japan & Europe trips
-export const TIER = ["Budget", "Mid-range", "Comfort / luxury"];
 export const japanTrip: TrvCalculator = (v) => {
   const t = pick(v.tier, 3), days = Math.max(1, Math.round(pos(v.days, 10))), pax = Math.max(1, Math.round(pos(v.pax, 2))), rooms = Math.ceil(pax / 2), fx = pos(v.fx, 150);
   const stay = [9000, 20000, 55000][t] * rooms * (days - 1), food = [4000, 8000, 20000][t] * pax * days, local = [1200, 1800, 3000][t] * pax * days, act = pos(v.act, 3000) * pax * days;
   const rail = pick(v.rail, 3) === 1 ? 50000 * pax : pick(v.rail, 3) === 2 ? pos(v.railamt, 30000) * pax : 0, flights = pos(v.flight, 1100) * fx * pax, total = stay + food + local + act + rail + flights;
   return { total: r0(total), usd: r2(total / fx), per: r0(total / pax), stay: r0(stay), food: r0(food), move: r0(local + rail), act: r0(act), flights: r0(flights) };
 };
-export const EU_REGION = ["Western Europe (France, Germany, Netherlands, Belgium, Austria)", "Southern Europe (Spain, Italy, Portugal, Greece)", "Central & Eastern Europe (Czechia, Poland, Hungary, Croatia)", "Nordics & Switzerland", "UK & Ireland"];
 const EU_DAY = [[90, 200, 450], [75, 170, 400], [50, 110, 280], [120, 260, 550], [100, 220, 480]];
 export const europeTrip: TrvCalculator = (v) => {
   const r = pick(v.region, 5), t = pick(v.tier, 3), days = Math.max(1, Math.round(pos(v.days, 12))), pax = Math.max(1, Math.round(pos(v.pax, 2))), fx = pos(v.fx, 1.08);

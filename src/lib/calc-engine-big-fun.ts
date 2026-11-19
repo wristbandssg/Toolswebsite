@@ -71,8 +71,6 @@ export const dndPointBuy: Calc = (v) => {
 
 // ------------------------------------------------------------------ D&D HP
 export const HP_CLASSES: [string, number][] = [["Barbarian (d12)", 12], ["Fighter (d10)", 10], ["Paladin (d10)", 10], ["Ranger (d10)", 10], ["Artificer (d8)", 8], ["Bard (d8)", 8], ["Cleric (d8)", 8], ["Druid (d8)", 8], ["Monk (d8)", 8], ["Rogue (d8)", 8], ["Warlock (d8)", 8], ["Sorcerer (d6)", 6], ["Wizard (d6)", 6]];
-export const HP_CLASS_LABELS = HP_CLASSES.map((c) => c[0]);
-export const HP_METHODS = ["Fixed average after level 1 (PHB)", "Maximum every level"];
 export const dndHp: Calc = (v) => {
   const [name, die] = HP_CLASSES[pick(v.cls, HP_CLASSES.length)], lvl = Math.round(num(v.level, 5)), con = Math.round(num(v.con, 14)), extra = num(v.extra, 0), maxAll = pick(v.method, 2) === 1;
   if (lvl < 1 || lvl > 20) throw new InputError("Level must be 1–20.");
@@ -92,7 +90,6 @@ export const dndHp: Calc = (v) => {
 // ------------------------------------------------------------------ D&D encounter XP
 const TH = [[25, 50, 75, 100], [50, 100, 150, 200], [75, 150, 225, 400], [125, 250, 375, 500], [250, 500, 750, 1100], [300, 600, 900, 1400], [350, 750, 1100, 1700], [450, 900, 1400, 2100], [550, 1100, 1600, 2400], [600, 1200, 1900, 2800], [800, 1600, 2400, 3600], [1000, 2000, 3000, 4500], [1100, 2200, 3400, 5100], [1250, 2500, 3800, 5700], [1400, 2800, 4300, 6400], [1600, 3200, 4800, 7200], [2000, 3900, 5900, 8800], [2100, 4200, 6300, 9500], [2400, 4900, 7300, 10900], [2800, 5700, 8500, 12700]];
 export const CR: [string, number][] = [["None", 0], ["CR 0", 10], ["CR 1/8", 25], ["CR 1/4", 50], ["CR 1/2", 100], ...[200, 450, 700, 1100, 1800, 2300, 2900, 3900, 5000, 5900, 7200, 8400, 10000, 11500, 13000, 15000, 18000, 20000, 22000, 25000, 33000, 41000, 50000, 62000, 75000, 90000, 105000, 120000, 135000, 155000].map((x, i) => [`CR ${i + 1}`, x] as [string, number])];
-export const CR_LABELS = CR.map((c) => c[0]);
 const MULTS = [0.5, 1, 1.5, 2, 2.5, 3, 4];
 export const dndEncounter: Calc = (v) => {
   const size = Math.round(num(v.party, 4)), lvl = Math.round(num(v.level, 5));
@@ -126,9 +123,6 @@ export const kdRatio: Calc = (v) => {
     rate: k + d > 0 ? `You win ${show((k / (k + d)) * 100, 3)}% of your fights` : "—",
   };
 };
-
-// ------------------------------------------------------------------ Minecraft stacks
-export const MC_STACK = ["64 (most blocks and items)", "16 (eggs, snowballs, signs, ender pearls)", "1 (tools, armour, potions)"];
 const MC_N = [64, 16, 1];
 export const minecraftStack: Calc = (v) => {
   const items = Math.round(num(v.items, 1000)), s = MC_N[pick(v.stack, 3)];
@@ -143,9 +137,6 @@ export const minecraftStack: Calc = (v) => {
     shulkerChest: `${show(items / (s * 27 * 54), 4)} double chests full of full shulker boxes`,
   };
 };
-
-// ------------------------------------------------------------------ Minecraft circle
-export const MCC_MODES = ["Filled circle", "Outline only (1 block thick)"];
 export const minecraftCircle: Calc = (v) => {
   const d = Math.round(num(v.diameter, 15)), outline = pick(v.mode, 2) === 1;
   if (d < 3 || d > 301) throw new InputError("Diameter must be 3–301 blocks.");

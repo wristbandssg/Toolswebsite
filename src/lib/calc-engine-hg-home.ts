@@ -42,10 +42,7 @@ export const squareFootage: CustomCalculator = (v) => {
   const sq = [L * W, Math.PI * (L / 2) ** 2, (L * W) / 2, L * W + L2 * W2][s];
   return { sqFt: r2(sq), sqM: r2(sq / 10.7639), sqYd: r2(sq / 9), acres: Math.round((sq / 43560) * 10000) / 10000, cost: r2(sq * pos(v.pricePerSqFt)) };
 };
-
-export const COST_REGIONS = ["US average", "Northeast metro (NYC, Boston, DC)", "West Coast metro (SF, LA, Seattle)", "Midwest", "South / Southeast", "Mountain West", "Hawaii / Alaska", "Rural / small town"];
 const REGION_INDEX = [1, 1.35, 1.4, 0.9, 0.88, 1.0, 1.5, 0.85];
-export const BUILD_QUALITY = ["Basic / builder grade", "Standard", "Custom", "Luxury"];
 const QUALITY_MULT = [0.75, 1, 1.45, 2.1];
 export const constructionCostByZip: CustomCalculator = (v) => {
   const sq = pos(v.sqft, 2000);
@@ -54,8 +51,6 @@ export const constructionCostByZip: CustomCalculator = (v) => {
   const total = per * sq;
   return { totalCost: r2(total), costPerSqFt: r2(per), ...spread(total), costIndex: r2(idx * 100) };
 };
-
-export const LENGTH_UNITS = ["Feet", "Inches", "Yards", "Meters", "Centimeters"];
 const TO_FT = [1, 1 / 12, 3, 3.28084, 0.0328084];
 export const cubicFeet: CustomCalculator = (v) => {
   const f = TO_FT[pick(v.unit, 5)];
@@ -103,10 +98,6 @@ export const softwashMix: CustomCalculator = (v) => {
   const shGal = sh > 0 ? (tank * mix) / sh : 0;
   return { shGallons: r2(shGal), waterGallons: r2(tank - shGal), surfactantOz: r2(tank * pos(v.surfactantPerGal)), downstreamStrength: r2(sh / (1 + Math.max(0, pos(v.injectorRatio, 10)))) };
 };
-
-/* ---------- Waste & weights ---------- */
-
-export const CAN_SHAPES = ["Round can", "Square / rectangular can"];
 export const garbageBagSize: CustomCalculator = (v) => {
   const H = pos(v.height), D = pos(v.diameter), W2 = pos(v.depth);
   const round = pick(v.shape, 2) === 0;
@@ -115,8 +106,6 @@ export const garbageBagSize: CustomCalculator = (v) => {
   const gal = round ? (Math.PI * (D / 2) ** 2 * H) / 231 : (D * W2 * H) / 231;
   return { bagWidthIn: ceil(width), bagLengthIn: ceil(length), canGallons: r1(gal) };
 };
-
-export const DEBRIS = ["Household junk & furniture", "Mixed renovation debris", "Drywall", "Asphalt shingles", "Yard waste & brush", "Wood & lumber", "Concrete, brick & block (broken)", "Dirt & soil"];
 const DEBRIS_LB = [225, 500, 500, 500, 200, 300, 2400, 2200];
 export const dumpsterWeight: CustomCalculator = (v) => {
   const yd = pos(v.cubicYards), lb = yd * DEBRIS_LB[pick(v.debris, 8)], tons = lb / 2000;
@@ -124,8 +113,6 @@ export const dumpsterWeight: CustomCalculator = (v) => {
   const size = pos(v.dumpsterYards);
   return { weightLb: Math.round(lb), weightTons: r2(tons), overageCost: r2(over * pos(v.overagePerTon)), percentFull: size > 0 ? r1((yd / size) * 100) : 0 };
 };
-
-export const DOOR_TYPES = ["Hollow-core interior", "Solid-core (MDF / particleboard)", "Solid softwood (pine)", "Solid hardwood (oak, mahogany)", "Steel insulated", "Fiberglass", "Fire-rated (mineral core)"];
 const DOOR_PCF = [9, 22, 28, 44, 24, 21, 32];
 export const doorWeight: CustomCalculator = (v) => {
   const W = pos(v.width), H = pos(v.height), T = pos(v.thickness);
@@ -139,8 +126,6 @@ export const glassWeight: CustomCalculator = (v) => {
   const lb = area * per * Math.max(1, pos(v.panes, 1));
   return { weightLb: r1(lb), weightKg: r1(lb * 0.453592), lbPerSqFt: r2(per), areaSqFt: r2(area) };
 };
-
-export const GLASS_TYPES = ["Annealed (standard)", "Heat-strengthened (2×)", "Tempered (4×)"];
 const GLASS_FACTOR = [1, 2, 4];
 export const GLASS_STD = ["1/8 in (3 mm)", "5/32 in (4 mm)", "3/16 in (5 mm)", "1/4 in (6 mm)", "5/16 in (8 mm)", "3/8 in (10 mm)", "1/2 in (12 mm)", "5/8 in (16 mm)", "3/4 in (19 mm)", "Over 3/4 in — use engineered laminated or insulated glass (ASTM E1300)"];
 const GLASS_MIN_MM = [2.92, 3.78, 4.57, 5.56, 7.42, 9.02, 11.91, 15.09, 18.26];
@@ -186,8 +171,6 @@ export const ladderHeight: CustomCalculator = (v) => {
   const size = EXT_SIZES.find((s) => s >= need) ?? ceil(need);
   return { ladderLengthFt: r1(working), baseDistanceFt: r1(hgt / Math.tan(ang)), extensionLadderSize: size, stepladderFt: Math.max(2, ceil(pos(v.ceilingHeight) - 4)) };
 };
-
-export const SCAFFOLD_FRAMES = ["5 ft tall frames", "6 ft 4 in tall frames"];
 export const scaffolding: CustomCalculator = (v) => {
   const L = pos(v.length), H = pos(v.height), fh = pick(v.frame, 2) === 0 ? 5 : 6.33;
   const bays = ceil(L / 7), levels = ceil(H / fh);
@@ -195,9 +178,6 @@ export const scaffolding: CustomCalculator = (v) => {
   const cost = sections * pos(v.rentPerSectionWeek) * pos(v.weeks) + pos(v.setup);
   return { totalCost: r2(cost), sections, frames: (bays + 1) * levels, crossBraces: sections * 2, planks: bays * 2, faceSqFt: r2(L * H) };
 };
-
-export const EGRESS_TYPES = ["Casement", "Double- or single-hung", "Horizontal slider"];
-export const EGRESS_STATUS = ["Meets IRC egress size", "Too small — net opening under the minimum area", "Clear width under 20 in", "Clear height under 24 in", "Sill higher than 44 in above the floor"];
 export const egressWindow: CustomCalculator = (v) => {
   const W = pos(v.width), H = pos(v.height), t = pick(v.type, 3);
   const cw = Math.max(0, [W - 5, W - 4, W / 2 - 4][t]);
@@ -233,9 +213,6 @@ export const windowEnergySavings: CustomCalculator = (v) => {
   const yearly = heat + cool, cost = pos(v.windows) * pos(v.costPerWindow);
   return { yearlySavings: r2(yearly), heatingSavings: r2(heat), coolingSavings: r2(cool), paybackYears: yearly > 0 ? r1(cost / yearly) : 0 };
 };
-
-export const ROOM_LIGHT = ["Many windows (skylight ≈ 5% of floor)", "Some windows (≈ 10%)", "Few windows (≈ 15%)"];
-export const SKYLIGHT_TYPES = ["Fixed (deck-mounted)", "Manual venting", "Solar / electric venting", "Tubular (10–14 in)"];
 const SKY_COST = [1800, 2200, 2900, 900];
 export const skylight: CustomCalculator = (v) => {
   const floor = pos(v.length) * pos(v.width);
@@ -253,8 +230,6 @@ export const homeAdditionValue: CustomCalculator = (v) => {
   const added = pos(v.sqft) * pos(v.localPerSqFt) * (pos(v.resaleFactor, 85) / 100), cost = pos(v.cost);
   return { valueAdded: r2(added), costRecouped: cost > 0 ? r1((added / cost) * 100) : 0, newHomeValue: r2(pos(v.homeValue) + added), netGain: r2(added - cost) };
 };
-
-export const RENO_PROJECTS = ["Garage door replacement", "Steel entry door", "Manufactured stone veneer", "Minor kitchen remodel (midrange)", "Fiber-cement siding", "Wood deck addition", "Vinyl siding", "Bathroom remodel (midrange)", "Finished basement", "Vinyl window replacement", "Roof replacement (asphalt)", "Major kitchen remodel (midrange)", "Bathroom addition", "Primary suite addition"];
 const RENO_RECOUP = [190, 185, 150, 95, 88, 80, 80, 74, 70, 67, 57, 49, 45, 30];
 export const renovationRoi: CustomCalculator = (v) => {
   const cost = pos(v.cost), pct = pos(v.customRecoup) > 0 ? pos(v.customRecoup) : RENO_RECOUP[pick(v.project, RENO_RECOUP.length)];
@@ -282,15 +257,11 @@ export const commercialCleaningCost: CustomCalculator = (v) => {
   const monthly = visit * pos(v.perWeek) * 4.33;
   return { monthlyBid: r2(monthly), pricePerVisit: r2(visit), hoursPerVisit: r2(hrs), pricePerSqFt: sq > 0 ? Math.round((monthly / sq) * 1000) / 1000 : 0 };
 };
-
-export const PCC_PHASES = ["Rough clean", "Final clean", "Touch-up (sparkle) clean", "All three phases"];
 const PCC_RATE = [0.2, 0.3, 0.12, 0.62];
 export const postConstructionCleaningCost: CustomCalculator = (v) => {
   const total = pos(v.sqft) * PCC_RATE[pick(v.phase, 4)] * (1 + pos(v.adjust) / 100) + pos(v.windows) * pos(v.windowRate) + pos(v.haul);
   return { totalCost: r2(total), ...spread(total) };
 };
-
-export const CLIMATES = ["Mild climate", "Harsh climate (snow, storms, heat)"];
 export const homeMaintenanceCost: CustomCalculator = (v) => {
   const onePct = pos(v.homeValue) * 0.01, sqRule = pos(v.sqft) * 1.25;
   const age = pos(v.age);

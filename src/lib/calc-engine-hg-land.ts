@@ -32,15 +32,11 @@ const spread = (t: number) => ({ costLow: r2(t * 0.8), costHigh: r2(t * 1.25) })
 /** Area of a rectangle or circle (shape 1 = circle, length = diameter). */
 const area = (v: Record<string, number>) => (pick(v.shape, 2) === 1 ? Math.PI * (pos(v.length) / 2) ** 2 : pos(v.length) * pos(v.width));
 const yards = (sqft: number, depthIn: number) => (sqft * depthIn) / 12 / 27;
-
-export const SOIL_TYPES = ["Topsoil", "Black dirt", "Fill dirt", "Clay", "Garden soil / compost blend"];
 const SOIL_T = [1.2, 1.1, 1.3, 1.5, 0.8];
 export const soilDirt: CustomCalculator = (v) => {
   const a = area(v), yd = yards(a, pos(v.depth, 4));
   return { cubicYards: r2(yd), cubicFeet: r1(yd * 27), tons: r2(yd * SOIL_T[pick(v.soil, SOIL_T.length)]), bags: ceil((yd * 27) / Math.max(0.1, pos(v.bagCuFt, 1))), area: r1(a), cost: r2(yd * pos(v.pricePerYard)) };
 };
-
-export const ROCK_TYPES = ["River rock", "Lava rock", "Decorative gravel", "Pea gravel", "Marble chips", "Slate chips", "Drain rock (3/4–1.5 in)"];
 const ROCK_T = [1.35, 0.5, 1.4, 1.4, 1.5, 1.3, 1.35];
 export const landscapeRock: CustomCalculator = (v) => {
   const a = area(v), yd = yards(a, pos(v.depth, 2)), tons = yd * ROCK_T[pick(v.rock, ROCK_T.length)];
@@ -78,8 +74,6 @@ export const frenchDrain: CustomCalculator = (v) => {
   const fabricSqFt = L * (2 * d + 2 * w) * 1.15;
   return { gravelTons: r2((gravelCuFt / 27) * 1.4), gravelCuYd: r2(gravelCuFt / 27), pipeFeet: Math.ceil(L * 1.05), fabricSqFt: Math.ceil(fabricSqFt), cost: r2((gravelCuFt / 27) * 1.4 * pos(v.gravelPerTon) + L * pos(v.pipePerFoot) + fabricSqFt * 0.15) };
 };
-
-export const PLAY_SURFACES = ["Engineered wood fiber", "Wood chips", "Shredded rubber mulch", "Pea gravel", "Sand"];
 const PLAY_DEPTH = [12, 12, 6, 12, 12];
 const PLAY_DENS = [0.3, 0.3, 0.6, 1.4, 1.35]; // tons per cu yd
 const PLAY_BAG = [2, 2, 0.8, 0.5, 0.5]; // cu ft per bag
@@ -89,8 +83,6 @@ export const playgroundMulch: CustomCalculator = (v) => {
   const yd = yards(pos(v.length) * pos(v.width), depth);
   return { cubicYards: r2(yd), recommendedDepthIn: PLAY_DEPTH[s], bags: ceil((yd * 27) / PLAY_BAG[s]), tons: r2(yd * PLAY_DENS[s]), cost: r2(yd * pos(v.pricePerYard)) };
 };
-
-export const GRAVEL_TYPES = ["Pea gravel", "#57 crushed stone", "River rock", "Crusher run", "Decorative gravel", "Decomposed granite"];
 const GRAVEL_PRICE = [45, 40, 80, 30, 100, 55];
 export const gravelCost: CustomCalculator = (v) => {
   const g = pick(v.gravel, GRAVEL_PRICE.length);
@@ -113,8 +105,6 @@ export const decomposedGranite: CustomCalculator = (v) => {
   const a = area(v), yd = yards(a, pos(v.depth, 3)) * 1.15;
   return { tons: r2(yd * 1.3), cubicYards: r2(yd), bags: ceil((yd * 27) / 0.5), stabilizerLb: pick(v.stabilized, 2) ? Math.round(yd * 1.3 * 12) : 0, cost: r2(yd * 1.3 * pos(v.pricePerTon)) };
 };
-
-export const TRENCH_USES = ["Irrigation / low-voltage line", "Electrical conduit", "Water or gas line", "French drain"];
 const TRENCH_RATE = [5, 8, 10, 12];
 export const trenchingCost: CustomCalculator = (v) => {
   const depthF = Math.max(1, pos(v.depth, 24) / 24);
@@ -123,15 +113,11 @@ export const trenchingCost: CustomCalculator = (v) => {
   const days = ceil(pos(v.length) / 300);
   return { totalCost: r2(total), ...spread(total), diyRentalCost: r2(days * pos(v.rentalPerDay, 150)), costPerFoot: pos(v.length) ? r2(total / pos(v.length)) : 0 };
 };
-
-export const GRADING_TYPES = ["Fine grading / leveling", "Rough grading", "Regrading for drainage or a slope"];
 const GRADE_RATE = [0.5, 1, 2];
 export const landGradingCost: CustomCalculator = (v) => {
   const total = pos(v.area) * GRADE_RATE[pick(v.grading, 3)] + pos(v.fillYards) * pos(v.fillPerYard, 25) + pos(v.mobilization, 300);
   return { totalCost: r2(total), ...spread(total), costPerSqFt: pos(v.area) ? r2(total / pos(v.area)) : 0 };
 };
-
-export const FRENCH_TYPES = ["Exterior, shallow (yard)", "Exterior, along the foundation", "Interior basement drain"];
 const FRENCH_RATE = [25, 45, 70];
 export const frenchDrainCost: CustomCalculator = (v) => {
   const total = pos(v.length) * (pos(v.customRate) || FRENCH_RATE[pick(v.type, 3)]) + (pick(v.sumpPump, 2) ? 1500 : 0);

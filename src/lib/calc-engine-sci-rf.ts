@@ -28,7 +28,6 @@ const delay = (eeff: number) => (Math.sqrt(eeff) / C0) * 0.0254 * 1e12; // ps pe
 
 // ---------- PCB ----------
 const OZ_MIL = 1.378;
-export const LAYER = ["External (outer) layer", "Internal layer"];
 export const traceWidth: SciCalculator = (v) => {
   const I = pos(v.I, 2), dT = pos(v.dT, 10), oz = pos(v.oz, 1), k = pick(v.layer, 2) === 0 ? 0.048 : 0.024, L = pos(v.L, 50);
   const A = (I / (k * dT ** 0.44)) ** (1 / 0.725), t = oz * OZ_MIL, w = A / t, wmm = w * 0.0254, tmm = t * 0.0254;
@@ -46,7 +45,6 @@ const solveW = (target: number, f: (w: number) => number) => {
   for (let i = 0; i < 200; i++) { const m = Math.sqrt(lo * hi); if (f(m) > target) lo = m; else hi = m; }
   return Math.sqrt(lo * hi);
 };
-export const MS_MODE = ["Impedance from trace width", "Trace width for a target impedance"];
 export const microstrip: SciCalculator = (v) => {
   const h = pos(v.h, 1.6), t = pos(v.t, 0.035), er = pos(v.er, 4.4);
   const w = pick(v.mode, 2) === 1 ? solveW(pos(v.Z, 50), (x) => msZ(x, h, t, er).Z) : pos(v.w, 3);
@@ -60,7 +58,6 @@ export const stripline: SciCalculator = (v) => {
   const Z = stripZ(w, b, t, er), k = 1 / Math.cosh((Math.PI * w) / (2 * b)), Zc = ((30 * Math.PI) / Math.sqrt(er)) * Kratio(k);
   return { Z: s(Z, 6), w: s(w, 6), cohn: s(Zc, 6), delay: s(delay(er), 6), note: w / b > 0.35 ? "IPC-2141 formula is less accurate for w/b > 0.35 — compare with Cohn's value" : "Within IPC-2141 range" };
 };
-export const STRUCT = ["Surface microstrip", "Embedded (covered) microstrip", "Symmetric stripline"];
 export const traceImpedance: SciCalculator = (v) => {
   const k = pick(v.struct, 3), w = pos(v.w, 0.3), h = pos(v.h, 0.2), t = pos(v.t, 0.035), er = pos(v.er, 4.3), cover = pos(v.cover, 0.1);
   let Z: number, ee: number;
@@ -69,7 +66,6 @@ export const traceImpedance: SciCalculator = (v) => {
   else { ee = er; Z = stripZ(w, h, t, er); }
   return { Z: s(fin(Z), 6), ee: s(ee, 6), delay: s(delay(ee), 6), note: k === 2 ? "h = total dielectric thickness between the two planes" : "h = dielectric height from trace to the reference plane" };
 };
-export const DIFF_STRUCT = ["Edge-coupled microstrip", "Edge-coupled stripline"];
 export const differentialZ: SciCalculator = (v) => {
   const k = pick(v.struct, 2), w = pos(v.w, 0.15), sp = pos(v.s, 0.15), h = pos(v.h, 0.1), t = pos(v.t, 0.035), er = pos(v.er, 4.3);
   const Z0 = k === 0 ? msZ(w, h, t, er).Z : stripZ(w, h, t, er), Zd = k === 0 ? 2 * Z0 * (1 - 0.48 * Math.exp((-0.96 * sp) / h)) : 2 * Z0 * (1 - 0.374 * Math.exp((-2.9 * sp) / h));
@@ -90,8 +86,6 @@ export const coplanar: SciCalculator = (v) => {
   }
   return { Z: s(Z, 6), ee: s(ee, 6), delay: s(delay(ee), 6), k: s(k, 6) };
 };
-export const CPW_GND = ["Grounded CPW (CPWG, ground plane below)", "CPW without bottom ground"];
-export const VIA_MODE = ["Trace resistance", "Via resistance, current & inductance"];
 export const traceResistance: SciCalculator = (v) => {
   const T = num(v.T, 25), rho = 1.72e-8 * (1 + 0.00393 * (T - 20));
   if (pick(v.mode, 2) === 1) {
@@ -104,7 +98,6 @@ export const traceResistance: SciCalculator = (v) => {
   return { R: s(R * 1000, 6), I: s(I * R * 1000, 6), L: s(I * I * R * 1000, 6), A: s(w * t * 1e6, 6) };
 };
 const CLR: Record<string, number[]> = { B1: [0.05, 0.05, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.25, 0.0025], B2: [0.1, 0.1, 0.6, 0.6, 0.6, 1.25, 1.25, 1.25, 2.5, 0.005], B3: [0.1, 0.1, 0.6, 1.5, 3.2, 3.2, 6.4, 12.5, 12.5, 0.025], B4: [0.05, 0.05, 0.13, 0.13, 0.4, 0.4, 0.4, 0.4, 0.8, 0.00305], A5: [0.13, 0.13, 0.13, 0.13, 0.4, 0.4, 0.8, 0.8, 0.8, 0.00305] };
-export const CLR_COND = ["B1 — internal conductors", "B2 — external, uncoated, sea level to 3,050 m", "B3 — external, uncoated, above 3,050 m", "B4 — external, permanent polymer coating", "A5 — external, conformal coating over assembly"];
 const CLR_KEYS = ["B1", "B2", "B3", "B4", "A5"], CLR_V = [15, 30, 50, 100, 150, 170, 250, 300, 500];
 export const pcbClearance: SciCalculator = (v) => {
   const V = pos(v.V, 240), key = CLR_KEYS[pick(v.cond, 5)], row = CLR[key];
@@ -122,7 +115,6 @@ export const dipole: SciCalculator = (v) => {
   const f = pos(v.f, 14.2), vf = pos(v.vf, 0.95), lam = lambda(f), L = 0.5 * lam * vf;
   return { m: s(L, 6), ft: s(L / 0.3048, 6), leg: s(L / 2, 6), legFt: s(L / 2 / 0.3048, 6), rule: s(468 / f, 6), lam: s(lam, 6) };
 };
-export const ANT_FRAC = ["Quarter-wave (λ/4)", "Half-wave (λ/2)", "5/8-wave", "Full wave (λ)", "3/4-wave"];
 const FRAC = [0.25, 0.5, 0.625, 1, 0.75];
 export const antennaLength: SciCalculator = (v) => {
   const f = pos(v.f, 146), vf = pos(v.vf, 0.95), lam = lambda(f), L = FRAC[pick(v.frac, 5)] * lam * vf;
@@ -144,7 +136,6 @@ export const jpole: SciCalculator = (v) => {
   const f = pos(v.f, 146), vf = pos(v.vf, 0.95), lam = lambda(f) * vf;
   return { long: s(0.75 * lam * 100, 6), short: s(0.25 * lam * 100, 6), radiator: s(0.5 * lam * 100, 6), feed: s(0.04 * lam * 100, 5), spacing: s(0.015 * lambda(f) * 100, 5) };
 };
-export const APERTURE = ["Parabolic dish", "Pyramidal horn (aperture a × b)"];
 export const hornAntenna: SciCalculator = (v) => {
   const lam = lambda(pos(v.f, 10000)), eff = pos(v.eff, 55) / 100;
   if (pick(v.mode, 2) === 0) {
@@ -191,14 +182,12 @@ export const lineOfSight: SciCalculator = (v) => {
   const d = (h: number) => Math.sqrt(2 * k * R * (h / 1000));
   return { d: s(d(h1) + d(h2), 6), mi: s((d(h1) + d(h2)) / 1.609344, 6), d1: s(d(h1), 6), d2: s(d(h2), 6) };
 };
-export const LOS_KIND = ["Radio / radar (k = 4/3)", "Optical / geometric (k = 1)"];
 export const vswr: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   const G = m === 0 ? (pos(v.x, 1.5) - 1) / (pos(v.x, 1.5) + 1) : m === 1 ? 10 ** (-pos(v.x, 14) / 20) : Math.min(0.999999, pos(v.x, 0.2));
   if (G >= 1) throw new InputError("VSWR must be above 1 (return loss above 0 dB).");
   return { vswr: s((1 + G) / (1 - G), 8), rl: G ? s(-20 * Math.log10(G), 8) : "∞", gamma: s(G, 8), ml: s(-db(1 - G * G), 8), refl: s(100 * G * G, 8) };
 };
-export const VSWR_MODE = ["VSWR", "Return loss (dB)", "Reflection coefficient |Γ|"];
 export const COAX = ["RG-174", "RG-58", "RG-8X", "RG-213 / RG-8", "RG-6", "LMR-195", "LMR-240", "LMR-400", "LMR-600", "1/2″ Heliax LDF4-50A"];
 const COAX_DB = [8.9, 4.9, 3.7, 2.2, 2.0, 3.6, 3.0, 1.5, 0.96, 0.83]; // dB per 100 ft at 100 MHz
 export const coaxLoss: SciCalculator = (v) => {
@@ -220,7 +209,6 @@ export const skinDepth: SciCalculator = (v) => {
   const d = Math.sqrt(rho / (Math.PI * f * MU0 * mu)), ratio = dwire > 2 * d ? dwire / (4 * d) + 0.25 : 1;
   return { mm: s(d * 1000, 6), um: s(d * 1e6, 6), ratio: s(ratio, 6), Rs: s(rho / d, 6) };
 };
-export const SKIN_MATS = ["Copper", "Silver", "Gold", "Aluminium", "Steel (μr ≈ 100)", "Stainless steel (non-magnetic)"];
 
 // ---------- matching, filters & components ----------
 export const lMatch: SciCalculator = (v) => {
@@ -239,8 +227,6 @@ export const biasTee: SciCalculator = (v) => {
   const L = (10 * Z) / (TAU * f), C = 10 / (TAU * f * Z);
   return { L: s(L * 1e6, 6), C: s(C * 1e9, 6), srf: "Choose an inductor whose self-resonance is above your highest frequency", I: s(I * 1.5, 5) };
 };
-export const FILTER_KIND = ["Butterworth", "Chebyshev 0.5 dB ripple", "Chebyshev 0.1 dB ripple"];
-export const FILTER_PASS = ["Low-pass", "High-pass"];
 export const rfFilter: SciCalculator = (v) => {
   const n = Math.min(9, Math.max(1, Math.round(pos(v.n, 5)))), fc = pos(v.fc, 100) * 1e6, Z = pos(v.Z, 50), kind = pick(v.kind, 3), hp = pick(v.pass, 2) === 1, w = TAU * fc;
   let g: number[];
@@ -262,9 +248,6 @@ export const wilkinson: SciCalculator = (v) => {
   const Z = pos(v.Z, 50), f = pos(v.f, 2400), ee = pos(v.ee, 1), N = Math.max(2, Math.round(pos(v.N, 2)));
   return { arm: s(Math.sqrt(N) * Z, 6), R: s(N === 2 ? 2 * Z : Z, 6), len: s((lambda(f) / 4 / Math.sqrt(ee)) * 1000, 6), split: s(-db(N), 5) };
 };
-
-// ---------- signals & systems ----------
-export const DBM_UNITS = ["dBm", "Watts", "Milliwatts", "dBW", "Volts RMS (into Z)", "dBµV (into Z)"];
 export const dbmWatts: SciCalculator = (v) => {
   const u = pick(v.unit, 6), x = num(v.x, 30), Z = pos(v.Z, 50);
   const W = u === 0 ? 10 ** ((x - 30) / 10) : u === 1 ? x : u === 2 ? x / 1000 : u === 3 ? 10 ** (x / 10) : u === 4 ? (x * x) / Z : (10 ** (x / 20) * 1e-6) ** 2 / Z;
@@ -277,7 +260,6 @@ export const noiseFloor: SciCalculator = (v) => {
   const kT = db(KB * T * 1000), floor = kT + db(B) + NF;
   return { floor: s(floor, 6), kt: s(kT, 6), sens: s(floor + snr, 6), vn: s(Math.sqrt(4 * KB * T * R * B) * 1e6, 6), density: s(Math.sqrt(4 * KB * T * R) * 1e9, 6) };
 };
-export const SNR_MODE = ["From signal and noise power (W)", "From signal and noise levels (dBm)", "From RMS voltages", "Ideal ADC from number of bits"];
 export const snr: SciCalculator = (v) => {
   const m = pick(v.mode, 4);
   let d: number;
@@ -287,7 +269,6 @@ export const snr: SciCalculator = (v) => {
   else d = 6.02 * pos(v.bits, 12) + 1.76;
   return { db: s(fin(d), 6), ratio: s(10 ** (d / 10), 6), vratio: s(10 ** (d / 20), 6), enob: s((d - 1.76) / 6.02, 5) };
 };
-export const BER_MOD = ["BPSK / QPSK (Gray)", "16-QAM", "64-QAM", "256-QAM", "Coherent BFSK", "Non-coherent BFSK", "DBPSK"];
 export const ber: SciCalculator = (v) => {
   const k = pick(v.mod, 7), g = 10 ** (num(v.eb, 10) / 10);
   const qam = (M: number) => { const b = Math.log2(M); return Math.min(0.5, (4 / b) * (1 - 1 / Math.sqrt(M)) * Q(Math.sqrt((3 * b * g) / (M - 1)))); };
@@ -311,7 +292,6 @@ export const crystalPpm: SciCalculator = (v) => {
   return { ppm: s(ppm, 8), hz: s((f * ppm) / 1e6, 8), sday: s(ppm * 0.0864, 6), smonth: s(ppm * 0.0864 * 30.44, 6), range: `${fmt(f * (1 - Math.abs(ppm) / 1e6), 10)} – ${fmt(f * (1 + Math.abs(ppm) / 1e6), 10)} Hz` };
 };
 export const PPM_MODE = ["Deviation from a ppm tolerance", "ppm from a measured frequency"];
-export const ERL_MODE = ["Blocking probability (A and N)", "Channels needed (A and target blocking)", "Traffic carried (N and target blocking)"];
 const erlangB = (A: number, N: number) => { let B = 1; for (let n = 1; n <= N; n++) B = (A * B) / (n + A * B); return B; };
 export const erlang: SciCalculator = (v) => {
   const m = pick(v.mode, 3), A = pos(v.A, 10), N = Math.max(1, Math.round(pos(v.N, 15))), gos = pos(v.gos, 1) / 100;
@@ -344,7 +324,6 @@ export const dielectricHeating: SciCalculator = (v) => {
   const p = TAU * f * 8.8541878128e-12 * er2 * E * E;
   return { result: s(p * Vol, 6), unit: "W absorbed", note: `Power density ${fmt(p, 6)} W/m³ = 2πfε₀ε″E²` };
 };
-export const DH_MODE = ["Dielectric heating power", "SAR from temperature rise", "SAR from electric field"];
 
 export const sciRfCustomCalculators: Record<string, SciCalculator> = {
   "pcb-trace-width-calculator": traceWidth,

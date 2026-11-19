@@ -22,7 +22,6 @@ export const tiktokRewards: Calc = (v) => {
   const qv = views * q, e = (qv / 1000) * rpm;
   return { earn: $(e), qual: nfmt(qv), per1k: $(rpm, 2) + " per 1,000 qualified views" };
 };
-export const TWITCH_SPLIT = ["50/50 (standard)", "60/40 (Plus Program)", "70/30 (Plus Program top tier)"];
 export const twitchSubs: Calc = (v) => {
   const t1 = p(v, "t1", 200), t2 = p(v, "t2", 20), t3 = p(v, "t3", 5), share = [0.5, 0.6, 0.7][pick(v.split, 3)];
   const gross = t1 * 4.99 + t2 * 9.99 + t3 * 24.99, net = gross * share;
@@ -117,7 +116,6 @@ export const editRate: Calc = (v) => {
   const hours = mins * ratio + rev * 1.5, price = hours * hourly;
   return { price: $(price, 0), perMin: $(price / Math.max(mins, 1e-9), 0) + " per finished minute", hours: `${hours.toFixed(1)} hours` };
 };
-export const VBR_MODE = ["File size from bitrate", "Bitrate from file size"];
 export const videoSize: Calc = (v) => {
   const mode = pick(v.mode, 2), mins = need(p(v, "mins", 10), "Enter a duration."), audio = p(v, "audio", 0.32);
   if (mode === 1) { const gb = p(v, "gb", 1); const mbps = (gb * 8000) / (mins * 60) - audio; return { size: `${mbps.toFixed(2)} Mbps video bitrate`, other: `${gb} GB over ${mins} min`, perMin: `${(gb * 1024 / mins).toFixed(0)} MB per minute` }; }
@@ -169,7 +167,6 @@ export const glazeBatch: Calc = (v) => {
   if (!(total > 0)) throw new InputError("Enter at least one ingredient percentage.");
   return { list: parts.map((x, i) => `${"ABCDE"[i]}: ${((x / total) * batch).toFixed(1)} g`).join(" · "), total: `${total.toFixed(1)}% recipe total → scaled to ${nfmt(batch)} g dry`, water: `about ${nfmt(batch * 0.9)} mL water for a dipping glaze` };
 };
-export const CS_MODE = ["Fired size from wet size", "Wet size for a fired size"];
 export const clayShrink: Calc = (v) => {
   const s = p(v, "s", 12) / 100, size = need(p(v, "size", 10), "Enter a size.");
   if (pick(v.mode, 2) === 1) return { size: `${(size / (1 - s)).toFixed(2)} wet`, note: `to finish at ${size} after ${(s * 100).toFixed(1)}% shrinkage`, vol: `${((1 - Math.pow(1 - s, 3)) * 100).toFixed(1)}% volume loss` };
@@ -204,13 +201,11 @@ export const logoPrice: Calc = (v) => {
   const price = (hrs + concepts * 2 + revs * 1.5) * rate * usage;
   return { price: $(price, 0), hours: `${(hrs + concepts * 2 + revs * 1.5).toFixed(1)} hours`, range: `${$(price * 0.8, 0)} – ${$(price * 1.25, 0)}` };
 };
-export const LOGO_USE = ["Small business / local", "Regional company", "National brand"];
 export const voiceOver: Calc = (v) => {
   const words = p(v, "words", 300), wpm = need(p(v, "wpm", 150), "Enter words per minute."), rate = p(v, "rate", 250), min = p(v, "min", 150), usage = p(v, "usage", 0) / 100;
   const mins = words / wpm, fee = Math.max(min, mins * rate) * (1 + usage);
   return { fee: $(fee, 0), length: `${mins.toFixed(1)} min (${Math.round(mins * 60)} s)`, note: `${$(rate, 0)} per finished minute, minimum ${$(min, 0)}${usage ? `, +${(usage * 100).toFixed(0)}% usage` : ""}` };
 };
-export const ANIM_MODE = ["On ones (every frame)", "On twos", "On threes"];
 export const animFrames: Calc = (v) => {
   const sec = p(v, "sec", 60), fps = p(v, "fps", 24), step = pick(v.step, 3) + 1, perDay = p(v, "perDay", 40);
   const frames = sec * fps, drawings = Math.ceil(frames / step);

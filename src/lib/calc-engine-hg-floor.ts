@@ -132,7 +132,6 @@ export const subfloor: CustomCalculator = (v) => {
   const sheets = ceil((a / 32) * 1.1);
   return { sheets, area: Math.round(a), adhesiveTubes: ceil(sheets / 2), screws: sheets * 50, thickness: pick(v.joistSpacing, 3) };
 };
-export const SUBFLOOR_THICK = ["23/32 in (¾ in) T&G for joists at 16 in", "23/32–7/8 in T&G for joists at 19.2 in", "7/8–1⅛ in T&G for joists at 24 in"];
 
 export const radiantFloor: CustomCalculator = (v) => {
   const heated = pos(v.area, 60) * (pos(v.heatedShare, 85) / 100);
@@ -141,8 +140,6 @@ export const radiantFloor: CustomCalculator = (v) => {
   const monthly = (watts / 1000) * pos(v.hoursPerDay, 4) * 30 * pos(v.kwhPrice, 0.17);
   return { matSqFt: Math.floor(heated), watts: Math.round(watts), amps240: r1(watts / 240), installCost: r2(install), monthlyRunningCost: r2(pick(v.system, 2) ? monthly * 0.5 : monthly) };
 };
-
-export const POLISH_LEVELS = ["Grind and seal (cream polish)", "Mid-level polish (salt and pepper)", "High gloss / exposed aggregate"];
 export const polishedConcreteCost: CustomCalculator = (v) => {
   const a = pos(v.area, 1000);
   const total = Math.max(1500, a * ([3, 5, 8][pick(v.level, 3)] + (pick(v.stain, 2) ? 1 : 0)) + pos(v.crackFeet) * 3);
@@ -154,8 +151,6 @@ export const dropCeilingCost: CustomCalculator = (v) => {
   const total = a * ([6, 9, 13][pick(v.tile, 3)] + (pick(v.removal, 2) ? 1 : 0));
   return { totalCost: r2(total), ...spread(total), perSqFt: a ? r2(total / a) : 0 };
 };
-
-export const MARBLES = ["Carrara", "Calacatta", "Travertine", "Emperador", "Thassos (white)"];
 const MARBLE_RATE = [15, 35, 8, 18, 25];
 export const marbleFlooringCost: CustomCalculator = (v) => {
   const a = pos(v.area, 300);
@@ -196,7 +191,6 @@ export const thinset: CustomCalculator = (v) => {
   const bags = ceil((pos(v.area, 100) / NOTCH_COV[notch]) * (size >= 15 ? 1.2 : 1));
   return { bags, trowelNotch: notch, sqFtPerBag: NOTCH_COV[notch], pounds: bags * 50 };
 };
-export const TROWELS = ["¼ × ¼ in square notch (tiles up to 8 in)", "¼ × ⅜ in square notch (tiles up to ~15 in)", "½ × ½ in square notch (large format) + back-butter"];
 
 export const tileLayout: CustomCalculator = (v) => {
   const j = pos(v.joint, 0.125), tw = pos(v.tileW, 12) + j, tl = pos(v.tileL, 12) + j;
@@ -261,14 +255,12 @@ export const cabinetDoor: CustomCalculator = (v) => {
   const doorW = pair === 2 ? (totalW - 0.125) / 2 : totalW;
   return { doors: pair, doorWidthIn: r2(doorW), doorHeightIn: r2(H + add), overlayEachSideIn: s === 2 ? -0.0625 : 0.5 };
 };
-export const DOOR_STYLES = ["Full overlay (½ in each side)", "Partial overlay (½ in)", "Inset (1/16 in gap)"];
 
 export const cabinetHardware: CustomCalculator = (v) => {
   const w = pos(v.drawerWidth, 18), h = pos(v.drawerHeight, 6);
   const size = w < 12 ? 0 : w < 24 ? 1 : w <= 36 ? 2 : 3;
   return { pullSize: size, centerToCenterIn: [0, 3.75, 5.0394, 7.5591][size], pullFromTopIn: r2(h > 10 ? 2.5 : h / 2), doorKnobFromEdgeIn: 2.5, doorKnobFromCornerIn: 2.5 };
 };
-export const PULL_SIZES = ["Knob (drawer under 12 in)", "3–4 in pull (12–24 in drawer)", "5–6 in pull (24–36 in drawer)", "Two pulls or an 8 in+ pull (over 36 in)"];
 
 // ---------- Room planning ----------
 export const homeTheater: CustomCalculator = (v) => {
@@ -276,8 +268,6 @@ export const homeTheater: CustomCalculator = (v) => {
   const thx = (0.728 * d) / 0.8716, smpte = (0.536 * d) / 0.8716;
   return { thxDiagonalIn: Math.round(thx), smpteDiagonalIn: Math.round(smpte), rows: Math.max(1, Math.floor((pos(v.roomLength, 20) - pos(v.seatingDistance, 12) + 3) / 6)), seatsPerRow: Math.max(1, Math.floor(pos(v.roomWidth, 14) / 2.2)) };
 };
-
-export const FIT_RESULTS = ["Fits flat — the depth or height clears the door", "Fits if tilted — the diagonal depth clears the door", "Unlikely to fit — measure again or remove legs / the door"];
 export const furnitureFit: CustomCalculator = (v) => {
   const dw = pos(v.doorWidth, 32), dh = pos(v.doorHeight, 80);
   const h = pos(v.height, 34), d = pos(v.depth, 38), diag = pos(v.diagonalDepth) || Math.sqrt(h * h + d * d) * 0.6;
@@ -286,8 +276,6 @@ export const furnitureFit: CustomCalculator = (v) => {
   const length = pos(v.length, 84);
   return { result: flat ? 0 : tilt ? 1 : 2, doorDiagonalIn: r1(Math.sqrt(dw * dw + dh * dh)), clearanceIn: r1(dw - Math.min(h, d, diag)), upendOk: length < Math.sqrt(dw * dw + dh * dh) ? 1 : 0 };
 };
-
-export const ACOUSTIC_USES = ["Home theater (0.3 s)", "Recording / control room (0.25 s)", "Living room (0.5 s)", "Office or meeting room (0.5 s)"];
 const RT_TARGET = [0.3, 0.25, 0.5, 0.5];
 export const acousticPanels: CustomCalculator = (v) => {
   const L = pos(v.length, 16), W = pos(v.width, 12), H = pos(v.height, 8);

@@ -201,8 +201,6 @@ export const truthTable: SciCalculator = (v) => {
   const total = 1 << vars.length;
   return { kind: trues === total ? 0 : trues === 0 ? 1 : 2, table: rows.join("\n"), equivalent: b ? (same ? 0 : 1) : 2, trueRows: trues };
 };
-export const TT_KIND = ["Tautology (always true)", "Contradiction (always false)", "Contingency (sometimes true)"];
-export const EQUIV = ["Logically equivalent", "Not equivalent", "— (enter a second expression to compare)"];
 
 // ---------- Number theory ----------
 const factorize = (n: number) => {
@@ -226,7 +224,6 @@ export const primeFactorization: SciCalculator = (v) => {
   const sumd = f.reduce((acc, [p, e]) => acc * ((p ** (e + 1) - 1) / (p - 1)), 1);
   return { factorization: f.map(([p, e]) => (e > 1 ? `${p}^${e}` : `${p}`)).join(" × "), isPrime: f.length === 1 && f[0][1] === 1 ? 0 : 1, divisors: nd, sumDivisors: sumd, tree: f.flatMap(([p, e]) => Array(e).fill(p)).join(" × ") };
 };
-export const PRIME = ["Prime", "Composite"];
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a));
 export const euclidean: SciCalculator = (v) => {
   let a = Math.round(num(v.a, 240)), b = Math.round(num(v.b, 46));
@@ -302,7 +299,6 @@ export const digitalRoot: SciCalculator = (v) => {
   }
   return { root: n, persistence: pers, digitSum: first, mod9: `digital root = 1 + (n − 1) mod 9` };
 };
-export const DISC_OPS = ["a mod n", "Modular inverse of a (mod n)", "Solve a·x ≡ b (mod n)", "gcd & lcm of a and n"];
 export const discreteMath: SciCalculator = (v) => {
   const op = pick(v.op, 4), a = Math.round(num(v.a, 17)), n = Math.round(num(v.n, 5)), b = Math.round(num(v.b, 3));
   if (n <= 0) throw new InputError("n must be a positive whole number.");
@@ -321,9 +317,6 @@ export const discreteMath: SciCalculator = (v) => {
   const x0 = Number(((x * BigInt(b / G)) % BigInt(n2) + BigInt(n2)) % BigInt(n2));
   return { result: `x ≡ ${x0} (mod ${n2})`, working: `${G} solution${G > 1 ? "s" : ""} mod ${n}: ${Array.from({ length: Math.min(G, 10) }, (_, k) => x0 + k * n2).join(", ")}` };
 };
-
-// ---------- Computing ----------
-export const BIN_OPS = ["Add", "Subtract", "Multiply", "Divide", "AND", "OR", "XOR"];
 export const BASES = ["Binary (base 2)", "Decimal (base 10)", "Hexadecimal (base 16)"];
 export const binaryCalc: SciCalculator = (v) => {
   const base = [2, 10, 16][pick(v.base, 3)], op = pick(v.op, 7), bits = Math.min(64, Math.max(4, Math.round(pos(v.bits, 8))));
@@ -382,7 +375,6 @@ export const ieee754: SciCalculator = (v) => {
     error32: s(stored - x, 6),
   };
 };
-export const HAMMING_MODE = ["Encode data bits", "Decode / correct a received word"];
 export const hamming: SciCalculator = (v) => {
   const mode = pick(v.mode, 2), bitsS = txt(v, "bits").replace(/\s/g, "");
   if (!/^[01]+$/.test(bitsS)) throw new InputError("Enter bits as 0s and 1s.");
@@ -409,7 +401,6 @@ export const hamming: SciCalculator = (v) => {
   for (let i = 1; i <= n; i++) if ((i & (i - 1)) !== 0) data.push(c[i]);
   return { codeword: syn ? `${c.slice(1).join("")} (bit ${syn} corrected)` : `${c.slice(1).join("")} (no error)`, parityBits: n - data.length, scheme: `data bits: ${data.join("")}`, syndrome: syn };
 };
-export const CRC_TYPES = ["CRC-32 (zip, Ethernet)", "CRC-16/CCITT-FALSE", "CRC-16/MODBUS", "CRC-8/SMBUS"];
 export const crc: SciCalculator = (v) => {
   const t = pick(v.type, 4), hexIn = pick(v.input, 2) === 1, raw = txt(v, "data");
   let bytes: number[];
@@ -448,7 +439,6 @@ export const crc: SciCalculator = (v) => {
   const w = [8, 4, 4, 2][t];
   return { hex: "0x" + c.toString(16).toUpperCase().padStart(w, "0"), decimal: c, bytes: bytes.length };
 };
-export const CRC_INPUT = ["Text (UTF-8)", "Hex bytes"];
 export const COMPLEXITY = ["O(1)", "O(log n)", "O(√n)", "O(n)", "O(n log n)", "O(n²)", "O(n³)", "O(2ⁿ)", "O(n!)"];
 const cx = [() => 1, (n: number) => Math.log2(n), (n: number) => Math.sqrt(n), (n: number) => n, (n: number) => n * Math.log2(n), (n: number) => n * n, (n: number) => n ** 3, (n: number) => 2 ** n, (n: number) => Math.exp(lgamma(n + 1))];
 const dur = (sec: number) => (!Number.isFinite(sec) ? "longer than the age of the universe" : sec < 1e-3 ? `${fmt(sec * 1e6, 4)} µs` : sec < 1 ? `${fmt(sec * 1e3, 4)} ms` : sec < 3600 ? `${fmt(sec, 4)} s` : sec < 86400 * 365 ? `${fmt(sec / 3600, 4)} hours` : sec < 4.3e17 ? `${fmt(sec / (86400 * 365), 4)} years` : "longer than the age of the universe");
@@ -532,7 +522,6 @@ export const playfair: SciCalculator = (v) => {
   });
   return { result: out.join(" "), square: [0, 1, 2, 3, 4].map((r) => sq.slice(r * 5, r * 5 + 5).join(" ")).join("\n"), pairs: pairs.join(" ") };
 };
-export const PF_MODE = ["Encrypt", "Decrypt"];
 export const setTheory: SciCalculator = (v) => {
   const parse = (k: string) => [...new Set(txt(v, k).split(/[\s,;{}]+/).filter(Boolean))];
   const A = parse("A"), B = parse("B"), U = parse("U");
@@ -562,7 +551,6 @@ export const induction: SciCalculator = (v) => {
   }
   return { result: ok ? 0 : 1, base: rows[0] ?? "", checks: rows.join("\n"), failure: ok ? "none" : `first fails at n = ${firstFail}` };
 };
-export const INDUCT = ["Holds for every n checked — now prove the inductive step", "Formula is false"];
 
 // ---------- Special functions ----------
 export const rationalIrrational: SciCalculator = (v) => {
@@ -598,7 +586,6 @@ export const rationalIrrational: SciCalculator = (v) => {
   }
   return { verdict, value: s(val, 15), fraction: verdict === 0 ? frac : "—", reason };
 };
-export const RATIONAL = ["Rational", "Irrational"];
 export const gammaCalc: SciCalculator = (v) => {
   const x = num(v.x, 4.5);
   if (x <= 0 && Number.isInteger(x)) throw new InputError("Γ(x) is undefined at 0 and negative integers.");

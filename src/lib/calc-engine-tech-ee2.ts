@@ -54,9 +54,6 @@ export const noiseFigure: Calc = (v) => {
   const floor = -174 + 10 * log10(bw) + nf;
   return { nf: sig(nf, 4), te: sig(290 * (F - 1), 4), gain: sig(stages.reduce((s, x) => s + x.gdb, 0), 4), factor: sig(F, 4), floor: sig(floor, 4), sens: sig(floor + snr, 4), first: `First stage contributes ${sig((10 * log10(stages[0].f) / nf) * 100, 3)}% of the total NF in dB` };
 };
-
-// ------------------------------------------------------------------ EIRP
-export const PWR_UNITS = ["dBm", "Watts", "Milliwatts"];
 export const eirp: Calc = (v) => {
   const u = pick(v.unit, 3), p = num(v.power, 20);
   if (u > 0 && p <= 0) throw new InputError("Enter a power above 0.");
@@ -74,9 +71,6 @@ export const farField: Calc = (v) => {
   const start = Math.max(fr, 3 * lam, 3 * D);
   return { far: sig(start, 4), fraunhofer: sig(fr, 4), reactive: sig(near, 4), lambda: sig(lam * 100, 4), ft: sig(start * 3.28084, 4), note: fr < 3 * lam ? "Small antenna: the far field starts a few wavelengths away" : "Large (aperture) antenna: the 2D²/λ rule sets the distance" };
 };
-
-// ------------------------------------------------------------------ waveguide cutoff
-export const WG_SHAPES = ["Rectangular (a × b)", "Circular (diameter)"];
 export const waveguide: Calc = (v) => {
   const shape = pick(v.shape, 2), er = Math.max(1, pos(v.er, 1)), fop = pos(v.fop, 10) * 1e9;
   const a = pos(v.a, 22.86) / 1000, b = pos(v.b, 10.16) / 1000;
@@ -97,9 +91,6 @@ export const waveguide: Calc = (v) => {
   const ghz = (x: number) => `${sig(x / 1e9, 4)} GHz`;
   return { fc: sig(f1 / 1e9, 4), dominant: `${m1} at ${ghz(f1)}`, next: `${modes[1][0]} at ${ghz(f2)}`, single: `${ghz(f1)} – ${ghz(f2)}`, band: shape === 0 ? `${ghz(1.25 * f1)} – ${ghz(Math.min(1.9 * f1, 0.95 * f2))} (recommended)` : `${ghz(1.15 * f1)} – ${ghz(0.95 * f2)}`, lg: Number.isFinite(lg) ? `${sig(lg * 1000, 4)} mm at ${ghz(fop)}` : `— (${ghz(fop)} is below cutoff, so it won't propagate)`, all: modes.map(([n, f]) => `${n}: ${ghz(f)}`).join("\n") };
 };
-
-// ------------------------------------------------------------------ RF exposure (FCC MPE)
-export const RF_ENV = ["General population / uncontrolled", "Occupational / controlled"];
 export function mpeLimit(fMHz: number, controlled: boolean) {
   if (fMHz < 0.3 || fMHz > 100000) throw new InputError("FCC MPE limits cover 0.3 MHz to 100 GHz.");
   if (controlled) return fMHz < 3 ? 100 : fMHz < 30 ? 900 / fMHz ** 2 : fMHz < 300 ? 1 : fMHz < 1500 ? fMHz / 300 : 5;
@@ -115,11 +106,7 @@ export const rfExposure: Calc = (v) => {
   const S = d > 0 ? eff / (4 * Math.PI * d * d) : NaN;
   return { cm: sig(R, 4), ft: sig(R / 30.48, 4), m: sig(R / 100, 4), limit: sig(lim, 4), at: Number.isFinite(S) ? `${sig(S, 4)} mW/cm² at ${d} cm — ${S <= lim ? "within" : "ABOVE"} the limit (${sig((S / lim) * 100, 3)}%)` : "—", eirp: sig(wDbm((P / 1000) * G), 4) };
 };
-
-// ------------------------------------------------------------------ inrush current
-export const INRUSH_MODES = ["Transformer energising", "Motor starting (NEC code letter)", "Capacitive power supply / NTC limiter"];
 const CODES: [string, number][] = [["A", 3.14], ["B", 3.54], ["C", 3.99], ["D", 4.49], ["E", 4.99], ["F", 5.59], ["G", 6.29], ["H", 7.09], ["J", 7.99], ["K", 8.99], ["L", 9.99], ["M", 11.19], ["N", 12.49], ["P", 13.99], ["R", 15.99], ["S", 17.99], ["T", 19.99], ["U", 22.39], ["V", 25]];
-export const CODE_LABELS = CODES.map(([l, x]) => `Code ${l} (up to ${x} kVA/hp)`);
 export const inrush: Calc = (v) => {
   const mode = pick(v.mode, 3), V = pos(v.volts, 480), three = pick(v.phase, 2) === 1;
   if (V <= 0) throw new InputError("Enter the voltage.");
@@ -185,7 +172,6 @@ function parseAwg(s: string): number {
 }
 const awgName = (n: number) => (n <= 0 ? `${1 - n}/0` : String(n));
 const dia = (n: number) => 0.127 * 92 ** ((36 - n) / 39);
-export const AWG_MODES = ["AWG → size & resistance", "mm² → nearest AWG", "Combine several wires → equivalent AWG"];
 export const awg: Calc = (v) => {
   const mode = pick(v.mode, 3);
   let n: number, area: number;
@@ -209,8 +195,6 @@ export const awg: Calc = (v) => {
 
 // ------------------------------------------------------------------ fuse size
 const STD_FUSE = [1, 3, 6, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200, 225, 250, 300, 350, 400, 450, 500, 600, 700, 800, 1000, 1200, 1600, 2000, 2500, 3000, 4000, 5000, 6000];
-export const FUSE_MODES = ["General load (continuous)", "Motor branch circuit (NEC 430.52)", "Transformer primary (NEC 450.3(B))"];
-export const FUSE_TYPES = ["Dual-element time-delay (175%)", "Non-time-delay (300%)"];
 export const fuseSize: Calc = (v) => {
   const mode = pick(v.mode, 3);
   let I = pos(v.amps, 16), pct: number, rule: string;
@@ -227,9 +211,6 @@ export const fuseSize: Calc = (v) => {
   const size = roundUp ? STD_FUSE.find((s) => s >= need - 1e-9) : [...STD_FUSE].reverse().find((s) => s <= need + 1e-9);
   return { size: size ? `${size} A` : "above 6,000 A", need: sig(need, 4), current: sig(I, 4), pct, rule, wire: mode === 0 ? `Wire must be rated at least ${sig(need, 3)} A` : "Size the conductors to 125% of FLA, not to the fuse" };
 };
-
-// ------------------------------------------------------------------ DMX DIP switch
-export const DMX_MODES = ["Address → DIP switches", "DIP switches → address"];
 export const dmxDip: Calc = (v) => {
   let addr: number;
   if (pick(v.mode, 2) === 0) {

@@ -74,9 +74,6 @@ export const longMultiplication: Calc = (v) => {
     digits: `${absB(res.int).toString().length} digits`,
   };
 };
-
-// ------------------------------------------------------------------ long addition & subtraction
-export const LAS_MODES = ["Add (column addition)", "Subtract (column subtraction)"];
 function align(ds: Dec[]): { ints: bigint[]; scale: number } {
   const scale = Math.max(...ds.map((d) => d.scale));
   return { ints: ds.map((d) => d.int * pow10(scale - d.scale)), scale };
@@ -289,9 +286,6 @@ export const repeatingDecimal: Calc = (v) => {
     check: `${num} ÷ ${den} = ${shown}`,
   };
 };
-
-// ------------------------------------------------------------------ passive income / live off interest
-export const PI_MODES = ["How much money do I need?", "How much income will my money make?"];
 export const passiveIncome: Calc = (v) => {
   const mode = pick(v.mode, 2);
   const y = num(v.yield, 4.5) / 100, tax = num(v.tax, 15) / 100, inf = num(v.inflation, 3) / 100;

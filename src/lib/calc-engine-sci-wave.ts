@@ -15,9 +15,6 @@ export const C = 299792458, H = 6.62607015e-34, QE = 1.602176634e-19;
 const RAD = Math.PI / 180;
 const soundAir = (T: number) => 331.3 * Math.sqrt(1 + T / 273.15);
 const band = (lm: number) => (lm < 1e-11 ? "gamma rays" : lm < 1e-8 ? "X-rays" : lm < 380e-9 ? "ultraviolet" : lm <= 750e-9 ? "visible light" : lm < 1e-3 ? "infrared" : lm < 1 ? "microwave" : "radio");
-
-export const WAVE_MEDIUM = ["Light / EM wave in vacuum (c)", "Sound in air at 20 °C (343 m/s)", "Custom wave speed"];
-export const WAVE_SOLVE = ["Frequency from wavelength", "Wavelength from frequency"];
 export const wavelengthFrequency: SciCalculator = (v) => {
   const med = pick(v.medium, 3), speed = med === 0 ? C : med === 1 ? 343.2 : pos(v.speed, 1500);
   const solveF = pick(v.solve, 2) === 0;
@@ -37,7 +34,6 @@ export const reflection: SciCalculator = (v) => {
   }
   return { reflected: s(th, 8), R: s(100 * R, 8), T: s(100 * (1 - R), 8), R0: s(100 * R0, 8), tir: Math.abs(sin2) >= 1 ? "Total internal reflection" : "Partial reflection" };
 };
-export const LENS_SOLVE = ["Focal length f", "Object distance dₒ", "Image distance dᵢ"];
 export const thinLens: SciCalculator = (v) => {
   const k = pick(v.solve, 3), f = num(v.f, 10), d0 = num(v.do, 30), di = num(v.di, 15);
   const r = k === 0 ? [1 / (1 / d0 + 1 / di), d0, di] : k === 1 ? [f, 1 / (1 / f - 1 / di), di] : [f, d0, 1 / (1 / f - 1 / d0)];
@@ -73,8 +69,6 @@ export const helmholtz: SciCalculator = (v) => {
   const f = (c / (2 * Math.PI)) * Math.sqrt(A / (V * Le));
   return { f: s(f, 8), Le: s(Le, 8), area: s(A, 8), c: s(c, 6), lambda: s(c / f, 6) };
 };
-export const ENDS = ["Flanged neck (end correction 1.7r)", "Unflanged neck (1.5r)"];
-export const DOPPLER_TYPE = ["Sound (classical)", "Light (relativistic, radial)"];
 export const doppler: SciCalculator = (v) => {
   const f0 = pos(v.f, 440);
   if (pick(v.type, 2) === 1) {
@@ -112,7 +106,6 @@ const agm = (a: number, b: number) => {
   for (let i = 0; i < 40 && Math.abs(a - b) > 1e-15 * a; i++) [a, b] = [(a + b) / 2, Math.sqrt(a * b)];
   return a;
 };
-export const PEND_MODE = ["Find period from length", "Find length from period"];
 export const pendulum: SciCalculator = (v) => {
   const g = pos(v.g, 9.80665) || 9.80665, th0 = Math.min(179.9, Math.abs(num(v.amp, 10))) * RAD;
   const corr = 1 / agm(1, Math.cos(th0 / 2));
@@ -140,7 +133,6 @@ export const grating: SciCalculator = (v) => {
   const ray = D ? 1.22 * lam / (D * 1e-3) : NaN;
   return { angle: Math.abs(sn) <= 1 ? s(Math.asin(sn) / RAD, 10) : "order not possible", spacing: s(d * 1e6, 8), maxOrder: Math.floor(d / lam), resolution: Number.isFinite(ray) ? `${fmt(ray, 6)} rad = ${fmt((ray / RAD) * 3600, 6)} arcsec` : "enter aperture D", airy: Number.isFinite(ray) ? "Airy disk angular radius = 1.22λ/D" : "—" };
 };
-export const FLUENCE_MODE = ["Pulse energy known", "Average power and repetition rate"];
 export const fluence: SciCalculator = (v) => {
   const E = pick(v.mode, 2) === 0 ? pos(v.E, 10) / 1000 : pos(v.P, 5) / Math.max(1e-12, pos(v.rep, 1000));
   const d = pos(v.d, 1) / 10, tau = pos(v.tau, 10) * 1e-9, Pavg = pick(v.mode, 2) === 0 ? E * pos(v.rep, 10) : pos(v.P, 5);
@@ -148,7 +140,6 @@ export const fluence: SciCalculator = (v) => {
   const A = (Math.PI * d * d) / 4, F = E / A;
   return { fluence: s(F, 8), peakFluence: s(2 * F, 8), energy: s(E * 1000, 8), peakPower: tau ? s(E / tau, 8) : "—", intensity: tau ? s(E / tau / A, 8) : "—", avgDensity: s(Pavg / A, 8) };
 };
-export const NA_MODE = ["Lens / objective (n and half-angle)", "Optical fibre (core and cladding)"];
 export const numericalAperture: SciCalculator = (v) => {
   const lam = pos(v.lambda, 550) * 1e-9, n = pos(v.n, 1);
   let NA: number;

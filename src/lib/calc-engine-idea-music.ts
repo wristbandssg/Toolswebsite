@@ -10,7 +10,6 @@ import { type TrvCalculator as Calc, InputError, num, pick, txt, money } from ".
 const $ = (x: number, dp = 2) => money(x, "$", dp);
 const p = (v: Record<string, number>, k: string, d: number) => Math.max(0, num(v[k], d));
 const need = (x: number, msg: string) => { if (!(x > 0)) throw new InputError(msg); return x; };
-export const NOTES = ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"];
 const SHARP = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const noteIdx = (s: string) => {
   const m = s.trim().match(/^([A-Ga-g])([#b♯♭]?)$/);
@@ -117,13 +116,11 @@ export const circleFifths: Calc = (v) => {
   const order = [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5], pos = order.indexOf(major), acc = pos <= 6 ? pos : pos - 12;
   return { sig: acc === 0 ? "No sharps or flats" : acc > 0 ? `${acc} sharp${acc > 1 ? "s" : ""}` : `${-acc} flat${acc < -1 ? "s" : ""}`, rel: minor ? `Relative major: ${SHARP[major]}` : `Relative minor: ${SHARP[(major + 9) % 12]}m`, near: `Neighbours: ${SHARP[order[(pos + 11) % 12]]} and ${SHARP[order[(pos + 1) % 12]]} major (IV and V)` };
 };
-export const MODE2 = ["Major", "Minor"];
 export const beatCounter: Calc = (v) => {
   const top = need(p(v, "top", 6), "Enter beats per bar."), bottom = pick(v.bottom, 4), bpm = need(p(v, "bpm", 120), "Enter tempo.");
   const unit = [2, 4, 8, 16][bottom], compound = top % 3 === 0 && top > 3 && unit >= 8;
   return { feel: compound ? `Compound: ${top / 3} dotted beats per bar` : `Simple: ${top} beats per bar`, bar: `${((top * 60) / bpm * (4 / unit)).toFixed(3)} s per bar at ♩=${bpm}`, count: compound ? Array.from({ length: top / 3 }, (_, i) => `${i + 1}-la-li`).join(" ") : Array.from({ length: top }, (_, i) => String(i + 1)).join(" ") };
 };
-export const BOTTOM = ["2 (half note)", "4 (quarter note)", "8 (eighth note)", "16 (sixteenth)"];
 export const swingRatio: Calc = (v) => {
   const bpm = need(p(v, "bpm", 120), "Enter tempo."), sw = Math.min(75, Math.max(50, p(v, "sw", 66))) / 100, beat = 60000 / bpm;
   return { long: `${(beat * sw).toFixed(1)} ms long 8th`, short: `${(beat * (1 - sw)).toFixed(1)} ms short 8th`, ratio: `${(sw / (1 - sw)).toFixed(2)}:1 (${(sw * 100).toFixed(0)}% swing; 66.7% = triplet feel)` };
@@ -155,7 +152,6 @@ export const ukeFret: Calc = (v) => {
   const d = (n: number) => L * (1 - Math.pow(2, -n / 12));
   return { scale: `${L} in scale length`, list: Array.from({ length: frets }, (_, i) => `${i + 1}: ${d(i + 1).toFixed(3)} in`).join(" · "), f12: `12th fret at ${d(12).toFixed(3)} in` };
 };
-export const UKE = ["Soprano (13 in)", "Concert (15 in)", "Tenor (17 in)", "Baritone (19 in)"];
 export const fluteHole: Calc = (v) => {
   const key = need(p(v, "f", 440), "Enter the flute's lowest note frequency."), bore = need(p(v, "bore", 19), "Enter bore diameter (mm).");
   const L = (343000 / (2 * key)) - 0.6 * bore, ratios = [9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8];
@@ -186,7 +182,6 @@ export const headphoneAmp: Calc = (v) => {
   const mw = Math.pow(10, (target - sensMw) / 10), vrms = Math.sqrt((mw / 1000) * z);
   return { mw: `${mw.toFixed(1)} mW needed`, v: `${vrms.toFixed(2)} Vrms output`, note: `for ${target} dB SPL peaks at ${z} Ω` };
 };
-export const SENS_U = ["dB/mW", "dB/V"];
 export const djTempo: Calc = (v) => {
   const a = need(p(v, "a", 124), "Enter track A BPM."), b = need(p(v, "b", 128), "Enter track B BPM.");
   const pitch = ((a / b) - 1) * 100;

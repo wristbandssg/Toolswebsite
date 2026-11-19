@@ -137,9 +137,6 @@ export const voyage: TrvCalculator = (v) => {
   const hrs = nm / kn + port, fuel = (nm / kn) * pos(v.burn, 0);
   return { time: durText(hrs * 60), days: r2(hrs / 24), nm: r1(nm), fuel: r0(fuel), fuelCost: r2(fuel * pos(v.price, 0)), unit: DU[du] };
 };
-
-// 11. when-to-leave-for-airport-calculator
-export const FL_TYPE = ["Domestic flight", "International flight", "Domestic, bags to check", "International, bags to check"];
 export const airportLeave: TrvCalculator = (v) => {
   const dep = parseClock(txt(v, "dep"), "Flight departure time"), t = pick(v.type, 4), ARR = [90, 150, 120, 180], early = ARR[t];
   const drive = pos(v.drive, 45), traffic = pos(v.traffic, 15), park = pos(v.park, 15), pre = pick(v.pre, 2) === 1 ? -20 : 0, extra = pos(v.extra, 0);

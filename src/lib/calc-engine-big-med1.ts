@@ -22,13 +22,7 @@ const today = () => Math.floor(Date.now() / 86400000);
 const show = (x: number, s = 4) => (Number.isFinite(x) ? nfmt(sig(x, s), 6).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "") : "—");
 const pl = (n: number, w: string) => `${nfmt(n)} ${w}${n === 1 ? "" : "s"}`;
 const LB = 0.45359237;
-
-// ------------------------------------------------------------------ drug dosage
-export const DD_MODES = ["Weight-based (mg/kg)", "Fixed dose (mg) → mL", "Volume (mL) → mg"];
-export const DD_WUNITS = ["kg", "lb"];
-export const DD_FREQ = ["Once a day", "Twice a day (every 12 h)", "3 times a day (every 8 h)", "4 times a day (every 6 h)", "Every 4 hours (6 a day)"];
 const FREQ_N = [1, 2, 3, 4, 6];
-export const DD_BASIS = ["mg/kg per dose", "mg/kg per day (split into doses)"];
 export const drugDosage: Calc = (v) => {
   const mode = pick(v.mode, 3), conc = num(v.concMg, 250), per = num(v.concMl, 5);
   if (!(conc > 0) || !(per > 0)) throw new InputError("Enter the liquid strength, e.g. 250 mg per 5 mL.");
@@ -65,9 +59,6 @@ export const drugDosage: Calc = (v) => {
     working,
   };
 };
-
-// ------------------------------------------------------------------ prescription refill
-export const RX_RULES = ["75% used (most insurers, controlled meds 80–90%)", "80% used", "85% used", "90% used", "100% (only when it runs out)"];
 const RX_PCT = [0.75, 0.8, 0.85, 0.9, 1];
 export const prescriptionRefill: Calc = (v) => {
   const qty = num(v.qty, 30), perDose = num(v.perDose, 1), doses = num(v.doses, 1), fill = dateIn(v, "fill", today()), refills = Math.max(0, Math.round(num(v.refills, 0)));
@@ -111,9 +102,6 @@ export const medicationSchedule: Calc = (v) => {
     next: `After the last dose at ${clockText(times[times.length - 1])}, the next is ${clockText(plan < 5 ? times[0] + 1440 : times[0] + 1440)} the next day`,
   };
 };
-
-// ------------------------------------------------------------------ IV drip rate
-export const IV_FACTORS = ["10 gtt/mL (macro)", "15 gtt/mL (macro)", "20 gtt/mL (macro)", "60 gtt/mL (micro)"];
 const IV_F = [10, 15, 20, 60];
 export const ivDripRate: Calc = (v) => {
   const vol = num(v.volume, 1000), mins = num(v.hours, 8) * 60 + num(v.minutes, 0), f = IV_F[pick(v.factor, IV_F.length)];
@@ -145,11 +133,6 @@ export const insulinDose: Calc = (v) => {
     warning: bg < (u === 0 ? 70 : 3.9) ? "Blood sugar is LOW — treat the low first and don't take a correction dose." : "Always use the doses and ratios set by your diabetes team.",
   };
 };
-
-// ------------------------------------------------------------------ adjusted body weight
-export const ABW_SEX = ["Male", "Female"];
-export const ABW_HUNITS = ["cm", "inches"];
-export const ABW_WUNITS = ["kg", "lb"];
 export const adjustedBodyWeight: Calc = (v) => {
   const h = num(v.height, 170), hin = pick(v.hunit, 2) === 1 ? h : h / 2.54, w = num(v.weight, 110), kg = pick(v.wunit, 2) === 1 ? w * LB : w, f = num(v.factor, 0.4), male = pick(v.sex, 2) === 0;
   if (!(hin > 0) || !(kg > 0)) throw new InputError("Enter height and weight above zero.");
@@ -165,10 +148,6 @@ export const adjustedBodyWeight: Calc = (v) => {
     working: `${show(ibw, 4)} + ${f} × (${show(kg, 4)} − ${show(ibw, 4)}) = ${show(abw, 4)} kg`,
   };
 };
-
-// ------------------------------------------------------------------ blood sugar converter
-export const BS_DIR = ["mmol/L → mg/dL", "mg/dL → mmol/L"];
-export const BS_WHEN = ["Fasting", "2 hours after a meal", "Random"];
 export const bloodSugarConverter: Calc = (v) => {
   const d = pick(v.dir, 2), x = num(v.value, 5.5), when = pick(v.when, 3);
   if (!(x > 0)) throw new InputError("Enter a glucose reading above zero.");
@@ -186,10 +165,6 @@ export const bloodSugarConverter: Calc = (v) => {
     factor: "1 mmol/L of glucose = 18.016 mg/dL (molar mass 180.16 g/mol)",
   };
 };
-
-// ------------------------------------------------------------------ pack-years
-export const PY_UNITS = ["Packs per day", "Cigarettes per day"];
-export const PY_STATUS = ["Current smoker", "Former smoker"];
 export const packYears: Calc = (v) => {
   const u = pick(v.unit, 2), amt = num(v.amount, 1), per = num(v.perPack, 20), yrs = num(v.years, 20), age = num(v.age, 55), st = pick(v.status, 2), quit = Math.max(0, num(v.quit, 0));
   if (!(amt > 0) || !(yrs > 0) || !(per > 0)) throw new InputError("Enter how much and how many years you smoked (above zero).");

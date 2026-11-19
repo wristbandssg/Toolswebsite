@@ -11,8 +11,6 @@
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, compileFn, evalExpr, roots, minimize, integrate, numDeriv, derivText, simplifyText } from "./sci-math-core";
-
-export const ANGLE_MODES = ["Degrees", "Radians"];
 const isDeg = (v: Vals) => pick(v.angle, 2) === 0;
 
 // ---------- Scientific calculator ----------
@@ -144,7 +142,6 @@ function sigInfo(s: string): { count: number; digits: string } {
   if (!d) return { count: hasDot ? Math.max(1, (t.split(".")[1] ?? "").length) : 1, digits: "0" };
   return { count: d.length, digits: d };
 }
-export const SIG_OPS = ["Count significant figures", "Round to N significant figures", "Add / subtract (decimal-place rule)", "Multiply / divide (sig-fig rule)"];
 const roundSig = (x: number, n: number) => (x === 0 ? "0" : Number(x.toPrecision(n)).toPrecision(n).replace(/^(-?\d+)\.$/, "$1"));
 export const sigFigs: SciCalculator = (v) => {
   const op = pick(v.op, 4), a = txt(v, "a"), bTxt = txt(v, "b");
@@ -237,9 +234,6 @@ export const rpn: SciCalculator = (v) => {
   }
   return { result: sig(st[st.length - 1], 12), depth: st.length, steps: steps.slice(-20).join("\n") };
 };
-
-// ---------- Scientific notation ----------
-export const SN_OPS = ["Convert a number", "Multiply two numbers", "Divide two numbers", "Add two numbers", "Subtract two numbers"];
 const snText = (x: number, digits = 6) => {
   if (x === 0) return "0";
   const e = Math.floor(Math.log10(Math.abs(x)));

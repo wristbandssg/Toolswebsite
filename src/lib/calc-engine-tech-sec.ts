@@ -181,9 +181,6 @@ export const hashCalc: Calc = (v) => {
   const sha256 = h("sha256");
   return { sha256, md5: h("md5"), sha1: h("sha1"), sha512: h("sha512"), sha384: h("sha384"), bytes: Buffer.byteLength(s, "utf8"), upper: sha256.toUpperCase() };
 };
-
-// ------------------------------------------------------------------ unix timestamp
-export const TS_MODES = ["Timestamp → date", "Date → timestamp"];
 export const unixTimestamp: Calc = (v) => {
   const mode = pick(v.mode, 2);
   const off = num(v.offset, 0);
@@ -246,9 +243,6 @@ export const smsSegments: Calc = (v) => {
   const cap = segs === 1 ? single : segs * part;
   return { segments: segs, encoding: gsm ? "GSM-7 (standard)" : "UCS-2 / Unicode", units, chars: chars.length, left: cap - units, perPart: segs === 1 ? `${single} per message` : `${part} per part (${single} if it fits in one)`, culprits: non.length ? `Characters forcing Unicode: ${[...new Set(non)].slice(0, 15).join(" ")}` : "—" };
 };
-
-// ------------------------------------------------------------------ infix / postfix / prefix
-export const FIX_MODES = ["Infix → postfix & prefix", "Postfix → infix & value", "Prefix → infix & value"];
 const PREC: Record<string, number> = { "+": 1, "-": 1, "*": 2, "/": 2, "%": 2, "^": 3 };
 function tokens(s: string) {
   const t = s.match(/\d+(\.\d+)?|[A-Za-z_]\w*|[-+*/%^()]/g);

@@ -11,8 +11,6 @@
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, compileFn, integrate } from "./sci-math-core";
-
-export const ANGLE_UNITS = ["Degrees", "Radians"];
 const toRad = (v: Vals, a: number) => (pick(v.unit, 2) === 0 ? (a * Math.PI) / 180 : a);
 const D = (r: number) => (r * 180) / Math.PI;
 const R = (d: number) => (d * Math.PI) / 180;
@@ -42,12 +40,10 @@ export const sphere: SciCalculator = (v) => {
   if (mode === 2) r = Math.sqrt(pos(v.r, 5) / (4 * Math.PI));
   return { volume: s((4 / 3) * Math.PI * r ** 3, 12), surface: s(4 * Math.PI * r * r, 12), radius: s(r, 10), diameter: s(2 * r, 10), circumference: s(2 * Math.PI * r, 10) };
 };
-export const SPHERE_MODE = ["I know the radius", "I know the volume", "I know the surface area"];
 export const hemisphere: SciCalculator = (v) => {
   const r = pos(v.r, 5);
   return { volume: s((2 / 3) * Math.PI * r ** 3, 12), curved: s(2 * Math.PI * r * r), total: s(3 * Math.PI * r * r), base: s(Math.PI * r * r) };
 };
-export const CONE_MODE = ["Cone from radius & height", "Height from volume & radius", "Frustum (truncated cone)"];
 export const cone: SciCalculator = (v) => {
   const m = pick(v.mode, 3), r = pos(v.r, 3);
   let h = pos(v.h, 4);
@@ -74,8 +70,6 @@ export const ellipsoid: SciCalculator = (v) => {
   const S = 4 * Math.PI * (((a * b) ** p + (a * c) ** p + (b * c) ** p) / 3) ** (1 / p);
   return { volume: s((4 / 3) * Math.PI * a * b * c, 12), surface: s(S, 8), type: a === b && b === c ? 0 : a === b || b === c || a === c ? 1 : 2 };
 };
-export const ELLIPSOID_TYPE = ["Sphere", "Spheroid (two equal axes)", "Scalene ellipsoid"];
-export const PACKINGS = ["Random close packing (≈ 0.64)", "Random loose packing (≈ 0.60)", "Ordered FCC / HCP (0.7405)", "Simple cubic (0.5236)"];
 const PACK = [0.64, 0.6, 0.74048, 0.5236];
 export const spherePacking: SciCalculator = (v) => {
   const Dc = pos(v.cd, 100), H = pos(v.ch, 200), d = pos(v.sd, 10), f = PACK[pick(v.pack, 4)];
@@ -85,9 +79,6 @@ export const spherePacking: SciCalculator = (v) => {
   const eff = Math.PI * ((Dc - d / 2) / 2) ** 2 * Math.max(0, H - d / 2);
   return { count: Math.floor((f * eff) / vs), ideal: Math.floor((f * vc) / vs), ratio: s(Dc / d, 8), fraction: f, emptyVolume: s(vc - Math.floor((f * eff) / vs) * vs, 8) };
 };
-
-// ---------- Circles ----------
-export const CIRCLE_KNOWN = ["Radius", "Diameter", "Circumference", "Area"];
 export const circle: SciCalculator = (v) => {
   const k = pick(v.known, 4), x = pos(v.value, 5);
   const r = [x, x / 2, x / (2 * Math.PI), Math.sqrt(x / Math.PI)][k];
@@ -112,7 +103,6 @@ export const circleEquation: SciCalculator = (v) => {
   const sg = (x: number) => (x < 0 ? `+ ${fmt(-x)}` : `− ${fmt(x)}`);
   return { standard: `(x ${sg(h)})² + (y ${sg(k)})² = ${fmt(r * r, 10)}`, general: `x² + y² ${-2 * h < 0 ? "−" : "+"} ${fmt(Math.abs(2 * h))}x ${-2 * k < 0 ? "−" : "+"} ${fmt(Math.abs(2 * k))}y ${h * h + k * k - r * r < 0 ? "−" : "+"} ${fmt(Math.abs(h * h + k * k - r * r), 10)} = 0`, center: `(${fmt(h)}, ${fmt(k)})`, radius: s(r, 12) };
 };
-export const CIRCLE_MODE = ["From centre & radius", "From general form x² + y² + Dx + Ey + F = 0"];
 
 // ---------- Pi digits (Machin) ----------
 export const piDigits: SciCalculator = (v) => {
@@ -135,9 +125,6 @@ export const piDigits: SciCalculator = (v) => {
   const grouped = digits.slice(2).replace(/(\d{10})/g, "$1 ").trim();
   return { pi: digits.length > 40 ? `3.${grouped}` : digits, digits: n, circleNote: `circumference of a 1 m wide circle = ${digits.slice(0, 12)} m` };
 };
-
-// ---------- Triangles ----------
-export const PYTH_MODE = ["Find hypotenuse c from legs a, b", "Find leg a from leg b and hypotenuse c"];
 export const pythagorean: SciCalculator = (v) => {
   const m = pick(v.mode, 2), a = pos(v.a, 3), b = pos(v.b, 4), c = pos(v.c, 5);
   if (m === 0) return { result: s(Math.hypot(a, b), 12), working: `c = √(${fmt(a)}² + ${fmt(b)}²) = √${fmt(a * a + b * b, 10)}`, area: s((a * b) / 2), triple: Number.isInteger(Math.hypot(a, b)) && Number.isInteger(a) && Number.isInteger(b) ? 0 : 1 };
@@ -145,20 +132,16 @@ export const pythagorean: SciCalculator = (v) => {
   const leg = Math.sqrt(c * c - b * b);
   return { result: s(leg, 12), working: `a = √(${fmt(c)}² − ${fmt(b)}²) = √${fmt(c * c - b * b, 10)}`, area: s((leg * b) / 2), triple: Number.isInteger(leg) && Number.isInteger(b) && Number.isInteger(c) ? 0 : 1 };
 };
-export const TRIPLE = ["Whole-number Pythagorean triple", "Not a whole-number triple"];
-export const SPECIAL_30 = ["Short leg (opposite 30°)", "Long leg (opposite 60°)", "Hypotenuse"];
 export const tri306090: SciCalculator = (v) => {
   const k = pick(v.known, 3), x = pos(v.value, 5);
   const a = [x, x / Math.sqrt(3), x / 2][k];
   return { short: s(a, 12), long: s(a * Math.sqrt(3), 12), hyp: s(2 * a, 12), area: s((a * a * Math.sqrt(3)) / 2), perimeter: s(a * (3 + Math.sqrt(3))) };
 };
-export const SPECIAL_45 = ["Leg", "Hypotenuse"];
 export const tri454590: SciCalculator = (v) => {
   const k = pick(v.known, 2), x = pos(v.value, 5);
   const a = k === 0 ? x : x / Math.SQRT2;
   return { leg: s(a, 12), hyp: s(a * Math.SQRT2, 12), area: s((a * a) / 2), perimeter: s(a * (2 + Math.SQRT2)) };
 };
-export const COS_MODE = ["SAS — find side c from a, b and angle C", "SSS — find all angles from a, b, c"];
 export const lawOfCosines: SciCalculator = (v) => {
   const m = pick(v.mode, 2), a = pos(v.a, 7), b = pos(v.b, 9);
   if (m === 0) {
@@ -192,7 +175,6 @@ export const lawOfSines: SciCalculator = (v) => {
   const two = B2 + A < 180 && Math.abs(B2 - B1) > 1e-9;
   return { solutions: two ? 2 : 1, triangle1: tri(B1), triangle2: two ? tri(B2) : "—", ratio: s(a / Math.sin(R(A)), 10) };
 };
-export const AREA_MODE = ["Three sides (Heron's formula)", "Base and height", "Two sides and the included angle"];
 export const triangleArea: SciCalculator = (v) => {
   const m = pick(v.mode, 3), a = pos(v.a, 5), b = pos(v.b, 6), c = pos(v.c, 7);
   if (m === 0) {
@@ -204,7 +186,6 @@ export const triangleArea: SciCalculator = (v) => {
   const C = R(c);
   return { area: s(0.5 * a * b * Math.sin(C), 12), perimeter: s(a + b + Math.sqrt(a * a + b * b - 2 * a * b * Math.cos(C))), working: `A = ½ab·sin C = ½ × ${fmt(a)} × ${fmt(b)} × sin ${fmt(c)}°` };
 };
-export const RIGHT_MODE = ["Two legs a, b", "Leg a and hypotenuse c", "Leg a and angle A (opposite)", "Hypotenuse c and angle A"];
 export const rightTriangle: SciCalculator = (v) => {
   const m = pick(v.mode, 4), x = pos(v.x, 3), y = pos(v.y, 4);
   let a = 0, b = 0, c = 0;
@@ -232,7 +213,6 @@ export const centroid: SciCalculator = (v) => {
   const area = 0.5 * Math.abs(xs[0] * (ys[1] - ys[2]) + xs[1] * (ys[2] - ys[0]) + xs[2] * (ys[0] - ys[1]));
   return { centroid: `(${fmt((xs[0] + xs[1] + xs[2]) / 3, 10)}, ${fmt((ys[0] + ys[1] + ys[2]) / 3, 10)})`, area: s(area, 12) };
 };
-export const TRI_TEST = ["Do three sides make a triangle?", "Third angle and exterior angle"];
 export const triangleInequality: SciCalculator = (v) => {
   const m = pick(v.mode, 2), a = pos(v.a, 3), b = pos(v.b, 4), c = pos(v.c, 8);
   if (m === 0) {
@@ -245,7 +225,6 @@ export const triangleInequality: SciCalculator = (v) => {
   need(C > 0, "The two angles add up to 180° or more.");
   return { result: s(C, 10), valid: "—", detail: `exterior angle at C = ${fmt(a + b)}° (equals the two remote interior angles)`, kind: C === 90 || a === 90 || b === 90 ? "right" : Math.max(a, b, C) > 90 ? "obtuse" : "acute" };
 };
-export const TRI_OK = ["Yes — a valid triangle", "No — fails the triangle inequality"];
 
 // ---------- Angles ----------
 export const unitCircle: SciCalculator = (v) => {
@@ -268,7 +247,6 @@ export const trigIdentities: SciCalculator = (v) => {
     pythagorean: s(Math.sin(t) ** 2 + Math.cos(t) ** 2, 12),
   };
 };
-export const TRIG_FN = ["sin", "cos", "tan"];
 export const trigEquation: SciCalculator = (v) => {
   const fnI = pick(v.fn, 3), a = num(v.a, 2), b = num(v.b, 1) || 1, c = num(v.c, 0), d = num(v.d, 1);
   need(a !== 0, "a can't be 0.");
@@ -292,7 +270,6 @@ export const inverseTrig: SciCalculator = (v) => {
   const out = (f: number) => `${fmt(D(f), 10)}° = ${fmt(f, 10)} rad`;
   return { asin: ok ? out(Math.asin(x)) : "undefined (|x| > 1)", acos: ok ? out(Math.acos(x)) : "undefined (|x| > 1)", atan: out(Math.atan(x)), acot: out(Math.PI / 2 - Math.atan(x)), asec: Math.abs(x) >= 1 ? out(Math.acos(1 / x)) : "undefined (|x| < 1)", acsc: Math.abs(x) >= 1 ? out(Math.asin(1 / x)) : "undefined (|x| < 1)" };
 };
-export const ELEV_MODE = ["Angle from height & horizontal distance", "Height from angle & distance", "Distance from angle & height"];
 export const angleDepression: SciCalculator = (v) => {
   const m = pick(v.mode, 3), h = pos(v.h, 50), dist = pos(v.d, 120), ang = pos(v.angle, 25);
   if (m === 0) return { result: s(D(Math.atan2(h, dist)), 10), lineOfSight: s(Math.hypot(h, dist)), note: "Angle of depression from the top = angle of elevation from the bottom (alternate angles)." };
@@ -303,9 +280,6 @@ export const hyperbolic: SciCalculator = (v) => {
   const x = num(v.x, 1);
   return { sinh: s(Math.sinh(x), 12), cosh: s(Math.cosh(x), 12), tanh: s(Math.tanh(x), 12), sech: s(1 / Math.cosh(x), 12), csch: x === 0 ? "undefined" : s(1 / Math.sinh(x), 12), coth: x === 0 ? "undefined" : s(1 / Math.tanh(x), 12), inverse: `asinh = ${fmt(Math.asinh(x), 10)}, acosh = ${x >= 1 ? fmt(Math.acosh(x), 10) : "undefined"}, atanh = ${Math.abs(x) < 1 ? fmt(Math.atanh(x), 10) : "undefined"}` };
 };
-
-// ---------- Coordinates & conics ----------
-export const POLAR_DIR = ["Rectangular (x, y) → polar (r, θ)", "Polar (r, θ) → rectangular (x, y)"];
 export const polarRect: SciCalculator = (v) => {
   const m = pick(v.mode, 2), p = num(v.p, 3), q = num(v.q, 4);
   if (m === 0) {
@@ -343,7 +317,6 @@ export const ellipse: SciCalculator = (v) => {
   const P = Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
   return { area: s(Math.PI * a * b, 12), perimeter: s(P, 10), eccentricity: s(c / a, 10), foci: `±${fmt(c, 10)} from the centre along the major axis`, latusRectum: s((2 * b * b) / a, 10) };
 };
-export const HYP_ORIENT = ["Horizontal: (x−h)²/a² − (y−k)²/b² = 1", "Vertical: (y−k)²/a² − (x−h)²/b² = 1"];
 export const hyperbola: SciCalculator = (v) => {
   const a = pos(v.a, 3), b = pos(v.b, 4), h = num(v.h, 0), k = num(v.k, 0), o = pick(v.orient, 2);
   const c = Math.hypot(a, b);
@@ -351,7 +324,6 @@ export const hyperbola: SciCalculator = (v) => {
   const m = o === 0 ? b / a : a / b;
   return { vertices: pts(a), foci: pts(c), asymptotes: `y − ${fmt(k)} = ±${fmt(m, 8)}(x − ${fmt(h)})`, eccentricity: s(c / a, 10), c: s(c, 10) };
 };
-export const CONIC_TYPE = ["Ellipse", "Circle", "Parabola", "Hyperbola", "Degenerate / not a conic"];
 export const conic: SciCalculator = (v) => {
   const A = num(v.A, 4), B = num(v.B, 0), C = num(v.C, 9), Dd = num(v.D, -16), Ee = num(v.E, 18);
   const disc = B * B - 4 * A * C;
@@ -416,7 +388,6 @@ export const compositeArea: SciCalculator = (v) => {
   }
   return { area: s(total, 12), breakdown: parts.join("  ") || "add a shape" };
 };
-export const ADD_SUB = ["Add", "Subtract (cut-out)"];
 
 export const sciGeoCustomCalculators: Record<string, SciCalculator> = {
   "sohcahtoa-calculator": sohcahtoa,

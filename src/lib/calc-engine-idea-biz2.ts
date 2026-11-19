@@ -38,7 +38,6 @@ export const shadingLoss: Calc = (v) => {
   const factor = [1.8, 1.1, 1][tech], loss = Math.min(0.9, shaded * factor * Math.min(1, hours / 2));
   return { loss: `${(loss * 100).toFixed(1)}% annual energy loss`, kwh: `${nfmt(sys * yieldKwh * loss)} kWh lost a year`, note: ["String inverter: one shaded panel drags the whole string", "Optimizers limit the loss to shaded panels", "Microinverters isolate each panel"][tech] };
 };
-export const INV = ["String inverter", "Power optimizers", "Microinverters"];
 export const netMetering: Calc = (v) => {
   const prod = p(v, "prod", 10000), use = p(v, "use", 11000), self = p(v, "self", 40) / 100, retail = p(v, "r", 0.16), credit = p(v, "c", 0.08);
   const selfUsed = Math.min(prod * self, use), exported = prod - selfUsed, savings = selfUsed * retail + exported * credit;
@@ -61,7 +60,6 @@ export const hydroPower: Calc = (v) => {
   const w = 1000 * 9.81 * qm * hm * eff;
   return { kw: `${(w / 1000).toFixed(2)} kW`, kwh: `${nfmt((w * 24) / 1000)} kWh a day`, note: `${unit === 0 ? `${q} L/s` : `${q} gpm`} at ${unit === 0 ? `${head} m` : `${head} ft`} head, ${(eff * 100).toFixed(0)}% efficient` };
 };
-export const HYDRO_U = ["Metric (m, L/s)", "US (ft, gpm)"];
 export const gensetFuel: Calc = (v) => {
   const kw = need(p(v, "kw", 100), "Enter generator rating."), load = Math.min(1, p(v, "load", 75) / 100), hrs = p(v, "h", 8), price = p(v, "pr", 4);
   const gph = kw * (0.011 + 0.065 * load) * 1.0;
@@ -72,13 +70,11 @@ export const threePhaseAmps: Calc = (v) => {
   const amps = mode === 0 ? (kw * 1000) / (Math.sqrt(3) * volts * pf) : (kw * 1000) / (Math.sqrt(3) * volts);
   return { amps: `${amps.toFixed(1)} A per phase`, kva: `${mode === 0 ? (kw / pf).toFixed(1) : kw.toFixed(1)} kVA`, breaker: `${Math.ceil((amps * 1.25) / 5) * 5} A minimum breaker (125% continuous)` };
 };
-export const PWR_U = ["kW (real power)", "kVA (apparent)"];
 export const motorFla: Calc = (v) => {
   const hp = need(p(v, "hp", 25), "Enter horsepower."), volts = need(p(v, "v", 460), "Enter voltage."), ph = pick(v.ph, 2), eff = Math.max(0.5, p(v, "e", 91) / 100), pf = Math.max(0.5, p(v, "pf", 0.85));
   const amps = ph === 1 ? (hp * 746) / (Math.sqrt(3) * volts * eff * pf) : (hp * 746) / (volts * eff * pf);
   return { amps: `${amps.toFixed(1)} A full-load current`, wire: `Conductors ≥ ${(amps * 1.25).toFixed(1)} A (125%)`, note: "For sizing per NEC use the tables (430.248/430.250), not the nameplate" };
 };
-export const PHASE = ["Single-phase", "Three-phase"];
 export const capBank: Calc = (v) => {
   const kw = need(p(v, "kw", 400), "Enter load."), pf1 = Math.min(0.999, Math.max(0.3, p(v, "pf1", 0.78))), pf2 = Math.min(0.999, Math.max(pf1, p(v, "pf2", 0.95)));
   const kvar = kw * (Math.tan(Math.acos(pf1)) - Math.tan(Math.acos(pf2)));
@@ -129,7 +125,6 @@ export const boilerHp: Calc = (v) => {
   const bhp = mode === 0 ? lb / 34.5 : btu / 33475;
   return { bhp: `${bhp.toFixed(1)} boiler horsepower`, btu: `${nfmt(bhp * 33475)} BTU/h output`, steam: `${nfmt(bhp * 34.5)} lb/h steam from and at 212 °F` };
 };
-export const BHP_MODE = ["From steam output (lb/h)", "From heat output (BTU/h)"];
 export const airLeak: Calc = (v) => {
   const d = need(p(v, "d", 0.125), "Enter leak diameter."), psi = need(p(v, "psi", 100), "Enter pressure."), n = p(v, "n", 10), hrs = p(v, "h", 6000), kwPerCfm = p(v, "k", 0.2), price = p(v, "pr", 0.12);
   const cfm = 26 * (d / 0.125) ** 2 * ((psi + 14.7) / 114.7);
