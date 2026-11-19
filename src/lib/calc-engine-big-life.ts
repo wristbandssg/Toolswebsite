@@ -22,10 +22,6 @@ import { type TrvCalculator as Calc, InputError, num, pick, nfmt, sig } from "./
 const show = (x: number, s = 4) => (Number.isFinite(x) ? nfmt(sig(x, s), 6).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "") : "—");
 const usd = (x: number, dp = 2) => `$${x.toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
 const LB = 0.45359237;
-
-// ------------------------------------------------------------------ DRI
-export const DRI_SEX = ["Male", "Female"];
-export const DRI_STAGE = ["Not pregnant or breastfeeding", "Pregnant", "Breastfeeding"];
 type Row = { prot: number; fib: number; water: number; ca: number; fe: number; d: number; c: number; a: number; b12: number; fol: number; mg: number; zn: number; k: number };
 function driRow(age: number, male: boolean, stage: number): Row {
   if (age < 14) throw new InputError("This calculator covers ages 14 and up.");
@@ -53,10 +49,6 @@ export const dri: Calc = (v) => {
     potassium: `${nfmt(r.k)} mg`, sodium: "Less than 2,300 mg (chronic disease risk reduction)",
   };
 };
-
-// ------------------------------------------------------------------ net carbs
-export const NC_SA = ["Erythritol or allulose (subtract all)", "Other sugar alcohols — maltitol, xylitol, sorbitol (subtract half)", "Mixed / unknown (subtract half)"];
-export const NC_REGION = ["US label (total carbs include fibre)", "UK/EU/Australia label (carbs already exclude fibre)"];
 export const netCarbs: Calc = (v) => {
   const total = num(v.carbs, 25), fib = Math.max(0, num(v.fiber, 8)), sa = Math.max(0, num(v.sa, 0)), t = pick(v.saType, 3), region = pick(v.region, 2), sv = num(v.servings, 1);
   if (total < 0 || !(sv > 0)) throw new InputError("Enter the total carbs and servings.");
@@ -80,7 +72,6 @@ export const GL_FOODS: [string, number, number][] = [
   ["Carrots, boiled (80 g)", 39, 4], ["Milk, full fat (250 mL)", 39, 12], ["Yogurt, plain (200 g)", 41, 9], ["Honey (1 tbsp, 21 g)", 61, 17], ["Table sugar (1 tbsp, 12 g)", 65, 12],
   ["Popcorn (20 g)", 65, 11], ["Dark chocolate (50 g)", 40, 16], ["Glucose (reference, 50 g)", 100, 50],
 ];
-export const GL_FOOD_LABELS = GL_FOODS.map((f) => f[0]);
 export const glycemicLoad: Calc = (v) => {
   const i = pick(v.food, GL_FOODS.length), f = GL_FOODS[i];
   const gi = i === 0 ? num(v.gi, 55) : f[1], carbs = num(v.carbs, 0) > 0 ? num(v.carbs, 0) : f[2], sv = num(v.servings, 1);
@@ -95,9 +86,6 @@ export const glycemicLoad: Calc = (v) => {
     day: "A whole day's GL under about 100 is considered low.",
   };
 };
-
-// ------------------------------------------------------------------ unit price
-export const UP_UNITS = ["oz", "lb", "g", "kg", "fl oz", "mL", "L", "gallon", "count / each", "sheets / rolls"];
 const UP_BASE: [number, number][] = [[0, 1], [0, 16], [0, 1 / 28.3495], [0, 35.274], [1, 1], [1, 1 / 29.5735], [1, 33.814], [1, 128], [2, 1], [2, 1]];
 const UP_GROUP = ["oz", "fl oz", "item"];
 export const unitPrice: Calc = (v) => {
@@ -119,9 +107,6 @@ export const unitPrice: Calc = (v) => {
     unit: `Prices compared per ${UP_GROUP[g]}`,
   };
 };
-
-// ------------------------------------------------------------------ face shape
-export const FS_UNITS = ["inches", "cm"];
 const FS_TIPS: Record<string, [string, string]> = {
   Oval: ["Most frame shapes suit you — try wide rectangular or geometric frames.", "Almost any cut works; avoid heavy fringes that hide the balance."],
   Round: ["Angular, rectangular or square frames add definition.", "Height on top, long layers and side parts lengthen the face."],
@@ -151,10 +136,6 @@ export const faceShape: Calc = (v) => {
     note: "Measurements can't see jaw angles, so round vs square and oval vs oblong are best checked in a mirror too.",
   };
 };
-
-// ------------------------------------------------------------------ weighted blanket
-export const WB_UNITS = ["lb", "kg"];
-export const WB_WHO = ["Adult", "Child or teen"];
 export const WB_BED = ["Throw / single sleeper (48×72 in)", "Twin (60×80 in)", "Full/Queen top of bed (60×80 in)", "Queen/King shared (80×87 in)"];
 const WB_SIZES = [5, 7, 10, 12, 15, 17, 20, 22, 25, 30];
 export const weightedBlanket: Calc = (v) => {
@@ -169,9 +150,6 @@ export const weightedBlanket: Calc = (v) => {
     note: "Choose lighter if you're new to weighted blankets or sleep hot. You should be able to move it off easily.",
   };
 };
-
-// ------------------------------------------------------------------ quilt backing & binding
-export const QB_FABRIC = ["42–44 in quilting cotton (40 in usable)", "60 in fabric (58 in usable)", "108 in wide backing (106 in usable)"];
 const QB_W = [40, 58, 106];
 const yd = (inch: number) => `${show(Math.ceil((inch / 36) * 8) / 8, 4)} yd (${show(inch * 0.0254, 3)} m)`;
 export const quiltBacking: Calc = (v) => {
@@ -194,10 +172,6 @@ export const quiltBacking: Calc = (v) => {
     length: `${show(per)} in of binding (perimeter + 12 in)`,
   };
 };
-
-// ------------------------------------------------------------------ circle skirt
-export const CS_TYPES = ["Full circle", "Half circle", "Quarter circle"];
-export const CS_UNITS = ["inches", "cm"];
 export const circleSkirt: Calc = (v) => {
   const t = pick(v.type, 3), cm = pick(v.unit, 2) === 1, waist = num(v.waist, 28), len = num(v.length, 22), hem = Math.max(0, num(v.hem, 1)), fw = num(v.fabricWidth, cm ? 150 : 58);
   if (!(waist > 0) || !(len > 0)) throw new InputError("Enter waist and skirt length.");

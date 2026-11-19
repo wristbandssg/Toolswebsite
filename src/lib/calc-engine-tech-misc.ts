@@ -35,7 +35,6 @@ import { type TrvCalculator as Calc, InputError, num, pos, pick, txt, r1, r2, nf
 
 // ------------------------------------------------------------------ CS2 trade-up
 const wear = (f: number) => (f < 0.07 ? "Factory New" : f < 0.15 ? "Minimal Wear" : f < 0.38 ? "Field-Tested" : f < 0.45 ? "Well-Worn" : "Battle-Scarred");
-export const TU_METHODS = ["Normalised (CS2, 2024 onwards)", "Classic average (CS:GO)"];
 export const cs2TradeUp: Calc = (v) => {
   const items = txt(v, "floats").split(/[,;\s]+/).filter(Boolean).map((s) => {
     const [f, rng] = s.split("@");
@@ -69,7 +68,6 @@ function dice(s: string) {
   }
   return { avg, dice: dv };
 }
-export const ADV = ["Normal", "Advantage", "Disadvantage"];
 export const dndDpr: Calc = (v) => {
   const bonus = num(v.bonus, 7), ac = num(v.ac, 15), n = Math.max(1, Math.round(pos(v.attacks, 2))), critMin = Math.min(20, Math.max(2, Math.round(num(v.crit, 20))));
   const dmg = dice(txt(v, "damage")), rider = dice(txt(v, "rider"));
@@ -85,9 +83,6 @@ export const dndDpr: Calc = (v) => {
   const hp = pos(v.hp, 0);
   return { dpr: r2(dpr), hit: r1(p * 100), crit: r1(c * 100), perHit: r2(dmg.avg), perAttack: r2(per), rider: rider.avg ? `${r2(riderExp)} expected from the once-per-turn extra (${r1(anyHit * 100)}% chance to land)` : "—", rounds: hp > 0 && dpr > 0 ? `${r1(hp / dpr)} rounds to defeat ${hp} HP` : "—" };
 };
-
-// ------------------------------------------------------------------ Minecraft nether portal
-export const NP_MODES = ["Overworld → Nether", "Nether → Overworld"];
 export const netherPortal: Calc = (v) => {
   const toNether = pick(v.mode, 2) === 0, x = num(v.x, 800), y = num(v.y, 64), z = num(v.z, -1200);
   const f = toNether ? 1 / 8 : 8;
@@ -99,7 +94,6 @@ export const netherPortal: Calc = (v) => {
 // ------------------------------------------------------------------ Minecraft XP
 export const xpTotal = (L: number) => (L <= 16 ? L * L + 6 * L : L <= 31 ? 2.5 * L * L - 40.5 * L + 360 : 4.5 * L * L - 162.5 * L + 2220);
 const xpNext = (L: number) => (L <= 15 ? 2 * L + 7 : L <= 30 ? 5 * L - 38 : 9 * L - 158);
-export const XP_MODES = ["XP between two levels", "Total XP points → level"];
 export const minecraftXp: Calc = (v) => {
   if (pick(v.mode, 2) === 1) {
     const pts = pos(v.points, 1395);
@@ -139,7 +133,6 @@ export const love: Calc = (v) => {
 
 // ------------------------------------------------------------------ Scrabble score
 const LETTERS: Record<string, number> = { A: 1, E: 1, I: 1, O: 1, U: 1, L: 1, N: 1, S: 1, T: 1, R: 1, D: 2, G: 2, B: 3, C: 3, M: 3, P: 3, F: 4, H: 4, V: 4, W: 4, Y: 4, K: 5, J: 8, X: 8, Q: 10, Z: 10 };
-export const WORD_MULT = ["None", "Double word (DW)", "Triple word (TW)", "Two double words (×4)", "Two triple words (×9)"];
 export const scrabble: Calc = (v) => {
   const raw = txt(v, "word").trim();
   if (!/^[A-Za-z?]+$/.test(raw)) throw new InputError("Type a single word using letters only (use ? for a blank tile).");
@@ -160,9 +153,6 @@ export const scrabble: Calc = (v) => {
   const bingo = raw.length >= 7 && pick(v.bingo, 2) === 1 ? 50 : 0;
   return { score: sum * wm + bingo, base, letters: parts.join(" + "), wm: `×${wm}`, bingo: bingo ? "+50 bingo (all 7 tiles)" : "—", length: raw.length };
 };
-
-// ------------------------------------------------------------------ typing speed
-export const TYPE_MODES = ["I typed a number of characters", "I typed a number of words"];
 export const typingSpeed: Calc = (v) => {
   const mins = pos(v.seconds, 60) / 60;
   if (mins <= 0) throw new InputError("Enter the test time in seconds.");
@@ -178,7 +168,6 @@ export const typingSpeed: Calc = (v) => {
 // ------------------------------------------------------------------ time card (weekly)
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 export const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-export const ROUNDING = ["No rounding", "Nearest 5 minutes", "Nearest 6 minutes (0.1 h)", "Nearest 15 minutes (quarter hour)"];
 function dayMinutes(raw: string, roundTo: number, label: string) {
   const s = raw.trim().toLowerCase();
   if (!s || s === "off" || s === "-") return 0;
@@ -213,9 +202,6 @@ export const timeCard: Calc = (v) => {
   const pay = (reg / 60) * rate + (ot / 60) * rate * mult + (dt / 60) * rate * 2;
   return { total: hm(total), decimal: r2(total / 60), regular: r2(reg / 60), ot: r2(ot / 60), dt: r2(dt / 60), pay: r2(pay), days: DAYS.map((d, i) => `${d}: ${mins[i] ? `${hm(mins[i])} (${r2(mins[i] / 60)} h)` : "—"}`).join("\n") };
 };
-
-// ------------------------------------------------------------------ financial calculator (TVM)
-export const TVM_SOLVE = ["FV — future value", "PV — present value", "PMT — payment", "N — number of periods", "I/Y — interest rate per year"];
 function tvmZero(n: number, iy: number, pv: number, pmt: number, fv: number, py: number, bgn: number) {
   const i = iy / 100 / py;
   if (Math.abs(i) < 1e-12) return pv + pmt * n + fv;

@@ -26,26 +26,20 @@ const solveFor = (v: Vals, keys: string[], names: string[], units: string[], fns
   a[keys[k]] = x;
   return { x, k, a, solved: `${names[k]} = ${fmt(x, 8)}${units[k] ? " " + units[k] : ""}` };
 };
-
-// ---------- Energy, force, momentum ----------
-export const KE_SOLVE = ["Kinetic energy KE", "Mass m", "Velocity v"];
 export const kineticEnergy: SciCalculator = (v) => {
   const r = solveFor(v, ["ke", "m", "v"], ["KE", "m", "v"], ["J", "kg", "m/s"], [(a) => 0.5 * a.m * a.v ** 2, (a) => (2 * a.ke) / a.v ** 2, (a) => Math.sqrt((2 * a.ke) / a.m)]);
   return { result: s(r.x), solved: r.solved, kj: s(r.a.ke / 1000), momentum: s(r.a.m * r.a.v), kmh: s(r.a.v * 3.6) };
 };
-export const ACC_MODE = ["Change in velocity: (v − u)/t", "Force and mass: F/m", "Distance and time from rest: 2s/t²"];
 export const acceleration: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   const a = fin(m === 0 ? (num(v.v1, 25) - num(v.u, 0)) / num(v.t, 5) : m === 1 ? num(v.F, 1000) / num(v.m, 1000) : (2 * num(v.d, 100)) / num(v.t, 5) ** 2);
   return { a: s(a), g: s(a / G0, 8), kmhs: s(a * 3.6, 8), zeroTo100: a > 0 ? s(100 / 3.6 / a, 6) : "—" };
 };
-export const VEL_MODE = ["Distance ÷ time", "u + a·t", "√(u² + 2as)", "Average (u + v)/2"];
 export const velocity: SciCalculator = (v) => {
   const m = pick(v.mode, 4), u = num(v.u, 0), a = num(v.a, 2), t = num(v.t, 10), d = num(v.d, 100), v2 = num(v.v2, 20);
   const x = fin(m === 0 ? d / t : m === 1 ? u + a * t : m === 2 ? Math.sqrt(u * u + 2 * a * d) : (u + v2) / 2);
   return { v: s(x), kmh: s(x * 3.6), mph: s(x / 0.44704), fts: s(x / 0.3048), mach: s(x / 343, 6) };
 };
-export const F_SOLVE = ["Force F", "Mass m", "Acceleration a"];
 export const newtonSecond: SciCalculator = (v) => {
   const r = solveFor(v, ["F", "m", "a"], ["F", "m", "a"], ["N", "kg", "m/s²"], [(a) => a.m * a.a, (a) => a.F / a.a, (a) => a.F / a.m]);
   return { result: s(r.x), solved: r.solved, kn: s(r.a.F / 1000), lbf: s(r.a.F / 4.4482216152605), weight: s(r.a.m * G0), kgf: s(r.a.F / G0) };
@@ -56,7 +50,6 @@ export const netForce: SciCalculator = (v) => {
   const R = Math.hypot(fx, fy), m = pos(v.m, 0);
   return { net: s(R), angle: s(((Math.atan2(fy, fx) / RAD) + 360) % 360, 8), fx: s(fx), fy: s(fy), accel: m ? s(R / m) : "enter mass", equilibrant: `${fmt(R, 8)} N at ${fmt(((Math.atan2(fy, fx) / RAD) + 540) % 360, 6)}°` };
 };
-export const P_SOLVE = ["Momentum p", "Mass m", "Velocity v"];
 export const momentum: SciCalculator = (v) => {
   const r = solveFor(v, ["p", "m", "v"], ["p", "m", "v"], ["kg·m/s", "kg", "m/s"], [(a) => a.m * a.v, (a) => a.p / a.v, (a) => a.p / a.m]);
   const v2 = num(v.v2, 0);
@@ -98,15 +91,11 @@ export const suvat: SciCalculator = (v) => {
   if (have.size < 5) throw new InputError("These values don't give a unique real solution (for example a = 0 when solving for t, or a negative value under a square root).");
   return { s: s(x.s), u: s(x.u), v: s(x.v), a: s(x.a), t: s(x.t), note: known.includes("s") && (known.includes("a") && !known.includes("t")) ? "Square-root step: the positive root is shown." : "Constant acceleration." };
 };
-
-// ---------- Gravity, falling, projectiles ----------
-export const PE_SOLVE = ["Potential energy PE", "Mass m", "Height h"];
 export const gpe: SciCalculator = (v) => {
   const g = pos(v.g, G0) || G0;
   const r = solveFor(v, ["pe", "m", "h"], ["PE", "m", "h"], ["J", "kg", "m"], [(a) => a.m * g * a.h, (a) => a.pe / (g * a.h), (a) => a.pe / (a.m * g)]);
   return { result: s(r.x), solved: r.solved, kj: s(r.a.pe / 1000), impactSpeed: r.a.h >= 0 ? s(Math.sqrt(2 * g * r.a.h)) : "—" };
 };
-export const FALL_MODE = ["Height known", "Time known"];
 export const freeFall: SciCalculator = (v) => {
   const g = pos(v.g, G0) || G0, u = num(v.u, 0);
   let h: number, t: number;
@@ -125,8 +114,6 @@ export const mass: SciCalculator = (v) => {
   const x = fin(m === 0 ? num(v.rho, 1000) * num(v.vol, 0.002) : m === 1 ? num(v.F, 50) / num(v.a, 2) : m === 2 ? num(v.W, 686) / (pos(v.g, G0) || G0) : (2 * num(v.ke, 200)) / num(v.vel, 10) ** 2);
   return { kg: s(x), g: s(x * 1000), lb: s(x / 0.45359237), weight: s(x * G0) };
 };
-export const MASS_MODE = ["Density × volume", "Force ÷ acceleration", "Weight ÷ g", "From kinetic energy and speed"];
-export const GF_SOLVE = ["Force F", "Mass m₁", "Distance r"];
 export const gravForce: SciCalculator = (v) => {
   const r = solveFor(v, ["F", "m1", "r"], ["F", "m₁", "r"], ["N", "kg", "m"], [(a) => (G_CONST * a.m1 * num(v.m2)) / a.r ** 2, (a) => (a.F * a.r ** 2) / (G_CONST * num(v.m2)), (a) => Math.sqrt((G_CONST * a.m1 * num(v.m2)) / a.F)]);
   return { result: s(r.x), solved: r.solved, g1: s((G_CONST * r.a.m1) / r.a.r ** 2), g2: s((G_CONST * num(v.m2)) / r.a.r ** 2), escape: s(Math.sqrt((2 * G_CONST * r.a.m1) / r.a.r)) };
@@ -158,7 +145,6 @@ export const impulse: SciCalculator = (v) => {
   const J = m === 0 ? num(v.F, 500) * t : num(v.m, 0.5) * (num(v.v2, 20) - num(v.v1, 0));
   return { J: s(J), avgForce: t ? s(J / t) : "—", dv: num(v.m, 0.5) ? s(J / num(v.m, 0.5)) : "—" };
 };
-export const POW_MODE = ["Work ÷ time", "Force × velocity", "Energy per time (kWh, hours)"];
 export const powerPhysics: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   const P = fin(m === 0 ? num(v.W, 1000) / num(v.t, 10) : m === 1 ? num(v.F, 500) * num(v.vel, 2) : (num(v.kwh, 1) * 3.6e6) / (num(v.h, 1) * 3600));
@@ -171,7 +157,6 @@ export const friction: SciCalculator = (v) => {
   return { N: s(N), Fs: s(Fs), Fk: s(Fk), along: s(along), slides: along > Fs ? 0 : 1, accel: along > Fs ? s(g * (Math.sin(th) - mk * Math.cos(th))) : 0, mu: ff && nn ? s(ff / nn, 8) : "enter friction & normal force", critical: s(Math.atan(ms) / RAD, 6) };
 };
 export const SLIDES = ["Slides (gravity beats static friction)", "Stays put"];
-export const IMPACT_MODE = ["Stopping distance", "Stopping time"];
 export const impactForce: SciCalculator = (v) => {
   const m = pos(v.m, 80), h = pos(v.h, 0), vel = pos(v.v, 0) || Math.sqrt(2 * G0 * h);
   if (!vel) throw new InputError("Enter an impact speed or a drop height.");
@@ -179,7 +164,6 @@ export const impactForce: SciCalculator = (v) => {
   const F = fin(mode === 0 ? (m * vel * vel) / (2 * d) : (m * vel) / t);
   return { F: s(F), kn: s(F / 1000), gs: s(F / (m * G0), 6), energy: s(0.5 * m * vel * vel), speed: s(vel) };
 };
-export const CENT_MODE = ["Speed known", "RPM known"];
 export const centripetal: SciCalculator = (v) => {
   const m = pos(v.m, 1), r = pos(v.r, 2);
   if (!r) throw new InputError("Radius must be positive.");
@@ -212,13 +196,11 @@ export const mechanicalEnergy: SciCalculator = (v) => {
   const pe = m * G0 * h, ke = 0.5 * m * vel * vel, E1 = pe + ke, E2 = m * G0 * h2 + 0.5 * m * v2 * v2;
   return { total: s(E1), pe: s(pe), ke: s(ke), final: s(E2), loss: s(E1 - E2), efficiency: E1 ? s((100 * E2) / E1, 6) : "—", ideal: s(Math.sqrt(Math.max(0, (2 * (E1 - m * G0 * h2)) / m))) };
 };
-export const ANGACC_MODE = ["Change in ω ÷ time", "Torque ÷ moment of inertia", "Tangential acceleration ÷ radius"];
 export const angularAcceleration: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   const al = fin(m === 0 ? (num(v.w2, 20) - num(v.w1, 0)) / num(v.t, 4) : m === 1 ? num(v.tau, 10) / num(v.I, 2) : num(v.at, 3) / num(v.r, 0.5));
   return { alpha: s(al), degs2: s(al / RAD), rpms: s((al * 60) / (2 * Math.PI)) };
 };
-export const COLL_TYPE = ["Elastic (e = 1)", "Perfectly inelastic (stick together)", "Custom coefficient of restitution e"];
 export const collision: SciCalculator = (v) => {
   const m1 = pos(v.m1, 2), u1 = num(v.u1, 3), m2 = pos(v.m2, 1), u2 = num(v.u2, -1), t = pick(v.type, 3);
   const e = t === 0 ? 1 : t === 1 ? 0 : Math.min(1, pos(v.e, 0.5));
@@ -227,7 +209,6 @@ export const collision: SciCalculator = (v) => {
   const k1 = 0.5 * m1 * u1 * u1 + 0.5 * m2 * u2 * u2, k2r = 0.5 * m1 * v1 * v1 + 0.5 * m2 * v2 * v2, k2 = Math.abs(k1 - k2r) < 1e-9 * Math.max(1, k1) ? k1 : k2r;
   return { v1: s(v1), v2: s(v2), momentum: s(P), keBefore: s(k1), keAfter: s(k2), loss: s(k1 - k2), lossPct: k1 ? s((100 * (k1 - k2)) / k1, 6) : 0 };
 };
-export const ANGMOM_MODE = ["Rigid body: L = Iω", "Point mass: L = m·v·r"];
 export const angularMomentum: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 0) {
     const I = pos(v.I, 2), w = num(v.w, 10);
@@ -236,12 +217,10 @@ export const angularMomentum: SciCalculator = (v) => {
   const m = pos(v.m, 1), vel = num(v.v, 5), r = pos(v.r, 2);
   return { L: s(m * vel * r), ke: s(0.5 * m * vel * vel), note: `equivalent I = mr² = ${fmt(m * r * r, 8)} kg·m²` };
 };
-export const EPE_SOLVE = ["Elastic energy U", "Spring constant k", "Displacement x"];
 export const elasticPE: SciCalculator = (v) => {
   const r = solveFor(v, ["U", "k", "x"], ["U", "k", "x"], ["J", "N/m", "m"], [(a) => 0.5 * a.k * a.x ** 2, (a) => (2 * a.U) / a.x ** 2, (a) => Math.sqrt((2 * a.U) / a.k)]);
   return { result: s(r.x), solved: r.solved, force: s(r.a.k * r.a.x), U: s(r.a.U) };
 };
-export const EQ_MODE = ["Beam on two end supports (point loads)", "Equilibrant of up to 3 forces"];
 export const equilibrium: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 0) {
     const L = pos(v.L, 6), P = listOf(v, "loads", 1), x = listOf(v, "pos", 1), w = pos(v.w, 0);

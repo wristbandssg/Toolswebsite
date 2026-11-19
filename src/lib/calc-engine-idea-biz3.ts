@@ -18,7 +18,6 @@ export const ftlRate: Calc = (v) => {
   const line = miles * rpm, total = line + miles * fsc + acc;
   return { total: `${$(total, 0)} total linehaul + fuel`, allIn: `${$(total / miles)} all-in per loaded mile`, real: `${$(total / (miles * (1 + dead)))} per mile including ${(dead * 100).toFixed(0)}% deadhead` };
 };
-export const CONT = ["20 ft standard (33.2 m³, 28 t)", "40 ft standard (67.7 m³, 26.7 t)", "40 ft high cube (76.3 m³, 26.5 t)", "45 ft high cube (86 m³, 27.6 t)"];
 const CV: [number, number][] = [[33.2, 28000], [67.7, 26700], [76.3, 26500], [86, 27600]];
 export const containerCbm: Calc = (v) => {
   const c = pick(v.c, 4), l = p(v, "l", 60), w = p(v, "w", 40), h = p(v, "h", 40), qty = p(v, "q", 300), kg = p(v, "kg", 18), util = p(v, "u", 85) / 100;
@@ -26,7 +25,6 @@ export const containerCbm: Calc = (v) => {
   const fit = Math.floor(Math.min((vol * util) / cbm, max / Math.max(kg, 0.01)));
   return { fit: `${nfmt(fit)} cartons fit`, need: `${Math.ceil(qty / Math.max(fit, 1))} container(s) for ${nfmt(qty)} cartons`, cbm: `${(cbm * qty).toFixed(2)} m³ and ${nfmt(qty * kg)} kg in total (${cbm.toFixed(3)} m³ each)`, limit: fit === Math.floor(max / Math.max(kg, 0.01)) ? "Weight-limited" : "Volume-limited" };
 };
-export const TRAILER = ["53 ft dry van", "48 ft flatbed", "26 ft box truck", "40 ft container"];
 const TR: [number, number, number][] = [[53, 102, 45000], [48, 102, 48000], [26, 96, 10000], [39.5, 92, 58000]];
 export const palletsPerTruck: Calc = (v) => {
   const t = pick(v.t, 4), pl = p(v, "pl", 48), pw = p(v, "pw", 40), stack = pick(v.s, 2) ? 2 : 1, wt = p(v, "wt", 1200);
@@ -198,7 +196,6 @@ export const stampCount: Calc = (v) => {
   const post = flat ? 1.63 + (oz - 1) * add : first + (oz - 1) * add;
   return { stamps: `${Math.ceil(post / first)} Forever stamps (${$(post)} postage)`, exact: `Or 1 Forever + ${oz - 1} additional-ounce stamp(s)`, note: flat ? "Large envelope (flat) rates apply" : oz > 3.5 ? "Over 3.5 oz letters become flats" : "Standard letter" };
 };
-export const ENVELOPE = ["Letter", "Large envelope (flat)"];
 export const certifiedMail: Calc = (v) => {
   const post = p(v, "p", 0.78), cert = p(v, "c", 5.3), rr = pick(v.rr, 3), rrFees = [0, 4.4, 2.82];
   const total = post + cert + rrFees[rr];

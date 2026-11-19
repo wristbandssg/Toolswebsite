@@ -33,9 +33,6 @@ export const tssCalc: Calc = (v) => {
   const IF = np / ftp, tss = (min / 60) * IF * IF * 100;
   return { tss: r0(tss), if: r2(IF), kj: r0(((avg > 0 ? avg : np) * min * 60) / 1000), recovery: tss < 150 ? "Low — recovered by the next day" : tss < 300 ? "Medium — some fatigue the next day, gone by day 2" : tss < 450 ? "High — some residual fatigue even after 2 days" : "Very high — fatigue lasting several days", perHour: r0(IF * IF * 100) };
 };
-
-// ---------------------------------------------------------------- MAS
-export const MAS_TESTS = ["5-minute test (distance)", "6-minute run (distance)", "1,500 m time trial", "2 km time trial", "Custom distance and time"];
 export const masCalc: Calc = (v) => {
   const t = pick(v.test, 5);
   const fixedT = [300, 360, 0, 0, 0][t], fixedD = [0, 0, 1500, 2000, 0][t];
@@ -45,9 +42,6 @@ export const masCalc: Calc = (v) => {
   const ms = dist / sec, kmh = ms * 3.6;
   return { kmh: r2(kmh), ms: r2(ms), pace: `${mmss(1000 / ms)} per km · ${mmss(1609.344 / ms)} per mile`, vo2: r1(kmh * 3.5), i100: r0(ms * 15), i110: r0(ms * 1.1 * 15), i120: r0(ms * 1.2 * 15), t400: mmss(400 / ms) };
 };
-
-// ------------------------------------------------------------ rowing split
-export const ROW_MODES = ["Split → finish time", "Finish time → split", "Watts → split"];
 export const rowingSplit: Calc = (v) => {
   const mode = pick(v.mode, 3), dist = pos(v.distance, 2000);
   if (!(dist > 0)) throw new InputError("Enter the distance in metres.");

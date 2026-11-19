@@ -31,9 +31,6 @@ export function phi(z: number): number {
   const p = d * t * (0.31938153 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
   return z > 0 ? 1 - p : p;
 }
-
-// ------------------------------------------------------------------ LDL cholesterol
-export const CH_UNITS = ["mg/dL", "mmol/L"];
 export const ldlCholesterol: Calc = (v) => {
   const u = pick(v.unit, 2), tc0 = num(v.tc, 200), hdl0 = num(v.hdl, 50), tg0 = num(v.tg, 150);
   if (!(tc0 > 0) || !(hdl0 > 0) || !(tg0 > 0)) throw new InputError("Enter total cholesterol, HDL and triglycerides (above zero).");
@@ -108,9 +105,6 @@ export const absoluteNeutrophil: Calc = (v) => {
     working: `${show(wbc)} × 1,000 × (${show(segs)}% + ${show(bands)}%) = ${nfmt(Math.round(anc))}`,
   };
 };
-
-// ------------------------------------------------------------------ cardiac output
-export const CO_MODES = ["Heart rate × stroke volume", "Fick (oxygen)"];
 export const cardiacOutput: Calc = (v) => {
   const mode = pick(v.mode, 2), h = num(v.height, 175), w = num(v.weight, 75);
   if (!(h > 0) || !(w > 0)) throw new InputError("Enter height (cm) and weight (kg) for body surface area.");
@@ -134,9 +128,6 @@ export const cardiacOutput: Calc = (v) => {
     working,
   };
 };
-
-// ------------------------------------------------------------------ HOMA-IR
-export const HOMA_UNITS = ["mg/dL", "mmol/L"];
 export const homaIr: Calc = (v) => {
   const u = pick(v.unit, 2), g = num(v.glucose, 95), ins = num(v.insulin, 10);
   if (!(g > 0) || !(ins > 0)) throw new InputError("Enter fasting glucose and fasting insulin (above zero).");
@@ -149,10 +140,6 @@ export const homaIr: Calc = (v) => {
     working: `${show(gm * 18.016, 4)} mg/dL × ${show(ins)} µU/mL ÷ 405 = ${show(ir, 3)}`,
   };
 };
-
-// ------------------------------------------------------------------ QTc
-export const QT_SEX = ["Male", "Female"];
-export const QT_RATE = ["Heart rate (bpm)", "RR interval (ms)"];
 export const qtc: Calc = (v) => {
   const qt = num(v.qt, 400), rateMode = pick(v.rateMode, 2), x = num(v.rate, 75), fem = pick(v.sex, 2) === 1;
   if (!(qt > 0) || !(x > 0)) throw new InputError("Enter the QT interval and the heart rate (or RR interval).");
@@ -186,10 +173,6 @@ export const contactLensVertex: Calc = (v) => {
     note: cyl ? "Soft toric lenses come in limited cylinder steps (often −0.75, −1.25, −1.75, −2.25)." : "Spherical lenses usually come in 0.25 D steps (0.50 D above ±6).",
   };
 };
-
-// ------------------------------------------------------------------ baby growth percentile
-export const GR_SEX = ["Boy", "Girl"];
-export const GR_UNITS = ["Metric (kg, cm)", "US (lb, in)"];
 function lmsAt(t: LMS[], m: number): LMS {
   const i = Math.min(59, Math.floor(m)), f = m - i, a = t[i], b = t[i + 1];
   return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
@@ -234,10 +217,6 @@ export const correctedAge: Calc = (v) => {
     note: "Use corrected age for growth and milestones until about 2 years (24 months chronological age).",
   };
 };
-
-// ------------------------------------------------------------------ breast milk intake
-export const BM_UNITS = ["lb", "kg"];
-export const BM_TYPES = ["Breast milk (expressed)", "Infant formula"];
 export const breastMilk: Calc = (v) => {
   const w = num(v.weight, 10), lb = pick(v.unit, 2) === 0 ? w : w / LB, feeds = num(v.feeds, 8), type = pick(v.type, 2);
   if (!(lb > 0) || !(feeds > 0)) throw new InputError("Enter the baby's weight and feeds per day.");

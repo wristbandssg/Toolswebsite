@@ -18,7 +18,6 @@ const s = (x: number, n = 10) => sig(x, n);
 export const TAILS = ["Two-tailed (≠)", "Left-tailed (<)", "Right-tailed (>)"];
 const pT = (t: number, df: number, tail: number) => (tail === 0 ? 2 * (1 - tCdf(Math.abs(t), df)) : tail === 1 ? tCdf(t, df) : 1 - tCdf(t, df));
 const pZ = (z: number, tail: number) => (tail === 0 ? 2 * (1 - normCdf(Math.abs(z))) : tail === 1 ? normCdf(z) : 1 - normCdf(z));
-export const DECISION = ["Reject H₀ — statistically significant", "Fail to reject H₀ — not significant"];
 const dec = (p: number, a: number) => (p < a ? 0 : 1);
 const alphaOf = (v: Vals) => {
   const a = pos(v.alpha, 0.05);
@@ -40,9 +39,6 @@ const ranks = (a: number[]) => {
   }
   return { r, ties };
 };
-
-// ---------- p-values & critical values ----------
-export const STAT_KINDS = ["z", "t", "χ² (chi-square)", "F"];
 export const pValue: SciCalculator = (v) => {
   const k = pick(v.kind, 4), x = num(v.stat, 2.1), df1 = Math.max(1, pos(v.df1, 20)), df2 = Math.max(1, pos(v.df2, 10)), tail = pick(v.tail, 3), a = alphaOf(v);
   let p: number;
@@ -79,7 +75,6 @@ export const degreesFreedom: SciCalculator = (v) => {
   else [df, f] = [n1 - r, `between = k − 1 = ${r - 1}; within = N − k`];
   return { df: s(df, 8), formula: f };
 };
-export const DF_TESTS = ["One-sample / paired t", "Two-sample t (pooled)", "Two-sample t (Welch)", "Chi-square independence (r × c)", "Chi-square goodness of fit (k categories)", "One-way ANOVA (N total, k groups)"];
 
 // ---------- t tests ----------
 const tOut = (t: number, df: number, tail: number, a: number, diff: number, se: number) => {
@@ -110,7 +105,6 @@ export const tTest: SciCalculator = (v) => {
   }
   return { ...tOut((m1 - m2) / se, df, tail, a, m1 - m2, se), means: `x̄₁ = ${fmt(m1, 8)}, x̄₂ = ${fmt(m2, 8)}` };
 };
-export const VARIANCE = ["Unequal variances (Welch)", "Equal variances (pooled)"];
 export const twoSampleT: SciCalculator = (v) => {
   const a = alphaOf(v), tail = pick(v.tail, 3), welch = pick(v.var, 2) === 0;
   const m1 = num(v.m1, 75), s1 = pos(v.s1, 8), n1 = Math.max(2, pos(v.n1, 30)), m2 = num(v.m2, 70), s2 = pos(v.s2, 10), n2 = Math.max(2, pos(v.n2, 35));
@@ -131,9 +125,6 @@ export const pairedT: SciCalculator = (v) => {
   const d = y.map((yy, i) => yy - x[i]), md = mean(d), se = Math.sqrt(variance(d)) / Math.sqrt(d.length);
   return { ...tOut(md / se, d.length - 1, tail, a, md, se), meanDiff: s(md, 10) };
 };
-
-// ---------- z tests ----------
-export const Z_TYPES = ["One-sample mean (σ known)", "One proportion", "Two means (σ known)"];
 export const zTest: SciCalculator = (v) => {
   const t = pick(v.type, 3), a = alphaOf(v), tail = pick(v.tail, 3);
   let z: number;
@@ -162,9 +153,6 @@ export const abSignificance: SciCalculator = (v) => {
   const m1 = (ca + 1) / (va + 2), m2 = (cb + 1) / (vb + 2), v1 = (m1 * (1 - m1)) / (va + 3), v2 = (m2 * (1 - m2)) / (vb + 3);
   return { p: s(p, 8), decision: dec(p, a), lift: p1 ? s((100 * (p2 - p1)) / p1, 8) : "—", rates: `A ${fmt(100 * p1, 6)}%, B ${fmt(100 * p2, 6)}%`, confidence: s(100 * (1 - p), 6), bayes: s(100 * normCdf((m2 - m1) / Math.sqrt(v1 + v2)), 6) };
 };
-
-// ---------- Chi-square, ANOVA ----------
-export const CHI_MODE = ["Test of independence (contingency table)", "Goodness of fit (observed vs expected)"];
 export const chiSquare: SciCalculator = (v) => {
   const m = pick(v.mode, 2), a = alphaOf(v);
   if (m === 1) {
@@ -297,7 +285,6 @@ export const shapiroWilk: SciCalculator = (v) => {
   }
   return { W: s(W, 8), p: s(p, 8), normal: p < a0 ? 1 : 0, n };
 };
-export const NORMALITY = ["Consistent with normality (p ≥ α)", "Not normal (p < α)"];
 export const grubbs: SciCalculator = (v) => {
   const x = listOf(v, "data", 3), n = x.length, a = alphaOf(v), m = mean(x), sd = Math.sqrt(variance(x));
   const far = x.reduce((p, q) => (Math.abs(q - m) > Math.abs(p - m) ? q : p));
@@ -307,7 +294,6 @@ export const grubbs: SciCalculator = (v) => {
   const srt = sorted(x), q = far === srt[0] ? (srt[1] - srt[0]) / (srt[n - 1] - srt[0]) : (srt[n - 1] - srt[n - 2]) / (srt[n - 1] - srt[0]);
   return { G: s(G, 8), critical: s(Gc, 8), suspect: s(far, 10), outlier: G > Gc ? 0 : 1, dixonQ: s(q, 6) };
 };
-export const OUTLIER = ["Outlier at this α", "Not an outlier"];
 export const sobel: SciCalculator = (v) => {
   const a = num(v.a, 0.5), sa = pos(v.sa, 0.1), b = num(v.b, 0.4), sb = pos(v.sb, 0.12);
   const z = (a * b) / Math.sqrt(b * b * sa * sa + a * a * sb * sb);
@@ -353,7 +339,6 @@ export const abSampleSize: SciCalculator = (v) => {
   const n = ((za * Math.sqrt(2 * pb * (1 - pb)) + zb * Math.sqrt(base * (1 - base) + p2 * (1 - p2))) ** 2) / (p2 - base) ** 2;
   return { perVariant: Math.ceil(n), total: Math.ceil(n) * 2, target: s(100 * p2, 6), days: daily ? Math.ceil((2 * Math.ceil(n)) / daily) : "enter daily traffic" };
 };
-export const MDE_TYPE = ["Relative (% of baseline)", "Absolute (percentage points)"];
 export const powerAnalysis: SciCalculator = (v) => {
   const mode = pick(v.mode, 2), d = pos(v.d, 0.5), a = alphaOf(v), tail = pick(v.tail, 2);
   const za = normInv(1 - (tail === 0 ? a / 2 : a));
@@ -374,8 +359,6 @@ export const powerAnalysis: SciCalculator = (v) => {
   const pw = 1 - tCdf(tc - ncp, df) + (tail === 0 ? tCdf(-tc - ncp, df) : 0);
   return { result: s(100 * pw, 6), total: 2 * n, note: "Power (%) of a two-sample t-test with n per group." };
 };
-export const POWER_MODE = ["Find sample size (per group)", "Find power"];
-export const TAIL2 = ["Two-tailed", "One-tailed"];
 export const effectSize: SciCalculator = (v) => {
   const m1 = num(v.m1, 75), s1 = pos(v.s1, 10), n1 = Math.max(2, pos(v.n1, 30)), m2 = num(v.m2, 70), s2 = pos(v.s2, 12), n2 = Math.max(2, pos(v.n2, 30));
   const sp = Math.sqrt(((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2) / (n1 + n2 - 2));
@@ -383,7 +366,6 @@ export const effectSize: SciCalculator = (v) => {
   const ad = Math.abs(d);
   return { d: s(d, 8), hedgesG: s(g, 8), glass: s((m1 - m2) / s2, 8), size: ad < 0.2 ? 0 : ad < 0.5 ? 1 : ad < 0.8 ? 2 : 3, r: s(d / Math.sqrt(d * d + 4), 8) };
 };
-export const EFFECT = ["Negligible (< 0.2)", "Small (0.2)", "Medium (0.5)", "Large (0.8+)"];
 export const reliabilitySampleSize: SciCalculator = (v) => {
   const R = pos(v.R, 95) / 100, C = pos(v.C, 90) / 100, f = Math.round(pos(v.f, 0));
   if (!(R > 0 && R < 1 && C > 0 && C < 1)) throw new InputError("Reliability and confidence must be between 0 and 100%.");

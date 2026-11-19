@@ -36,9 +36,6 @@ export const derivative: SciCalculator = (v) => {
   }
   return { derivative: sd(e, "x", n), valueAt: s(val, 12), fAt: s(f(x0), 12), note: n === 1 ? "Rules used as needed: power, product, quotient and chain rules." : `${n === 2 ? "Second" : "Third"} derivative.` };
 };
-
-// ---------- Limit ----------
-export const LIMIT_DIR = ["Two-sided", "From the left (x → a⁻)", "From the right (x → a⁺)", "x → +∞", "x → −∞"];
 function limitOf(f: (x: number) => number, a: number, dir: number): { value: number | null; left?: number; right?: number; note: string } {
   const safe = (x: number) => {
     try {
@@ -176,9 +173,6 @@ export const tripleIntegral: SciCalculator = (v) => {
   const vol = gl((x) => gl((y) => z1(x, y) - z0(x, y), y0(x), y1(x)), x0, x1);
   return { value: s(val, 10), volume: s(vol, 10) };
 };
-
-// ---------- Laplace transforms ----------
-export const LAPLACE_FORMS = ["1 (unit step)", "tⁿ", "e^(at)", "sin(bt)", "cos(bt)", "e^(at)·sin(bt)", "e^(at)·cos(bt)", "tⁿ·e^(at)", "sinh(bt)", "cosh(bt)", "Custom f(t) (numeric)"];
 const fact = (n: number) => {
   let r = 1;
   for (let i = 2; i <= n; i++) r *= i;
@@ -208,7 +202,6 @@ export const laplace: SciCalculator = (v) => {
   const [F, fn, roc] = table[form];
   return { transform: `F(s) = ${F}`, valueAt: s(fn(sv), 12), roc };
 };
-export const INV_LAPLACE_FORMS = ["1/s", "1/sⁿ", "1/(s − a)", "1/(s − a)ⁿ", "b/(s² + b²)", "s/(s² + b²)", "1/((s − a)(s − b))", "1/(s(s + a))", "Custom F(s) (numeric, Stehfest)"];
 export const inverseLaplace: SciCalculator = (v) => {
   const form = pick(v.form, 9), a = num(v.a, 2), b = num(v.b, 3), n = Math.max(1, Math.round(pos(v.n, 2))), t = pos(v.t, 1);
   const A = fmt(a), B = fmt(b);
@@ -278,8 +271,6 @@ export const taylor: SciCalculator = (v) => {
   const actual = compileFn(e)(x);
   return { series: terms.join(" + ").replace(/\+ -/g, "− ") || "0", approx: s(approx, 12), actual: s(actual, 12), error: s(Math.abs(actual - approx), 6), kind: a === 0 ? 0 : 1 };
 };
-export const SERIES_KIND = ["Maclaurin series (centred at 0)", "Taylor series"];
-export const VERDICT = ["Converges", "Diverges", "Inconclusive — check with another test"];
 export const seriesConvergence: SciCalculator = (v) => {
   const f = compileFn(txt(v, "an"), ["n"]), start = Math.round(num(v.start, 1));
   const term = (n: number) => f(n);
@@ -401,9 +392,6 @@ export const logDiff: SciCalculator = (v) => {
   const d = compileFn(derivText(e, "x"));
   return { derivative: sd(e), valueAt: s(d(x0), 12), method: `ln y = ln(${e}) → (1/y)·y′ = d/dx[ln(${e})] → y′ = y · d/dx[ln y]`, fAt: s(f(x0), 12) };
 };
-
-// ---------- ODE: Euler, RK4 ----------
-export const EULER_METHOD = ["Euler", "Improved Euler (Heun)"];
 const odeStep = (f: (x: number, y: number) => number, x: number, y: number, h: number, m: number) => {
   if (m === 0) return y + h * f(x, y);
   if (m === 1) {
@@ -471,7 +459,6 @@ export const mvt: SciCalculator = (v) => {
   const cs = roots((x) => numDeriv(f, x) - slope, a, b, 4000).filter((c) => c > a && c < b);
   return { c: cs.length ? cs.map((c) => fmt(c, 10)).join(", ") : "none found (is f differentiable on (a, b)?)", slope: s(slope, 12), rolle: Math.abs(f(a) - f(b)) < 1e-12 ? 0 : 1 };
 };
-export const ROLLE = ["f(a) = f(b): this is Rolle's theorem (f′(c) = 0)", "f(a) ≠ f(b): Mean Value Theorem"];
 
 // ---------- Extrema ----------
 export const extrema: SciCalculator = (v) => {
@@ -571,7 +558,6 @@ export const convolution: SciCalculator = (v) => {
   a.forEach((x, i) => b.forEach((y, j) => (out[i + j] += x * y)));
   return { result: out.map((x) => fmt(x, 10)).join(", "), length: out.length, sum: s(out.reduce((p, q) => p + q, 0), 12) };
 };
-export const CONV_MODE = ["Linear convolution", "Circular convolution"];
 
 // ---------- Wronskian ----------
 export const wronskian: SciCalculator = (v) => {
@@ -642,9 +628,6 @@ export const areaBetween: SciCalculator = (v) => {
   const area = integrate((x) => Math.abs(f(x) - g(x)), a, b);
   return { area: s(area, 12), bounds: `${fmt(a, 10)} to ${fmt(b, 10)}`, intersections: hits.filter((x) => x >= a - 1e-9 && x <= b + 1e-9).map((x) => fmt(x, 8)).join(", ") || "none inside", signed: s(integrate((x) => f(x) - g(x), a, b), 12) };
 };
-
-// ---------- Related rates (common templates) ----------
-export const RR_TYPES = ["Circle: radius growing → area rate (dA/dt = 2πr·dr/dt)", "Sphere: radius growing → volume rate (dV/dt = 4πr²·dr/dt)", "Ladder sliding: bottom moving out → top's speed", "Cone filling: inflow → water level rate", "Two objects at right angles: distance between them rate"];
 export const relatedRates: SciCalculator = (v) => {
   const t = pick(v.type, 5), p = pos(v.p, 5), q = pos(v.q, 2), r = pos(v.r, 10);
   switch (t) {

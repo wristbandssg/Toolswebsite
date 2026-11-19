@@ -13,9 +13,6 @@
  */
 
 import { type TrvCalculator as Calc, InputError, num, pick } from "./trv-core";
-
-export const BMR_UNITS = ["US (lb, ft & in)", "Metric (kg, cm)"];
-export const BMR_SEX = ["Male", "Female"];
 export const BMR_FORMULAS = ["Mifflin-St Jeor (recommended)", "Revised Harris-Benedict", "Katch-McArdle (needs body fat %)"];
 
 const LEVELS: [string, number][] = [

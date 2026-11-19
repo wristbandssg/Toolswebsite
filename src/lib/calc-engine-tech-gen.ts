@@ -21,9 +21,6 @@ import { compileFn, evalExpr, gammaFn } from "./sci-math-core";
 const pl = (n: number, w: string) => `${n} ${w}${n === 1 ? "" : "s"}`;
 const tidy = (s: string) => s.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-").replace(/,/g, "");
 const show = (x: number) => (Number.isInteger(x) && Math.abs(x) < 1e15 ? nfmt(x) : Math.abs(x) >= 1e15 || (Math.abs(x) < 1e-6 && x !== 0) ? x.toExponential(10).replace(/\.?0+e/, "e") : nfmt(Number(x.toPrecision(12)), 10).replace(/\.?0+$/, ""));
-
-// ------------------------------------------------------------------ basic calculator
-export const BASIC_MODES = ["Calculate an expression", "Add up a list (adding-machine tape)"];
 export const basic: Calc = (v) => {
   if (pick(v.mode, 2) === 1) {
     const items = txt(v, "expr").split(/[\n;]+|,(?=\s)|\s+(?=[+-]?\d)/).map((s) => s.trim().replace(/,/g, "")).filter(Boolean);
@@ -127,7 +124,6 @@ function parseFrac(s: string): [number, number] {
 const red = ([n, d]: [number, number]): [number, number] => { const g = igcd(n, d); return [n / g, d / g]; };
 const fracText = ([n, d]: [number, number]) => (d === 1 ? `${n}` : `${n}/${d}`);
 const mixed = ([n, d]: [number, number]) => { if (d === 1 || Math.abs(n) < d) return fracText([n, d]); const w = Math.trunc(n / d), r = Math.abs(n % d); return r ? `${w} ${r}/${d}` : `${w}`; };
-export const FRAC_OPS = ["Add (+)", "Subtract (−)", "Multiply (×)", "Divide (÷)", "Simplify the first fraction only"];
 export const fraction: Calc = (v) => {
   const a = parseFrac(txt(v, "a")), op = pick(v.op, 5);
   let r: [number, number], steps: string;
@@ -161,7 +157,6 @@ function parseDur(s: string): number {
   return neg ? -sec : sec;
 }
 const hms = (sec: number) => { const neg = sec < 0; sec = Math.round(Math.abs(sec)); const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60; return `${neg ? "−" : ""}${h}:${String(m).padStart(2, "0")}${s ? `:${String(s).padStart(2, "0")}` : ""}`; };
-export const TIME_MODES = ["Add & subtract durations", "Time between two clock times", "Clock time + duration (end time)", "Clock time − duration (start time)"];
 export const timeCalc: Calc = (v) => {
   const m = pick(v.mode, 4);
   let sec: number, clock = "—";
@@ -183,9 +178,6 @@ export const timeCalc: Calc = (v) => {
   }
   return { total: hms(sec), decimal: sig(sec / 3600, 6), minutes: sig(sec / 60, 8), seconds: Math.round(sec), clock, days: Math.abs(sec) >= 86400 ? `${Math.floor(Math.abs(sec) / 86400)} d ${hms(Math.abs(sec) % 86400)}` : "—" };
 };
-
-// ------------------------------------------------------------------ date
-export const DATE_MODES = ["Days between two dates", "Add to a date", "Subtract from a date", "Business days between two dates"];
 export const DATE_UNITS = ["Days", "Weeks", "Months", "Years"];
 function addMonths(day: number, months: number) {
   const { y, m, d } = dayParts(day);

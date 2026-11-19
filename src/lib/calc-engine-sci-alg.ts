@@ -71,7 +71,6 @@ export const quadratic: SciCalculator = (v) => {
   const steps = `x = (−(${fmt(b)}) ± √(${fmt(b)}² − 4·${fmt(a)}·${fmt(c)})) / (2·${fmt(a)})\n  = (${fmt(-b)} ± √${fmt(D)}) / ${fmt(2 * a)}`;
   return { x1, x2, discriminant: sig(D, 10), nature, vertex: `(${fmt(h, 8)}, ${fmt(k, 8)})`, steps };
 };
-export const ROOT_NATURE = ["Two distinct real roots (D > 0)", "One repeated real root (D = 0)", "Two complex roots (D < 0)"];
 
 // ---------- Linear interpolation ----------
 export const interpolation: SciCalculator = (v) => {
@@ -81,7 +80,6 @@ export const interpolation: SciCalculator = (v) => {
   const inside = (x - x1) * (x - x2) <= 0;
   return { y: sig(y, 12), slope: sig(m, 10), kind: inside ? 0 : 1, formula: `y = ${fmt(y1)} + (${fmt(x)} − ${fmt(x1)}) × (${fmt(y2)} − ${fmt(y1)}) / (${fmt(x2)} − ${fmt(x1)})` };
 };
-export const INTERP_KIND = ["Interpolation (x is between the two points)", "Extrapolation (x is outside the two points)"];
 
 // ---------- Equation solver (choose the variable) ----------
 export const VARIABLES = ["x", "y", "t", "n", "a", "z"];
@@ -118,7 +116,6 @@ const divP = (n: number[], d: number[]) => {
   return { q: trimP(q), r: trimP(r.slice(0, Math.max(1, D.length - 1))) };
 };
 const evalP = (p: number[], x: number) => p.reduceRight((acc, c) => acc * x + c, 0);
-export const POLY_OPS = ["Add P + Q", "Subtract P − Q", "Multiply P × Q", "Divide P ÷ Q"];
 export const polynomial: SciCalculator = (v) => {
   const P = polyCoeffs(txt(v, "p")), Q = polyCoeffs(txt(v, "q")), op = pick(v.op, 4), x0 = num(v.x0, 2);
   let res: number[], rem: number[] | null = null;
@@ -143,10 +140,6 @@ export const inverseFunction: SciCalculator = (v) => {
   const one = rs.length === 1;
   return { x: sig(rs[0], 12), all: rs.slice(0, 10).map((r) => fmt(r, 10)).join(", "), oneToOne: one ? 0 : 1, check: `f(${fmt(rs[0], 8)}) = ${fmt(f(rs[0]), 8)}` };
 };
-export const ONE_TO_ONE = ["One x for this y (inverse value is unique)", "Several x values — f isn't one-to-one here; restrict the domain"];
-
-// ---------- Complex numbers ----------
-export const CX_OPS = ["Add z₁ + z₂", "Subtract z₁ − z₂", "Multiply z₁ × z₂", "Divide z₁ ÷ z₂", "z₁ to a power n", "Square roots of z₁"];
 export const complexCalc: SciCalculator = (v) => {
   const a = num(v.a, 3), b = num(v.b, 4), c = num(v.c, 1), d = num(v.d, -2), op = pick(v.op, 6), n = num(v.n, 2);
   let re = 0, im = 0, extra = "";
@@ -187,9 +180,6 @@ export const sigma: SciCalculator = (v) => {
   }
   return { sum: sig(s, 12), terms: b - a + 1, mean: sig(s / (b - a + 1), 10), expansion: first.join(" + ") + (b - a + 1 > 6 ? " + …" : "") };
 };
-
-// ---------- Exponential growth / decay ----------
-export const GROWTH_MODES = ["Growth (rate % per period)", "Decay (rate % per period)", "Continuous growth (e^rt)", "Continuous decay (e^−rt)"];
 export const exponentialGrowth: SciCalculator = (v) => {
   const p0 = num(v.p0, 1000), r = pos(v.rate, 5) / 100, t = num(v.t, 10), m = pick(v.mode, 4);
   const factor = m === 0 ? (1 + r) ** t : m === 1 ? (1 - r) ** t : m === 2 ? Math.exp(r * t) : Math.exp(-r * t);
@@ -197,7 +187,6 @@ export const exponentialGrowth: SciCalculator = (v) => {
   const double = m === 0 ? Math.log(2) / Math.log(1 + r) : m === 2 ? Math.log(2) / r : m === 1 ? Math.log(0.5) / Math.log(1 - r) : Math.log(2) / r;
   return { final: sig(p0 * factor, 12), change: sig(p0 * factor - p0, 10), factor: sig(factor, 10), doubling: r > 0 ? sig(double, 8) : 0, doublingLabel: growth ? 0 : 1, formula: m < 2 ? `P = ${fmt(p0)} × (1 ${growth ? "+" : "−"} ${fmt(r)})^${fmt(t)}` : `P = ${fmt(p0)} × e^(${growth ? "" : "−"}${fmt(r)}·${fmt(t)})` };
 };
-export const DOUBLING_LABEL = ["Doubling time", "Half-life"];
 
 // ---------- Synthetic division ----------
 export const syntheticDivision: SciCalculator = (v) => {
@@ -209,7 +198,6 @@ export const syntheticDivision: SciCalculator = (v) => {
   const row2 = ["  "].concat(co.slice(1).map((_, i) => fmt(out[i] * c)));
   return { quotient: polyText(q), remainder: sig(rem, 12), isFactor: Math.abs(rem) < 1e-9 ? 0 : 1, table: `${fmt(c)} | ${co.map((x) => fmt(x)).join("   ")}\n    ${row2.join("   ")}\n    ${out.map((x) => fmt(x)).join("   ")}   | ${fmt(rem)}` };
 };
-export const FACTOR_LABEL = ["Yes — (x − c) is a factor (remainder 0)", "No — remainder isn't 0"];
 
 // ---------- Completing the square & vertex form ----------
 const vtx = (a: number, b: number, c: number) => {
@@ -231,7 +219,6 @@ export const vertexForm: SciCalculator = (v) => {
   const p = 1 / (4 * a);
   return { vertex: `(${fmt(h, 10)}, ${fmt(k, 10)})`, vertexForm: vForm(a, h, k), axis: `x = ${fmt(h, 10)}`, opens: a > 0 ? 0 : 1, focus: `(${fmt(h, 8)}, ${fmt(k + p, 8)})`, yIntercept: sig(c, 10) };
 };
-export const OPENS = ["Upward (minimum at the vertex)", "Downward (maximum at the vertex)"];
 
 // ---------- Linear equation ax + b = cx + d ----------
 export const linearEquation: SciCalculator = (v) => {
@@ -279,9 +266,6 @@ export const expand: SciCalculator = (v) => {
   const c = polyCoeffs(txt(v, "expr"));
   return { expanded: polyText(c), degree: c.length - 1, terms: c.filter((x) => Math.abs(x) > 1e-12).length, coefficients: c.slice().reverse().map((x) => fmt(x)).join(", ") };
 };
-
-// ---------- Word problems (common templates) ----------
-export const WORD_TYPES = ["Distance = rate × time (find time)", "Two workers together (find combined time)", "Mixture (find final concentration %)", "Consecutive integers (given their sum)", "Percent of a number (a% of b)", "Simple interest (I = Prt)"];
 export const wordProblem: SciCalculator = (v) => {
   const t = pick(v.type, 6), a = num(v.a, 60), b = num(v.b, 150), c = num(v.c, 3);
   switch (t) {
@@ -430,10 +414,6 @@ export const binomialExpansion: SciCalculator = (v) => {
   const kk = Math.min(k, n);
   return { expansion: polyText(poly), pascal: row.join("  "), kthTerm: `T${kk + 1} = C(${n},${kk}) (${fmt(a)}x)^${n - kk} (${fmt(b)})^${kk} = ${fmt(coeffs[kk])}x^${n - kk}`, sumCoeffs: sig((a + b) ** n, 12) };
 };
-
-// ---------- Linear programming (2 variables) ----------
-export const LP_GOAL = ["Maximize", "Minimize"];
-export const LP_SIGN = ["≤", "≥"];
 export const linearProgramming: SciCalculator = (v) => {
   const goal = pick(v.goal, 2), cx = num(v.cx, 3), cy = num(v.cy, 5);
   const cons: [number, number, number, number][] = [1, 2, 3].map((i) => [num(v[`a${i}`]), num(v[`b${i}`]), num(v[`r${i}`]), pick(v[`s${i}`], 2)]).filter(([a, b]) => a !== 0 || b !== 0) as [number, number, number, number][];
@@ -452,9 +432,6 @@ export const linearProgramming: SciCalculator = (v) => {
   const best = feasible.reduce((p, q) => ((goal === 0 ? z(q) > z(p) : z(q) < z(p)) ? q : p));
   return { optimum: sig(z(best), 12), x: sig(best[0], 10), y: sig(best[1], 10), corners: feasible.map((p) => `(${fmt(p[0], 6)}, ${fmt(p[1], 6)}) → z = ${fmt(z(p), 8)}`).join("\n"), note: "If the region is unbounded in the optimising direction, there may be no finite optimum — check the corners." };
 };
-
-// ---------- Direct / inverse variation ----------
-export const VARIATION = ["Direct (y = kx)", "Inverse (y = k / x)", "Joint (y = kxz)", "Square (y = kx²)"];
 export const directVariation: SciCalculator = (v) => {
   const t = pick(v.type, 4), x1 = num(v.x1, 4), y1 = num(v.y1, 12), x2 = num(v.x2, 10), z1 = num(v.z1, 1) || 1, z2 = num(v.z2, 1) || 1;
   const k = t === 0 ? y1 / x1 : t === 1 ? y1 * x1 : t === 2 ? y1 / (x1 * z1) : y1 / (x1 * x1);
@@ -603,7 +580,6 @@ export const systemOfEquations: SciCalculator = (v) => {
   void b;
   return { solution: x.map((xi, i) => `${names[i]} = ${fmt(Math.abs(xi) < 1e-12 ? 0 : xi, 10)}`).join(",  "), determinant: sig(det, 10), type: 0 };
 };
-export const SYSTEM_TYPE = ["One unique solution", "Infinitely many solutions", "No solution"];
 
 // ---------- Cross multiplication / proportions ----------
 export const crossMultiply: SciCalculator = (v) => {
@@ -631,7 +607,6 @@ export const composition: SciCalculator = (v) => {
 
 // ---------- Linear & absolute-value inequalities ----------
 export const INEQ = ["<", "≤", ">", "≥"];
-export const INEQ_TYPES = ["ax + b ? c", "|ax + b| ? c"];
 export const inequality: SciCalculator = (v) => {
   const t = pick(v.type, 2), a = num(v.a, 2), b = num(v.b, -3), c = num(v.c, 7), s = pick(v.sign, 4);
   if (a === 0) throw new InputError("a can't be 0.");

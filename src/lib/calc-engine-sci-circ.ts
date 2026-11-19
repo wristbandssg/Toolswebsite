@@ -37,7 +37,6 @@ const sizeArea = (i: number) => (i < AWG.length ? awgArea(AWG[i]) : MM2[i - AWG.
 export const METALS = ["Copper", "Aluminium"];
 const RHO = [0.017241, 0.028264], ALPHA = [0.00393, 0.00403];
 const rPerM = (metal: number, area: number, T: number) => (RHO[metal] * (1 + ALPHA[metal] * (T - 20))) / area;
-export const SYSTEM = ["DC / single-phase (2 wires)", "Three-phase (line-to-line)"];
 export const voltageDrop: SciCalculator = (v) => {
   const metal = pick(v.metal, 2), area = sizeArea(pick(v.size, WIRE_SIZES.length)), L = pos(v.len, 30), I = pos(v.I, 20), V = pos(v.V, 230), T = num(v.T, 75), three = pick(v.sys, 2) === 1;
   const r = rPerM(metal, area, T), vd = (three ? Math.sqrt(3) : 2) * L * I * r;
@@ -49,8 +48,6 @@ export const wireResistance: SciCalculator = (v) => {
   const L = pos(v.len, 100);
   return { R: s(r * L, 8), L: s(L, 8), rkm: s(r * 1000, 8), area: s(area, 6) };
 };
-export const WR_MODE = ["Resistance from length", "Length from resistance"];
-export const SIZE_INPUT = ["Pick a standard size", "Enter area in mm²"];
 const AMP_CU75: Record<string, number> = { "14": 20, "12": 25, "10": 35, "8": 50, "6": 65, "4": 85, "3": 100, "2": 115, "1": 130, "1/0": 150, "2/0": 175, "3/0": 200, "4/0": 230 };
 export const wiringSize: SciCalculator = (v) => {
   const I = pos(v.I, 30), L = pos(v.len, 40), V = pos(v.V, 240), maxPct = pos(v.max, 3), metal = pick(v.metal, 2), three = pick(v.sys, 2) === 1;
@@ -61,9 +58,6 @@ export const wiringSize: SciCalculator = (v) => {
   }
   throw new InputError("Even 4/0 AWG isn't enough — use parallel conductors or a higher voltage.");
 };
-
-// ---------- basic laws ----------
-export const OHM_KNOWN = ["Voltage & current", "Voltage & resistance", "Current & resistance", "Power & voltage", "Power & current", "Power & resistance"];
 export const ohmsLaw: SciCalculator = (v) => {
   const k = pick(v.known, 6), V0 = num(v.V, 12), I0 = num(v.I, 2), R0 = pos(v.R, 6), P0 = pos(v.P, 24);
   let V: number, I: number, R: number;
@@ -71,7 +65,6 @@ export const ohmsLaw: SciCalculator = (v) => {
   else if (k === 3) { V = V0; I = P0 / V; R = V / I; } else if (k === 4) { I = I0; V = P0 / I; R = V / I; } else { R = R0; I = Math.sqrt(P0 / R); V = I * R; }
   return { V: s(fin(V)), I: s(fin(I)), R: s(fin(R)), P: s(V * I), summary: `${eng(V, "V")}, ${eng(I, "A")}, ${eng(R, "Ω")}, ${eng(V * I, "W")}` };
 };
-export const DIV_MODE = ["Output voltage from R1, R2", "R2 for a target output"];
 export const voltageDivider: SciCalculator = (v) => {
   const Vin = num(v.vin, 12), R1 = pos(v.r1, 10000), RL = pos(v.rl, 0);
   if (pick(v.mode, 2) === 1) {
@@ -102,7 +95,6 @@ export const resistorPower: SciCalculator = (v) => {
   const std = [0.125, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100].find((w) => w >= 2 * P);
   return { P: s(P, 8), mW: s(P * 1000, 8), rating: std ? `${std} W (≥ 2× safety)` : "> 100 W — use a power resistor bank", I: s(k === 0 ? x / r : x, 8) };
 };
-export const RP_KNOWN = ["Voltage across the resistor", "Current through the resistor"];
 const E24 = [1, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2, 2.2, 2.4, 2.7, 3, 3.3, 3.6, 3.9, 4.3, 4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1];
 const nearestE24 = (r: number, up = true) => {
   const dec = 10 ** Math.floor(Math.log10(r)), m = r / dec;
@@ -126,15 +118,11 @@ export const wheatstone: SciCalculator = (v) => {
   const bal = (R3 * R2) / R1, Vout = Vs * (Rx / (R3 + Rx) - R2 / (R1 + R2));
   return { balance: s(bal, 8), vout: s(Vout, 8), mv: s(Vout * 1000, 8), state: Math.abs(Vout) < 1e-12 ? "Balanced" : "Unbalanced" };
 };
-
-// ---------- RC, RL, LC ----------
-export const FILTER_TYPE = ["Low-pass", "High-pass"];
 export const rcFilter: SciCalculator = (v) => {
   const R = pos(v.R, 1000), C = pos(v.C, 0.1) * 1e-6, f = pos(v.f, 1000), hp = pick(v.type, 2) === 1;
   const fc = 1 / (TAU * R * C), x = f / fc, mag = hp ? x / Math.sqrt(1 + x * x) : 1 / Math.sqrt(1 + x * x), ph = hp ? 90 - (Math.atan(x) * 180) / Math.PI : (-Math.atan(x) * 180) / Math.PI;
   return { fc: s(fc, 8), tau: s(R * C, 8), gain: s(20 * Math.log10(mag), 6), phase: s(ph, 6), ratio: s(mag, 6) };
 };
-export const ZMODE = ["Series R-L-C", "Parallel R-L-C"];
 export const reactance: SciCalculator = (v) => {
   const R = pos(v.R, 100), L = pos(v.L, 10) * 1e-3, C = pos(v.C, 10) * 1e-6, f = pos(v.f, 50), w = TAU * f;
   const XL = w * L, XC = C ? 1 / (w * C) : Infinity;
@@ -153,15 +141,12 @@ export const capReactance: SciCalculator = (v) => {
   const C = pos(v.C, 1) * 1e-6, X = 1 / (TAU * f * C);
   return { X: s(fin(X), 8), C: s(C * 1e6, 8), pretty: eng(X, "Ω") };
 };
-export const XC_MODE = ["Reactance from capacitance", "Capacitance for a reactance"];
 export const indReactance: SciCalculator = (v) => {
   const f = pos(v.f, 1000);
   if (pick(v.mode, 2) === 1) { const X = pos(v.X, 62.83); return { X: s(X, 8), L: s((X / (TAU * f)) * 1e3, 8), pretty: eng(X / (TAU * f), "H") }; }
   const L = pos(v.L, 10) * 1e-3, X = TAU * f * L;
   return { X: s(X, 8), L: s(L * 1e3, 8), pretty: eng(X, "Ω") };
 };
-export const XL_MODE = ["Reactance from inductance", "Inductance for a reactance"];
-export const LC_SOLVE = ["Resonant frequency", "Inductance for a frequency", "Capacitance for a frequency"];
 export const lcResonance: SciCalculator = (v) => {
   const k = pick(v.solve, 3), L = pos(v.L, 10) * 1e-6, C = pos(v.C, 100) * 1e-12, f = pos(v.f, 5.03e6);
   let LL = L, CC = C, ff = f;
@@ -175,7 +160,6 @@ export const rlc: SciCalculator = (v) => {
   const w0 = 1 / Math.sqrt(L * C), f0 = w0 / TAU, Q = (1 / R) * Math.sqrt(L / C), zeta = (R / 2) * Math.sqrt(C / L);
   return { f0: s(f0, 8), Q: s(Q, 6), bw: s(f0 / Q, 8), zeta: s(zeta, 6), type: zeta < 1 ? "Underdamped (rings)" : zeta === 1 ? "Critically damped" : "Overdamped", fd: zeta < 1 ? s((w0 * Math.sqrt(1 - zeta * zeta)) / TAU, 8) : "—" };
 };
-export const RC_MODE = ["Charging", "Discharging"];
 export const capCharge: SciCalculator = (v) => {
   const R = pos(v.R, 10000), C = pos(v.C, 100) * 1e-6, Vs = pos(v.Vs, 5), V0 = num(v.V0, 0), tau = R * C, chg = pick(v.mode, 2) === 0, t = pos(v.t, 1), Vt = num(v.Vt, 3.16);
   const Vat = chg ? Vs + (V0 - Vs) * Math.exp(-t / tau) : V0 * Math.exp(-t / tau);
@@ -190,7 +174,6 @@ export const parallelPlate: SciCalculator = (v) => {
   const er = pos(v.er, 1), A = pos(v.A, 100) * 1e-4, d = pos(v.d, 1) * 1e-3, V = num(v.V, 0), C = (8.8541878128e-12 * er * A) / d;
   return { C: s(fin(C) * 1e12, 8), pretty: eng(C, "F"), Q: V ? s(C * V, 8) : "enter voltage", E: V ? s(0.5 * C * V * V, 8) : "—" };
 };
-export const IND_MODE = ["Single-layer air-core coil (Wheeler)", "Core with AL value", "Toroid with known permeability"];
 export const inductance: SciCalculator = (v) => {
   const m = pick(v.mode, 3), N = pos(v.N, 50);
   if (m === 1) { const AL = pos(v.al, 100), L = AL * N * N * 1e-9; return { L: s(L * 1e6, 8), pretty: eng(L, "H"), note: `L = AL·N² (AL in nH/turn²)` }; }
@@ -202,9 +185,6 @@ export const inductance: SciCalculator = (v) => {
   const d = pos(v.d, 20) / 25.4, l = pos(v.l, 30) / 25.4, L = (d * d * N * N) / (18 * d + 40 * l);
   return { L: s(L, 8), pretty: eng(L * 1e-6, "H"), note: "Wheeler: L(µH) = d²N²/(18d + 40l), d and l in inches (accurate to ~1% for l > 0.4d)" };
 };
-
-// ---------- timers, PWM, sensors ----------
-export const TIMER_MODE = ["Astable (oscillator)", "Monostable (one-shot)"];
 export const timer555: SciCalculator = (v) => {
   const C = pos(v.C, 10) * 1e-6;
   if (pick(v.mode, 2) === 1) { const R = pos(v.R, 100000), t = 1.1 * R * C; return { f: "—", high: s(t, 8), low: "—", duty: "—", period: s(t, 8) }; }
@@ -217,7 +197,6 @@ export const dutyCycle: SciCalculator = (v) => {
   const D = ton / period;
   return { duty: s(100 * D, 6), off: s(period - ton, 8), avg: s(D * Vp, 8), rms: s(Math.sqrt(D) * Vp, 8), f: s(1000 / period, 8) };
 };
-export const DUTY_MODE = ["Period known (ms)", "Frequency known (Hz)"];
 export const pt100: SciCalculator = (v) => {
   const R0 = pick(v.type, 2) === 0 ? 100 : 1000, A = 3.9083e-3, B = -5.775e-7, Cc = -4.183e-12;
   const Rt = (T: number) => R0 * (1 + A * T + B * T * T + (T < 0 ? Cc * (T - 100) * T ** 3 : 0));
@@ -230,9 +209,6 @@ export const pt100: SciCalculator = (v) => {
   const T = num(v.T, 100);
   return { T: s(T, 8), F: s((T * 9) / 5 + 32, 8), R: s(Rt(T), 8), alpha: "α = 0.00385 /°C (IEC 60751)" };
 };
-export const PT_TYPE = ["PT100 (100 Ω at 0 °C)", "PT1000 (1,000 Ω at 0 °C)"];
-export const PT_MODE = ["Resistance → temperature", "Temperature → resistance"];
-export const THERM_MODE = ["Beta equation: temperature → resistance", "Beta equation: resistance → temperature", "Steinhart-Hart: resistance → temperature"];
 export const thermistor: SciCalculator = (v) => {
   const m = pick(v.mode, 3), R25 = pos(v.r25, 10000), B = pos(v.beta, 3950), T0 = 298.15;
   if (m === 0) { const T = num(v.T, 50) + 273.15, R = R25 * Math.exp(B * (1 / T - 1 / T0)); return { T: s(T - 273.15, 8), R: s(R, 8), alpha: s((-B / (T * T)) * 100, 6) }; }
@@ -257,7 +233,6 @@ export const motor: SciCalculator = (v) => {
   const I = (P * 1000) / ((three ? Math.sqrt(3) : 1) * V * eff * pf);
   return { I: s(I, 6), kw: s(P, 6), hp: s(P / 0.7457, 6), torque: s((P * 1000) / ((rpm * TAU) / 60), 6), input: s(P / eff, 6), start: s(6.5 * I, 5) };
 };
-export const POWER_UNIT = ["Horsepower (hp)", "Kilowatts (kW)"];
 export const transformer: SciCalculator = (v) => {
   const kva = pos(v.kva, 100), Vp = pos(v.vp, 11000), Vs = pos(v.vs, 415), three = pick(v.sys, 2) === 1, Np = pos(v.np, 1000), mult = pos(v.inrush, 10);
   const k = three ? Math.sqrt(3) : 1, Ip = (kva * 1000) / (k * Vp), Is = (kva * 1000) / (k * Vs);
@@ -274,8 +249,6 @@ export const efli: SciCalculator = (v) => {
   const Zs = Ze + (r12 * L * tf) / 1000, Ia = [5, 10, 20][type] * In, Zmax = (0.95 * U0) / Ia;
   return { Zs: s(Zs, 6), Ipf: s(U0 / Zs, 6), Zmax: s(Zmax, 6), result: Zs <= Zmax ? "PASS — device disconnects in time" : "FAIL — Zs too high for this device", r1r2: s((r12 * L) / 1000, 6) };
 };
-export const MCB_TYPES = ["Type B (5 × In)", "Type C (10 × In)", "Type D (20 × In)"];
-export const ARC_EQUIP = ["Switchgear (LV)", "Panelboard / MCC (LV)", "Cable / open air (LV)", "Switchgear (MV 5 kV)", "Switchgear (MV 15 kV)"];
 const ARC_G = [32, 25, 13, 102, 153], ARC_X = [1.473, 1.641, 2, 0.973, 0.973], ARC_D = [610, 455, 455, 910, 910];
 export const arcFlash: SciCalculator = (v) => {
   const k = pick(v.equip, 5), Ibf = pos(v.ibf, 20), Vk = pos(v.V, 0.48), t = pos(v.t, 0.1), box = pick(v.encl, 2) === 0, grounded = pick(v.gnd, 2) === 0, D = pos(v.D, ARC_D[k]), G = ARC_G[k], x = ARC_X[k];
@@ -287,7 +260,6 @@ export const arcFlash: SciCalculator = (v) => {
   return { cal: s(cal, 5), J: s(E, 5), Ia: s(Ia, 5), boundary: s(DB, 5), ppe: cat };
 };
 export const ENCL = ["In a box / enclosure", "Open air"];
-export const GND = ["Solidly grounded", "Ungrounded / high-resistance grounded"];
 export const rms: SciCalculator = (v) => {
   const w = pick(v.wave, 4), k = pick(v.known, 4), x = pos(v.x, 230);
   if (w === 4) return { peak: "—", pp: "—", rms: s(Math.sqrt(pos(v.psd, 0.04) * pos(v.bw, 1980)), 8), avg: "—", crest: "GRMS = √(PSD × bandwidth)" };
@@ -295,8 +267,6 @@ export const rms: SciCalculator = (v) => {
   const peak = k === 0 ? x : k === 1 ? x / 2 : k === 2 ? x / RMS : x / AVG;
   return { peak: s(peak, 8), pp: s(2 * peak, 8), rms: s(peak * RMS, 8), avg: s(peak * AVG, 8), crest: `crest factor ${fmt(1 / RMS, 5)}, form factor ${fmt(RMS / AVG, 5)}` };
 };
-export const WAVES = ["Sine", "Square", "Triangle", "Sawtooth", "Random vibration (GRMS from flat PSD)"];
-export const RMS_KNOWN = ["Peak", "Peak-to-peak", "RMS", "Average (rectified)"];
 type Cx = [number, number];
 const cadd = (a: Cx, b: Cx): Cx => [a[0] + b[0], a[1] + b[1]];
 const cmul = (a: Cx, b: Cx): Cx => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
@@ -329,7 +299,6 @@ const solveLinear = (A: number[][], b: number[]) => {
   }
   return M.map((r, i) => r[n] / r[i]);
 };
-export const NODAL_MODE = ["Nodal analysis (G·V = I)", "Mesh analysis (R·I = V)"];
 export const nodal: SciCalculator = (v) => {
   const A = matrixOf(txt(v, "matrix")), b = listOf(v, "rhs", 1);
   if (A.length !== A[0].length || b.length !== A.length) throw new InputError("Enter a square matrix and one right-hand value per row.");
@@ -359,7 +328,6 @@ export const comparator: SciCalculator = (v) => {
   else { hi = Vref * (1 + R1 / R2); lo = hi - (Vcc * R1) / R2; }
   return { hi: s(hi, 8), lo: s(lo, 8), hyst: s(hi - lo, 8), center: s((hi + lo) / 2, 8) };
 };
-export const TR_MODE = ["Voltage-divider bias (common emitter)", "Saturated switch (base resistor)"];
 export const transistor: SciCalculator = (v) => {
   const beta = pos(v.beta, 100), Vbe = pos(v.vbe, 0.7);
   if (pick(v.mode, 2) === 1) {
@@ -372,7 +340,6 @@ export const transistor: SciCalculator = (v) => {
   if (Vce < 0.2) { Ic = (Vcc - 0.2) / (Rc + Re); Vce = 0.2; region = "Saturation"; }
   return { Ic: s(Ic * 1000, 6), Vce: s(Vce, 6), region, Ib: s(Ib * 1e6, 6), Rb: s(Vcc - Ic * Rc, 6) };
 };
-export const DIODE_MODE = ["Current from voltage (Shockley)", "Voltage from current", "Series resistor circuit"];
 export const diode: SciCalculator = (v) => {
   const Is = pos(v.is, 1e-12), n = pos(v.n, 1), T = num(v.T, 25) + 273.15, Vt = (1.380649e-23 * T) / 1.602176634e-19, m = pick(v.mode, 3);
   if (m === 0) { const Vd = num(v.vd, 0.6), I = Is * (Math.exp(Vd / (n * Vt)) - 1); return { I: s(I, 8), Vd: s(Vd, 8), P: s(I * Vd, 8), Vt: s(Vt * 1000, 6) }; }
@@ -421,7 +388,6 @@ export const heatTrace: SciCalculator = (v) => {
 export const COLORS = ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Grey", "White"];
 export const MULTS = ["Black ×1", "Brown ×10", "Red ×100", "Orange ×1k", "Yellow ×10k", "Green ×100k", "Blue ×1M", "Violet ×10M", "Gold ×0.1", "Silver ×0.01"];
 const MULT_V = [1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 0.1, 0.01];
-export const TOLS = ["Brown ±1%", "Red ±2%", "Green ±0.5%", "Blue ±0.25%", "Violet ±0.1%", "Grey ±0.05%", "Gold ±5%", "Silver ±10%", "None ±20%"];
 const TOL_V = [1, 2, 0.5, 0.25, 0.1, 0.05, 5, 10, 20];
 export const BANDS = ["4 bands", "5 bands", "6 bands"];
 export const TEMPCO = ["Black 250 ppm/K", "Brown 100 ppm/K", "Red 50 ppm/K", "Orange 15 ppm/K", "Yellow 25 ppm/K", "Blue 10 ppm/K", "Violet 5 ppm/K"];

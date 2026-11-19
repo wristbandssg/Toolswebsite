@@ -12,8 +12,6 @@ import { type TrvCalculator as Calc, InputError, num, pick, money, nfmt } from "
 const $ = (x: number, dp = 2) => money(x, "$", dp);
 const p = (v: Record<string, number>, k: string, d: number) => Math.max(0, num(v[k], d));
 const need = (x: number, msg: string) => { if (!(x > 0)) throw new InputError(msg); return x; };
-
-export const TYPE_EFF = ["0× (immune)", "¼×", "½×", "1× (neutral)", "2× super effective", "4× double super effective"];
 const EFF = [0, 0.25, 0.5, 1, 2, 4];
 export const pokemonDamage: Calc = (v) => {
   const L = need(p(v, "lvl", 50), "Enter level."), P = need(p(v, "pow", 90), "Enter move power."), A = need(p(v, "atk", 120), "Enter attack stat."), D = need(p(v, "def", 100), "Enter defense stat."), stab = pick(v.stab, 2) ? 1.5 : 1, eff = EFF[pick(v.eff, 6)], crit = pick(v.crit, 2) ? 1.5 : 1, hp = p(v, "hp", 150);
@@ -22,7 +20,6 @@ export const pokemonDamage: Calc = (v) => {
   return { range: `${lo}–${hi} damage`, pct: hp ? `${((100 * lo) / hp).toFixed(1)}–${((100 * hi) / hp).toFixed(1)}% of ${hp} HP` : "—", ko: hp ? (lo >= hp ? "Guaranteed one-hit KO" : hi >= hp ? "Possible one-hit KO" : `${Math.ceil(hp / hi)}–${Math.ceil(hp / Math.max(lo, 1))} hits to KO`) : "—" };
 };
 export const YESNO = ["No", "Yes"];
-export const NATURE = ["Neutral", "Boosting (+10%)", "Hindering (−10%)"];
 export const pokemonIV: Calc = (v) => {
   const B = need(p(v, "base", 100), "Enter base stat."), L = need(p(v, "lvl", 50), "Enter level."), S = need(p(v, "stat", 120), "Enter the stat shown."), EV = p(v, "ev", 0), nat = [1, 1.1, 0.9][pick(v.nat, 3)];
   const ivs: number[] = [];
@@ -62,7 +59,6 @@ export const valorantProgress: Calc = (v) => {
   if (tgtPts <= curPts) throw new InputError("Pick a target rank above your current rank.");
   return { games: net > 0 ? `${Math.ceil((tgtPts - curPts) / net)} games` : "Not climbing at this win rate", net: `${net.toFixed(1)} RR per game on average`, need: `${tgtPts - curPts} RR to ${VAL_RANKS[target]} 1` };
 };
-export const TIER3 = ["1", "2", "3"];
 export const lolWinRate: Calc = (v) => {
   const w = p(v, "w", 55), l = p(v, "l", 45), target = Math.min(99.9, p(v, "target", 60)) / 100, g = w + l;
   if (!(g > 0)) throw new InputError("Enter wins and losses.");
@@ -75,12 +71,10 @@ export const vbucks: Calc = (v) => {
   const perVb = price / n;
   return { value: $(vb * perVb), rate: `${$(perVb * 100, 3)} per 100 V-Bucks with the ${nfmt(n)} pack`, best: `Best rate: 13,500 pack at ${$((89.99 / 13500) * 100, 3)} per 100` };
 };
-export const VB_PACK = ["1,000 for $8.99", "2,800 for $22.99", "5,000 for $36.99", "13,500 for $89.99"];
 export const robuxUsd: Calc = (v) => {
   const r = p(v, "robux", 10000), mode = pick(v.mode, 2);
   return mode === 0 ? { value: $(r * 0.0125) + " to buy (≈ $0.0125 each)", devex: $(r * 0.0035) + " if cashed out via DevEx ($0.0035 each)", per: `$1 ≈ ${Math.round(1 / 0.0125)} Robux bought` } : { value: $(r * 0.0035) + " DevEx payout", devex: r < 30000 ? "DevEx needs at least 30,000 earned Robux" : "Meets the 30,000 Robux DevEx minimum", per: `${nfmt(r / 0.0035 / 1000)}k Robux per $1,000` };
 };
-export const RB_MODE = ["Buying value", "DevEx cash-out"];
 export const steamValue: Calc = (v) => {
   const games = p(v, "games", 150), avg = p(v, "avg", 15), disc = p(v, "disc", 60) / 100, played = Math.min(100, p(v, "played", 40)) / 100, hours = p(v, "hours", 1200);
   const full = games * avg, paid = full * (1 - disc);
@@ -139,7 +133,6 @@ export const minecraftPortal: Calc = (v) => {
   const mode = pick(v.mode, 2), x = num(v.x, 800), y = num(v.y, 64), z = num(v.z, -240);
   return mode === 0 ? { pos: `Nether: X ${Math.floor(x / 8)}, Y ${Math.round(y)}, Z ${Math.floor(z / 8)}`, note: "Divide X and Z by 8; Y stays the same", tip: "Build the Nether portal within 16 blocks of this to link" } : { pos: `Overworld: X ${Math.round(x * 8)}, Y ${Math.round(y)}, Z ${Math.round(z * 8)}`, note: "Multiply X and Z by 8", tip: "Overworld portals link within 128 blocks" };
 };
-export const MC_MODE = ["Overworld → Nether", "Nether → Overworld"];
 const mcPts = (L: number) => (L <= 16 ? L * L + 6 * L : L <= 31 ? 2.5 * L * L - 40.5 * L + 360 : 4.5 * L * L - 162.5 * L + 2220);
 export const minecraftXp: Calc = (v) => {
   const from = Math.round(p(v, "from", 0)), to = Math.round(p(v, "to", 30));
@@ -157,7 +150,6 @@ export const pogoCp: Calc = (v) => {
   const cp = Math.max(10, Math.floor(((A + ia) * Math.sqrt(D + id) * Math.sqrt(S + is) * cpm * cpm) / 10));
   return { cp: `${nfmt(cp)} CP`, iv: `${(((ia + id + is) / 45) * 100).toFixed(0)}% IV`, hp: `${Math.max(10, Math.floor((S + is) * cpm))} HP` };
 };
-export const SHINY = ["Wild full odds (1/4096)", "Masuda method (1/683)", "Shiny Charm (1/1365)", "Masuda + Charm (1/512)", "Pokémon GO wild (1/500)", "Pokémon GO Community Day (1/25)"];
 const SHR = [4096, 683, 1365, 512, 500, 25];
 export const shinyOdds: Calc = (v) => {
   const o = SHR[pick(v.method, SHR.length)], n = Math.round(p(v, "n", 1000)), pr = 1 - Math.pow(1 - 1 / o, n);

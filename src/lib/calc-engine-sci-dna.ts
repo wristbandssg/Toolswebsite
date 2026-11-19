@@ -64,8 +64,6 @@ export const meltingTemp: SciCalculator = (v) => {
   const basic = sq.length < 14 ? 2 * at + 4 * gc : 64.9 + (41 * (gc - 16.4)) / sq.length;
   return { tm: s(r.Tm, 5), basic: s(basic, 5), gc: s((100 * gc) / sq.length, 5), length: sq.length, dG: s(r.dG37, 6), anneal: s(r.Tm - 5, 4) };
 };
-export const OLIGO_TYPE = ["DNA", "RNA"];
-export const OLIGO_END = ["5′-OH (synthetic oligo)", "5′-triphosphate (transcript)"];
 export const oligoMW: SciCalculator = (v) => {
   const sq = dnaSeq(v), rna = pick(v.type, 2) === 1, n = (c: string) => count(sq, c);
   const end = pick(v.end, 2) === 0 ? -61.96 : 159.0;
@@ -92,16 +90,12 @@ export const gibson: SciCalculator = (v) => {
   const total = vp * (1 + ratio * lens.length);
   return { table: rows.join("\n"), vector: s(vp * 1000, 8), total: s(total * 1000, 8), check: total < 0.02 || total > 0.5 ? "Outside the 0.02–0.5 pmol range recommended for NEBuilder/Gibson" : "Within 0.02–0.5 pmol total" };
 };
-
-// ---------- concentrations & copies ----------
-export const NA_TYPES = ["Double-stranded DNA", "Single-stranded DNA", "Single-stranded RNA"];
 const mwNA = (type: number, len: number) => (type === 0 ? len * 617.96 + 36.04 : type === 1 ? len * 308.97 + 18.02 : len * 320.5 + 159);
 export const copyNumber: SciCalculator = (v) => {
   const t = pick(v.type, 3), L = pos(v.len, 5000), ng = pos(v.ng, 10), want = pos(v.want, 0), mw = mwNA(t, L);
   const copies = (ng * 1e-9 * NA) / mw;
   return { copies: s(copies, 8), mw: s(mw, 8), pmol: s((ng / mw) * 1000, 8), ngFor: want ? s((want * mw * 1e9) / NA, 8) : "enter copies wanted" };
 };
-export const DNA_FACTOR = ["dsDNA (50 ng/µL per A260)", "ssDNA (33)", "RNA (40)", "Oligonucleotide (20)", "Custom factor"];
 const FAC = [50, 33, 40, 20];
 export const dnaConcentration: SciCalculator = (v) => {
   const k = pick(v.kind, 5), f = k < 4 ? FAC[k] : pos(v.factor, 50), a260 = pos(v.a260, 0.5), dil = pos(v.dil, 1) || 1, a280 = pos(v.a280, 0), a230 = pos(v.a230, 0), L = pos(v.len, 0);
@@ -135,7 +129,6 @@ export const peptideMW: SciCalculator = (v) => {
   const sol = Math.abs(ch) >= 2 ? "Charged — try water or buffer first" : gravy > 0.5 ? "Hydrophobic — dissolve in a little DMSO/ACN, then dilute" : ch > 0 ? "Basic — try dilute acetic acid if water fails" : ch < 0 ? "Acidic — try dilute ammonium bicarbonate if water fails" : "Neutral — may need organic solvent";
   return { avg: s(m.avg, 9), mono: s(m.mono, 10), mh: s(m.mono + 1.007276, 10), pI: s(pI, 4), charge: s(ch, 4), gravy: s(gravy, 4), solubility: sol, length: sq.length };
 };
-export const PROT_MODE = ["From amino-acid sequence", "Estimate from number of residues (110 Da each)"];
 export const proteinMW: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 1) { const n = pos(v.n, 300); return { kda: s((n * 110) / 1000, 6), da: s(n * 110, 8), length: n, comp: "estimate (average residue ≈ 110 Da)" }; }
   const sq = protSeq(v), m = protMass(sq);
@@ -147,7 +140,6 @@ export const extinction: SciCalculator = (v) => {
   const ox = 5500 * W + 1490 * Y + 125 * Math.floor(C / 2), red = 5500 * W + 1490 * Y;
   return { eps: s(ox, 8), reduced: s(red, 8), abs01: s(ox / mw, 6), absRed: s(red / mw, 6), counts: `W ${W}, Y ${Y}, C ${C}`, warn: W + Y === 0 ? "No Trp or Tyr — A280 can't measure this protein; use A205 or a dye assay." : "—" };
 };
-export const PC_MODE = ["Molar extinction coefficient ε and MW", "Mass extinction coefficient E1% (or A280 of 1 mg/mL)"];
 export const proteinConc: SciCalculator = (v) => {
   const A = pos(v.a280, 0.8), l = pos(v.l, 1) || 1, dil = pos(v.dil, 1) || 1;
   if (pick(v.mode, 2) === 1) {
@@ -183,7 +175,6 @@ export const digest: SciCalculator = (v) => {
   if (water < 0) throw new InputError("Too much DNA or enzyme for this volume — increase the reaction volume.");
   return { dna: s(dnaUl, 6), enzyme: s(enzUl, 6), buffer: s(buf, 6), water: s(water, 6), glycerol: s(glyc, 4), warn: glyc > 5 ? "Glycerol above 5% — risk of star activity; increase volume" : "OK (glycerol ≤ 5%)" };
 };
-export const PCR_POLY = ["Taq (1 min per kb)", "Phusion / Q5 (20–30 s per kb)", "KOD / fast enzymes (10 s per kb)", "Long-range (1 min per kb)", "Custom speed"];
 const POLY_SPEED = [60, 30, 10, 60];
 export const pcrTime: SciCalculator = (v) => {
   const L = pos(v.len, 2000), k = pick(v.poly, 5), spk = k < 4 ? POLY_SPEED[k] : pos(v.speed, 30), cyc = Math.round(pos(v.cycles, 30));
@@ -204,7 +195,6 @@ export const pcrEfficiency: SciCalculator = (v) => {
   const E = 10 ** (-1 / slope) - 1;
   return { eff: s(100 * E, 6), amp: s(1 + E, 6), slope: s(slope, 6), r2, ok: E >= 0.9 && E <= 1.1 ? "Acceptable (90–110%)" : "Outside 90–110% — check primers or dilutions" };
 };
-export const EFF_MODE = ["From standard-curve slope", "From a dilution series (quantities and Ct)"];
 export const transformation: SciCalculator = (v) => {
   const col = pos(v.colonies, 150), ng = pos(v.ng, 1), total = pos(v.total, 1000), plated = pos(v.plated, 100), dil = pos(v.dil, 1) || 1;
   if (!ng || !plated) throw new InputError("DNA amount and plated volume must be positive.");
@@ -218,7 +208,6 @@ export const transfection: SciCalculator = (v) => {
   const dna = PLATE_DNA[k] * pos(v.scale, 1), reag = dna * ratio, med = PLATE_MED[k];
   return { dna: s(dna * wells * over, 6), reagent: s(reag * wells * over, 6), medium: s(2 * med * wells * over, 6), perWell: `${fmt(dna, 4)} µg DNA + ${fmt(reag, 4)} µL reagent in ${fmt(med)} + ${fmt(med)} µL medium`, cells: s(PLATE_CELLS[k], 4) };
 };
-export const AB_MODE = ["Dilution ratio (1 : X)", "Stock concentration → target µg/mL"];
 export const antibodyDilution: SciCalculator = (v) => {
   const V = pos(v.vol, 10) * 1000;
   if (pick(v.mode, 2) === 0) { const X = pos(v.x, 1000), ab = V / X; return { ab: s(ab, 6), buffer: s(V - ab, 8), final: "—" }; }
@@ -236,7 +225,6 @@ export const standardCurve: SciCalculator = (v) => {
   const unk = txt(v, "unk") ? listOf(v, "unk", 1) : [], dil = pos(v.dil, 1) || 1;
   return { eq: `y = ${fmt(m, 6)}x ${b < 0 ? "−" : "+"} ${fmt(Math.abs(b), 6)}`, r2: s(1 - sse / sst, 6), slope: s(m, 8), intercept: s(b, 8), lod: s((3.3 * sy) / m, 6), loq: s((10 * sy) / m, 6), unknowns: unk.length ? unk.map((q) => `${fmt(q)} → ${fmt(((q - b) / m) * dil, 6)}`).join("\n") : "enter unknown signals" };
 };
-export const ORIGIN = ["Ordinary least squares (with intercept)", "Force through the origin"];
 export const pooling: SciCalculator = (v) => {
   const c = listOf(v, "conc", 1), bp = listOf(v, "bp", 1), target = pos(v.target, 4), vol = pos(v.vol, 20);
   if (c.length !== bp.length) throw new InputError("Enter one fragment size per library.");
@@ -260,7 +248,6 @@ export const logFold: SciCalculator = (v) => {
   if (!a || !b) throw new InputError("Values must be positive.");
   return { log2: s(Math.log2(b / a), 8), fc: s(b / a, 8), pct: s((100 * (b - a)) / a, 6), note: b >= a ? `${fmt(b / a, 4)}-fold up` : `${fmt(a / b, 4)}-fold down` };
 };
-export const LFC_MODE = ["Two values (control and treated)", "qPCR ΔΔCt"];
 export const replication: SciCalculator = (v) => {
   const G = pos(v.genome, 4.6e6), speed = pos(v.speed, 1000), ori = Math.max(1, Math.round(pos(v.ori, 1))), frag = pos(v.frag, 1500);
   const t = G / (2 * speed * ori);
@@ -315,7 +302,6 @@ export const ic50: SciCalculator = (v) => {
   const f = fit4pl(x, y);
   return { ic50: s(f.ec50, 6), pic50: pick(v.unit, 5) === 4 ? "—" : s(-Math.log10(f.ec50 * CONC_SCALE[pick(v.unit, 5)]), 5), hill: s(f.hill * (f.top > f.bottom ? -1 : 1), 5), top: s(f.top, 6), bottom: s(f.bottom, 6), r2: s(f.r2, 5) };
 };
-export const CONC_UNITS = ["nM", "µM", "mM", "M", "mg/kg (LD50)"];
 export const CONC_SCALE = [1e-9, 1e-6, 1e-3, 1, 1];
 export const elisa: SciCalculator = (v) => {
   const x = listOf(v, "conc", 4), y = listOf(v, "od", 4), unk = txt(v, "unk") ? listOf(v, "unk", 1) : [], dil = pos(v.dil, 1) || 1;

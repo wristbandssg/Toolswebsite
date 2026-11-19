@@ -116,9 +116,6 @@ export const closestAirport: TrvCalculator = (v) => {
     from: /^-?[0-9]/.test(p.name) ? p.name : `${p.name} (${p.lat.toFixed(3)}, ${p.lon.toFixed(3)})`,
   };
 };
-
-// --------------------------------------------------------- Seoul subway
-export const SEOUL_RIDER = ["Adult (T-money card)", "Adult (single-journey ticket)", "Youth 13–18 (T-money)", "Child 6–12 (T-money)"];
 export const seoulSubway: TrvCalculator = (v) => {
   const km = pos(v.km, 12), r = pick(v.rider, 4), rides = Math.max(1, Math.round(pos(v.rides, 4))), days = Math.max(1, Math.round(pos(v.days, 3)));
   const base = [1550, 1650, 900, 550][r];

@@ -130,9 +130,6 @@ export const aiApiCost: Calc = (v) => {
   const monthly = per * req * 30 * batch;
   return { monthly: r2(monthly), per: money(per * batch, "$", 5), daily: r2(per * req * batch), yearly: r2(monthly * 12), inShare: per > 0 ? r2((inCost / per) * 100) : 0, rates: `$${pin} input / $${pout} output per million tokens${cached ? `, cached input at ${cacheRead * 100}%` : ""}${batch < 1 ? ", batch −50%" : ""}`, perThousand: r2(per * 1000 * batch) };
 };
-
-// ------------------------------------------------------------------ AWS Lambda
-export const ARCH = ["x86_64 ($0.0000166667 per GB-s)", "Arm / Graviton ($0.0000133334 per GB-s)"];
 export const awsLambda: Calc = (v) => {
   const req = pos(v.requests, 5e6), ms = pos(v.ms, 120), mb = Math.min(10240, Math.max(128, pos(v.memory, 512)));
   const rate = pick(v.arch, 2) === 1 ? 0.0000133334 : 0.0000166667;

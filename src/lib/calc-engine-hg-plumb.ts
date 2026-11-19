@@ -40,14 +40,9 @@ const interp = (x: number, xs: number[], ys: number[]) => {
   return ys[n] + ((x - xs[n]) * (ys[n] - ys[n - 1])) / (xs[n] - xs[n - 1]);
 };
 const hwPsiPerFt = (gpm: number, id: number, C = 150) => (4.52 * gpm ** 1.85) / (C ** 1.85 * id ** 4.87);
-
-// ---------- Electrical ----------
-export const CONDUIT_TYPES = ["EMT", "PVC Schedule 40", "PVC Schedule 80", "Rigid metal (RMC)"];
-export const CONDUIT_SIZES = ["1/2 in", "3/4 in", "1 in", "1-1/4 in", "1-1/2 in", "2 in"];
 const CONDUIT_AREA = [[0.304, 0.533, 0.864, 1.496, 2.036, 3.356], [0.285, 0.508, 0.832, 1.453, 1.986, 3.291], [0.217, 0.409, 0.688, 1.237, 1.711, 2.874], [0.314, 0.549, 0.887, 1.526, 2.071, 3.408]];
 export const WIRES = ["14 AWG", "12 AWG", "10 AWG", "8 AWG", "6 AWG", "4 AWG", "3 AWG", "2 AWG", "1 AWG", "1/0 AWG"];
 const WIRE_AREA = [0.0097, 0.0133, 0.0211, 0.0366, 0.0507, 0.0824, 0.0973, 0.1158, 0.1562, 0.1855];
-export const FILL_OK = ["Over the NEC fill limit — use a bigger conduit", "Within the NEC fill limit"];
 export const conduitFill: CustomCalculator = (v) => {
   const t = pick(v.type, 4), w = pick(v.wire, WIRE_AREA.length), n = Math.max(1, Math.round(pos(v.count, 3)));
   const limit = n === 1 ? 0.53 : n === 2 ? 0.31 : 0.4;
@@ -65,10 +60,8 @@ export const boxFill: CustomCalculator = (v) => {
   need += Math.round(pos(v.devices)) * 2 * BOX_VOL[largest] + (pick(v.clamps, 2) ? BOX_VOL[largest] : 0) + (pick(v.grounds, 2) ? BOX_VOL[largest] : 0);
   return { requiredCuIn: r2(need), ok: pos(v.boxVolume, 18) >= need ? 1 : 0, spareCuIn: r2(pos(v.boxVolume, 18) - need) };
 };
-export const BOX_OK = ["Too full — use a bigger box or an extension ring", "Within the NEC box-fill limit"];
 
 const BREAKERS = [15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100];
-export const WIRE_FOR_BREAKER = ["14 AWG copper", "12 AWG copper", "10 AWG copper", "8 AWG copper", "6 AWG copper", "4 AWG copper", "3 AWG copper"];
 export const breakerSize: CustomCalculator = (v) => {
   const amps = pos(v.amps) > 0 ? pos(v.amps) : pos(v.watts, 3600) / Math.max(1, [120, 240, 208][pick(v.voltage, 3)]);
   const design = amps * (pick(v.continuous, 2) ? 1.25 : 1);
@@ -83,8 +76,6 @@ export const pipeBend: CustomCalculator = (v) => {
   return { distanceBetweenBendsIn: r2(off * mult), shrinkIn: r2(off * shrink), takeUp90In: [5, 6, 8, 11][pick(v.size, 4)], multiplier: mult };
 };
 export const BEND_ANGLES = ["10°", "22.5°", "30°", "45°", "60°"];
-
-export const ROOM_FC = ["Living room / bedroom (15 fc)", "Kitchen (40 fc)", "Bathroom (30 fc)", "Home office (50 fc)", "Garage / workshop (60 fc)", "Warehouse aisles (25 fc)", "Hallway / stairs (10 fc)"];
 const FC = [15, 40, 30, 50, 60, 25, 10];
 export const lightingLayout: CustomCalculator = (v) => {
   const L = pos(v.length, 14), W = pos(v.width, 12), a = L * W;
@@ -101,8 +92,6 @@ export const footCandle: CustomCalculator = (v) => {
   const fc = (pos(v.lumens, 8000) * k) / a;
   return { footCandles: r1(fc), lux: Math.round(fc * 10.764), lumensForTarget: Math.round((pos(v.targetFc, 50) * a) / Math.max(0.1, k)) };
 };
-
-export const PANEL_JOBS = ["Replace panel (same amperage)", "Upgrade 100 A → 200 A panel", "Full service upgrade to 200 A (meter, mast, panel)", "Upgrade to 400 A service", "Add a subpanel"];
 const PANEL_RATE = [1800, 2800, 4500, 7000, 1500];
 export const panelUpgradeCost: CustomCalculator = (v) => {
   const total = PANEL_RATE[pick(v.job, 5)] + pos(v.circuits) * 300 + pos(v.permit, 300) + pos(v.utilityFee);
@@ -125,20 +114,17 @@ export const waterHeaterInstallCost: CustomCalculator = (v) => {
 };
 
 const WH_LIFE = [10, 12, 20, 13];
-export const WH_STATUS = ["Plenty of life left", "Plan ahead — getting older", "Near or past typical lifespan — budget for replacement"];
 export const waterHeaterLifespan: CustomCalculator = (v) => {
   const life = WH_LIFE[pick(v.type, 4)] * [1.1, 1, 0.8][pick(v.hardness, 3)] * (pick(v.maintained, 2) ? 1.1 : 1);
   const age = pos(v.age, 8), left = life - age;
   return { expectedLifeYears: r1(life), yearsLeft: r1(Math.max(0, left)), status: left > 4 ? 0 : left > 1 ? 1 : 2, replaceByYear: Math.round(pos(v.currentYear, 2026) + Math.max(0, left)) };
 };
-export const WH_LIFE_TYPES = ["Gas tank", "Electric tank", "Tankless", "Heat pump (hybrid)"];
 
 export const dryerEnergyCost: CustomCalculator = (v) => {
   const t = pick(v.type, 3), loads = pos(v.loadsPerWeek, 5) * 52;
   const perLoad = t === 0 ? 3.3 * pos(v.kwhPrice, 0.17) : t === 1 ? 0.2 * pos(v.gasPrice, 1.4) + 0.3 * pos(v.kwhPrice, 0.17) : 1.2 * pos(v.kwhPrice, 0.17);
   return { costPerLoad: r2(perLoad), costPerMonth: r2((perLoad * loads) / 12), costPerYear: r2(perLoad * loads) };
 };
-export const DRYERS = ["Electric dryer", "Gas dryer", "Heat pump dryer"];
 
 export const hotTubElectricity: CustomCalculator = (v) => {
   const kwh = [150, 250, 400][pick(v.climate, 3)] * [0.8, 1, 1.3][pick(v.size, 3)] * [1.3, 1, 0.8][pick(v.insulation, 3)] * (1 + pos(v.hoursPerWeek, 4) / 40);
@@ -158,8 +144,6 @@ const IDS: number[][] = [
   [0.545, 0.785, 1.025, 1.265, 1.505, 1.985, 2.945, 3.905, 5.845], // copper type L
   [0.475, 0.671, 0.862, 1.054, 1.244, 1.629, 1.629, 1.629, 1.629], // PEX
 ];
-export const PIPE_SIZES = ["1/2 in", "3/4 in", "1 in", "1-1/4 in", "1-1/2 in", "2 in", "3 in", "4 in", "6 in"];
-export const PIPE_MATS = ["Steel / PVC Schedule 40", "Copper type L", "PEX (CTS)"];
 export const pipeVolume: CustomCalculator = (v) => {
   const id = IDS[pick(v.material, 3)][pick(v.size, 9)];
   const perFt = ((Math.PI / 4) * id * id * 12) / 231;
@@ -220,16 +204,11 @@ export const repipeCost: CustomCalculator = (v) => {
   const total = base * [1, 1.1, 1.8][pick(v.material, 3)] * [1, 1.1, 1.2][pick(v.stories, 3)] + (pick(v.drywall, 2) ? 1500 : 0);
   return { totalCost: r2(total), ...spread(total) };
 };
-export const REPIPE_MATS = ["PEX", "CPVC", "Copper"];
-
-export const PLUMBING_JOBS = ["Fixture repair", "Leak repair", "Drain clog", "Toilet install", "Faucet install", "Garbage disposal install", "Water heater flush", "Rough-in (per fixture, new construction)", "Sewer line repair"];
 const PLUMB_RATE = [250, 350, 225, 400, 300, 450, 150, 1500, 3000];
 export const plumbingCost: CustomCalculator = (v) => {
   const total = (pos(v.quantity, 1) * PLUMB_RATE[pick(v.job, PLUMB_RATE.length)] + pos(v.tripFee, 100)) * (pick(v.afterHours, 2) ? 1.5 : 1);
   return { totalCost: r2(total), ...spread(total) };
 };
-
-export const SLAB_METHODS = ["Direct access (break the slab)", "Reroute the line", "Epoxy pipe lining", "Whole-house repipe"];
 export const slabLeakCost: CustomCalculator = (v) => {
   const total = [2000, 2500, 3000, 6000][pick(v.method, 4)] + pos(v.detection, 350) + pos(v.flooring, 800);
   return { totalCost: r2(total), ...spread(total) };
@@ -245,8 +224,6 @@ export const waterLineCost: CustomCalculator = (v) => {
   const total = L * (pos(v.trenchPerFoot, 10) + [2, 2.5, 10][pick(v.material, 3)]) + pos(v.connectionFee, 500);
   return { totalCost: r2(total), ...spread(total), perFoot: L ? r2(total / L) : 0 };
 };
-
-export const SEPTIC_TYPES = ["Conventional gravity", "Chamber system", "Mound system", "Aerobic treatment unit (ATU)", "Drip distribution"];
 export const septicSystemCost: CustomCalculator = (v) => {
   const total = [7000, 8500, 18000, 15000, 20000][pick(v.system, 5)] * Math.max(1, pos(v.bedrooms, 3) / 3) + pos(v.design, 1500) + pos(v.permit, 800);
   return { totalCost: r2(total), ...spread(total) };
@@ -281,10 +258,8 @@ export const heatTape: CustomCalculator = (v) => {
   const watts = len * pos(v.wattsPerFoot, 5);
   return { cableFeet: Math.ceil(len), watts: Math.round(watts), amps120: r1(watts / 120), circuits20A: ceil(watts / 1920), monthlyCost: r2((watts / 1000) * pos(v.hoursPerDay, 8) * 30 * pos(v.kwhPrice, 0.17)) };
 };
-export const HEAT_TAPE_MODES = ["Pipe — straight run", "Pipe — spiral wrap (larger pipe)", "Roof edge & gutters (zig-zag)"];
 
 export const TAPS = ["#6-32 UNC", "#8-32 UNC", "#10-24 UNC", "#10-32 UNF", "1/4-20 UNC", "1/4-28 UNF", "5/16-18 UNC", "5/16-24 UNF", "3/8-16 UNC", "3/8-24 UNF", "7/16-14 UNC", "1/2-13 UNC", "1/2-20 UNF", "5/8-11 UNC", "3/4-10 UNC", "M6 × 1.0", "M8 × 1.25", "M10 × 1.5", "M12 × 1.75", "1/8 NPT", "1/4 NPT", "3/8 NPT", "1/2 NPT", "3/4 NPT", "1 NPT"];
-export const TAP_DRILLS = ["#36", "#29", "#25", "#21", "#7", "#3", "F", "I", "5/16 in", "Q", "U", "27/64 in", "29/64 in", "17/32 in", "21/32 in", "5.0 mm", "6.8 mm", "8.5 mm", "10.2 mm", "11/32 in", "7/16 in", "37/64 in", "23/32 in", "59/64 in", "1-5/32 in"];
 const TAP_IN = [0.1065, 0.136, 0.1495, 0.159, 0.201, 0.213, 0.257, 0.272, 0.3125, 0.332, 0.368, 0.4219, 0.4531, 0.5312, 0.6562, 0.1969, 0.2677, 0.3346, 0.4016, 0.3438, 0.4375, 0.5781, 0.7188, 0.9219, 1.1562];
 export const tapDrill: CustomCalculator = (v) => {
   const t = pick(v.thread, TAPS.length);
@@ -296,8 +271,6 @@ export const rangeHoodHeight: CustomCalculator = (v) => {
   const min = gas ? 30 : 24, max = gas ? 36 : 30;
   return { minHeightIn: min, maxHeightIn: max, recommendedIn: island ? max : Math.round((min + max) / 2), hoodWidthIn: pos(v.cooktopWidth, 30) + (island ? 6 : 0) };
 };
-
-export const PIPE_WEIGHT_MATS = ["Copper type K", "Copper type L", "Copper type M", "PVC Schedule 40", "Steel Schedule 40"];
 const PIPE_LB = [
   [0.344, 0.641, 0.839, 1.04, 1.36, 2.06, 4.0, 6.51],
   [0.285, 0.455, 0.655, 0.884, 1.14, 1.75, 3.33, 5.38],

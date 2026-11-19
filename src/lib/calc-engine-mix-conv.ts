@@ -22,9 +22,6 @@
 import { type TrvCalculator as Calc, InputError, num, pick, txt, nfmt, sig } from "./trv-core";
 
 const show = (x: number, s = 6) => (Number.isFinite(x) ? nfmt(sig(x, s), 6).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "") : "—");
-
-// ------------------------------------------------------------------ height converter
-export const HEIGHT_MODES = ["Feet & inches → centimetres", "Centimetres → feet & inches", "Total inches → feet & inches and cm"];
 /** CDC NHANES 2015–2018 average height of US adults 20+: men 175.3 cm, women 161.3 cm. */
 const AVG_MEN = 175.3, AVG_WOMEN = 161.3;
 function ftIn(totalIn: number, denom = 4) {
@@ -57,10 +54,6 @@ export const heightConverter: Calc = (v) => {
     vsWomen: vs(AVG_WOMEN, "woman"),
   };
 };
-
-// ------------------------------------------------------------------ feet and inches
-export const FI_OPS = ["Add (A + B)", "Subtract (A − B)", "Multiply A by a number (B)", "Divide A by a number (B)", "Convert A only"];
-export const FI_ROUND = ["Nearest 1/16 in", "Nearest 1/8 in", "Nearest 1/4 in", "Nearest 1/2 in", "Nearest inch"];
 const DENOMS = [16, 8, 4, 2, 1];
 /** "7", "7.5", "7 1/2", "1/2" → number. */
 function mixed(s: string): number {
@@ -144,7 +137,6 @@ export const TORQUE_UNITS: [string, number][] = [
   ["Kilonewton-metre (kN·m)", 1000],
   ["Decanewton-metre (daN·m)", 10],
 ];
-export const TORQUE_LABELS = TORQUE_UNITS.map((u) => u[0]);
 const shortU = (l: string) => (l.match(/\(([^,)]+)/)?.[1] ?? l);
 export const torqueConversion: Calc = (v) => {
   const x = num(v.x, 100), f = TORQUE_UNITS[pick(v.from, TORQUE_UNITS.length)], t = TORQUE_UNITS[pick(v.to, TORQUE_UNITS.length)];
@@ -156,9 +148,6 @@ export const torqueConversion: Calc = (v) => {
     all: TORQUE_UNITS.map(([l, k]) => `${show(nm / k)} ${shortU(l)}`).join(" · "),
   };
 };
-
-// ------------------------------------------------------------------ gallons to pounds
-export const GP_MODES = ["Volume → weight", "Weight → volume"];
 /** Volume units in litres. */
 export const VOL_UNITS: [string, number][] = [["US gallons", 3.785411784], ["UK (imperial) gallons", 4.54609], ["Litres", 1], ["US quarts", 0.946352946], ["US pints", 0.473176473], ["US cups", 0.2365882365], ["US fluid ounces", 0.0295735295625], ["Cubic feet", 28.316846592], ["Cubic metres", 1000], ["Millilitres", 0.001]];
 export const WT_UNITS = ["Pounds (lb)", "Kilograms (kg)", "Ounces (oz)", "US short tons"];
@@ -180,7 +169,6 @@ export const LIQUIDS: [string, number][] = [
   ["Liquid propane", 0.508],
   ["Custom density (enter below)", 0],
 ];
-export const LIQUID_LABELS = LIQUIDS.map((l) => l[0]);
 export const gallonsToPounds: Calc = (v) => {
   const m = pick(v.mode, 2), vu = VOL_UNITS[pick(v.vunit, VOL_UNITS.length)], wi = pick(v.wunit, WT_UNITS.length);
   const li = pick(v.liquid, LIQUIDS.length);
@@ -202,14 +190,10 @@ export const gallonsToPounds: Calc = (v) => {
     raw: sig(m === 0 ? kg / WT_KG[wi] : litres / vu[1], 10),
   };
 };
-
-// ------------------------------------------------------------------ cubic yards to tons
-export const CYT_MODES = ["Cubic yards → tons", "Tons → cubic yards"];
 /** Loose bulk density, US short tons per cubic yard (same chart as calc-engine-biz-landscape.ts). */
 export const BULK: [string, number][] = [
   ["Pea gravel", 1.35], ["#57 crushed stone (3/4 in)", 1.4], ["#3 / #4 crushed stone (1–2 in)", 1.45], ["River rock", 1.35], ["Crushed concrete", 1.2], ["Decomposed granite", 1.3], ["Road base / Class 5 (loose)", 1.4], ["Dry sand", 1.35], ["Wet sand", 1.7], ["Topsoil", 1.1], ["Fill dirt", 1.2], ["Clay", 1.4], ["Asphalt millings", 1.3], ["Hot-mix asphalt (compacted)", 1.96], ["Concrete (cured)", 2.0], ["Lava rock", 0.5], ["Mulch", 0.4], ["Custom (enter tons per yd³)", 0],
 ];
-export const BULK_LABELS = BULK.map((b) => b[0]);
 export const cubicYardsToTons: Calc = (v) => {
   const m = pick(v.mode, 2), bi = pick(v.material, BULK.length);
   const d = bi === BULK.length - 1 ? num(v.custom, 1.4) : BULK[bi][1];
@@ -228,12 +212,8 @@ export const cubicYardsToTons: Calc = (v) => {
     raw: sig(m === 0 ? tons : yd3, 10),
   };
 };
-
-// ------------------------------------------------------------------ lumens to watts
-export const LW_MODES = ["Lumens → watts", "Watts → lumens"];
 /** Typical luminous efficacy (lm/W) of household bulbs (DOE / ENERGY STAR equivalence charts). */
 export const BULBS: [string, number][] = [["LED", 90], ["CFL", 60], ["Halogen", 18], ["Incandescent", 14], ["Fluorescent tube (T8)", 85], ["Custom (enter lm/W)", 0]];
-export const BULB_LABELS = BULBS.map((b) => b[0]);
 /** ENERGY STAR lumens ↔ incandescent watts: 450 = 40 W, 800 = 60 W, 1100 = 75 W, 1600 = 100 W, 2600 = 150 W. */
 const EQ: [number, number][] = [[0, 0], [450, 40], [800, 60], [1100, 75], [1600, 100], [2600, 150]];
 const incEq = (lm: number) => {

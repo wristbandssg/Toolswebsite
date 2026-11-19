@@ -83,8 +83,6 @@ export const STATE_INCOME_TAX_RATES: Record<string, StateIncomeTaxRate> = {
   wisconsin: { name: "Wisconsin", topRate: 0.0765, isFlat: false, lowRate: 0.02 },
 };
 
-export const INCOME_TAX_STATE_SLUGS = Object.keys(STATE_INCOME_TAX_RATES);
-
 /** Estimated marginal rate on the next dollar earned at `income`, for a
  * graduated state — rises smoothly from lowRate at $0 to topRate at the
  * shared ceiling, flat at topRate beyond it. For a flat state, the

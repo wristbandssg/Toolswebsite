@@ -129,9 +129,6 @@ export const ascapFee: CustomCalculator = (v) => {
   const fee = Math.max(nonNeg(v.minimumFee, 390), base);
   return { annualAscapFee: round2(fee), monthlyCost: round2(fee / 12), perOccupantRate: round2(perOcc), calculatedBeforeMinimum: round2(base), allThreeProsEstimate: round2(fee * 2.6) };
 };
-
-// ---------- Visual art, photography & film ----------
-export const HUE_NAMES = ["Red", "Red-orange", "Orange", "Yellow-orange", "Yellow", "Yellow-green", "Green", "Spring green", "Cyan", "Azure", "Blue", "Violet", "Magenta", "Rose"];
 const hueName = (h: number) => {
   const x = ((h % 360) + 360) % 360;
   const stops = [15, 30, 45, 60, 75, 100, 145, 165, 190, 220, 250, 280, 320, 345];
@@ -190,13 +187,6 @@ function solarElevation(day: number, minutesUtc: number, lat: number, lon: numbe
   const zen = deg(Math.acos(Math.sin(rad(lat)) * Math.sin(rad(decl)) + Math.cos(rad(lat)) * Math.cos(rad(decl)) * Math.cos(rad(ha))));
   return 90 - zen;
 }
-/** Labels for clock results: index = minutes after midnight ÷ 5. */
-export const TIME_LABELS = [...Array(289)].map((_, i) => {
-  if (i === 288) return "—";
-  const h = Math.floor((i * 5) / 60);
-  const m = (i * 5) % 60;
-  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
-});
 export const goldenHour: CustomCalculator = (v) => {
   const day = Math.round(safeNumber(v.date));
   const lat = Math.max(-89, Math.min(89, safeNumber(v.latitude, 40.71)));

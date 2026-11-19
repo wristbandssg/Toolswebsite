@@ -105,10 +105,6 @@ export const ramLatency: Calc = (v) => {
   const ch = Math.max(1, Math.round(pos(v.channels, 2)));
   return { ns: r2(ns), bw: r1((mt * 8 * ch) / 1000), cycle: sig(2000 / mt, 4), clock: nfmt(mt / 2), compare: Number.isFinite(ns2) ? `Kit B: ${r2(ns2)} ns — ${Math.abs(ns - ns2) < 0.05 ? "about the same latency" : ns < ns2 ? `Kit A is ${r2(ns2 - ns)} ns faster` : `Kit B is ${r2(ns - ns2)} ns faster`}; bandwidth ${r1((mt2 * 8 * ch) / 1000)} GB/s` : "—", rule: `DDR${mt >= 4800 ? "5" : mt >= 2133 ? "4" : "3"}-${mt} CL${cl}` };
 };
-
-// ------------------------------------------------------------------ subwoofer port
-export const PORT_SHAPES = ["Round port (diameter)", "Slot port (width × height)"];
-export const PORT_ENDS = ["One end flanged, one free (typical)", "Both ends flanged", "Both ends free"];
 export const subPort: Calc = (v) => {
   const Vb = pos(v.vb, 50) / 1000, fb = pos(v.fb, 32), n = Math.max(1, Math.round(pos(v.ports, 1)));
   if (Vb <= 0 || fb <= 0) throw new InputError("Enter the net box volume and tuning frequency.");
@@ -125,9 +121,6 @@ export const subPort: Calc = (v) => {
   const portVol = S * L * 1000;
   return { cm: r1(L * 100), inch: r1((L * 100) / 2.54), area: `${r1(S * 1e4)} cm² total (${n} port${n > 1 ? "s" : ""})`, vol: `${r2(portVol)} L — add this to the box's gross volume`, vel: Number.isFinite(vel) ? `${r1(vel)} m/s — ${vel < 17 ? "OK" : vel < 25 ? "may chuff at full power" : "too fast, use more port area"}` : "— (enter Sd and Xmax)", check: `Tuning check: ${r1((c / (2 * Math.PI)) * Math.sqrt(S / (Vb * (L + corr))))} Hz` };
 };
-
-// ------------------------------------------------------------------ 3D printer e-steps
-export const ESTEP_MODES = ["Calibrate from a test extrusion", "Theoretical from motor & gear"];
 export const esteps: Calc = (v) => {
   const mode = pick(v.mode, 2);
   const micro = pos(v.micro, 16), spr = pos(v.spr, 200);
@@ -170,9 +163,6 @@ export const gsd: Calc = (v) => {
   const target = pos(v.target);
   return { gsd: sig(g, 4), inPx: sig(g / 2.54, 4), foot: `${r1((g * iw) / 100)} × ${r1((g * ih) / 100)} m per photo`, area: r2(((g * iw) / 100) * ((g * ih) / 100) / 10000), alt: target > 0 ? `${r1((target * f * iw) / (sw * 100))} m for ${target} cm/px` : "—" };
 };
-
-// ------------------------------------------------------------------ Steam market fee
-export const STEAM_MODES = ["Buyer pays → you receive", "You want to receive → listing price"];
 export const steamFee: Calc = (v) => {
   const gamePct = pos(v.game, 10) / 100;
   const fees = (recv: number) => Math.max(1, Math.floor(recv * 0.05)) + Math.max(1, Math.floor(recv * gamePct));

@@ -25,15 +25,12 @@ const mwOf = (v: Vals, key = "formula", mwKey = "mw", def = 58.44) => {
   if (!m) throw new InputError("Enter a formula or a molar mass.");
   return m;
 };
-
-export const MOLARITY_MODE = ["Molarity from mass and volume", "Mass needed for a molarity", "Volume for a mass and molarity"];
 export const molarity: SciCalculator = (v) => {
   const mw = mwOf(v), m = pick(v.mode, 3), g = pos(v.mass, 5.844), mL = pos(v.vol, 100), M = pos(v.M, 1);
   const mol = m === 0 ? g / mw : m === 1 ? (M * mL) / 1000 : g / mw;
   const res = fin(m === 0 ? mol / (mL / 1000) : m === 1 ? mol * mw : (mol / M) * 1000);
   return { result: s(res), unit: ["mol/L (M)", "grams", "mL"][m], mw: s(mw, 8), mmol: s(mol * 1000, 8), mM: m === 0 ? s(res * 1000, 8) : "—" };
 };
-export const DIL_SOLVE = ["Final volume V₂", "Stock volume V₁", "Final concentration C₂", "Stock concentration C₁"];
 export const dilution: SciCalculator = (v) => {
   const k = pick(v.solve, 4), C1 = pos(v.c1, 10), V1 = pos(v.v1, 10), C2 = pos(v.c2, 1), V2 = pos(v.v2, 100);
   const x = fin(k === 0 ? (C1 * V1) / C2 : k === 1 ? (C2 * V2) / C1 : k === 2 ? (C1 * V1) / V2 : (C2 * V2) / V1);
@@ -46,7 +43,6 @@ export const concentration: SciCalculator = (v) => {
   const L = mL / 1000, mol = g / mw, solnG = rho * mL, solventKg = (solnG - g) / 1000;
   return { M: s(mol / L), wv: s((100 * g) / mL, 8), ww: s((100 * g) / solnG, 8), mgml: s((g * 1000) / mL, 8), ppm: s((g * 1e6) / solnG, 8), molal: solventKg > 0 ? s(mol / solventKg, 8) : "—" };
 };
-export const PH_MODE = ["From [H⁺] (mol/L)", "From [OH⁻]", "From pOH", "Strong acid concentration", "Strong base concentration", "Weak acid (Ka and concentration)", "Weak base (Kb and concentration)"];
 export const ph: SciCalculator = (v) => {
   const m = pick(v.mode, 7), x = pos(v.x, 0.01), n = Math.max(1, pos(v.n, 1)), K = pos(v.K, 1.8e-5), Kw = 1e-14;
   let H: number;
@@ -67,7 +63,6 @@ export const ppm: SciCalculator = (v) => {
   const mw = pos(v.mw, 0);
   return { ppm: s(p), ppb: s(p * 1000), pct: s(p / 1e4, 8), mgl: s(p, 10), molar: mw ? s(p / 1000 / mw, 8) : "enter molar mass" };
 };
-export const TITR_MODE = ["Find analyte concentration", "Find titrant volume needed"];
 export const titration: SciCalculator = (v) => {
   const Ct = pos(v.ct, 0.1), Vt = pos(v.vt, 25), Va = pos(v.va, 20), Ca = pos(v.ca, 0.1), ra = pos(v.ra, 1), rt = pos(v.rt, 1);
   if (pick(v.mode, 2) === 0) {
@@ -83,7 +78,6 @@ export const molality: SciCalculator = (v) => {
   const mol = g / mw, m = mol / kg;
   return { m: s(m), mol: s(mol, 8), dTf: s(i * Kf * m, 8), dTb: s(i * Kb * m, 8), mw: s(mw, 8) };
 };
-export const HH_MODE = ["pH from concentrations", "Ratio for a target pH", "Buffer recipe (total concentration and volume)"];
 export const henderson: SciCalculator = (v) => {
   const m = pick(v.mode, 3), pKa = num(v.pKa, 4.76);
   if (m === 0) {
@@ -95,13 +89,11 @@ export const henderson: SciCalculator = (v) => {
   const C = pos(v.C, 0.1), L = pos(v.vol, 1000) / 1000, nb = (C * L * r) / (1 + r), na = (C * L) / (1 + r);
   return { pH: s(pH, 8), ratio: s(r, 8), base: s(m === 2 ? nb * 1000 : r / (1 + r), 8), acid: s(m === 2 ? na * 1000 : 1 / (1 + r), 8), note: m === 2 ? "Base and acid shown in mmol." : "Base and acid shown as mole fractions." };
 };
-export const SG_MODE = ["From density", "From API gravity", "From mass and volume"];
 export const specificGravity: SciCalculator = (v) => {
   const m = pick(v.mode, 3), ref = pos(v.ref, 0.99904);
   const SG = fin(m === 0 ? pos(v.density, 0.85) / ref : m === 1 ? 141.5 / (num(v.api, 35) + 131.5) : pos(v.mass, 850) / pos(v.vol, 1000) / ref);
   return { SG: s(SG, 8), density: s(SG * ref, 8), api: s(141.5 / SG - 131.5, 8), baume: s(SG >= 1 ? 145 - 145 / SG : 140 / SG - 130, 8), lbgal: s(SG * ref * 8.34540445, 8) };
 };
-export const OSM_MODE = ["Serum osmolality (Na, glucose, BUN)", "Solution osmolarity and osmotic pressure"];
 export const osmolarity: SciCalculator = (v) => {
   if (pick(v.mode, 2) === 0) {
     const na = pos(v.na, 140), glu = pos(v.glu, 90), bun = pos(v.bun, 14), eth = pos(v.eth, 0), meas = pos(v.meas, 0);
@@ -112,7 +104,6 @@ export const osmolarity: SciCalculator = (v) => {
   return { osm: s(M * i * 1000, 8), gap: "—", pi: s(i * M * R_ATM * T, 8), note: `π = iMRT = ${fmt(i * M * R_ATM * T * 101.325, 6)} kPa` };
 };
 const henderFrac = (pH: number, pKa: number) => 1 / (1 + 10 ** (pKa - pH));
-export const PHOS_SALT = ["Sodium (NaH₂PO₄ + Na₂HPO₄, anhydrous)", "Sodium hydrates (NaH₂PO₄·H₂O + Na₂HPO₄·7H₂O)", "Potassium (KH₂PO₄ + K₂HPO₄)"];
 const PHOS = [["NaH2PO4", "Na2HPO4"], ["NaH2PO4·H2O", "Na2HPO4·7H2O"], ["KH2PO4", "K2HPO4"]];
 export const phosphateBuffer: SciCalculator = (v) => {
   const pH = num(v.pH, 7.4), C = pos(v.C, 0.1), L = pos(v.vol, 1000) / 1000, k = pick(v.salt, 3), pKa2 = num(v.pKa, 7.21);
@@ -146,7 +137,6 @@ export const normality: SciCalculator = (v) => {
   const g = pos(v.mass, 4.9), eqw = pos(v.eqw, 49.04), L = pos(v.vol, 1000) / 1000, N = fin(g / eqw / L);
   return { N: s(N), M: n ? s(N / n) : "—", eqw: s(eqw, 8) };
 };
-export const HLB_MODE = ["Blend two emulsifiers to a target HLB", "HLB of a blend", "Griffin HLB from molecular masses"];
 export const hlb: SciCalculator = (v) => {
   const m = pick(v.mode, 3), A = num(v.hlbA, 15), B = num(v.hlbB, 4.3), total = pos(v.total, 10);
   if (m === 2) {
@@ -172,23 +162,18 @@ export const acidDilution: SciCalculator = (v) => {
   const massFinal = V * rho2, massStock = (massFinal * target) / pct, volStock = massStock / rho;
   return { stock: s(volStock, 8), water: s(massFinal - massStock, 8), stockMass: s(massStock, 8), M: f ? s((pct * rho * 10) / formulaMass(f), 6) : "—", note: "Always add acid to water, never water to acid." };
 };
-export const HARD_MODE = ["From calcium and magnesium (mg/L)", "Convert a hardness value"];
-export const HARD_UNITS = ["mg/L (ppm) as CaCO₃", "grains per gallon (gpg)", "German degrees °dH", "French degrees °fH", "mmol/L"];
 const HARD_F = [1, 17.1185, 17.848, 10, 100.0869];
 export const waterHardness: SciCalculator = (v) => {
   const ppm = pick(v.mode, 2) === 0 ? 2.497 * pos(v.ca, 40) + 4.118 * pos(v.mg, 10) : pos(v.value, 10) * HARD_F[pick(v.unit, 5)];
   const cls = ppm < 61 ? 0 : ppm < 121 ? 1 : ppm < 181 ? 2 : 3;
   return { ppm: s(ppm, 8), gpg: s(ppm / HARD_F[1], 8), dH: s(ppm / HARD_F[2], 8), fH: s(ppm / 10, 8), mmol: s(ppm / HARD_F[4], 8), cls };
 };
-export const HARD_CLASS = ["Soft (0–60 mg/L)", "Moderately hard (61–120 mg/L)", "Hard (121–180 mg/L)", "Very hard (> 180 mg/L)"];
-export const RATIO_MEANING = ["1 part concentrate + X parts water", "1 part in X parts total"];
 export const dilutionRatio: SciCalculator = (v) => {
   const X = pos(v.x, 10), total = pos(v.total, 1000), parts = pick(v.meaning, 2) === 0 ? 1 + X : X;
   if (parts < 1) throw new InputError("X must be at least 1.");
   const c = total / parts;
   return { concentrate: s(c, 8), water: s(total - c, 8), pct: s((100 * c) / total, 8), factor: s(parts, 8) };
 };
-export const PKA_MODE = ["Convert Ka ↔ pKa (and Kb, pKb)", "Ka from pH of a weak acid solution", "Kp from Kc (gas equilibrium)"];
 export const pka: SciCalculator = (v) => {
   const m = pick(v.mode, 3);
   if (m === 1) {
@@ -204,8 +189,6 @@ export const pka: SciCalculator = (v) => {
   const usePka = pick(v.input, 2) === 1, Ka = usePka ? 10 ** -num(v.pKaIn, 4.76) : pos(v.Ka, 1.8e-5);
   return { Ka: s(Ka, 8), pKa: s(-Math.log10(Ka), 8), Kb: s(1e-14 / Ka, 8), pKb: s(14 + Math.log10(Ka), 8) };
 };
-export const PKA_INPUT = ["I have Ka", "I have pKa"];
-export const SOL_MODE = ["Molar solubility from Ksp", "Ksp from molar solubility"];
 export const solubility: SciCalculator = (v) => {
   const x = Math.max(1, Math.round(pos(v.x, 1))), y = Math.max(1, Math.round(pos(v.y, 2))), mw = mwOf(v, "formula", "mw", 78.07), f = x ** x * y ** y;
   if (pick(v.mode, 2) === 0) {
@@ -230,7 +213,6 @@ const SYSTEMS: Sys[] = [
   { name: "HEPES (pKa 7.48)", pKa: [7.48], acid: ["HEPES free acid", 238.3], salt: ["HEPES sodium salt", 260.29] },
   { name: "Carbonate-bicarbonate (pKa 10.33)", pKa: [10.33], acid: ["sodium bicarbonate", 84.007], salt: ["sodium carbonate", 105.99] },
 ];
-export const BUFFER_SYSTEMS = SYSTEMS.map((x) => x.name);
 export const citrateBuffer: SciCalculator = (v) => {
   const sys = SYSTEMS[pick(v.system, SYSTEMS.length)], pH = num(v.pH, 5), C = pos(v.C, 0.1), L = pos(v.vol, 1000) / 1000;
   const n = sys.pKa.length, hs = sys.pKa.map((_, i) => 10 ** ((i + 1) * pH - sum(sys.pKa.slice(0, i + 1))));
@@ -255,7 +237,6 @@ export const moleFraction: SciCalculator = (v) => {
   if (!T) throw new InputError("Total moles can't be zero.");
   return { fractions: mol.map((m, i) => `${names[i]}: χ = ${fmt(m / T, 6)} (${fmt(m, 6)} mol)`).join("\n"), total: s(T, 8), first: s(mol[0] / T, 8) };
 };
-export const TDS_MODE = ["TDS from conductivity (EC)", "Conductivity from TDS"];
 export const tds: SciCalculator = (v) => {
   const k = pos(v.k, 0.64);
   const ec = pick(v.mode, 2) === 0 ? pos(v.ec, 1000) : pos(v.tds, 640) / k;

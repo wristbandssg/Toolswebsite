@@ -63,7 +63,6 @@ export const JAPAN: Tariff[] = [
   { cur: "JPY", sym: "¥", unit: "km", flag: 500, incl: 1, tiers: [[Infinity, 430]], wait: 63, times: [["Daytime", 1, 0], ["Late night 10 pm–5 am (+20%)", 1.2, 0]], airports: [NONE] },
   { cur: "JPY", sym: "¥", unit: "km", flag: 700, incl: 1.3, tiers: [[Infinity, 360]], wait: 60, times: [["Daytime", 1, 0], ["Late night 10 pm–5 am (+20%)", 1.2, 0]], airports: [NONE] },
 ];
-export const JAPAN_CITY = ["Tokyo (23 wards, Musashino, Mitaka)", "Osaka", "Kyoto", "Other cities (Sapporo, Fukuoka, Nagoya…)"];
 export const japanTaxi: TrvCalculator = (v) => {
   const t = JAPAN[pick(v.city, JAPAN.length)], app = pos(v.app, 0), r = meter({ ...t, airports: JAPAN[0].airports, booking: 0 }, { ...v, ap: pick(v.city, 4) === 0 ? v.ap : 0 });
   const total = r2(r.total + app);

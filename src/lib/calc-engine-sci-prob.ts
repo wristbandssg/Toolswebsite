@@ -16,7 +16,6 @@ const p01 = (p: number, name = "p") => {
   if (!(p >= 0 && p <= 1)) throw new InputError(`${name} must be between 0 and 1.`);
   return p;
 };
-export const TAIL = ["P(X = x)", "P(X ≤ x)", "P(X < x)", "P(X ≥ x)", "P(X > x)"];
 /** Discrete tail probabilities from a pmf over 0..max. */
 const tails = (pmf: (k: number) => number, x: number, max: number) => {
   let le = 0;
@@ -31,7 +30,6 @@ export const probability: SciCalculator = (v) => {
   if (indep === 1 && a + b > 1) throw new InputError("Mutually exclusive events can't have P(A) + P(B) > 1.");
   return { and: s(both, 10), or: s(a + b - both, 10), notA: s(1 - a, 10), aNotB: s(a - both, 10), neither: s(1 - (a + b - both), 10), aGivenB: b ? s(both / b, 10) : "—", atLeastOne: s(1 - (1 - a) * (1 - b), 10) };
 };
-export const RELATION = ["Independent", "Mutually exclusive", "Enter P(A and B)"];
 export const combination: SciCalculator = (v) => {
   const n = Math.round(pos(v.n, 10)), r = Math.round(pos(v.r, 3));
   if (r > n) throw new InputError("r can't be larger than n.");
@@ -103,14 +101,12 @@ export const discreteDist: SciCalculator = (v) => {
   const cdf = xs.reduce((a, x, i) => a + (x <= x0 ? ps[i] : 0), 0);
   return { mean: s(E, 12), variance: s(Vv, 12), sd: s(Math.sqrt(Vv), 12), cdf: s(cdf, 12), valid: 0 };
 };
-export const VALID_DIST = ["Valid probability distribution", "Invalid"];
 export const inverseNormal: SciCalculator = (v) => {
   const p = pos(v.p, 0.95), m = num(v.mean, 0), sd = pos(v.sd, 1), tail = pick(v.tail, 3);
   if (!(p > 0 && p < 1)) throw new InputError("The area must be between 0 and 1.");
   const z = tail === 0 ? normInv(p) : tail === 1 ? normInv(1 - p) : normInv(0.5 + p / 2);
   return { x: s(m + z * sd, 12), z: s(z, 12), interval: tail === 2 ? `${fmt(m - z * sd, 10)} to ${fmt(m + z * sd, 10)}` : "—" };
 };
-export const INV_TAIL = ["Left tail (area to the left)", "Right tail (area to the right)", "Centre (middle area)"];
 export const conditional: SciCalculator = (v) => {
   const pab = p01(pos(v.pab, 0.12), "P(A and B)"), pb = p01(pos(v.pb, 0.4), "P(B)"), pa = p01(pos(v.pa, 0.3), "P(A)");
   if (!pb) throw new InputError("P(B) can't be 0.");
@@ -122,7 +118,6 @@ export const clt: SciCalculator = (v) => {
   const se = sigma / Math.sqrt(n), z = (x - mu) / se;
   return { se: s(se, 10), z: s(z, 10), probability: s(mode === 0 ? normCdf(z) : 1 - normCdf(z), 12), note: n < 30 ? "n < 30: the sample mean is only approximately normal unless the population is normal." : "n ≥ 30: the sampling distribution of the mean is approximately normal." };
 };
-export const LT_GT = ["P(x̄ < value)", "P(x̄ > value)"];
 export const zToPercentile: SciCalculator = (v) => {
   const z = num(v.z, 1.5);
   const p = normCdf(z);
@@ -211,7 +206,6 @@ export const randomNumbers: SciCalculator = (v) => {
   }
   return { numbers: out.join(", "), sum: out.reduce((a, b) => a + b, 0), count: out.length };
 };
-export const UNIQUE = ["No repeats", "Repeats allowed"];
 export const ppv: SciCalculator = (v) => {
   const sens = p01(pos(v.sens, 99) / 100, "Sensitivity"), spec = p01(pos(v.spec, 98) / 100, "Specificity"), prev = p01(pos(v.prev, 1) / 100, "Prevalence");
   const tp = sens * prev, fp = (1 - spec) * (1 - prev), fn = (1 - sens) * prev, tn = spec * (1 - prev);
@@ -223,7 +217,6 @@ export const nnt: SciCalculator = (v) => {
   if (!arr) throw new InputError("The two rates are equal, so NNT is infinite.");
   return { nnt: Math.ceil(Math.abs(1 / arr)), kind: arr > 0 ? 0 : 1, arr: s(100 * arr, 8), rrr: s((100 * arr) / ctrl, 8) };
 };
-export const NNT_KIND = ["Number needed to treat (benefit)", "Number needed to harm (more events)"];
 export const monteCarlo: SciCalculator = (v) => {
   const f = compileFn(txt(v, "fx"), ["u", "w"]);
   const n = Math.min(200000, Math.max(100, Math.round(pos(v.n, 10000)))), seed = Math.round(num(v.seed, 42)) || 42;

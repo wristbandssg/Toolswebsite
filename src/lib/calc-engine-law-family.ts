@@ -383,10 +383,6 @@ export const pennsylvaniaExecutor: CustomCalculator = (v) => {
   const johnson = tiered(e, PA_JOHNSON);
   return scheduleResult(johnson, e, Math.max(1, Math.round(nonNeg(v.numberOfExecutors, 1))), { threePercentAlternative: round2(e * 0.03) });
 };
-
-export const EXECUTOR_STATES: [string, number][] = [
-  ["California (statutory)", 0], ["New York (SCPA 2307)", 1], ["Florida (§733.617)", 2], ["New Jersey (3B:18-14)", 3], ["Oregon (ORS 116.173)", 4], ["Pennsylvania (Johnson schedule)", 5], ["Other state — reasonable fee (3%)", 6],
-];
 export const executorFeeGeneral: CustomCalculator = (v) => {
   const e = nonNeg(v.estateValue);
   const s = Math.round(safeNumber(v.state, 6));

@@ -85,7 +85,6 @@ export const kofi: Calc = (v) => {
   const net = tips + shop + memb - fees;
   return { net: $(net), fees: $(fees) + (gold ? " (Gold $12/mo, no platform fee)" : " (5% on shop & memberships + processing)"), gross: $(tips + shop + memb) };
 };
-export const KOFI_PLAN = ["Free plan", "Ko-fi Gold"];
 export const courseRevenue: Calc = (v) => {
   const visitors = p(v, "vis", 10000), conv = p(v, "conv", 2) / 100, price = p(v, "price", 199), refund = p(v, "refund", 5) / 100, plat = p(v, "plat", 5) / 100, adsCost = p(v, "ads", 2000);
   const sales = visitors * conv, gross = sales * price, net = gross * (1 - refund) * (1 - plat) - adsCost;
@@ -147,7 +146,6 @@ export const knitYardage: Calc = (v) => {
   const yards = w * l * YPS[wt] * 0.1 * 1.1;
   return { yards: `${nfmt(yards)} yards`, skeins: `${Math.ceil(yards / skein)} skeins of ${skein} yd`, note: `${YARN_W[wt]} stockinette, +10% spare` };
 };
-export const BLANKET = ["Lovey (12×12 in)", "Stroller (30×35)", "Baby (36×45)", "Throw (50×60)", "Twin (65×90)", "Full (80×90)", "Queen (90×100)", "King (108×100)"];
 const BL = [[12, 12], [30, 35], [36, 45], [50, 60], [65, 90], [80, 90], [90, 100], [108, 100]];
 export const crochetBlanket: Calc = (v) => {
   const s = pick(v.size, BL.length), g = need(p(v, "g", 14), "Enter stitches per 4 in."), r = need(p(v, "r", 8), "Enter rows per 4 in."), ypsq = p(v, "ypsq", 4.5);
@@ -158,7 +156,6 @@ export const knitGauge: Calc = (v) => {
   const sts = need(p(v, "sts", 20), "Enter stitches in the swatch."), sw = need(p(v, "sw", 4), "Enter swatch width."), rows = p(v, "rows", 28), sh = need(p(v, "sh", 4), "Enter swatch height."), tw = p(v, "tw", 20), th = p(v, "th", 24);
   return { cast: `Cast on ${Math.round((sts / sw) * tw)} stitches for ${tw} in`, rows: `Knit ${Math.round((rows / sh) * th)} rows for ${th} in`, gauge: `${(sts / sw).toFixed(2)} sts and ${(rows / sh).toFixed(2)} rows per inch` };
 };
-export const AIDA = ["11 count", "14 count", "16 count", "18 count", "28 count over 2"];
 const AC = [11, 14, 16, 18, 14];
 export const crossStitch: Calc = (v) => {
   const sw = need(p(v, "sw", 140), "Enter pattern width in stitches."), sh = need(p(v, "sh", 100), "Enter pattern height."), c = AC[pick(v.count, AC.length)], margin = p(v, "m", 3);

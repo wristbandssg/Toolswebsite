@@ -28,7 +28,6 @@ export const wheatYield: Calc = (v) => {
   const yieldBu = (heads * kernels * 43560) / (kpp * 60);
   return { yield: `${yieldBu.toFixed(1)} bu/acre`, t: `${((yieldBu * 60) / 2204.6 * 2.471).toFixed(2)} t/ha`, note: `${heads} heads per ft², ${kernels} kernels per head, ${nfmt(kpp)} kernels per lb` };
 };
-export const GRAIN = ["Corn (15.5%)", "Soybeans (13%)", "Wheat (13.5%)", "Sorghum (14%)"];
 const GM = [15.5, 13, 13.5, 14];
 export const grainShrink: Calc = (v) => {
   const g = pick(v.g, 4), w = p(v, "w", 1000), mi = p(v, "mi", 22), mf = num(v.mf, GM[g]), hs = p(v, "hs", 0.5) / 100;
@@ -36,7 +35,6 @@ export const grainShrink: Calc = (v) => {
   const s = (mi - mf) / (100 - mf) + hs;
   return { shrink: `${(s * 100).toFixed(2)}% shrink`, net: `${nfmt(w * (1 - s))} dry bushels from ${nfmt(w)} wet`, factor: `${(((mi - mf) / (100 - mf)) * 100 / (mi - mf)).toFixed(3)}% per point of moisture + ${(hs * 100).toFixed(1)}% handling` };
 };
-export const BALE = ["Small square (2-string)", "Large square 3×4×8 ft", "Round 4×5 ft", "Round 5×6 ft"];
 const BALE_W = [50, 1000, 900, 1400];
 export const baleWeight: Calc = (v) => {
   const b = pick(v.b, 4), moist = p(v, "m", 15) / 100, n = p(v, "n", 100);
@@ -121,7 +119,6 @@ export const pivotAcres: Calc = (v) => {
   const ac = (Math.PI * r * r * arc) / 360 / 43560;
   return { acres: `${ac.toFixed(1)} irrigated acres`, field: `${((4 * r * r) / 43560).toFixed(1)} acres in the square field`, corner: corner ? `+ about ${((4 * r * r) / 43560 - (Math.PI * r * r) / 43560).toFixed(1)} acres with a corner arm` : "Corners not irrigated" };
 };
-export const MANURE = ["Dairy liquid (per 1,000 gal)", "Swine liquid (per 1,000 gal)", "Beef solid (per ton)", "Poultry litter (per ton)", "Horse solid (per ton)"];
 const MN: [number, number, number][] = [[24, 10, 21], [36, 25, 22], [11, 7, 10], [56, 55, 45], [12, 5, 9]];
 export const manureValue: Calc = (v) => {
   const m = pick(v.m, 5), qty = p(v, "q", 10), pn = p(v, "pn", 0.55), pp = p(v, "pp", 0.6), pk = p(v, "pk", 0.4), avail = p(v, "a", 50) / 100;
@@ -188,7 +185,6 @@ export const seedCost: Calc = (v) => {
   const perAc = (rate / seeds) * price;
   return { per: `${$(perAc)} per acre`, total: `${$(perAc * acres, 0)} for ${acres} acres`, bags: `${Math.ceil((rate * acres) / seeds)} bags` };
 };
-export const PATTERN = ["Square", "Triangular / hexagonal (+15%)"];
 export const orchard: Calc = (v) => {
   const row = need(p(v, "row", 20), "Enter row spacing."), tree = need(p(v, "tree", 15), "Enter tree spacing."), acres = p(v, "acres", 5), pat = pick(v.pat, 2);
   const per = (43560 / (row * tree)) * (pat ? 1.155 : 1);

@@ -57,9 +57,6 @@ export const drywallRepairCost: CustomCalculator = (v) => {
   const total = Math.max(150, pos(v.small) * 100 + pos(v.medium) * 200 + pos(v.large) * 400 + pos(v.ceilingSqFt) * 8 + (pick(v.texture, 2) ? (pos(v.small) + pos(v.medium) + pos(v.large)) * 50 : 0) + (pick(v.paint, 2) ? 150 : 0));
   return { totalCost: r2(total), ...spread(total) };
 };
-
-// ---------- Framing ----------
-export const FRAMING_MODES = ["Whole house — labor + materials (per sq ft of floor)", "Whole house — labor only (per sq ft)", "Interior wood stud walls (per linear ft)", "Interior metal stud walls (per linear ft)"];
 const FRAMING_RATE = [18, 8, 30, 35];
 export const framingCost: CustomCalculator = (v) => {
   const rate = pos(v.customRate) || FRAMING_RATE[pick(v.mode, 4)];
@@ -86,7 +83,6 @@ const CF = [1.3, 1.2, 1.1, 1.0];
 const FB = [900, 875, 850, 0], SYP = [1000, 925, 800, 750], EM = [1.6e6, 1.4e6, 1.3e6, 1.4e6];
 export const LUMBER = ["2×6", "2×8", "2×10", "2×12"];
 export const SPECIES = ["Douglas fir-larch No. 2", "Spruce-pine-fir No. 2", "Hem-fir No. 2", "Southern yellow pine No. 2"];
-export const JOIST_USES = ["Floor — living areas (40 psf live, L/360)", "Floor — sleeping rooms (30 psf, L/360)", "Deck joists (40 psf, wet, L/360)", "Ceiling — no attic storage (10 psf, L/240)", "Ceiling — limited storage (20 psf, L/240)"];
 const USE_LIVE = [40, 30, 40, 10, 20], USE_DEAD = [10, 10, 10, 5, 10], USE_DEFL = [360, 360, 360, 240, 240];
 export const joistSpan: CustomCalculator = (v) => {
   const s = pick(v.size, 4), sp = pick(v.species, 4), u = pick(v.use, 5);
@@ -101,11 +97,9 @@ export const joistSpan: CustomCalculator = (v) => {
   const L = Math.min(Lb, Ld);
   return { maxSpanFt: r2(L), feet: Math.floor(L), inches: Math.round((L - Math.floor(L)) * 12), joists: Math.floor((pos(v.floorLength, 20) * 12) / spacing) + 1, limitedBy: Ld < Lb ? 1 : 0 };
 };
-export const SPAN_LIMITS = ["Bending strength", "Deflection (bounce)"];
 
 // ---------- Sheet goods ----------
 const PLY_SHEETS = [32, 36, 40];
-export const PLY_THICK = ["1/2 in plywood", "5/8 in plywood", "3/4 in plywood", "7/16 in OSB", "23/32 in OSB (subfloor)"];
 const PLY_LB = [40, 50, 61, 47, 70];
 export const plywood: CustomCalculator = (v) => {
   const a = pos(v.length, 20) * pos(v.width, 12) + pos(v.extraArea);
@@ -147,9 +141,6 @@ export const plywoodCut: CustomCalculator = (v) => {
   const total = sheets.length * 32;
   return { sheets: sheets.length, utilization: total ? r1((pieceArea / total) * 100) : 0, pieceAreaSqFt: r1(pieceArea), wasteSqFt: r1(Math.max(0, total - pieceArea)), tooBig };
 };
-
-// ---------- Siding & cladding ----------
-export const SIDING_TYPES = ["Vinyl siding (sold by the square)", "Fiber cement lap, 8.25 in plank (7 in exposure, 12 ft)", "LP SmartSide lap, 8 in (6.83 in exposure, 16 ft)", "Cedar lap / clapboard (6 in exposure, 12 ft)", "Metal siding panels (36 in coverage)"];
 const PLANK_SQFT = [0, 7, 9.1, 6, 0];
 export const siding: CustomCalculator = (v) => {
   const t = pick(v.type, 5);
@@ -187,9 +178,6 @@ export const houseWrap: CustomCalculator = (v) => {
   const rows = ceil(pos(v.wallHeight, 9) / (rw - 0.5));
   return { rolls: ceil(area / (rw * rl)), area: Math.round(area), seamTapeFt: Math.ceil(pos(v.perimeter, 160) * Math.max(0, rows - 1) + ceil(area / (rw * rl)) * rw), capNails: Math.round(area * 0.5) };
 };
-
-// ---------- Insulation ----------
-export const INS_TYPES = ["Fiberglass batts / rolls", "Blown fiberglass", "Blown cellulose", "Open-cell spray foam", "Closed-cell spray foam"];
 const R_PER_IN = [3.2, 2.5, 3.6, 3.7, 6.5];
 export const insulation: CustomCalculator = (v) => {
   const t = pick(v.type, 5), a = pos(v.area, 1000);
@@ -251,15 +239,11 @@ export const kerfBending: CustomCalculator = (v) => {
   const ang = pos(v.bendAngle, 90) * RAD;
   return { kerfSpacingIn: r2(spacing), kerfs: ceil(ang / theta), kerfDepthIn: r2(depth), arcLengthIn: r2(R * ang) };
 };
-
-export const DOME_FREQ = ["2V hemisphere", "3V 5/8 sphere"];
 export const geodesicDome: CustomCalculator = (v) => {
   const r = pos(v.radius, 10), f = pick(v.frequency, 2);
   const A = f === 0 ? 0.54653 : 0.34862, B = f === 0 ? 0.61803 : 0.40355, C = f === 0 ? 0 : 0.41241;
   return { strutA: r2(A * r), countA: f === 0 ? 30 : 30, strutB: r2(B * r), countB: f === 0 ? 35 : 40, strutC: r2(C * r), countC: f === 0 ? 0 : 50, hubs: f === 0 ? 26 : 61, floorArea: Math.round(Math.PI * r * r), heightFt: r1(f === 0 ? r : r * 1.25) };
 };
-
-export const SHELF_MATS = ["3/4 in plywood", "3/4 in MDF", "3/4 in particleboard", "1× solid pine", "2× lumber"];
 const SHELF_SPAN = [[36, 32, 28, 24], [28, 24, 20, 16], [24, 20, 16, 14], [32, 28, 24, 20], [48, 40, 32, 28]];
 const SHELF_LOAD = [15, 25, 30, 40];
 export const shelfBracketSpacing: CustomCalculator = (v) => {
@@ -284,9 +268,6 @@ export const drawerSize: CustomCalculator = (v) => {
   return { boxWidthIn: r2(pos(v.openingWidth, 18) - widthCut), boxHeightIn: r2(pos(v.openingHeight, 6) - heightCut), slideLengthIn: slide, boxDepthIn: slide, frontWidthIn: r2(pos(v.openingWidth, 18) + 2 * pos(v.overlay, 0.5)), frontHeightIn: r2(pos(v.openingHeight, 6) + 2 * pos(v.overlay, 0.5)) };
 };
 export const SLIDES = ["Side-mount ball-bearing (½ in each side)", "Undermount (soft-close)", "Center-mount / wood runners"];
-
-// ---------- Windows & openings ----------
-export const HEADERS = ["(2) 2×6 — openings up to about 4 ft", "(2) 2×8 — up to about 5 ft", "(2) 2×10 — up to about 6.5 ft", "(2) 2×12 — up to about 8 ft", "Engineered LVL / steel — over 8 ft (size it)"];
 export const windowRoughOpening: CustomCalculator = (v) => {
   const replace = pick(v.mode, 2) === 1;
   const w = pos(v.width, 36), h = pos(v.height, 60);
@@ -302,11 +283,7 @@ export const bayWindowAngle: CustomCalculator = (v) => {
   const ang = Math.atan(P / half) * DEG;
   return { sideAngleDeg: r1(ang), miterDeg: r1(ang / 2), interiorAngleDeg: r1(180 - ang), sideLengthFt: r2(Math.sqrt(P * P + half * half)) };
 };
-
-// ---------- Soundproofing ----------
-export const WALL_ASSEMBLIES = ["2×4 studs, ½ in drywall each side, no insulation", "2×4 studs, ½ in drywall, insulated", "2×4 insulated, 2 layers one side", "2×4 insulated, resilient channel one side", "Staggered studs on 2×6 plate, insulated", "Double stud wall, insulated, 2 layers each side"];
 const STC = [33, 37, 40, 47, 46, 58];
-export const STC_LABELS = ["Poor — normal speech understood through the wall", "Fair — loud speech understood", "Good — loud speech heard but not understood", "Very good — loud speech barely audible", "Excellent — loud sounds faint", "Superior — most sounds inaudible"];
 export const stcRating: CustomCalculator = (v) => {
   const stc = STC[pick(v.assembly, STC.length)] + pos(v.extraLayers) * 3 + (pick(v.damping, 2) ? 6 : 0) + (pick(v.fiveEighths, 2) ? 1 : 0);
   return { stc, rating: stc < 30 ? 0 : stc < 35 ? 1 : stc < 42 ? 2 : stc < 50 ? 3 : stc < 60 ? 4 : 5 };
@@ -335,9 +312,6 @@ export const poleBarn: CustomCalculator = (v) => {
   const purlinRows = (ceil((slope * 12) / pos(v.purlinSpacing, 24)) + 1) * 2;
   return { posts: sidePosts + endPosts, trusses, girtFt: Math.ceil(2 * (W + L) * girtRows), purlinFt: Math.ceil(purlinRows * (L + 2)), roofSqFt: Math.round(2 * slope * (L + 2)), wallSqFt: Math.round(2 * (W + L) * H + 2 * (W / 2) * ((W / 2) * p) / 12), concreteBags: (sidePosts + endPosts) * 4 };
 };
-
-// ---------- Plaster (metric) ----------
-export const PLASTERS = ["Multi-finish skim (2 mm)", "Bonding / backing coat (11 mm)", "Hardwall backing (11 mm)", "One-coat plaster (13 mm)"];
 const PLASTER_COV = [10, 2.7, 3.1, 4.5]; // m² per 25 kg bag at the nominal thickness
 const PLASTER_T = [2, 11, 11, 13];
 export const plaster: CustomCalculator = (v) => {

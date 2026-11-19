@@ -38,8 +38,6 @@ const pc = (n: number) => ((Math.round(n) % 12) + 12) % 12;
 
 export const NOTE_NAMES = ["C", "C♯ / D♭", "D", "D♯ / E♭", "E", "F", "F♯ / G♭", "G", "G♯ / A♭", "A", "A♯ / B♭", "B"];
 export const NONE = 12;
-/** Labels for note results: 0–11 notes, 12 = "—". */
-export const NOTE_LABELS = [...NOTE_NAMES, "—"];
 
 // ---------- Chords ----------
 export const CHORDS: [string, string, number[]][] = [
@@ -56,9 +54,6 @@ export const chord: CustomCalculator = (v) => {
 };
 
 export const INVERTIBLE = CHORDS.filter(([name, , iv]) => (iv.length === 3 || iv.length === 4) && name !== "Add 9");
-export const FIGURES_TRIAD = ["Root position (5/3)", "1st inversion (6/3, “6”)", "2nd inversion (6/4)"];
-export const FIGURES_SEVENTH = ["Root position (7)", "1st inversion (6/5)", "2nd inversion (4/3)", "3rd inversion (4/2)"];
-export const INVERSION_FIGURES = ["5/3 (root position)", "6/3 (1st inversion)", "6/4 (2nd inversion)", "7 (root position)", "6/5 (1st inversion)", "4/3 (2nd inversion)", "4/2 (3rd inversion)"];
 export const chordInversion: CustomCalculator = (v) => {
   const root = pc(v.root);
   const iv = INVERTIBLE[pick(v.chordType, INVERTIBLE.length)][2];
@@ -67,11 +62,6 @@ export const chordInversion: CustomCalculator = (v) => {
   const voiced = [...notes.slice(inv), ...notes.slice(0, inv)];
   return { bassNote: pc(voiced[0]), ...notesOut(voiced, 4), figure: (iv.length === 3 ? 0 : 3) + inv, inversionUsed: inv };
 };
-
-// ---------- Intervals ----------
-export const INTERVAL_NAMES = ["Unison (P1)", "Minor 2nd (m2)", "Major 2nd (M2)", "Minor 3rd (m3)", "Major 3rd (M3)", "Perfect 4th (P4)", "Tritone (A4 / d5)", "Perfect 5th (P5)", "Minor 6th (m6)", "Major 6th (M6)", "Minor 7th (m7)", "Major 7th (M7)", "Octave (P8)", "Minor 9th (m9)", "Major 9th (M9)", "Minor 10th (m10)", "Major 10th (M10)", "Perfect 11th (P11)", "Augmented 11th (A11)", "Perfect 12th (P12)", "Minor 13th (m13)", "Major 13th (M13)", "Minor 14th (m14)", "Major 14th (M14)", "Double octave (P15)", "Wider than two octaves"];
-const JUST = ["1:1", "16:15", "9:8", "6:5", "5:4", "4:3", "45:32", "3:2", "8:5", "5:3", "16:9", "15:8"];
-export const JUST_LABELS = JUST;
 export const interval: CustomCalculator = (v) => {
   const a = pc(v.note1) + 12 * Math.round(safeNumber(v.octave1, 4));
   const b = pc(v.note2) + 12 * Math.round(safeNumber(v.octave2, 4));
@@ -109,8 +99,6 @@ export const GUITAR: [string, string, number[], number[]][] = [
   ["Major", "", [0, 2, 2, 1, 0, 0], [X, 0, 2, 2, 2, 0]], ["Minor", "m", [0, 2, 2, 0, 0, 0], [X, 0, 2, 2, 1, 0]], ["Dominant 7th", "7", [0, 2, 0, 1, 0, 0], [X, 0, 2, 0, 2, 0]], ["Major 7th", "maj7", [0, X, 1, 1, 0, X], [X, 0, 2, 1, 2, 0]], ["Minor 7th", "m7", [0, 2, 0, 0, 0, 0], [X, 0, 2, 0, 1, 0]],
   ["Suspended 2nd", "sus2", [0, 2, 4, 4, 0, 0], [X, 0, 2, 2, 0, 0]], ["Suspended 4th", "sus4", [0, 2, 2, 2, 0, 0], [X, 0, 2, 2, 3, 0]], ["Diminished", "°", [0, 1, 2, 0, X, X], [X, 0, 1, 2, 1, X]], ["Power chord (5)", "5", [0, 2, 2, X, X, X], [X, 0, 2, 2, X, X]],
 ];
-/** Labels for fret results: index 0 = muted "x", index k = fret k − 1. */
-export const FRET_LABELS = ["x (muted)", ...[...Array(24)].map((_, i) => (i === 0 ? "0 (open)" : String(i)))];
 export const guitarChord: CustomCalculator = (v) => {
   const root = pc(v.root);
   const [, , eShape, aShape] = GUITAR[pick(v.chordType, GUITAR.length)];
@@ -141,7 +129,6 @@ export const scale: CustomCalculator = (v) => {
 
 /** Signed accidentals for each major tonic pitch class (+ sharps, − flats). F♯ is shown as 6 sharps. */
 const MAJOR_SIG = [0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5];
-export const SIGNATURE_LABELS = [-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7].map((n) => (n === 0 ? "No sharps or flats" : n > 0 ? `${n} sharp${n > 1 ? "s" : ""}: ${"F♯ C♯ G♯ D♯ A♯ E♯ B♯".split(" ").slice(0, n).join(" ")}` : `${-n} flat${n < -1 ? "s" : ""}: ${"B♭ E♭ A♭ D♭ G♭ C♭ F♭".split(" ").slice(0, -n).join(" ")}`));
 export const keySignature: CustomCalculator = (v) => {
   const tonic = pc(v.tonic);
   const minor = pick(v.mode, 2) === 1;
@@ -149,9 +136,6 @@ export const keySignature: CustomCalculator = (v) => {
   const sig = MAJOR_SIG[relMajor];
   return { signature: sig + 7, sharps: Math.max(0, sig), flats: Math.max(0, -sig), relativeKey: minor ? relMajor : pc(tonic + 9), parallelKeySignature: (minor ? MAJOR_SIG[tonic] : MAJOR_SIG[pc(tonic + 3)]) + 7, dominantKey: pc(tonic + 7) };
 };
-
-/** Chord-name labels: index = root × 4 + quality (0 major, 1 minor, 2 diminished, 3 augmented). */
-export const CHORD_NAME_LABELS = NOTE_NAMES.flatMap((n) => [n, `${n}m`, `${n}°`, `${n}+`]);
 const triadQuality = (iv: number[], deg: number) => {
   const r = iv[deg % 7];
   const third = (iv[(deg + 2) % 7] - r + 12) % 12;
@@ -159,8 +143,6 @@ const triadQuality = (iv: number[], deg: number) => {
   return third === 4 ? (fifth === 8 ? 3 : 0) : fifth === 6 ? 2 : 1;
 };
 export const NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"];
-/** Roman-numeral labels: index = degree × 4 + quality. */
-export const NUMERAL_LABELS = NUMERALS.flatMap((n) => [n, n.toLowerCase(), `${n.toLowerCase()}°`, `${n}+`]);
 export const PROGRESSIONS: [string, number[]][] = [
   ["I – V – vi – IV (pop)", [0, 4, 5, 3]], ["I – IV – V – I", [0, 3, 4, 0]], ["ii – V – I – I (jazz)", [1, 4, 0, 0]], ["I – vi – IV – V (50s)", [0, 5, 3, 4]], ["vi – IV – I – V", [5, 3, 0, 4]], ["I – IV – vi – V", [0, 3, 5, 4]], ["IV – V – iii – vi (royal road)", [3, 4, 2, 5]], ["i – VI – III – VII (minor)", [0, 5, 2, 6]], ["i – iv – v – i (minor)", [0, 3, 4, 0]], ["i – VII – VI – V (Andalusian)", [0, 6, 5, 4]],
 ];
@@ -243,7 +225,6 @@ function normalForm(pcs: number[]) {
   const min = Math.min(...rots.map(span));
   return mostPacked(rots.filter((r) => span(r) === min));
 }
-export const PC_LABELS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "T (10)", "E (11)", "—"];
 export const pcSet: CustomCalculator = (v) => {
   const pcs = [1, 2, 3, 4, 5, 6].map((i) => Math.round(safeNumber(v[`pc${i}`], NONE))).filter((n) => n >= 0 && n < 12);
   const nf = normalForm(pcs);

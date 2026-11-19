@@ -111,17 +111,7 @@ export const concreteCountertop: CustomCalculator = (v) => {
   const bags = ceil(cuFt / 0.6);
   return { bags, cubicFeet: r2(cuFt), weightLb: Math.round(cuFt * 150 / 1.1), sqFt: r2(sqFt), diyMaterialCost: r2(bags * pos(v.bagPrice) + sqFt * 6), proCost: r2(sqFt * pos(v.proPerSqFt)) };
 };
-
-export const THICKNESS_USES = ["Sidewalk or patio", "Shed, AC or hot tub pad", "Driveway (cars)", "Garage floor", "RV / heavy truck parking", "Basement floor"];
 const THICK = [4, 4, 5, 5, 7, 4];
-export const THICKNESS_NOTES = [
-  "4 in — wire mesh or fiber optional; 3/4 in control joints every 8–10 ft",
-  "4 in (6 in for large hot tubs) — wire mesh; check the equipment's pad spec",
-  "5 in (4 in minimum) — #3 rebar at 18 in or mesh; joints every 10 ft",
-  "5 in (4 in minimum) — #3 rebar at 18–24 in; slope to the door",
-  "6–8 in — #4 rebar at 12–16 in on a 6 in compacted base",
-  "4 in — vapor barrier under the slab; mesh or fiber",
-];
 export const concreteThickness: CustomCalculator = (v) => {
   const u = pick(v.use, THICK.length);
   const t = THICK[u], area = pos(v.area);
@@ -136,8 +126,6 @@ export const anchorEpoxy: CustomCalculator = (v) => {
   const cart = pos(v.cartridgeOz, 10) * 1.805;
   return { cartridges: ceil(total / cart), cubicInches: r2(total), cubicInchesPerHole: r2(perHole), holesPerCartridge: perHole ? Math.floor(cart / (perHole * (1 + pos(v.waste, 15) / 100))) : 0 };
 };
-
-export const WIRE_MESH = ["6×6 W1.4×W1.4 (10 ga)", "6×6 W2.1×W2.1 (8 ga)", "6×6 W2.9×W2.9 (6 ga)", "6×6 W4.0×W4.0 (4 ga)", "4×4 W1.4×W1.4 (10 ga)", "4×4 W2.9×W2.9 (6 ga)"];
 const MESH_LB = [21, 30, 42, 58, 31, 62];
 export const wireMesh: CustomCalculator = (v) => {
   const area = pos(v.length) * pos(v.width);
@@ -145,8 +133,6 @@ export const wireMesh: CustomCalculator = (v) => {
   const sheet = pick(v.format, 2) === 0 ? 50 : 750;
   return { pieces: ceil(withLap / sheet), weightLb: Math.round((withLap * MESH_LB[pick(v.mesh, MESH_LB.length)]) / 100), area: r2(area), areaWithOverlap: r2(withLap) };
 };
-
-export const FORM_TYPES = ["Slab edge (one side)", "Wall (both sides)", "Footing (both sides)", "Square column (4 sides)"];
 export const concreteForm: CustomCalculator = (v) => {
   const t = pick(v.type, 4);
   const L = pos(v.length), h = pos(v.height, 6) / 12;
@@ -175,8 +161,6 @@ export const retainingWall: CustomCalculator = (v) => {
   const gravel = (L * (H + (pos(v.buried, 1) * bh) / 12) * pos(v.gravelDepth, 1)) / 27;
   return { blocks, courses, blocksPerCourse: perCourse, caps, gravelCuYd: r2(gravel + (L * 1 * 0.5) / 27), drainPipeFeet: Math.ceil(L), cost: r2(blocks * pos(v.blockPrice) + caps * pos(v.capPrice)) };
 };
-
-export const STONE_TYPES = ["Fieldstone (dry stack)", "Flat ledgestone / flagstone", "Cut / dressed stone"];
 const STONE_SOLID = [0.7, 0.8, 0.9];
 export const stoneWall: CustomCalculator = (v) => {
   const vol = pos(v.length) * pos(v.height) * pos(v.thickness, 1.5);
@@ -191,8 +175,6 @@ export const stoneVeneer: CustomCalculator = (v) => {
   const total = flats + corners * 0.75;
   return { flatSqFt: r2(flats), flatBoxes: ceil(flats / pos(v.flatBox, 10)), cornerBoxes: ceil((corners * 1.05) / pos(v.cornerBox, 8)), mortarBags: ceil(total / 25), lathSheets: ceil(total / 18) };
 };
-
-export const STUCCO_SYSTEMS = ["Traditional 3-coat (7/8 in)", "One-coat (3/8 in)", "Finish coat only (1/8 in)"];
 const STUCCO_T = [0.875, 0.375, 0.125];
 export const stucco: CustomCalculator = (v) => {
   const s = pick(v.system, 3);
@@ -210,8 +192,6 @@ export const foundationDepth: CustomCalculator = (v) => {
   const width = type === 2 ? 8 : FOOT_W[pick(v.soil, 3)][pick(v.stories, 3)];
   return { footingDepthIn: depth, footingDepthMm: Math.round(depth * 25.4), footingWidthIn: width, footingThicknessIn: type === 2 ? 6 : Math.max(6, Math.round(width / 2)) };
 };
-
-export const LINTEL_SIZES = ["65 mm deep (100 × 65) — light loads, short spans", "140 mm deep (100 × 140)", "215 mm deep (100 × 215)", "Steel or engineered lintel — get a structural design"];
 export const lintel: CustomCalculator = (v) => {
   const open = pos(v.opening, 900);
   const bearing = open > 1500 ? 150 : 100;
@@ -222,9 +202,6 @@ export const lintel: CustomCalculator = (v) => {
   const stock = Math.ceil(len / 150) * 150;
   return { lintelSize: size, lintelLengthMm: len, stockLengthMm: stock, bearingEachEndMm: Math.max(bearing, 150) };
 };
-
-// ---------- Driveways ----------
-export const DRIVEWAY_MATERIALS = ["Asphalt", "Concrete", "Gravel", "Pavers", "Stamped concrete", "Resin-bound", "Tar and chip", "Heated concrete"];
 const DRIVE_RATE = [5, 10, 2, 25, 16, 12, 4, 30];
 export const drivewayCost: CustomCalculator = (v) => {
   const area = pos(v.length) * pos(v.width);
@@ -248,9 +225,6 @@ export const tarAndChip: CustomCalculator = (v) => {
   const stoneTons = (sqYd * 25 * layers) / 2000;
   return { cost: r2(pos(v.area) * (layers === 1 ? pos(v.rate1, 2.5) : pos(v.rate2, 4))), stoneTons: r2(stoneTons), emulsionGallons: r1(sqYd * 0.35 * layers), baseTons: r2(((pos(v.area) * pos(v.baseDepth)) / 12 / 27) * 1.4) };
 };
-
-// ---------- Repair & finishing costs ----------
-export const FOUNDATION_REPAIRS = ["Crack sealing (per crack)", "Steel / helical piers (per pier)", "Slabjacking / foam leveling (per sq ft)", "Wall anchors or braces (per anchor)", "Foundation replacement (per sq ft)"];
 const FOUND_RATE = [500, 1500, 10, 700, 60];
 export const foundationRepairCost: CustomCalculator = (v) => {
   const rate = pos(v.customRate) || FOUND_RATE[pick(v.repair, FOUND_RATE.length)];
@@ -280,23 +254,17 @@ export const concreteDemolitionCost: CustomCalculator = (v) => {
   const total = pos(v.area) * rate + tons * pos(v.disposalPerTon, 50);
   return { totalCost: r2(total), ...spread(total), debrisTons: r2(tons), truckLoads: ceil(tons / 10) };
 };
-
-export const STUCCO_JOBS = ["New 3-coat stucco", "New one-coat stucco", "Patch / repair", "Remove and replace"];
 const STUCCO_RATE = [9, 7, 20, 14];
 export const stuccoCost: CustomCalculator = (v) => {
   const rate = pos(v.customRate) || STUCCO_RATE[pick(v.job, 4)];
   const total = Math.max(300, pos(v.area) * rate * STORY[pick(v.stories, 3)]);
   return { totalCost: r2(total), ...spread(total), costPerSqFt: pos(v.area) ? r2(total / pos(v.area)) : 0 };
 };
-
-export const RESURFACE_METHODS = ["Resurfacer / skim coat", "Microtopping", "Stamped overlay", "Epoxy coating", "Grind and polish"];
 const RESURF_RATE = [4, 8, 12, 6, 5];
 export const concreteResurfacingCost: CustomCalculator = (v) => {
   const total = pos(v.area) * (pos(v.customRate) || RESURF_RATE[pick(v.method, 5)]) + pos(v.crackFeet) * 3;
   return { totalCost: r2(total), ...spread(total), costPerSqFt: pos(v.area) ? r2(total / pos(v.area)) : 0 };
 };
-
-export const SCREED_TYPES = ["Sand & cement (1:4)", "Liquid anhydrite", "Fast-drying sand & cement"];
 export const screed: CustomCalculator = (v) => {
   const t = pick(v.type, 3);
   const vol = pos(v.area) * (pos(v.depth, 65) / 1000);

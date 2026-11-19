@@ -322,9 +322,6 @@ export const ratio: Calc = (v) => {
   else { result = parts.map((p) => show(p * c)).join(" : "); detail = `Each part × ${show(c)}`; }
   return { result, simplest: simp.join(" : "), unit: parts.length === 2 && parts[1] !== 0 ? `${show(parts[0] / parts[1], 8)} : 1` : "—", percent: pctTxt, fraction: parts.length === 2 ? `First part = ${simp[0]}/${simp[0] + simp[1]} of the total` : `Parts out of ${simp.reduce((a, b) => a + b, 0)}`, detail };
 };
-
-// ------------------------------------------------------------------ arithmetic sequence
-export const SEQ_MODES = ["From the first term a₁ and difference d", "From two known terms"];
 export const arithmeticSequence: Calc = (v) => {
   const m = pick(v.mode, 2), n = Math.round(num(v.n, 10));
   if (n < 1 || n > 1e9) throw new InputError("n must be a whole number of at least 1.");
@@ -361,7 +358,6 @@ export const distanceFormula: Calc = (v) => {
 const RN: [number, string][] = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
 const toRoman = (n: number) => { let s = ""; for (const [k, r] of RN) while (n >= k) { s += r; n -= k; } return s; };
 const OVER = "̅";
-export const ROMAN_MODES = ["Number → Roman numerals", "Roman numerals → number"];
 export const romanNumeral: Calc = (v) => {
   const m = pick(v.mode, 2), raw = txt(v, "x").trim();
   let n: number, roman: string;
@@ -382,9 +378,6 @@ export const romanNumeral: Calc = (v) => {
   const parts = String(n).split("").reverse().map((dg, i) => Number(dg) * 10 ** i).filter(Boolean).reverse();
   return { result: m === 0 ? roman : nfmt(n), number: n, roman, breakdown: n < 4000 ? parts.map((p) => `${p} = ${toRoman(p)}`).join(", ") : "Values over 3,999 use a bar (vinculum): a barred letter means × 1,000", year: n >= 1 && n <= 3999 ? `${toRoman(n)} (as used for years, e.g. on films and buildings)` : "—" };
 };
-
-// ------------------------------------------------------------------ military time
-export const MIL_MODES = ["12-hour → military (24-hour) time", "Military → 12-hour time", "Hours between two military times"];
 const ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
 const TENS = ["", "", "twenty", "thirty", "forty", "fifty"];
 const say = (n: number) => (n < 20 ? ONES[n] : TENS[Math.floor(n / 10)] + (n % 10 ? `-${ONES[n % 10]}` : ""));
