@@ -92,33 +92,6 @@
  *    Tax, Real Property Tax (national statutory caps only, LGU rates
  *    vary), Dividend Tax, and Self Employed Tax comparing the 8% flat
  *    option against graduated rates + percentage tax)
- *  - calc-engine-us-estate-inheritance-gift.ts — 18 US state tools under
- *    the existing "Tax & Paycheck Calculators" category, first batch of
- *    the 50-state audit (see state_tax_audit.xlsx, delivered 27 Sep 2026):
- *    Gift Tax (Connecticut, the only US state with one), Inheritance Tax
- *    (Kentucky, Maryland, Nebraska, New Jersey, Pennsylvania), and Estate
- *    Tax (Connecticut, Hawaii, Illinois, Maine, Maryland, Massachusetts,
- *    Minnesota, New York, Oregon, Rhode Island, Vermont, Washington) — see
- *    that file's header for the disclosed graduated-schedule approximation
- *    (`graduatedEstimate`) used throughout, since the audit only confirmed
- *    each schedule's low/high rate, not every bracket edge
- *  - calc-engine-us-capital-gains-extended.ts — 6 US state Capital Gains
- *    Tax tools, second batch of the 50-state audit: Washington (unique
- *    excise tax), Hawaii (7.25% cap), Massachusetts (short/long-term
- *    split + surtax), Montana (distinct lower brackets), Maryland (new 2%
- *    surcharge above $350k AGI, layered on ordinary tax), and Missouri
- *    (honest $0 tool — first US state ever to repeal individual CGT)
- *  - calc-engine-us-payroll-tax-extended.ts — 15 US state "Payroll Tax"
- *    tools, third batch of the 50-state audit: every state with a genuine
- *    state-level payroll premium beyond ordinary withholding and SUTA
- *    (paid-family-leave/TDI/SDI-style programs) — AK, CA, CO, CT, DE, HI,
- *    ME, MA, MN, NJ, NY, OR, RI, VT, WA. Maryland's FAMLI is enacted but
- *    not yet collecting (delayed to 2027) so deliberately not built yet.
- *  - calc-engine-us-other-business-tax.ts — 16 US state "Business Tax"
- *    tools, fourth batch of the 50-state audit: a SECOND state-level
- *    business levy beyond the corporate tax (franchise/gross-receipts/
- *    net-worth/severance taxes) — AL, AR, CA, DE, GA, IL, KY, MA, MN, MS,
- *    NV, NH, NC, OR, SC, WV
  *  - calc-engine-us-transfer-tax.ts — 29 US state "Real Estate Transfer
  *    Tax" tools (the US equivalent of "stamp duty"), fifth batch of the
  *    50-state audit — every state with a genuine state-level transfer/
@@ -218,10 +191,6 @@ import { indiaExtendedCustomCalculators } from "./calc-engine-india-extended-cal
 import { hongKongExtendedCustomCalculators } from "./calc-engine-hongkong-extended-calculators";
 import { malaysiaExtendedCustomCalculators } from "./calc-engine-malaysia-extended-calculators";
 import { philippinesExtendedCustomCalculators } from "./calc-engine-philippines-extended-calculators";
-import { usEstateInheritanceGiftCustomCalculators } from "./calc-engine-us-estate-inheritance-gift";
-import { usCapitalGainsExtendedCustomCalculators } from "./calc-engine-us-capital-gains-extended";
-import { usPayrollTaxExtendedCustomCalculators } from "./calc-engine-us-payroll-tax-extended";
-import { usOtherBusinessTaxCustomCalculators } from "./calc-engine-us-other-business-tax";
 import { usTransferTaxCustomCalculators } from "./calc-engine-us-transfer-tax";
 import { usCorporateTaxCustomCalculators } from "./calc-engine-us-corporate-tax";
 import { usSalesTaxCustomCalculators } from "./calc-engine-us-sales-tax";
@@ -830,10 +799,6 @@ export const customCalculators: Record<string, CustomCalculator> = {
   ...hongKongExtendedCustomCalculators,
   ...malaysiaExtendedCustomCalculators,
   ...philippinesExtendedCustomCalculators,
-  ...usEstateInheritanceGiftCustomCalculators,
-  ...usCapitalGainsExtendedCustomCalculators,
-  ...usPayrollTaxExtendedCustomCalculators,
-  ...usOtherBusinessTaxCustomCalculators,
   ...usTransferTaxCustomCalculators,
   ...usCorporateTaxCustomCalculators,
   ...usSalesTaxCustomCalculators,
