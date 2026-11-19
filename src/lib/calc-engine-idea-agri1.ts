@@ -163,7 +163,6 @@ export const hydroNutrient: Calc = (v) => {
   const gal = need(p(v, "gal", 50), "Enter reservoir size."), dose = p(v, "dose", 2), ec = p(v, "ec", 1.8);
   return { dose: `${(gal * dose).toFixed(1)} ml (or tsp) of each part`, ppm: `${nfmt(ec * 500)} ppm (500 scale) / ${nfmt(ec * 700)} ppm (700 scale) target`, note: `EC ${ec} mS/cm; adjust pH to 5.5–6.5 after mixing` };
 };
-export const ANIMALS = ["Beef cow", "Dairy cow (milking)", "Horse", "Sheep / goat", "Pig", "Chickens (per 100)"];
 const WATER = [15, 35, 12, 2, 4, 9];
 export const troughNeed: Calc = (v) => {
   const a = pick(v.a, 6), n = p(v, "n", 30), heat = 1 + Math.max(0, p(v, "t", 80) - 70) * 0.02;

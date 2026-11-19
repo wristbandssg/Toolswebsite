@@ -491,9 +491,6 @@ export const homepageSchema = z.object({
 
 export type Design1Content = z.infer<typeof design1Schema>;
 export type HomepageSettings = z.infer<typeof homepageSchema>;
-export type HomeIconItem = z.infer<typeof iconItemSchema>;
-export type HomeSectionItem = z.infer<typeof sectionSchema>;
-export type HomeLogo = z.infer<typeof logoSchema>;
 export type Design2Content = z.infer<typeof design2Schema>;
 export type D2Chip = z.infer<typeof chipSchema>;
 export type Design3Content = z.infer<typeof design3Schema>;

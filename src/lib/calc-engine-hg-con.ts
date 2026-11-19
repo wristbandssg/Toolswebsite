@@ -141,8 +141,6 @@ export const concreteForm: CustomCalculator = (v) => {
   const boards = t === 0 || t === 2 ? ceil((h * 12) / 5.5) * L * sides : 0;
   return { contactSqFt: r2(contact), boardFeet2x6: r2(boards), stakes: t === 3 ? 0 : ceil(L / 3 + 1) * (sides > 1 ? 2 : 1), plywoodSheets: t === 1 || t === 3 ? ceil(contact / 32) : 0, formOilGallons: r2(contact / 450) };
 };
-
-export const sealerUse = ["Acrylic, solvent-based", "Acrylic, water-based", "Penetrating silane / siloxane", "Epoxy or urethane"];
 const SEALER_COV = [250, 300, 150, 250];
 export const concreteSealer: CustomCalculator = (v) => {
   const gal = (pos(v.area) * Math.max(1, pos(v.coats, 2))) / SEALER_COV[pick(v.sealer, 4)] * 1.05;

@@ -32,7 +32,6 @@ const COUNTRIES: { re: RegExp; flag: string; name: string }[] = [
   { re: /^france-/, flag: "🇫🇷", name: "France" },
 ];
 
-
 type ToolRow = { slug: string; title: string; description: string | null; categoryId: string | null; isPopular: boolean };
 const toolSelect = { slug: true, title: true, description: true, categoryId: true, isPopular: true } as const;
 
@@ -237,5 +236,3 @@ export async function loadDesign3Data(content: Design3Content) {
     autoCategorySlugs: auto.map((c) => c.slug),
   };
 }
-
-export type Design3Data = Awaited<ReturnType<typeof loadDesign3Data>>;

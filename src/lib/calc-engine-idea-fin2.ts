@@ -17,8 +17,6 @@ const grow = (yearly: number, years: number, r = 0.07) => (r ? yearly * ((Math.p
 /** [key, label, default, mode]: 0 fixed · 1 per person · 2 per day · 3 per person per day */
 export type Item = [string, string, number, 0 | 1 | 2 | 3];
 export interface BudgetSpec { people?: [string, number]; days?: [string, number]; items: Item[] }
-const UNIT = ["", " per person", " per day", " per person per day"];
-export const itemLabel = (it: Item) => `${it[1]}${UNIT[it[3]]}`;
 
 export const BUDGETS: Record<string, BudgetSpec> = {
   "baby-shower-budget-calculator": { people: ["Guests", 25], items: [["v", "Venue", 0, 0], ["f", "Food and Drinks", 18, 1], ["c", "Cake and Desserts", 80, 0], ["d", "Decorations", 120, 0], ["i", "Invitations", 30, 0], ["g", "Games and Prizes", 50, 0], ["fv", "Favors", 3, 1]] },

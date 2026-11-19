@@ -200,7 +200,6 @@ function sunLongitude(jd: number) {
 }
 const STEM_ELEM = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
 const BRANCH_ELEM = [4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4];
-export const FIVE_ELEMENTS = ["Wood", "Fire", "Earth", "Metal", "Water"];
 const sexagenary = (stem: number, branch: number) => { for (let n = 0; n < 60; n++) if (n % 10 === stem && n % 12 === branch) return n; return 0; };
 export const bazi: CustomCalculator = (v) => {
   const day = Math.round(safeNumber(v.birthDate));

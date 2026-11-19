@@ -28,8 +28,6 @@ export const RESERVED_SLUGS = [
   "robots.txt",
   "sitemap.xml",
 ] as const;
-
-export const homeUrl = () => "/";
 export const calculatorsUrl = () => "/calculators/";
 export const blogIndexUrl = () => "/blog/";
 export const blogUrl = (slug: string) => `/blog/${slug}/`;

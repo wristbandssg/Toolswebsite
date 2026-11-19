@@ -18,7 +18,7 @@ export { InputError, txt, num, pos, pick, fmt, sig };
 export type { Vals, Out };
 export type TrvCalculator = (values: Vals) => Out;
 
-export const R_MI = 3958.7613, R_KM = 6371.0088, KM_PER_MI = 1.609344, NM_PER_KM = 1 / 1.852;
+export const R_KM = 6371.0088, KM_PER_MI = 1.609344, NM_PER_KM = 1 / 1.852;
 export const RAD = Math.PI / 180;
 /** Round to 2 dp (money). */
 export const r2 = (x: number) => (Number.isFinite(x) ? Math.round(x * 100) / 100 : 0);

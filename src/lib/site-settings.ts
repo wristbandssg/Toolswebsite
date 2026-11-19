@@ -20,7 +20,3 @@ export async function setSiteSetting(key: string, value: unknown) {
     create: { key, value: serialized },
   });
 }
-
-export async function deleteSiteSetting(key: string) {
-  await prisma.siteSetting.deleteMany({ where: { key } });
-}

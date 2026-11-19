@@ -35,8 +35,6 @@ function round2(n: number): number {
 const nonNeg = (v: number, d = 0) => Math.max(0, safeNumber(v, d));
 const pick = (v: number, n: number) => Math.min(n - 1, Math.max(0, Math.round(safeNumber(v))));
 const pc = (n: number) => ((Math.round(n) % 12) + 12) % 12;
-
-export const NOTE_NAMES = ["C", "C♯ / D♭", "D", "D♯ / E♭", "E", "F", "F♯ / G♭", "G", "G♯ / A♭", "A", "A♯ / B♭", "B"];
 export const NONE = 12;
 
 // ---------- Chords ----------
@@ -142,7 +140,6 @@ const triadQuality = (iv: number[], deg: number) => {
   const fifth = (iv[(deg + 4) % 7] - r + 12) % 12;
   return third === 4 ? (fifth === 8 ? 3 : 0) : fifth === 6 ? 2 : 1;
 };
-export const NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"];
 export const PROGRESSIONS: [string, number[]][] = [
   ["I – V – vi – IV (pop)", [0, 4, 5, 3]], ["I – IV – V – I", [0, 3, 4, 0]], ["ii – V – I – I (jazz)", [1, 4, 0, 0]], ["I – vi – IV – V (50s)", [0, 5, 3, 4]], ["vi – IV – I – V", [5, 3, 0, 4]], ["I – IV – vi – V", [0, 3, 5, 4]], ["IV – V – iii – vi (royal road)", [3, 4, 2, 5]], ["i – VI – III – VII (minor)", [0, 5, 2, 6]], ["i – iv – v – i (minor)", [0, 3, 4, 0]], ["i – VII – VI – V (Andalusian)", [0, 6, 5, 4]],
 ];
