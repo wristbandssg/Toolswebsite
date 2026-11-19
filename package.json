@@ -681,7 +681,8 @@
     "db:create-idea-tax2-calculators": "tsx prisma/create-idea-tax2-calculators.ts",
     "db:create-idea-conv1-calculators": "tsx prisma/create-idea-conv1-calculators.ts",
     "db:create-idea-conv2-calculators": "tsx prisma/create-idea-conv2-calculators.ts",
-    "db:create-idea-geo1-calculators": "tsx prisma/create-idea-geo1-calculators.ts"
+    "db:create-idea-geo1-calculators": "tsx prisma/create-idea-geo1-calculators.ts",
+    "db:create-idea-cal1-calculators": "tsx prisma/create-idea-cal1-calculators.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
