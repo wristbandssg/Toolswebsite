@@ -12,7 +12,7 @@ import { txt, fmt, compileFn, numDeriv } from "./sci-math-core";
 const f = (x: number) => fmt(Math.abs(x) < 1e-300 ? 0 : x, 5);
 const P = (v: Record<string, number>, k: string, d: number, n: string) => { const x = num(v[k], d); if (!(x > 0)) throw new InputError(`${n} must be greater than 0.`); return x; };
 const Z = (v: Record<string, number>, k: string, d: number) => Math.max(0, num(v[k], d));
-const h = 6.62607015e-34, c = 299792458, e = 1.602176634e-19, me = 9.1093837015e-31, kB = 1.380649e-23, sig = 5.670374419e-8, mu0 = 1.25663706212e-6, g0 = 9.80665, D = Math.PI / 180, hbar = h / (2 * Math.PI);
+const h = 6.62607015e-34, c = 299792458, e = 1.602176634e-19, me = 9.1093837015e-31, sig = 5.670374419e-8, mu0 = 1.25663706212e-6, g0 = 9.80665, D = Math.PI / 180, hbar = h / (2 * Math.PI);
 
 // ---- Mechanics ----
 export const incline: Calc = (v) => {

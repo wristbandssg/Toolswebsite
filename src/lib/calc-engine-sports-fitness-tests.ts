@@ -97,7 +97,10 @@ export const beepTestCalculator: CustomCalculator = (values) => {
     // PACER laps → level and shuttle.
     let left = laps;
     level = 1;
-    while (level < 21 && left > SHUTTLES[level - 1]) left -= SHUTTLES[level - 1], level++;
+    while (level < 21 && left > SHUTTLES[level - 1]) {
+      left -= SHUTTLES[level - 1];
+      level++;
+    }
     shuttle = left;
   }
   shuttle = Math.min(SHUTTLES[level - 1], Math.max(0, shuttle));

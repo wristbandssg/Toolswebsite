@@ -8,7 +8,7 @@ import { TOOL_TEMPLATES } from "@/lib/templates/registry";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import RichTextEditor from "./RichTextEditor";
 import AuthorSelect, { type AuthorOption } from "./AuthorSelect";
-import type { CategoryOptionGroup } from "@/lib/flattenCategoryTree";
+import type { CategoryOptionGroup } from "@/lib/flatten-category-tree";
 
 export interface ToolFormValues {
   slug: string;

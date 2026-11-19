@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
 import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/lib/calc-engine";
-import { groupCategoryTree } from "@/lib/flattenCategoryTree";
+import { groupCategoryTree } from "@/lib/flatten-category-tree";
 import { getCategoryIndex } from "@/lib/category-index";
 
 export default async function EditToolPage({ params }: { params: Promise<{ slug: string }> }) {

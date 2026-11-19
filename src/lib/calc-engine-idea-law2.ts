@@ -157,7 +157,7 @@ export const apportion: Calc = (v) => {
   if (seats < rows.length) throw new InputError("Huntington–Hill gives every area at least one seat — use at least as many seats as areas.");
   const s = rows.map(() => 1); for (let k = rows.length; k < seats; k++) { let bi = 0, bv = -1; rows.forEach((r, i) => { const pv = r.p / Math.sqrt(s[i] * (s[i] + 1)); if (pv > bv) { bv = pv; bi = i; } }); s[bi]++; }
   const tot = rows.reduce((a, r) => a + r.p, 0);
-  return { s: rows.map((r, i) => `${r.n}: ${s[i]}`).join(" · "), q: rows.map((r, i) => `${r.n} quota ${nfmt((r.p / tot) * seats, 2)}`).join(" · "), note: "Huntington–Hill (method of equal proportions), used for the US House: each area gets 1 seat, then seats go to the highest P ÷ √(n(n+1))" };
+  return { s: rows.map((r, i) => `${r.n}: ${s[i]}`).join(" · "), q: rows.map((r) => `${r.n} quota ${nfmt((r.p / tot) * seats, 2)}`).join(" · "), note: "Huntington–Hill (method of equal proportions), used for the US House: each area gets 1 seat, then seats go to the highest P ÷ √(n(n+1))" };
 };
 // ---- Immigration ----
 export const stemOpt: Calc = (v) => {

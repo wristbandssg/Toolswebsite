@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { CategoryOptionGroup } from "@/lib/flattenCategoryTree";
+import type { CategoryOptionGroup } from "@/lib/flatten-category-tree";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Draft",

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ToolsList from "@/components/admin/ToolsList";
-import { groupCategoryTree } from "@/lib/flattenCategoryTree";
+import { groupCategoryTree } from "@/lib/flatten-category-tree";
 import { getCategoryIndex } from "@/lib/category-index";
 
 export default async function ToolsListPage() {

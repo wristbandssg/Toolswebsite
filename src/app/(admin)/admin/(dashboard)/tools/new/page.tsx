@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import ToolForm from "@/components/admin/ToolForm";
-import { groupCategoryTree } from "@/lib/flattenCategoryTree";
+import { groupCategoryTree } from "@/lib/flatten-category-tree";
 
 export default async function NewToolPage() {
   const [categories, authors] = await Promise.all([

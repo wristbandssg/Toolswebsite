@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getHomepageSettings } from "@/lib/homepage-config";
 import { loadDesign1Data, loadDesign2Data } from "@/lib/homepage-data";
-import { groupCategoryTree } from "@/lib/flattenCategoryTree";
+import { groupCategoryTree } from "@/lib/flatten-category-tree";
 import HomepageSettingsForm from "@/components/admin/HomepageSettingsForm";
 
 export const dynamic = "force-dynamic";

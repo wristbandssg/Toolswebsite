@@ -125,7 +125,7 @@ export const boxing: Calc = (v) => {
 export const bjj: Calc = (v) => {
   const b = pick(v.b, 4), months = Z(v, "m", 0), age = Math.round(num(v.a, 25)), rules: [string, number, number][] = [["blue", 24, 16], ["purple", 18, 17], ["brown", 12, 18], ["black", 0, 19]];
   if (b === 3) return { n: "Black belt — degrees come every 3 years (first three) under IBJJF rules", t: "Coral belts begin after many decades at black belt", note: "IBJJF graduation system" };
-  const [cur, min, minAge] = rules[b], next = rules[b + 1][0], left = Math.max(0, min - months), nextAge = rules[b + 1][2];
+  const [cur, min] = rules[b], next = rules[b + 1][0], left = Math.max(0, min - months), nextAge = rules[b + 1][2];
   return { n: `Earliest ${next} belt: ${left ? `${f(left)} months from now` : "now eligible on time"}`, t: `IBJJF minimum ${f(min / 12)} years at ${cur} belt · minimum age ${nextAge} for ${next}${age < nextAge ? ` (you're ${age})` : ""}`, note: "Minimum times only — most people take longer; typical white-to-black is 8–12 years · your instructor decides promotions" };
 };
 export const saves: Calc = (v) => {
