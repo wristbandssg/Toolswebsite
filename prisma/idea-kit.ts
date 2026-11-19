@@ -61,6 +61,7 @@ export async function createNew(catSlug: string, tools: ToolDef[]) {
 export async function runIdeas(groups: [string, ToolDef[]][]) {
   const all = groups.flatMap(([, t]) => t);
   if (new Set(all.map((t) => t.slug)).size !== all.length) throw new Error("Duplicate slug in batch");
+  if (process.env.IDEA_SHOW) for (const d of all) console.log(`${d.slug} | ${d.examples.slice(0, 200)}`);
   if (process.env.IDEA_DRY) { console.log(`DRY RUN OK: ${all.length} tools`); return; }
   for (const [cat, tools] of groups) await createNew(cat, tools);
 }
