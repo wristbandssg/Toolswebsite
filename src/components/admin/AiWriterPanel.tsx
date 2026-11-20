@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type QcCheck = { label: string; ok: boolean; detail: string };
+import type { QcCheck } from "@/lib/ai-writer";
 
 /**
  * "Write with AI" box shown at the top of the tool and blog edit forms.

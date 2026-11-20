@@ -101,7 +101,7 @@ export type BlogDraft = z.infer<typeof BlogDraftSchema>;
 // ---------------------------------------------------------------------------
 // Requests from the admin forms
 // ---------------------------------------------------------------------------
-export const ToolRequestSchema = z.object({
+const ToolRequestSchema = z.object({
   kind: z.literal("tool"),
   slug: z.string(),
   title: z.string().min(1),
@@ -122,7 +122,7 @@ export const ToolRequestSchema = z.object({
   notes: z.string().optional().default(""),
 });
 
-export const BlogRequestSchema = z.object({
+const BlogRequestSchema = z.object({
   kind: z.literal("blog"),
   title: z.string().min(1),
   slug: z.string().optional().default(""),
@@ -134,7 +134,6 @@ export const BlogRequestSchema = z.object({
 });
 
 export const WriterRequestSchema = z.discriminatedUnion("kind", [ToolRequestSchema, BlogRequestSchema]);
-export type WriterRequest = z.infer<typeof WriterRequestSchema>;
 
 type LinkTarget = { title: string; href: string };
 
@@ -330,7 +329,7 @@ ${req.notes ? `\nEXTRA INSTRUCTIONS FROM THE EDITOR (follow them unless they bre
     { label: "FAQ 4–6 questions", ok: result.faq.length >= 4 && result.faq.length <= 6, detail: `${result.faq.length}` },
     ...qcCommon([result.instructions, result.examples, result.assumptions], result.metaTitle, result.metaDescription, allowed),
   ];
-  return { draft: result, qc, linkCount: links.length };
+  return { draft: result, qc };
 }
 
 export async function writeBlog(req: z.infer<typeof BlogRequestSchema>) {
@@ -371,5 +370,5 @@ ${req.notes ? `\nEXTRA INSTRUCTIONS FROM THE EDITOR (follow them unless they bre
     { label: "Post length 1,200+ words", ok: words(result.content) >= 1200, detail: `${words(result.content)} words` },
     ...qcCommon([result.content], result.metaTitle, result.metaDescription, allowed),
   ];
-  return { draft: result, qc, linkCount: links.length };
+  return { draft: result, qc };
 }

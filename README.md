@@ -26,6 +26,7 @@ npm run dev
 | `src/lib/templates/` | The page layouts (tool, blog, page templates) |
 | `src/lib/urls.ts` | Builds every public URL; `public-redirects.ts` + `src/proxy.ts` handle 301s |
 | `src/lib/seo.ts`, `src/app/sitemap.ts`, `src/app/robots.ts` | SEO meta, sitemap and robots.txt |
+| `src/lib/ai-writer.ts`, `src/app/api/ai-writer/` | "Write with AI" button on the tool and blog edit forms: the writing rules, the Claude call and the quick QC checks (needs `ANTHROPIC_API_KEY`) |
 | `src/components/` | Shared UI; `components/admin/` is admin-only |
 | `prisma/schema.prisma` | Database models (MongoDB) |
 
