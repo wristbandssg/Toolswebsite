@@ -10,15 +10,6 @@ export function getSiteUrl() {
 export const SEO_CONTENT_TYPES = ["tool", "blog", "page", "category", "tool_category"] as const;
 export type SeoContentType = (typeof SEO_CONTENT_TYPES)[number];
 
-export interface SeoMetaValues {
-  metaTitle: string;
-  metaDescription: string;
-  canonicalUrl: string;
-  ogImage: string;
-  robotsIndex: boolean;
-  schemaType: string;
-}
-
 interface SeoMetaLike {
   metaTitle?: string | null;
   metaDescription?: string | null;

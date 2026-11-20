@@ -13,11 +13,9 @@ import ToolTemplate2 from "./tool/ToolTemplate2";
 import ToolTemplate3 from "./tool/ToolTemplate3";
 import ToolTemplate4 from "./tool/ToolTemplate4";
 import ToolTemplate5 from "./tool/ToolTemplate5";
-import BlogTemplate from "./blog/BlogTemplate";
 import PageTemplate1 from "./page/PageTemplate1";
 import PageTemplate2 from "./page/PageTemplate2";
 import type { ToolTemplateProps } from "./tool/types";
-import type { BlogTemplateProps } from "./blog/types";
 import type { PageTemplateProps } from "./page/types";
 
 export const TOOL_TEMPLATES: Record<
@@ -29,11 +27,6 @@ export const TOOL_TEMPLATES: Record<
   "tool-template-3": { name: "Tool Template 3 — Calculator First", component: ToolTemplate3 },
   "tool-template-4": { name: "Tool Template 4 — Card Focused", component: ToolTemplate4 },
   "tool-template-5": { name: "Tool Template 5 — Minimal", component: ToolTemplate5 },
-};
-
-export const BLOG_TEMPLATE: { name: string; component: ComponentType<BlogTemplateProps> } = {
-  name: "Blog Template",
-  component: BlogTemplate,
 };
 
 export const PAGE_TEMPLATES: Record<
@@ -54,14 +47,3 @@ export function getToolTemplate(key: string) {
 export function getPageTemplate(key: string) {
   return PAGE_TEMPLATES[key] ?? PAGE_TEMPLATES[DEFAULT_PAGE_TEMPLATE];
 }
-
-// Category page templates (3-way, per the user's follow-up request) + the
-// 3 tool-list view styles used inside them.
-export const CATEGORY_TEMPLATE_KEYS = [
-  "category-template-1",
-  "category-template-2",
-  "category-template-3",
-] as const;
-
-export const CATEGORY_VIEW_STYLES = ["grid", "list", "card-description"] as const;
-export type CategoryViewStyle = (typeof CATEGORY_VIEW_STYLES)[number];
