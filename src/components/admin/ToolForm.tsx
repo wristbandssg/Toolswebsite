@@ -8,7 +8,9 @@ import { TOOL_TEMPLATES } from "@/lib/templates/registry";
 import CalculatorWidget from "@/components/CalculatorWidget";
 import RichTextEditor from "./RichTextEditor";
 import AuthorSelect, { type AuthorOption } from "./AuthorSelect";
+import AiWriterPanel from "./AiWriterPanel";
 import type { CategoryOptionGroup } from "@/lib/flatten-category-tree";
+import type { ToolDraft } from "@/lib/ai-writer";
 
 export interface ToolFormValues {
   slug: string;
@@ -108,9 +110,31 @@ export default function ToolForm({
   // whatever `values.slug` has been changed to; using `values.slug` for
   // both would 404 the moment the admin edits the URL field.
   const [originalSlug] = useState(initial?.slug ?? "");
+  // Bumped when the AI writer fills the content fields: the rich text
+  // editors only read `value` on mount, so a new key remounts them with
+  // the draft.
+  const [editorKey, setEditorKey] = useState(0);
 
   function update<K extends keyof ToolFormValues>(key: K, val: ToolFormValues[K]) {
     setValues((v) => ({ ...v, [key]: val }));
+  }
+
+  function applyAiDraft(d: ToolDraft) {
+    setValues((v) => ({
+      ...v,
+      description: d.description,
+      instructions: d.instructions,
+      examples: d.examples,
+      assumptions: d.assumptions,
+      faq: d.faq,
+      seo: {
+        ...v.seo,
+        metaTitle: d.metaTitle,
+        metaDescription: d.metaDescription,
+        schemaType: v.seo.schemaType || "WebApplication",
+      },
+    }));
+    setEditorKey((k) => k + 1);
   }
 
   function addField() {
@@ -230,6 +254,32 @@ export default function ToolForm({
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
     <form onSubmit={handleSubmit} className="space-y-8">
+      <AiWriterPanel<ToolDraft>
+        kind="tool"
+        hasContent={Boolean(values.instructions.replace(/<[^>]+>/g, "").trim() || values.examples.replace(/<[^>]+>/g, "").trim())}
+        buildRequest={() =>
+          values.title.trim()
+            ? {
+                slug: values.slug,
+                title: values.title,
+                categoryId: values.categoryId,
+                calcFormula: values.calcFormula,
+                calcInputs: values.calcInputs,
+                calcResult: values.calcResult,
+                calcResults: values.calcResults,
+                existing: {
+                  description: values.description,
+                  instructions: values.instructions,
+                  examples: values.examples,
+                  assumptions: values.assumptions,
+                  faq: values.faq,
+                },
+              }
+            : "Enter the Tool Name first."
+        }
+        onApply={applyAiDraft}
+      />
+
       {/* Basic Info */}
       <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-4 font-semibold">Basic Info</h2>
@@ -594,6 +644,7 @@ export default function ToolForm({
           </span>
           <div className="mt-1">
             <RichTextEditor
+              key={`i-${editorKey}`}
               value={values.instructions}
               onChange={(html) => update("instructions", html)}
             />
@@ -606,6 +657,7 @@ export default function ToolForm({
           </span>
           <div className="mt-1">
             <RichTextEditor
+              key={`a-${editorKey}`}
               value={values.assumptions}
               onChange={(html) => update("assumptions", html)}
             />
@@ -614,7 +666,7 @@ export default function ToolForm({
         <div className="mt-4 block text-sm">
           <span className="font-medium">Examples</span>
           <div className="mt-1">
-            <RichTextEditor value={values.examples} onChange={(html) => update("examples", html)} />
+            <RichTextEditor key={`e-${editorKey}`} value={values.examples} onChange={(html) => update("examples", html)} />
           </div>
         </div>
 

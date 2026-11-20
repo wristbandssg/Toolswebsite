@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
 import AuthorSelect, { type AuthorOption } from "./AuthorSelect";
+import AiWriterPanel from "./AiWriterPanel";
+import type { BlogDraft } from "@/lib/ai-writer";
 
 export interface BlogSeoValues {
   metaTitle: string;
@@ -112,6 +114,29 @@ export default function BlogForm({
     setValues((v) => ({ ...v, seo: { ...v.seo, [key]: val } }));
   }
 
+  // Bumped when the AI writer fills the post: the rich text editor only
+  // reads `value` on mount, so a new key remounts it with the draft.
+  const [editorKey, setEditorKey] = useState(0);
+
+  function applyAiDraft(d: BlogDraft) {
+    setValues((v) => ({
+      ...v,
+      title: d.title || v.title,
+      // The slug is locked once a post exists (it is the live URL).
+      slug: mode === "create" && !slugTouched && d.slug ? d.slug : v.slug,
+      excerpt: d.excerpt.slice(0, 300),
+      content: d.content,
+      tags: d.tags.join(", "),
+      seo: {
+        ...v.seo,
+        metaTitle: d.metaTitle,
+        metaDescription: d.metaDescription,
+        schemaType: v.seo.schemaType || "BlogPosting",
+      },
+    }));
+    setEditorKey((k) => k + 1);
+  }
+
   function toggleId(key: "categoryIds" | "toolIds" | "relatedBlogIds", id: string) {
     const current = values[key];
     update(key, current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
@@ -202,6 +227,22 @@ export default function BlogForm({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         {/* Main column */}
         <div className="min-w-0 space-y-8">
+          <AiWriterPanel<BlogDraft>
+            kind="blog"
+            hasContent={Boolean(values.content.replace(/<[^>]+>/g, "").trim())}
+            buildRequest={() =>
+              values.title.trim()
+                ? {
+                    title: values.title,
+                    slug: values.slug,
+                    toolIds: values.toolIds,
+                    existing: { excerpt: values.excerpt, content: values.content, tags: values.tags },
+                  }
+                : "Enter a title or topic first."
+            }
+            onApply={applyAiDraft}
+          />
+
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="mb-4 font-semibold">Basic Info</h2>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -246,7 +287,7 @@ export default function BlogForm({
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
             <h2 className="mb-4 font-semibold">Content</h2>
-            <RichTextEditor value={values.content} onChange={(html) => update("content", html)} />
+            <RichTextEditor key={`c-${editorKey}`} value={values.content} onChange={(html) => update("content", html)} />
           </section>
 
           <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
