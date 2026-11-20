@@ -4,7 +4,7 @@
  * Ordinary least squares through the normal equations (XᵀX)β = Xᵀy solved by Gaussian elimination
  * with partial pivoting; linearised fits for exponential (ln y), power (ln x, ln y) and
  * logarithmic (ln x) models; logistic regression by Newton-Raphson (IRLS) on the log-likelihood.
- * Inference uses Student's t from sci-math-core. See prisma/create-sci-reg-calculators.ts.
+ * Inference uses Student's t from sci-math-core.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pick, fmt, sig, listOf, matrixOf, mean, sum, tCdf, fCdf } from "./sci-math-core";

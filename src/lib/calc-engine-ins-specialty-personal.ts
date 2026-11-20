@@ -18,8 +18,6 @@
  *    + optional $1M liability; non-refundable deposits vs the limit.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-ins-specialty-personal-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

@@ -12,9 +12,6 @@
  * established per-batch convention. Rental Property, Cap Rate, and Real
  * Estate ROI are deliberately scoped differently (see each function's
  * comment) so they're distinct tools rather than formula clones.
- *
- * See prisma/create-finance-real-estate-calculators.ts for the tool
- * content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

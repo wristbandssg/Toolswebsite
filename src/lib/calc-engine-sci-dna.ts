@@ -9,7 +9,6 @@
  * pI by bisection with EMBOSS pKa values. Dose-response (IC50, ELISA): 4-parameter logistic fitted
  * by grid search on (log EC50, Hill) with the plateaus solved by linear least squares at each
  * point, then pattern-search refinement. TCID50: Reed-Muench and Spearman-Kärber.
- * See prisma/create-sci-dna-calculators.ts.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, listOf, mean, sum } from "./sci-math-core";

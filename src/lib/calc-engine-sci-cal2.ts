@@ -7,7 +7,7 @@
  * series, second-order constant-coefficient ODEs by the characteristic equation, boundary-value
  * problems by the shooting method (RK4 + secant), contour integrals ∮ f(z) dz over a circle with
  * complex arithmetic, z-transforms from the standard table and the inverse by power-series long
- * division. Symbolic partial derivatives come from mathjs. See prisma/create-sci-cal2-calculators.ts.
+ * division. Symbolic partial derivatives come from mathjs.
  */
 
 import { create, all } from "mathjs";

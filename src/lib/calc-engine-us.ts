@@ -302,8 +302,8 @@ const alabamaTaxCalculator: CustomCalculator = (values) => {
 };
 
 // Alaska, like Nevada, levies no state income tax (confirmed via the Tax
-// Foundation's 2026 state tax summary — see prisma/create-alaska-tax-tool.ts
-// for the citation) — so it reuses `nevadaTaxCalculator` as-is rather than a
+// Foundation's 2026 state tax summary)
+// — so it reuses `nevadaTaxCalculator` as-is rather than a
 // near-duplicate function. The function itself doesn't hardcode "Nevada"
 // anywhere; it's a generic zero-state-income-tax paycheck model, so pointing
 // a second slug at it is correct, not a shortcut.
@@ -907,8 +907,8 @@ const delawareTaxCalculator: CustomCalculator = (values) => {
 };
 
 // Florida, like Nevada and Alaska, levies no state income tax (confirmed
-// via the Tax Foundation's 2026 Florida summary — see
-// prisma/create-florida-tax-tool.ts for the citation) — so it reuses
+// via the Tax Foundation's 2026 Florida summary)
+// — so it reuses
 // `nevadaTaxCalculator` as-is, same as Alaska does.
 const floridaTaxCalculator: CustomCalculator = nevadaTaxCalculator;
 

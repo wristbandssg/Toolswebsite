@@ -6,7 +6,6 @@
  * 22.414 L/mol (0 °C, 1 atm). Water boiling point from the Antoine equation (two ranges); other
  * liquids use NIST/Dortmund Antoine constants (mmHg, °C). Barometric pressure with altitude:
  * P = 101.325(1 − 2.25577 × 10⁻⁵h)^5.25588 kPa. van der Waals a, b in L²·bar/mol² and L/mol.
- * See prisma/create-sci-gas-calculators.ts.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, listOf, sum } from "./sci-math-core";

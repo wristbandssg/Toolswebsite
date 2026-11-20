@@ -35,8 +35,6 @@
  *    inventory and gross profit from up to 5 cost layers.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin-business-pay-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

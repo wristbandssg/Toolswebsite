@@ -8,7 +8,7 @@
  * True airspeed via compressible pitot relations. Soil texture: USDA triangle rules. Mean kinetic
  * temperature with ΔH = 83.144 kJ/mol (USP <1079>). Earthquake energy log E = 1.5M + 4.8 (J).
  * Emission factors are typical published averages (EPA, DEFRA, IEA, Poore & Nemecek 2018) and
- * marked as estimates. See prisma/create-sci-earth-calculators.ts.
+ * marked as estimates.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, listOf, sum, mean } from "./sci-math-core";

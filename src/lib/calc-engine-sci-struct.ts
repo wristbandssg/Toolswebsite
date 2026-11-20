@@ -8,8 +8,7 @@
  * standard tolerance unit i = 0.45∛D + 0.001D (µm) and the fundamental-deviation formulas
  * (results may differ from the printed tables by about 1 µm due to rounding). Hardness conversion
  * interpolates approximate ASTM E140 values for steel. 2-D trusses solved by the direct stiffness
- * method. Catenary sag solved for the parameter a by bisection. See
- * prisma/create-sci-struct-calculators.ts.
+ * method. Catenary sag solved for the parameter a by bisection.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, listOf, mean, variance, sum, normCdf } from "./sci-math-core";

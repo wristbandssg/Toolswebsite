@@ -7,7 +7,6 @@
  * root finding; Lagrange interpolating polynomial; finite-difference tests for linear / quadratic /
  * exponential tables; function parity tested numerically at sample points; partial-quotients
  * division with place-value chunks. Expressions use the sandboxed parser in sci-math-core.ts.
- * See prisma/create-sci-alg2-calculators.ts for the copy.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, compileFn, polyCoeffs, polyText, simplifyText, listOf, matrixOf, polyRoots, complexText } from "./sci-math-core";

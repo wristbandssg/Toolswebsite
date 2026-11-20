@@ -6,7 +6,7 @@
  * citrate uses the average deprotonation number n̄ = Σ i·αᵢ (charge balance, activities ignored).
  * Tris pKa 8.07 at 25 °C with dpKa/dT = −0.028 /°C. Dissolved-oxygen saturation: Benson & Krause
  * (APHA 4500-O) with salinity and barometric-pressure corrections. Serum osmolality
- * 2Na + glucose/18 + BUN/2.8. See prisma/create-sci-sol-calculators.ts.
+ * 2Na + glucose/18 + BUN/2.8.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, listOf, sum } from "./sci-math-core";

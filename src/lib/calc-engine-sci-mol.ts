@@ -6,7 +6,7 @@
  * R = 8.314462618 J/(mol·K). Lewis/VSEPR handles simple ABₙ molecules (one central atom).
  * Oxidation numbers follow the standard priority rules (F, group 1/2, H, O, halogens) and solve
  * the last unknown from the overall charge. ICE tables solve Q(x) = K by bisection on the
- * physically allowed range. See prisma/create-sci-mol-calculators.ts.
+ * physically allowed range.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, listOf, sum } from "./sci-math-core";

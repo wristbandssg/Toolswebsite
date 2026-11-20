@@ -28,8 +28,6 @@
  *    the payment needed to be clear before then.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-loan-wedding-vacation-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

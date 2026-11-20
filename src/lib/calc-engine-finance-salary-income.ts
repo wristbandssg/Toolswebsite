@@ -15,9 +15,6 @@
  * search intent (see each tool's FAQ for an explicit note pointing to its
  * tax-aware sibling). Self-contained: no imports from that file or any
  * other batch, per this project's established per-batch convention.
- *
- * See prisma/create-finance-salary-income-calculators.ts for the tool
- * content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

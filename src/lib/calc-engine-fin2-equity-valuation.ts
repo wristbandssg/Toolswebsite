@@ -19,8 +19,6 @@
  *    (current − previous) ÷ |previous|, annualised by period type.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin2-equity-valuation-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

@@ -26,8 +26,6 @@
  *  - gmroi: gross margin ÷ average inventory at cost, with inventory turns.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin2-web-saas-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

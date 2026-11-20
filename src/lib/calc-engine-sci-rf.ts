@@ -7,7 +7,7 @@
  * K(k) = π/(2·AGM(1, √(1 − k²))). Path loss: FSPL = 20 log d(km) + 20 log f(MHz) + 32.44 dB.
  * Thermal noise −174 dBm/Hz at 290 K. BER via the Gaussian Q-function. Erlang B by the stable
  * recursion B(n) = A·B(n−1)/(n + A·B(n−1)). Butterworth/Chebyshev ladders from the standard g-values.
- * Clearance: IPC-2221B Table 6-1. See prisma/create-sci-rf-calculators.ts.
+ * Clearance: IPC-2221B Table 6-1.
  */
 
 import { type SciCalculator, InputError, num, pos, pick, fmt, sig, listOf, normCdf } from "./sci-math-core";

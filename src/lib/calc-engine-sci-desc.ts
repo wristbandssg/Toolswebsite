@@ -7,7 +7,7 @@
  * outliers use Tukey's fences Q1 − 1.5·IQR and Q3 + 1.5·IQR; confidence intervals use the
  * t distribution for means (z when σ is known) and the Wald or Wilson interval for proportions;
  * Cohen's kappa = (pₒ − pₑ)/(1 − pₑ); ROC AUC by the trapezoid rule. Text charts (dot plot,
- * histogram, stem-and-leaf, scatter) are drawn with characters. See prisma/create-sci-desc-calculators.ts.
+ * histogram, stem-and-leaf, scatter) are drawn with characters.
  */
 
 import { type SciCalculator, type Vals, InputError, num, pos, pick, fmt, sig, listOf, mean, variance, sorted, quantile, median, sum, tInv, normInv } from "./sci-math-core";

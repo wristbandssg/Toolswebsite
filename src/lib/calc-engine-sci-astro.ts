@@ -8,7 +8,6 @@
  * and hour angle of a geostationary satellite compared with the Sun. Eclipses: NASA catalogue
  * dates 2026–2030. Orbits: Kepler's third law, vis-viva and Hohmann transfers. Black holes:
  * Schwarzschild radius and Hawking temperature. Impact craters: Collins, Melosh & Marcus (2005).
- * See prisma/create-sci-astro-calculators.ts.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig } from "./sci-math-core";

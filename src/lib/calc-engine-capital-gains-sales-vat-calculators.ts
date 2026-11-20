@@ -526,9 +526,8 @@ const vatRegistrationThresholdCalculator: CustomCalculator = (values) => {
 };
 
 // ---------------------------------------------------------------------------
-// Registry — keyed by slug (see
-// prisma/create-capital-gains-sales-vat-calculators.ts, which must stay in
-// sync with these keys). As with the income/salary batch, several slugs
+// Registry — keyed by slug (each tool's slug in the database must match
+// these keys). As with the income/salary batch, several slugs
 // intentionally point at the exact same function where the underlying math
 // genuinely is identical.
 // ---------------------------------------------------------------------------

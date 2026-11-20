@@ -23,8 +23,6 @@
  *    benchmarks (1.3, 60%, 1.25).
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-loan-agricultural-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

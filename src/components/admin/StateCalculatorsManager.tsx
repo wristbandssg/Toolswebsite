@@ -16,7 +16,7 @@ const NOT_LINKED = "__none__";
 /**
  * Admin manager for the "Other state calculators" grid shown on state tax
  * tool pages (see ToolContentSections + StateCalculatorGrid). All 50 states
- * are pre-seeded (prisma/seed-state-calculators.ts) so the public grid
+ * are pre-seeded so the public grid
  * always shows the full directory, matching how competitor sites present a
  * complete 50-state list — most start with no linked tool ("Coming soon")
  * and get wired up here, one at a time, as each state's calculator ships.

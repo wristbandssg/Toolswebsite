@@ -19,7 +19,6 @@
  *
  * Ratings use 1 (lowest) to 5 or 7 (highest) as noted on each tool.
  * Self-contained: no imports from any other batch.
- * See prisma/create-sports-fitness-tests-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

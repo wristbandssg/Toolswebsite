@@ -5,7 +5,6 @@
  * mₑ = 9.1093837015 × 10⁻³¹ kg, R∞ = 10,973,731.568 m⁻¹ (CODATA 2018). Relativity uses
  * γ = 1/√(1 − β²); electron speed from an accelerating voltage is relativistic. Magnet pull force
  * is a field-energy estimate (F ≈ B²A/μ₀ with a steel-mirror surface field), good to roughly ±30%.
- * See prisma/create-sci-mod-calculators.ts.
  */
 
 import { type SciCalculator, type Vals, InputError, num, pos, pick, fmt, sig } from "./sci-math-core";

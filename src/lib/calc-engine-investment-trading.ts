@@ -16,8 +16,6 @@
  *    the margin posted, price that wipes out the margin.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-investment-trading-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

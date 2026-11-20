@@ -23,8 +23,6 @@
  *    limit orders vs taker fee + slippage for market orders.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-crypto-derivatives-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

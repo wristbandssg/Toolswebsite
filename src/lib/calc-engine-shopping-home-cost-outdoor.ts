@@ -9,7 +9,7 @@
  *
  * with a low/high range of −15% / +20% for typical quotes. Tier labels,
  * units and the meaning of the complexity, removal and fixed-cost inputs
- * are set per tool in prisma/create-shopping-home-cost-outdoor-calculators.ts.
+ * are set per tool in the database.
  *
  * Self-contained: no imports from any other batch, per this project's
  * established per-batch convention.

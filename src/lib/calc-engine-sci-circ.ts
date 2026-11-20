@@ -8,7 +8,6 @@
  * Linear networks (nodal/mesh) solved by Gaussian elimination; transfer-function poles/zeros by
  * Durand-Kerner (sci-math-core polyRoots). Earth fault loop: Zs = Ze + (R1 + R2)·L·temperature
  * factor; max Zs = 0.95·U₀/Ia (Ia = 5/10/20 × In for type B/C/D MCBs).
- * See prisma/create-sci-circ-calculators.ts.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, listOf, matrixOf, sum, polyRoots } from "./sci-math-core";

@@ -20,8 +20,6 @@
  *    employer Class 1A NIC (15%) vs a cash allowance after tax and NI.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-car-lease-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

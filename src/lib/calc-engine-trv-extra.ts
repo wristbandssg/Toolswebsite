@@ -13,7 +13,6 @@
  *  - Seoul subway: T-money distance fare and the tourist Climate Card.
  *  - South Korea trip and cruise cost: daily cost tables and line-item budgets.
  * All fares and fees are rounded 2026 estimates with override inputs, like batch 1.
- * See prisma/create-trv-extra-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, InputError, txt, pos, pick, r0, r1, r2, money, nfmt, findPlace, gcKm, airportList, KM_PER_MI } from "./trv-core";

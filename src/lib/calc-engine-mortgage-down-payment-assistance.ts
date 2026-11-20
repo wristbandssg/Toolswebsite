@@ -23,8 +23,6 @@
  *    limit, first-time buyer, score, purchase price limit.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-mortgage-down-payment-assistance-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

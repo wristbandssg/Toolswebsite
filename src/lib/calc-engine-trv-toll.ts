@@ -12,7 +12,6 @@
  * E-ZPass and I-66 tools compare transponder vs plate rates and dynamic express-lane prices.
  * Near-namesakes: e-zpass-toll-calculator compares payment methods for any E-ZPass road;
  * europe-toll-calculator combines countries; france/italy tools are single-country.
- * See prisma/create-trv-toll-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, InputError, pos, pick, r2, money, nfmt } from "./trv-core";

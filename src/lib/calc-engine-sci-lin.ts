@@ -7,7 +7,6 @@
  * of A − λI; characteristic polynomial by the Faddeev-LeVerrier algorithm; RREF by Gauss-Jordan
  * elimination; SVD singular values from the eigenvalues of AᵀA; Cholesky by the standard
  * algorithm; e^A with mathjs expm; Markov steady states by power iteration.
- * See prisma/create-sci-lin-calculators.ts for the copy.
  */
 
 import { create, all } from "mathjs";

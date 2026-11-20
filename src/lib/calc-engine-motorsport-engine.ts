@@ -24,7 +24,6 @@
  *  - superchargerPulleyCalculator: blower speed and boost from pulley sizes.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-motorsport-engine-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

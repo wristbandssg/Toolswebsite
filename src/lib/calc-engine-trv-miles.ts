@@ -12,7 +12,6 @@
  *    instead; the percentages here are typical equivalents, editable through the custom % input.
  * Values use typical 2026 cents-per-point valuations (editable). Programme rules change often —
  * every tool says to confirm with the airline's own earning calculator.
- * See prisma/create-trv-miles-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, txt, pos, pick, findPlace, gcKm, r0, r2, KM_PER_MI, nfmt } from "./trv-core";

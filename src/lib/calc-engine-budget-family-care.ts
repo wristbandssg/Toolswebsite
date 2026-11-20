@@ -14,8 +14,6 @@
  *    and housing; regular vs simplified ($5/sq ft, max 300) method.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-budget-family-care-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

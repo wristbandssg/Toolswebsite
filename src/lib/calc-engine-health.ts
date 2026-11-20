@@ -2,7 +2,7 @@
  * Batch: Health Calculators (15 Nov 2026) — the 226 health keywords from the general keyword check
  * (Claude outputs/General_Keyword_Check.md, section E). The user asked for a category to be made and
  * the tools built, so a new main category "Health Calculators" was created
- * (prisma/setup-health-category.ts) with 2 sub-categories:
+ * with 2 sub-categories:
  *   - Pregnancy & Fertility: due date, pregnancy week, conception date, ovulation, period,
  *     implantation/DPO, pregnancy weight gain, chance of pregnancy.
  *   - Sleep & Medical: sleep cycles, body surface area, eGFR, GMI / A1c.

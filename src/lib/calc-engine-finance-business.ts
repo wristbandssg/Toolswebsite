@@ -9,9 +9,6 @@
  * Margin are deliberately scoped differently from each other (see each
  * function's comment) so they're distinct tools rather than formula
  * clones of one another.
- *
- * See prisma/create-finance-business-calculators.ts for the tool
- * content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

@@ -18,7 +18,6 @@
  * or a published-style upgrade chart. Values: cents-per-point = (cash price − cash paid on the
  * award) ÷ points × 100. Hotel earning: base points per $ (or € for Accor) × (1 + elite bonus).
  * All charts are approximate and dynamic pricing is common — the copy says so.
- * See prisma/create-trv-status-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, txt, pos, pick, findPlace, gcKm, r0, r2, KM_PER_MI, money, nfmt } from "./trv-core";

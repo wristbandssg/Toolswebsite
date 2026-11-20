@@ -6,7 +6,7 @@
  * erf, gamma via the regularised incomplete gamma, beta via the incomplete beta), closed forms for
  * exponential, uniform, lognormal and Weibull. Inverse normal by Acklam's algorithm + Newton.
  * Birthday problem: P = 1 − Π(1 − k/d). Monte Carlo uses a seeded PRNG (mulberry32) so results
- * repeat for the same seed. See prisma/create-sci-prob-calculators.ts for the copy.
+ * repeat for the same seed.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, compileFn, listOf, normCdf, normPdf, normInv, lgamma, gammaP, betaInc, lnChoose, choose } from "./sci-math-core";

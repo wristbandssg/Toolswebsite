@@ -18,7 +18,6 @@
  *  - skiTripCostCalculator: trip budget per person and per day.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-winter-conditions-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

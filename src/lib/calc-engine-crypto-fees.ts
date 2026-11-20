@@ -17,8 +17,6 @@
  *    premium cost, vs an exchange's fee + slippage.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-crypto-fees-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

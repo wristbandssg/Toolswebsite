@@ -17,12 +17,10 @@
  *    airport arrival rule (domestic 2 h / international 3 h) plus parking/security.
  *  - sea-distance-calculator: port-to-port nautical miles; voyage-time-calculator: time and fuel
  *    for a voyage at a speed in knots.
- * See prisma/create-trv-dist-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, InputError, txt, num, pos, pick, findPlace, placeList, gcKm, bearing, compass, midpoint, nearestPlace, latLonText, parseClock, clockText, durText, dayText, dateIn, dayParts, dayNum, r1, r2, r0, KM_PER_MI, NM_PER_KM, money, nfmt, clamp } from "./trv-core";
 
-export const UNIT = ["Miles", "Kilometres"];
 export const MODE = ["Car (highway)", "Car (mixed city/highway)", "Car (city)", "Bus / coach", "Bicycle", "Electric scooter", "Walking", "Train (intercity)", "Custom speed"];
 const MODE_KMH = [100, 75, 35, 70, 16, 18, 5, 110, 0];
 

@@ -22,8 +22,6 @@
  *    calculator (US buyer/listing brokerage split, no VAT).
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin3-property-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

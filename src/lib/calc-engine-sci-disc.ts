@@ -7,7 +7,7 @@
  * BigInt. IEEE 754 encodings come straight from a DataView. CRC parameters follow the standard
  * catalogue (CRC-8/SMBUS, CRC-16/CCITT-FALSE, CRC-16/MODBUS, CRC-32/ISO-HDLC). Bloom filter:
  * m = −n ln p / (ln 2)², k = (m/n) ln 2. Bessel J by its power series, Y₀/Y₁ by their series and
- * Yₙ by recurrence. See prisma/create-sci-disc-calculators.ts for the copy.
+ * Yₙ by recurrence.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, compileFn, listOf, gammaFn, lgamma, erf, normInv, evalExpr } from "./sci-math-core";

@@ -13,7 +13,6 @@
  *    dartsCheckoutCalculator: the darts to finish a given score.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-other-target-games-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

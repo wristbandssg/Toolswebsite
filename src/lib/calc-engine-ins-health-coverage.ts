@@ -20,8 +20,6 @@
  *    deduction (limited to net profit) and HSA tax savings.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-ins-health-coverage-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

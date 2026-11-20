@@ -33,7 +33,6 @@
  *    fitness rating (the generic VO2 max calculator has no rating).
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-hiking-steps-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

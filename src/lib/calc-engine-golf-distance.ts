@@ -23,7 +23,6 @@
  *  - golfCartSpeedCalculator: cart speed from motor rpm, gear and tires.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-golf-distance-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

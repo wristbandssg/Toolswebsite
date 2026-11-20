@@ -5,7 +5,7 @@ import { publicRedirectTarget } from "@/lib/public-redirects";
 // calculator text, category articles, page sections, site settings, author
 // bios) to its final current URL — the same answer the live redirects give —
 // so no stored link goes through a redirect. Run by the one-time URL
-// migration (prisma/migrate-url-structure.ts) and after any admin change
+// migration and after any admin change
 // that moves a URL (src/lib/url-changes.ts).
 
 // Links written with the full site address are made relative, so they work

@@ -8,9 +8,6 @@
  * FX feed — this project doesn't call paid/external APIs (standing
  * project rule), so the visitor enters today's rate from any source they
  * trust and gets the conversion math done for them.
- *
- * See prisma/create-finance-currency-calculators.ts for the tool
- * content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

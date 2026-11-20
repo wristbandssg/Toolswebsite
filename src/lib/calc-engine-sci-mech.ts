@@ -5,7 +5,7 @@
  * 2018). "Solve for" tools rearrange one relation for the chosen variable; SUVAT fills unknowns by
  * repeatedly applying the five constant-acceleration equations. Projectiles ignore air resistance;
  * terminal velocity uses quadratic drag (v(t) = v_t·tanh(gt/v_t)). Collisions use the coefficient
- * of restitution e (1 elastic, 0 perfectly inelastic). See prisma/create-sci-mech-calculators.ts.
+ * of restitution e (1 elastic, 0 perfectly inelastic).
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, listOf, sum } from "./sci-math-core";

@@ -9,7 +9,7 @@
  * Laplace from the table or by the Gaver-Stehfest algorithm (N = 14) for any F(s); Taylor
  * coefficients from repeated symbolic derivatives; partial fractions by solving for the unknown
  * numerators at sample points; Euler / RK4 for ODEs; Lagrange multipliers by Newton's method on
- * ∇f = λ∇g, g = c from several starting points. See prisma/create-sci-cal1-calculators.ts.
+ * ∇f = λ∇g, g = c from several starting points.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, compileFn, integrate, numDeriv, roots, derivText, derivTextVars, polyCoeffs, polyText, polyRoots, listOf, parseSafe } from "./sci-math-core";

@@ -7,7 +7,7 @@
  * golden-section search for extrema, adaptive Simpson for areas.
  * Significant figures follow the standard counting rules (leading zeros never count, trapped
  * zeros always count, trailing zeros count only with a decimal point; "e"/"×10^" notation counts
- * the mantissa only). See prisma/create-sci-calc-calculators.ts for the copy.
+ * the mantissa only).
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, compileFn, evalExpr, roots, minimize, integrate, numDeriv, derivText, simplifyText } from "./sci-math-core";

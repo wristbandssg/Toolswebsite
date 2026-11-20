@@ -14,7 +14,6 @@
  *    hauler vs towing your own trailer safely.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-other-horse-costs-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

@@ -24,8 +24,6 @@
  *  - creLoanTotalCost: interest + points + third-party costs + exit fee.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-mortgage-commercial-real-estate-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

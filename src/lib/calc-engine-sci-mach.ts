@@ -7,7 +7,7 @@
  * planetary ratios by Willis' equation, worm efficiency tan γ/tan(γ + ρ′). Press fits by Lamé
  * thick-cylinder theory. Hertz contact for spheres and cylinders. Bearing defect frequencies
  * BPFO/BPFI/BSF/FTF. Keys from DIN 6885-1. Box compression by the McKee formula. Shaft critical
- * speed for a uniform simply supported tube. See prisma/create-sci-mach-calculators.ts.
+ * speed for a uniform simply supported tube.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig } from "./sci-math-core";

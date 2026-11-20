@@ -7,7 +7,6 @@
  * quadratic/cubic factor as-is; complex arithmetic in rectangular and polar form; linear programming
  * by enumerating the corner points of the feasible region (2 variables, ≤/≥ constraints, x, y ≥ 0);
  * Newton's method with a numeric derivative. Expressions use the sandboxed parser in sci-math-core.ts.
- * See prisma/create-sci-alg-calculators.ts for the copy.
  */
 
 import {

@@ -16,9 +16,6 @@
  * real-estate.ts has near-identical helper functions, they are
  * re-implemented locally here rather than shared, matching every prior
  * batch's pattern.
- *
- * See prisma/create-mortgage-core-calculators.ts for the tool
- * content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

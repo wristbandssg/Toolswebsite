@@ -11,7 +11,6 @@
  * and the copy tells users to confirm with the airline. Fees are per direction (one way).
  * Near-namesakes: excess-baggage-calculator is the fully editable generic version; each airline
  * tool carries that airline's own zones and fees; luggage-size-calculator checks dimensions only.
- * See prisma/create-trv-bag-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, InputError, pos, pick, r1, r2, money, nfmt } from "./trv-core";

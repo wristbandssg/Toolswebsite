@@ -8,7 +8,6 @@
  * + MC1R red). Hardy-Weinberg χ² test with 1 df. Diversity: Simpson D = Σn(n − 1)/(N(N − 1)),
  * Shannon H = −Σp ln p. Hemocytometer: mean count per large square × dilution × 10⁴ cells/mL.
  * Mid-parental height (Tanner): (father + mother ± 13 cm)/2 ± 8.5 cm.
- * See prisma/create-sci-gen-calculators.ts.
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, listOf, mean, sum, chi2Cdf } from "./sci-math-core";

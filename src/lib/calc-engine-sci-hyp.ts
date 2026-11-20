@@ -9,7 +9,7 @@
  * as extreme), McNemar (continuity corrected), Shapiro-Wilk W (Royston 1992 approximation, n 4–
  * 2000), Grubbs' test, Sobel test, Benjamini-Hochberg FDR and Bonferroni. Sample sizes: Cochran
  * n₀ = z²p(1 − p)/e² with finite-population correction, Slovin n = N/(1 + Ne²), two-proportion
- * A/B sizes, success-run reliability n = ln(1 − C)/ln R. See prisma/create-sci-hyp-calculators.ts.
+ * A/B sizes, success-run reliability n = ln(1 − C)/ln R.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, listOf, matrixOf, mean, variance, sorted, sum, normCdf, normInv, tCdf, tInv, chi2Cdf, chi2Inv, fCdf, fInv, lnChoose } from "./sci-math-core";

@@ -14,7 +14,6 @@
  * Near-namesakes kept distinct: flight-time (airline block time) vs private-jet-flight-time (by
  * jet class, fuel stops by range) vs flight-arrival-time (clock time across time zones);
  * private-jet-charter-cost (whole-trip price) vs private-jet-fuel-cost (fuel only).
- * See prisma/create-trv-flight-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, InputError, txt, num, pos, pick, findPlace, placeList, gcKm, bearing, compass, midpoint, latLonText, parseClock, clockText, durText, r0, r1, r2, KM_PER_MI, NM_PER_KM, money, nfmt, clamp } from "./trv-core";

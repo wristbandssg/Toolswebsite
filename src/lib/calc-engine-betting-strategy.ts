@@ -22,7 +22,6 @@
  *    score calculator).
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-betting-strategy-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

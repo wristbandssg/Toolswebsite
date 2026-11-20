@@ -4,8 +4,7 @@
  * c = 299,792,458 m/s, h = 6.62607015 × 10⁻³⁴ J·s, e = 1.602176634 × 10⁻¹⁹ C (exact SI). Speed of
  * sound in air v = 331.3·√(1 + T/273.15). Optics: Snell's law with Fresnel equations, thin lens
  * 1/f = 1/dₒ + 1/dᵢ, grating d·sin θ = mλ, Rayleigh criterion 1.22λ/D, Gaussian beams with M².
- * Large-angle pendulum period from the arithmetic-geometric mean (exact). See
- * prisma/create-sci-wave-calculators.ts.
+ * Large-angle pendulum period from the arithmetic-geometric mean (exact).
  */
 
 import { type SciCalculator, InputError, txt, num, pos, pick, fmt, sig, listOf, sum } from "./sci-math-core";

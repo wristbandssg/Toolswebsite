@@ -33,8 +33,6 @@
  *  - total cost: everything it takes to get to move-in, and cost per sq ft.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-mortgage-construction-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

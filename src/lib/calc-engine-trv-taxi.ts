@@ -11,7 +11,6 @@
  * city and hour. Driver earnings: gross fares − platform fee − vehicle costs per mile.
  * Near-namesakes: taxi-fare-calculator is the fully editable generic meter; each city tool carries
  * its own tariff; uber-vs-lyft compares two editable rate cards for the same trip.
- * See prisma/create-trv-taxi-calculators.ts.
  */
 
 import { type TrvCalculator, type Vals, InputError, pos, pick, r2, money, nfmt } from "./trv-core";

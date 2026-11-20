@@ -1,8 +1,8 @@
 /**
  * US Federal "Tax Calculators" batch — 30 SEO-variant tools filed directly
  * under the "Tax Calculators" category (slug "tax-calculators"), alongside
- * its 12 existing country/state sub-categories (see
- * prisma/reparent-tool-categories-under-finance.ts). These are a
+ * its 12 existing country/state sub-categories.
+ * These are a
  * NATIONAL-BASELINE complement to the per-state calculators in
  * calc-engine-us.ts: federal income tax + FICA only, no state tax line —
  * for a visitor who wants a generic/federal-only answer without picking a
@@ -620,8 +620,8 @@ const effectiveTaxRateCalculator: CustomCalculator = (values) => {
 };
 
 // ---------------------------------------------------------------------------
-// Registry — keyed by slug (see prisma/create-us-tax-salary-calculators.ts,
-// which must stay in sync with these keys). Several slugs intentionally
+// Registry — keyed by slug (each tool's slug in the database must match
+// these keys). Several slugs intentionally
 // point at the exact same function: the calculators genuinely share math,
 // and only the copy/SEO/framing around them differs from tool to tool.
 // ---------------------------------------------------------------------------

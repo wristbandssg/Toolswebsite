@@ -22,7 +22,6 @@
  *  - rollCenterCalculator: front-view roll centre of a double-wishbone axle.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-motorsport-dynamics-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

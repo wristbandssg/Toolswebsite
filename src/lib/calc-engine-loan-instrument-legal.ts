@@ -21,8 +21,6 @@
  *    regular payment.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-loan-instrument-legal-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

@@ -22,7 +22,6 @@
  *  - snowshoeSizeCalculator: snowshoe length by total load and snow.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-winter-gear-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

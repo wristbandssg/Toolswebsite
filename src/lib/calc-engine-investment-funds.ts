@@ -17,8 +17,6 @@
  *    (1+r)^L x exp(-(L^2-L) sigma^2 T / 2) - 1, less the expense ratio.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-investment-funds-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

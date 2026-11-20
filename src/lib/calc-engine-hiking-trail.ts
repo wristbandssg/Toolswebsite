@@ -24,7 +24,6 @@
  *  - trekkingPoleLengthCalculator: pole length for flat, uphill, downhill.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-hiking-trail-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

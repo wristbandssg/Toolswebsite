@@ -22,8 +22,6 @@
  *    typical discounts by title status; salvage -> rebuilt margin.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-car-selling-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

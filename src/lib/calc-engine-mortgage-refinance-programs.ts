@@ -10,9 +10,6 @@
  * established per-batch convention. FHA/VA/USDA/Jumbo are genuinely
  * distinct real-world loan programs with their own fee structures, not
  * formula clones of one another.
- *
- * See prisma/create-mortgage-refinance-programs-calculators.ts for the
- * tool content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

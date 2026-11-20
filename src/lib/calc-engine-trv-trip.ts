@@ -15,7 +15,6 @@
  * Near-namesakes: cruise-drink-package (any line, generic) vs royal-caribbean-drink-package (RC
  * deluxe package rules) vs virgin-voyages-bar-tab (prepaid bar-tab bonus); dvc-rental (renting
  * points) vs dvc-cost (buying a contract) vs dvc-points (points a stay needs).
- * See prisma/create-trv-trip-calculators.ts.
  */
 
 import { type TrvCalculator, InputError, pos, pick, dateIn, dayParts, dayNum, dayOfWeek, dayText, r0, r1, r2, money, nfmt, clamp } from "./trv-core";

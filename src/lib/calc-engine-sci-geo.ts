@@ -7,7 +7,6 @@
  * by Knud Thomsen's formula (p = 1.6075, error < 1.1%); regular polygon A = n s² / (4 tan(π/n));
  * polar area ½∫r² dθ; π digits by Machin's formula with BigInt; sphere packing counts use packing
  * fractions (simple cubic 0.5236, random loose 0.60, random close 0.64, FCC/HCP 0.7405).
- * See prisma/create-sci-geo-calculators.ts for the copy.
  */
 
 import { type SciCalculator, type Vals, InputError, txt, num, pos, pick, fmt, sig, compileFn, integrate } from "./sci-math-core";

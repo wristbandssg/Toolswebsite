@@ -9,8 +9,6 @@
  *    cashed out; monthly income if annuitized over N years.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-retirement-annuity-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

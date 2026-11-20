@@ -19,7 +19,6 @@
  *    zeroingCalculator: clicks to move the group onto the aim point.
  *
  * Self-contained: no imports from any other batch.
- * See prisma/create-other-shooting-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

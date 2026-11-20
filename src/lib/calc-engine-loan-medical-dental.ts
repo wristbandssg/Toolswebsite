@@ -29,8 +29,6 @@
  *    promo in time, and the back-interest charged if you pay less.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-loan-medical-dental-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

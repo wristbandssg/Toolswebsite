@@ -33,8 +33,6 @@
  *    α = 2 ÷ (n + 1)) over up to 12 prices, price vs average.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin2-investing-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

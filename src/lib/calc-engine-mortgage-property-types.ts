@@ -17,8 +17,6 @@
  *    with your current home and the income needed at a DTI limit.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-mortgage-property-types-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

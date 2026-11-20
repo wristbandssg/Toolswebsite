@@ -11,9 +11,6 @@
  * glance (Extra Payment vs Prepayment vs Biweekly; Fixed-Rate vs ARM vs
  * Fixed-vs-ARM; 15-vs-30 vs generic Term Comparison) — each is scoped
  * deliberately differently, documented in that function's own comment.
- *
- * See prisma/create-mortgage-payment-strategies-calculators.ts for the
- * tool content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

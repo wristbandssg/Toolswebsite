@@ -20,8 +20,6 @@
  *    equally.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-budget-household-bills-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

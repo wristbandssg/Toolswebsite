@@ -16,8 +16,6 @@
  *    and hourly wage per working adult, vs the local minimum wage.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-budget-net-worth-col-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

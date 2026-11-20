@@ -29,9 +29,6 @@
  *
  * Self-contained: no imports from any other batch, per this project's
  * established per-batch convention.
- *
- * See prisma/create-salary-period-conversions-calculators.ts for the tool
- * content/copy this math is wired to.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

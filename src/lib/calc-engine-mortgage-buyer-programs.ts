@@ -22,8 +22,6 @@
  *    needed, and the 2026 $19,000 per-giver gift tax exclusion.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-mortgage-buyer-programs-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

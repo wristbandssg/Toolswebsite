@@ -22,8 +22,6 @@
  *  - velocityOfMoney: V = P·Y ÷ M (MV = PY), or the price level implied.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin3-macro2-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

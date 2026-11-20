@@ -25,8 +25,6 @@
  *    largest discount that keeps a target margin.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-fin3-debt-retire-sales-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

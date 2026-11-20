@@ -23,7 +23,6 @@
  *  - Cost figures are typical 2026 US installed prices (editable inputs), not quotes.
  *
  * Self-contained: no imports from any other batch, per this project's established per-batch convention.
- * See prisma/create-hg-con-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

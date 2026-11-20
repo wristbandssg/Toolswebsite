@@ -12,7 +12,6 @@
  * system changes fares yearly.
  * Near-namesakes: jr-pass-calculator compares a pass with individual tickets for a whole trip;
  * japan-train-fare-calculator prices one journey; tokyo-metro-fare-calculator is subway only.
- * See prisma/create-trv-rail-calculators.ts.
  */
 
 import { type TrvCalculator, InputError, pos, pick, r0, r2, money, nfmt, clamp } from "./trv-core";

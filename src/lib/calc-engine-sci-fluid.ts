@@ -8,8 +8,7 @@
  * Sutherland. Psychrometrics with the Magnus/Buck vapour-pressure formula and the exact
  * psychrometric equation solved for wet bulb. Compressible flow: isentropic and normal-shock
  * relations. Open channels: Manning. Vacuum conductance: molecular (12.1d³/L) and viscous
- * (182d⁴P̄/L) air formulas. Gas diffusivity: Fuller-Schettler-Giddings. See
- * prisma/create-sci-fluid-calculators.ts.
+ * (182d⁴P̄/L) air formulas. Gas diffusivity: Fuller-Schettler-Giddings.
  */
 
 import { type SciCalculator, InputError, num, pos, pick, fmt, sig, listOf, sum } from "./sci-math-core";

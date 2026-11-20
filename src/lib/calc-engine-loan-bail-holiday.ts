@@ -22,8 +22,6 @@
  *  - holidayLoanPayoff: a January lump sum (bonus, tax refund) plus extra.
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-loan-bail-holiday-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;

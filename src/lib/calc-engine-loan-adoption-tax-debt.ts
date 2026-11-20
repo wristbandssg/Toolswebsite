@@ -33,8 +33,6 @@
  *    long-term plan, a personal loan (score and DTI).
  *
  * Self-contained: no imports from any other batch.
- *
- * See prisma/create-loan-adoption-tax-debt-calculators.ts for the copy.
  */
 
 export type CustomCalculator = (values: Record<string, number>) => number | Record<string, number>;
