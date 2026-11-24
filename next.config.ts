@@ -13,6 +13,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Always put <title>, description and canonical in <head>. By default
+  // Next.js streams them in later on slow pages (e.g. big category pages),
+  // even for Googlebot, and they end up outside <head>.
+  htmlLimitedBots: /.*/,
   // Public URLs all end with a slash (src/lib/urls.ts). Next.js would add
   // it with a 308; src/proxy.ts does it instead with a 301, in the same single
   // hop that moves old /tools/ and /pages/ URLs to the new ones.
