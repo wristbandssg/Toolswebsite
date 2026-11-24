@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { blogUrl } from "@/lib/urls";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -36,13 +37,17 @@ export default function BlogPostsList({
   posts: BlogPostRow[];
   categories: { id: string; name: string }[];
 }) {
+  const router = useRouter();
+  const [rows, setRows] = useState(posts);
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return posts.filter((post) => {
+    return rows.filter((post) => {
       if (q && !post.title.toLowerCase().includes(q)) return false;
       if (statusFilter !== "all" && post.status !== statusFilter) return false;
       if (categoryFilter !== "all" && !post.categories.some((c) => c.id === categoryFilter)) {
@@ -50,7 +55,29 @@ export default function BlogPostsList({
       }
       return true;
     });
-  }, [posts, search, statusFilter, categoryFilter]);
+  }, [rows, search, statusFilter, categoryFilter]);
+
+  async function handleDelete(post: BlogPostRow) {
+    if (!window.confirm(`Delete "${post.title}"? This permanently removes the post and its SEO settings. This can't be undone.`)) {
+      return;
+    }
+    setDeletingSlug(post.slug);
+    setError(null);
+    try {
+      const res = await fetch(`/api/blogs/${post.slug}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "Could not delete the post.");
+        return;
+      }
+      setRows((prev) => prev.filter((p) => p.slug !== post.slug));
+      router.refresh();
+    } catch {
+      setError("Network error, please try again.");
+    } finally {
+      setDeletingSlug(null);
+    }
+  }
 
   const hasActiveFilters = search.trim() !== "" || statusFilter !== "all" || categoryFilter !== "all";
 
@@ -121,9 +148,11 @@ export default function BlogPostsList({
 
       {hasActiveFilters ? (
         <p className="mt-2 px-1 text-xs text-gray-400">
-          Showing {filtered.length} of {posts.length} post{posts.length === 1 ? "" : "s"}
+          Showing {filtered.length} of {rows.length} post{rows.length === 1 ? "" : "s"}
         </p>
       ) : null}
+
+      {error ? <p className="mt-2 px-1 text-sm text-red-600">{error}</p> : null}
 
       <div className="mt-3 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <table className="w-full text-left text-sm">
@@ -168,6 +197,14 @@ export default function BlogPostsList({
                     <Link href={`/admin/blogs/${blog.slug}`} className="text-indigo-600 hover:underline">
                       Edit
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(blog)}
+                      disabled={deletingSlug === blog.slug}
+                      className="text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      {deletingSlug === blog.slug ? "Deleting…" : "Delete"}
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -175,7 +212,7 @@ export default function BlogPostsList({
             {filtered.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                  {posts.length === 0
+                  {rows.length === 0
                     ? "No blog posts yet."
                     : "No posts match your search/filters."}
                 </td>

@@ -121,6 +121,16 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: "Login required" }, { status: 401 });
   }
   const { slug } = await params;
-  await prisma.blog.delete({ where: { slug } });
+  const blog = await prisma.blog.findUnique({ where: { slug }, select: { id: true } });
+  if (!blog) {
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  }
+  // Take the post out of its categories' post lists and remove everything
+  // that points at it, so no category, calculator or post keeps a dead link.
+  await prisma.blog.update({ where: { id: blog.id }, data: { categories: { set: [] } } });
+  await prisma.toolBlogRelation.deleteMany({ where: { blogId: blog.id } });
+  await prisma.blogRelatedBlog.deleteMany({ where: { OR: [{ blogId: blog.id }, { relatedBlogId: blog.id }] } });
+  await prisma.seoMeta.deleteMany({ where: { blogId: blog.id } });
+  await prisma.blog.delete({ where: { id: blog.id } });
   return NextResponse.json({ ok: true });
 }
