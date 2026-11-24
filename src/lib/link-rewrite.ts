@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { publicRedirectTarget } from "@/lib/public-redirects";
+import { getSiteUrl } from "@/lib/seo";
 
 // Rewrites every internal link stored in the database (menus, blog posts,
 // calculator text, category articles, page sections, site settings, author
@@ -10,12 +11,20 @@ import { publicRedirectTarget } from "@/lib/public-redirects";
 
 // Links written with the full site address are made relative, so they work
 // on every host (live, local) and never leave the site.
-const OWN_HOSTS = /^https?:\/\/(?:www\.)?(?:toolswebsite\.onrender\.com|localhost:3000)(?=\/)/i;
+// Our own addresses: the live domain, the address in NEXTAUTH_URL, the old
+// Render address and local runs (each with or without www).
+const hostList = [
+  "freedigitaltool.com",
+  "toolswebsite.onrender.com",
+  "localhost:3000",
+  new URL(getSiteUrl()).host.replace(/^www\./, ""),
+];
+const HOSTS = [...new Set(hostList)].map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+const OWN_HOSTS = new RegExp(`^https?:\\/\\/(?:www\\.)?(?:${HOSTS})(?=\\/)`, "i");
 
 // A quoted internal URL: "…", '…' or \"…\" (inside stored JSON), either
 // relative ("/x") or on our own host.
-const QUOTED_URL =
-  /(\\?["'])((?:https?:\/\/(?:www\.)?(?:toolswebsite\.onrender\.com|localhost:3000))?\/(?!\/)[^"'\\\s<>]*)\1/gi;
+const QUOTED_URL = new RegExp(`(\\\\?["'])((?:https?:\\/\\/(?:www\\.)?(?:${HOSTS}))?\\/(?!\\/)[^"'\\\\\\s<>]*)\\1`, "gi");
 
 export interface RewriteStats {
   linksChanged: number;
