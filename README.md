@@ -43,6 +43,8 @@ npm run dev
 ## Deploying on Render
 
 - Environment variables: `DATABASE_URL` (bare connection string), `NEXTAUTH_SECRET` (random value), `NEXTAUTH_URL` (production URL — sitemap and canonical URLs depend on it).
+- `NEXTAUTH_URL` must be the exact live address, e.g. `https://www.example.com` (https, and with or without `www` as you want it in Google). Pages asked for on any other host (the other www form, `*.onrender.com`) get a 301 to it (`src/proxy.ts`).
+- Health check path: `/api/health`.
 - MongoDB Atlas → Network Access must allow `0.0.0.0/0`.
 - Most pages use `export const dynamic = "force-dynamic"`, so builds don't need a live database.
 - Back up the database regularly (Atlas export or `mongodump`) — the free tier has no automated backups.

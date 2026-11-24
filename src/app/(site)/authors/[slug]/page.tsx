@@ -5,6 +5,7 @@ import { BookOpen, Calculator } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { buildSeoMetadata, excerptFromHtml, getSiteUrl } from "@/lib/seo";
 import { toAuthorProfile } from "@/lib/authors";
+import { publicImageUrl } from "@/lib/image-urls";
 import { AuthorAvatar, AuthorSocialLinks, authorSocialHrefs } from "@/components/author/AuthorParts";
 import { authorUrl, blogUrl } from "@/lib/urls";
 import { getCategoryIndex } from "@/lib/category-index";
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const author = await loadAuthor(slug);
   if (!author) return {};
   return buildSeoMetadata({
-    seoMeta: { ogImage: author.photo },
+    seoMeta: { ogImage: publicImageUrl(author.photo, "author", author.slug) },
     fallbackTitle: author.jobTitle ? `${author.name}, ${author.jobTitle}` : author.name,
     fallbackDescription: author.shortBio || (author.bio ? excerptFromHtml(author.bio) : null),
     path: authorUrl(author.slug),
@@ -79,13 +80,13 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
-    url: `${siteUrl}/authors/${author.slug}`,
+    url: `${siteUrl}${authorUrl(author.slug)}`,
     mainEntity: {
       "@type": "Person",
       name: author.name,
       jobTitle: author.jobTitle || undefined,
       description: author.shortBio || undefined,
-      image: author.photo || undefined,
+      image: author.photo ? (author.photo.startsWith("/") ? `${siteUrl}${author.photo}` : author.photo) : undefined,
       knowsAbout: author.expertise.length > 0 ? author.expertise : undefined,
       sameAs: authorSocialHrefs(author),
     },
@@ -184,7 +185,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                     {b.featuredImage ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={b.featuredImage}
+                        src={publicImageUrl(b.featuredImage, "blog", b.slug) ?? ""}
                         alt=""
                         loading="lazy"
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"

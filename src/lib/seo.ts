@@ -2,9 +2,19 @@
 
 import type { Metadata } from "next";
 
+let warned = false;
+
+/** The public site address (NEXTAUTH_URL), used for canonical URLs, the sitemap and structured data. */
 export function getSiteUrl() {
   const raw = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  return raw.replace(/\/$/, "");
+  // On the live site a missing or localhost NEXTAUTH_URL would put
+  // "localhost" in every canonical URL and the sitemap — say so loudly.
+  // (Skipped during `next build`, which also runs in production mode.)
+  if (!warned && process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build" && /localhost|127\.0\.0\.1/.test(raw)) {
+    warned = true;
+    console.warn(`[seo] NEXTAUTH_URL is "${raw}". Set it to the live https address, or canonical URLs and the sitemap will point at localhost.`);
+  }
+  return raw.trim().replace(/\/+$/, "");
 }
 
 export const SEO_CONTENT_TYPES = ["tool", "blog", "page", "category", "tool_category"] as const;
@@ -57,7 +67,9 @@ export function buildSeoMetadata({
       title,
       description,
       url: canonical,
-      images: seoMeta?.ogImage ? [{ url: seoMeta.ogImage }] : undefined,
+      // A base64 "data:" image can't be fetched by Facebook, X, etc. — pages
+      // pass a real URL (src/lib/image-urls.ts); anything else is left out.
+      images: seoMeta?.ogImage && !seoMeta.ogImage.startsWith("data:") ? [{ url: seoMeta.ogImage }] : undefined,
     },
   };
 }

@@ -4,8 +4,8 @@ import { blogCategoryUrl, blogIndexUrl, blogUrl } from "@/lib/urls";
 import type { Metadata } from "next";
 import { buildSeoMetadata } from "@/lib/seo";
 
-// Blog List সবসময় সর্বশেষ Published Post দেখাবে — তাই Build-time Static Prerender
-// বন্ধ রাখা হলো (Admin Dashboard-এর মতো একই কারণ, দেখুন সেই layout.tsx-এর কমেন্ট)।
+// Always shows the latest published posts, so it is rendered on each request
+// rather than at build time (same reason as the admin dashboard layout).
 export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
@@ -26,7 +26,7 @@ export default async function BlogListPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
       <h1 className="text-3xl font-bold">Blog</h1>
-      <p className="mt-1 text-gray-500">সব Article এখানে দেখুন।</p>
+      <p className="mt-1 text-gray-500">Guides, tips and explainers to go with our calculators.</p>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         {blogs.map((blog) => (
@@ -61,7 +61,7 @@ export default async function BlogListPage() {
           </div>
         ))}
         {blogs.length === 0 ? (
-          <p className="text-gray-400">এখনো কোনো Blog Post Publish হয়নি।</p>
+          <p className="text-gray-400">No posts yet.</p>
         ) : null}
       </div>
     </div>

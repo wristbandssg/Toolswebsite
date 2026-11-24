@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { publicImageUrl } from "@/lib/image-urls";
 import type { Design3Content } from "@/lib/homepage-config";
 import { blogSummary, emojiForSlug, type D2Blog } from "@/lib/homepage-data";
 import { getCategoryIndex } from "@/lib/category-index";
@@ -216,7 +217,7 @@ export async function loadDesign3Data(content: Design3Content) {
     slug: b.slug,
     title: b.title,
     excerpt: blogSummary(b.excerpt, b.content, b.title, content.guideExcerptWords),
-    image: b.featuredImage ?? "",
+    image: publicImageUrl(b.featuredImage, "blog", b.slug) ?? "",
     category: b.categories[0]?.name ?? "",
   }));
 

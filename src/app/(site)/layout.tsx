@@ -8,6 +8,7 @@ import SiteFooter from "@/components/site/SiteFooter";
 import { getFooterSettings } from "@/lib/footer-config";
 import { getSiteGeneralSettings } from "@/lib/site-config";
 import AdSlot from "@/components/AdSlot";
+import { siteLogoUrl } from "@/lib/image-urls";
 
 // Header/Footer/Mega Menu are data-driven from the `menus` table (Section 9:
 // Header/Footer/Mega Menu Builder) — always fetch fresh so admin edits show
@@ -56,7 +57,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           <Link href="/" className="flex shrink-0 items-center gap-2 font-semibold">
             {settings.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={settings.logoUrl} alt={settings.siteName} className="h-7 w-7 rounded object-contain" />
+              <img src={siteLogoUrl(settings.logoUrl)} alt={settings.siteName} className="h-7 w-7 rounded object-contain" />
             ) : null}
             {settings.siteName}
           </Link>
@@ -78,7 +79,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         <AdSlot placement="site_footer_top" />
       </div>
 
-      <SiteFooter settings={footerSettings} columns={footerItems} siteName={settings.siteName} logoUrl={settings.logoUrl} />
+      <SiteFooter settings={footerSettings} columns={footerItems} siteName={settings.siteName} logoUrl={siteLogoUrl(settings.logoUrl)} />
     </div>
   );
 }

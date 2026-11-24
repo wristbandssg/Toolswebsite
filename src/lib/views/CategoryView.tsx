@@ -96,8 +96,11 @@ export function categoryTitle(name: string) {
 export async function categoryMetadata(slug: string): Promise<Metadata> {
   const data = await loadCategory(slug);
   if (!data) return {};
+  // No published calculator here or below: an empty page, so noindex
+  // (it is left out of the sitemap for the same reason).
+  const empty = data.toolCount === 0 && data.children.length === 0;
   return buildSeoMetadata({
-    seoMeta: data.category.seoMeta,
+    seoMeta: empty ? { ...data.category.seoMeta, robotsIndex: false } : data.category.seoMeta,
     fallbackTitle: categoryTitle(data.category.name),
     fallbackDescription:
       data.category.heroDescription ||

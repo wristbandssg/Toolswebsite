@@ -21,6 +21,7 @@ export const RESERVED_SLUGS = [
   "authors",
   "blog",
   "calculators",
+  "media",
   "pages",
   "tools",
   "_next",

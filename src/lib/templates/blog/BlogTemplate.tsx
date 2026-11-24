@@ -194,7 +194,7 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
 
             {relatedTools.length > 0 ? (
               <section className="mt-10 border-t border-gray-200 pt-6 dark:border-gray-800">
-                <h2 className="mb-2 text-lg font-semibold">সম্পর্কিত Calculator</h2>
+                <h2 className="mb-2 text-lg font-semibold">Related Calculators</h2>
                 <ul className="flex flex-wrap gap-2">
                   {relatedTools.map((t) => (
                     <li key={t.slug}>

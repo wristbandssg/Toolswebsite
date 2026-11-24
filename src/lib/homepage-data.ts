@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { publicImageUrl } from "@/lib/image-urls";
 import type { Design1Content, Design2Content } from "@/lib/homepage-config";
 import { iconKeyForSlug } from "@/lib/home-icons";
 import { getCategoryIndex } from "@/lib/category-index";
@@ -315,7 +316,7 @@ export async function loadDesign2Data(content: Design2Content) {
     slug: b.slug,
     title: b.title,
     excerpt: blogSummary(b.excerpt, b.content, b.title, content.blogExcerptWords),
-    image: b.featuredImage ?? "",
+    image: publicImageUrl(b.featuredImage, "blog", b.slug) ?? "",
     category: b.categories[0]?.name ?? "",
   }));
 

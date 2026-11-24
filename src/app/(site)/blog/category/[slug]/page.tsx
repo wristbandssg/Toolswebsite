@@ -6,10 +6,11 @@ import { buildSeoMetadata, excerptFromHtml } from "@/lib/seo";
 import CategoryHeroSlider from "@/components/CategoryHeroSlider";
 import AdSlot from "@/components/AdSlot";
 import { blogCategoryUrl, blogUrl } from "@/lib/urls";
+import { publicImageUrl } from "@/lib/image-urls";
 import { RICH_TEXT_CLASSES } from "@/lib/templates/page/ContentBox";
 
-// ক্যাটাগরি পেজও সবসময় সর্বশেষ Published Post দেখাবে, তাই Blog List-এর মতোই
-// Build-time Static Prerender বন্ধ রাখা হলো।
+// Always shows the latest published posts, so (like the blog list) it is
+// rendered on each request rather than at build time.
 export const dynamic = "force-dynamic";
 
 // How many posts the paginated card grid shows per page (below the hero +
@@ -26,10 +27,12 @@ async function loadCategory(slug: string) {
     include: { seoMeta: true, parent: true },
   });
   if (!category) return null;
-  const blogs = await prisma.blog.findMany({
-    where: { status: "published", categoryIds: { has: category.id } },
-    orderBy: { publishedAt: "desc" },
-  });
+  const blogs = (
+    await prisma.blog.findMany({
+      where: { status: "published", categoryIds: { has: category.id } },
+      orderBy: { publishedAt: "desc" },
+    })
+  ).map((b) => ({ ...b, featuredImage: publicImageUrl(b.featuredImage, "blog", b.slug) }));
   return { category, blogs };
 }
 
@@ -57,10 +60,12 @@ export async function generateMetadata({
   const data = await loadCategory(slug);
   if (!data) return {};
   return buildSeoMetadata({
-    seoMeta: data.category.seoMeta,
+    // A category with no published posts is an empty page: keep it out of
+    // search results until it has one (it is left out of the sitemap too).
+    seoMeta: data.blogs.length ? data.category.seoMeta : { ...data.category.seoMeta, robotsIndex: false },
     fallbackTitle: `${data.category.name} — Blog`,
     fallbackDescription:
-      data.category.description || `${data.category.name} বিষয়ক সব Article এখানে দেখুন।`,
+      data.category.description || `All ${data.category.name} articles in one place.`,
     path: blogCategoryUrl(data.category.slug),
   });
 }
@@ -139,7 +144,7 @@ export default async function BlogCategoryPage({
 
         {blogs.length === 0 ? (
           <p className="mt-10 rounded-2xl border border-dashed border-gray-200 px-6 py-16 text-center text-gray-400 dark:border-gray-800">
-            এই ক্যাটাগরিতে এখনো কোনো Blog Post Publish হয়নি।
+            No posts in this category yet.
           </p>
         ) : (
           <>

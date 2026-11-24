@@ -6,6 +6,10 @@ import type { CalcInputField, CalcResultConfig, CalcResultLineConfig } from "@/l
 import { buildSeoMetadata } from "@/lib/seo";
 import { resolveAuthorProfile } from "@/lib/authors";
 import { getCategoryIndex } from "@/lib/category-index";
+import { getSiteGeneralSettings } from "@/lib/site-config";
+import { toolJsonLd } from "@/lib/structured-data";
+import JsonLd from "@/components/site/JsonLd";
+import { siteLogoUrl } from "@/lib/image-urls";
 
 // Public calculator page, served at /{category}/{calculator}/ — see
 // src/app/(site)/[first]/[second]. Only published calculators are public.
@@ -72,10 +76,24 @@ export default async function ToolView({ slug }: { slug: string }) {
     { name: tool.title, href: index.toolHref(tool) },
   ];
 
-  const authorProfile = await resolveAuthorProfile(tool.authorProfile);
+  const [authorProfile, settings] = await Promise.all([resolveAuthorProfile(tool.authorProfile), getSiteGeneralSettings()]);
   const { component: Template } = getToolTemplate(tool.templateKey);
+  const faq = parseFaq(tool.faq);
 
   return (
+    <>
+    <JsonLd
+      data={toolJsonLd({
+        title: tool.title,
+        description: tool.seoMeta?.metaDescription || tool.description,
+        path: index.toolHref(tool),
+        schemaType: tool.seoMeta?.schemaType,
+        faq,
+        siteName: settings.siteName,
+        logoUrl: siteLogoUrl(settings.logoUrl),
+        updatedAt: tool.updatedAt,
+      })}
+    />
     <Template
       tool={{
         id: tool.id,
@@ -92,7 +110,7 @@ export default async function ToolView({ slug }: { slug: string }) {
         instructions: tool.instructions,
         examples: tool.examples,
         assumptions: tool.assumptions,
-        faq: tool.faq ? JSON.parse(tool.faq) : [],
+        faq,
         categoryName: tool.category?.name,
         categorySlug: tool.category?.slug,
       }}
@@ -110,5 +128,16 @@ export default async function ToolView({ slug }: { slug: string }) {
         href: s.toolSlug ? (stateHref.get(s.toolSlug) ?? null) : null,
       }))}
     />
+    </>
   );
+}
+
+/** The calculator's FAQ list; bad or missing JSON gives an empty list instead of a crashed page. */
+function parseFaq(json: string | null): { question: string; answer: string }[] {
+  try {
+    const list = JSON.parse(json || "[]");
+    return Array.isArray(list) ? list.filter((f) => f && typeof f.question === "string" && typeof f.answer === "string") : [];
+  } catch {
+    return [];
+  }
 }

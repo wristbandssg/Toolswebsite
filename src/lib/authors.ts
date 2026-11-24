@@ -1,5 +1,6 @@
 import type { Author } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { publicImageUrl } from "@/lib/image-urls";
 import { parseSocialLinks, type AuthorSocialLink } from "@/lib/author-social";
 
 /** The public shape of an author — what the bio box and author page render. */
@@ -28,7 +29,7 @@ export function toAuthorProfile(a: Author): AuthorProfile {
     slug: a.slug,
     name: a.name,
     jobTitle: a.jobTitle,
-    photo: a.photo,
+    photo: publicImageUrl(a.photo, "author", a.slug),
     shortBio: a.shortBio,
     bio: a.bio,
     expertise: parseExpertise(a.expertise),

@@ -7,6 +7,9 @@ import { loadDesign3Data } from "@/lib/homepage-data-design3";
 import HomeDesign1 from "@/components/home/designs/HomeDesign1";
 import HomeDesign2 from "@/components/home/designs/HomeDesign2";
 import HomeDesign3 from "@/components/home/designs/HomeDesign3";
+import JsonLd from "@/components/site/JsonLd";
+import { siteJsonLd } from "@/lib/structured-data";
+import { siteLogoUrl } from "@/lib/image-urls";
 
 // Home page. The admin picks one of 3 designs at /admin/homepage and edits
 // all of its content there.
@@ -32,15 +35,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const [settings, home] = await Promise.all([getSiteGeneralSettings(), getHomepageSettings()]);
+  const site = <JsonLd data={siteJsonLd(settings.siteName, settings.siteDescription, siteLogoUrl(settings.logoUrl))} />;
   if (home.activeDesign === 3) {
     const data = await loadDesign3Data(home.design3);
-    return <HomeDesign3 content={home.design3} siteName={settings.siteName} {...data} />;
+    return <>{site}<HomeDesign3 content={home.design3} siteName={settings.siteName} {...data} /></>;
   }
   if (home.activeDesign === 2) {
     const data = await loadDesign2Data(home.design2);
-    return <HomeDesign2 content={home.design2} siteName={settings.siteName} {...data} />;
+    return <>{site}<HomeDesign2 content={home.design2} siteName={settings.siteName} {...data} /></>;
   }
   const content = home.design1;
   const data = await loadDesign1Data(content);
-  return <HomeDesign1 content={content} siteName={settings.siteName} {...data} />;
+  return <>{site}<HomeDesign1 content={content} siteName={settings.siteName} {...data} /></>;
 }

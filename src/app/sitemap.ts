@@ -25,7 +25,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       where: { status: "published" },
       select: { slug: true, updatedAt: true, seoMeta: { select: { robotsIndex: true } } },
     }),
-    prisma.blogCategory.findMany({ select: { slug: true, seoMeta: { select: { robotsIndex: true } } } }),
+    prisma.blogCategory.findMany({
+      select: {
+        slug: true,
+        seoMeta: { select: { robotsIndex: true } },
+        blogs: { where: { status: "published" }, select: { id: true }, take: 1 },
+      },
+    }),
     prisma.page.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true, seoMeta: { select: { robotsIndex: true } } },
@@ -60,7 +66,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const blog of blogs.filter(indexable)) {
     entries.push({ url: abs(blogUrl(blog.slug)), lastModified: blog.updatedAt, changeFrequency: "monthly", priority: 0.7 });
   }
+  // Same for blog categories: only ones with a published post (the category
+  // page lists its own posts; empty ones are also noindex).
   for (const category of blogCategories.filter(indexable)) {
+    if (category.blogs.length === 0) continue;
     entries.push({ url: abs(blogCategoryUrl(category.slug)), changeFrequency: "weekly", priority: 0.5 });
   }
   for (const page of pages.filter(indexable)) {
