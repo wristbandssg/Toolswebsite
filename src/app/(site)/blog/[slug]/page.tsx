@@ -7,7 +7,7 @@ import { resolveAuthorProfile } from "@/lib/authors";
 import { blogUrl } from "@/lib/urls";
 import { getCategoryIndex } from "@/lib/category-index";
 import { getSiteGeneralSettings } from "@/lib/site-config";
-import { blogJsonLd } from "@/lib/structured-data";
+import { blogJsonLd, faqFromHtml, faqJsonLd } from "@/lib/structured-data";
 import JsonLd from "@/components/site/JsonLd";
 import { publicImageUrl, siteLogoUrl } from "@/lib/image-urls";
 
@@ -68,7 +68,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <>
     <JsonLd
-      data={blogJsonLd({
+      data={[blogJsonLd({
         title: blog.title,
         description: blog.seoMeta?.metaDescription || blog.excerpt || excerptFromHtml(blog.content),
         path: blogUrl(blog.slug),
@@ -79,7 +79,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         author: authorProfile ? { name: authorProfile.name, slug: authorProfile.slug } : blog.author?.name ? { name: blog.author.name } : null,
         siteName: settings.siteName,
         logoUrl: siteLogoUrl(settings.logoUrl),
-      })}
+      }),
+      // The post's own FAQ section, when it has one.
+      ...[faqJsonLd(faqFromHtml(blog.content))].filter((x) => x !== null)]}
     />
     <BlogTemplate
       blog={{

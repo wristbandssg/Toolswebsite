@@ -66,19 +66,40 @@ export function toolJsonLd(input: {
     },
   ];
   // Only questions that are shown on the page (ToolContentSections renders them all).
-  const faq = input.faq.filter((f) => f?.question?.trim() && text(f.answer));
-  if (faq.length) {
-    out.push({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faq.map((f) => ({
-        "@type": "Question",
-        name: f.question.trim(),
-        acceptedAnswer: { "@type": "Answer", text: text(f.answer) },
-      })),
-    });
-  }
+  const faq = faqJsonLd(input.faq);
+  if (faq) out.push(faq);
   return out;
+}
+
+/** FAQPage for questions shown on the page, or null when there are none. */
+export function faqJsonLd(items: { question: string; answer: string }[]): Json | null {
+  const faq = items.filter((f) => f?.question?.trim() && text(f.answer));
+  if (!faq.length) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((f) => ({
+      "@type": "Question",
+      name: text(f.question),
+      acceptedAnswer: { "@type": "Answer", text: text(f.answer) },
+    })),
+  };
+}
+
+/**
+ * The questions in a post's "Frequently Asked Questions" (or "FAQ") section:
+ * each <h3> under that <h2> with the text up to the next heading as its answer.
+ */
+export function faqFromHtml(html: string | null | undefined): { question: string; answer: string }[] {
+  const source = html ?? "";
+  const start = source.search(/<h2[^>]*>\s*(frequently asked questions|faqs?)\b[^<]*<\/h2>/i);
+  if (start < 0) return [];
+  const rest = source.slice(start).replace(/^<h2[^>]*>[\s\S]*?<\/h2>/i, "");
+  const end = rest.search(/<h2[\s>]/i);
+  const section = end < 0 ? rest : rest.slice(0, end);
+  return [...section.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3[\s>]|$)/gi)]
+    .map((m) => ({ question: text(m[1]), answer: text(m[2]) }))
+    .filter((f) => f.question && f.answer);
 }
 
 export function blogJsonLd(input: {
