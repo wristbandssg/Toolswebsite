@@ -102,7 +102,7 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
           on a full-bleed colored hero band (edge-to-edge, not boxed in with
           white margins around it) so the post opens with real visual impact. */}
       <div className="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 dark:from-indigo-800 dark:via-blue-800 dark:to-indigo-900">
-        <header className="mx-auto max-w-5xl px-4 py-10 sm:py-14">
+        <header className="mx-auto max-w-[1400px] px-4 py-10 sm:py-14">
           {blog.categories.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {blog.categories.map((cat) => (
@@ -162,7 +162,7 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
         </header>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
+      <div className="mx-auto max-w-[1400px] px-4 py-8 sm:py-10">
         {/* The single post page no longer shows the Featured Image as a
             banner here — it's still used for blog-list/category cards and
             social share previews, just not repeated inside the post itself. */}
@@ -173,8 +173,11 @@ export default function BlogTemplate({ blog, authorProfile, relatedTools, relate
             "More Articles" sidebar, visually set apart from the hero above. */}
         <div className="rounded-3xl border border-gray-100 bg-gray-50/60 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/30 sm:p-6 lg:p-8">
           <div
-            className={`grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr] ${
-              relatedCard ? "xl:grid-cols-[220px_1fr_280px]" : "xl:grid-cols-[220px_1fr]"
+            className={`grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] ${
+              // 20% / 60% / 20%: the article gets most of the width.
+              relatedCard
+                ? "xl:grid-cols-[minmax(0,1fr)_minmax(0,3fr)_minmax(0,1fr)]"
+                : "xl:grid-cols-[minmax(0,1fr)_minmax(0,4fr)]"
             }`}
           >
             <TableOfContents headings={tocHeadings} />
